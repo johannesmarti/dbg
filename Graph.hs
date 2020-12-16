@@ -1,6 +1,8 @@
 module Graph (
-  Label,
+  Label(..),
+  labels,
   Graph,
+  domain, successors, predecessors,
   fromFunctions,
 ) where
 
