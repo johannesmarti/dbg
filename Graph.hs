@@ -2,6 +2,7 @@ module Graph (
   Label(..),
   labels,
   Graph,
+  MapFunction,
   domain, successors, predecessors,
   fromFunctions,
 ) where

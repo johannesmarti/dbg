@@ -3,7 +3,6 @@ module AssocGraph (
   toGraph,
 ) where
 
-import Control.Monad
 import Data.Set as Set
 import Data.Set.Extra
 
