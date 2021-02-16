@@ -2,6 +2,7 @@ module Function (
   Function,
   domain,
   range,
+  applyFct,
   allFunctions,
 ) where
 
@@ -15,6 +16,9 @@ domain = Map.keysSet
 
 range :: Ord y => Function x y -> Set y
 range = Set.fromList . Map.elems
+
+applyFct :: Ord x => Function x y -> x -> y
+applyFct f v = f ! v
 
 allFunctions :: (Ord x, Ord y) => Set x -> Set y -> [Function x y]
 allFunctions domain codomain = allFunctions' (Set.toList domain) (Set.toList codomain)
