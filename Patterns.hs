@@ -1,5 +1,6 @@
 module Patterns (
   triple,
+  hamburger,
 ) where
 
 import AssocGraph
@@ -14,3 +15,9 @@ trap One = [('b','b'),('b','c'),('c','a'),('a','c')]
 
 triple :: Graph Char
 triple = assocToGraph trap
+
+hb Zero = [('a','a'),('a','c'),('c','b'),('b','c'),('b','a')]
+hb One = [('b','b'),('b','c'),('c','a'),('a','c'),('a','b')]
+
+hamburger :: Graph Char
+hamburger = assocToGraph hb
