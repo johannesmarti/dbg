@@ -25,7 +25,7 @@ allFunctions domain codomain = allFunctions' (Set.toList domain) (Set.toList cod
 
 allFunctions' :: (Ord x, Ord y) => [x] -> [y] -> [Function x y]
 allFunctions' domain codomain =
-  Prelude.map (Prelude.foldl Map.union Map.empty)
+  Prelude.map (Prelude.foldr Map.union Map.empty)
               (mapM (mappingsTo codomain) domain) where
     mappingsTo list x = Prelude.map (Map.singleton x) list
 
