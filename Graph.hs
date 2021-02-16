@@ -1,10 +1,12 @@
 module Graph (
   Label(..),
   labels,
+  Arc,
   Graph,
   MapFunction,
   domain, successors, predecessors,
   fromFunctions,
+  arcs,
 ) where
 
 import Control.Exception.Base
@@ -12,6 +14,8 @@ import Data.Set as Set
 
 data Label = Zero | One
   deriving (Eq,Ord,Show)
+
+type Arc x = (x,Label,x)
 
 labels :: Set Label
 labels = Set.fromList [Zero, One]
@@ -38,3 +42,8 @@ foldConverse dom fct v = Set.filter (\u -> v `Set.member` fct u) dom
 
 sameOnDom :: (Ord x, Eq y) => Set x -> (x -> y) -> (x -> y) -> Bool
 sameOnDom dom f g = all (\a -> f a == g a) dom
+
+arcs :: Ord x => Graph x -> [Arc x]
+arcs graph = concatMap arcsForLabel labels where
+  dom = Set.toList $ domain graph
+  arcsForLabel l = [(x,l,y) | x <- dom, y <- Set.toList $ successors graph l x]

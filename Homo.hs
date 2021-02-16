@@ -22,6 +22,7 @@ isHomo fct d c =
     pairMapsWell' (l,v) = all succIsWell (successors d l v) where
                             csuccs = successors c l (applyFct fct v)
                             succIsWell s = (applyFct fct s) `elem` csuccs
+
 searchHomos :: (Ord x, Ord y) => Graph x -> Graph y -> [Function x y]
 searchHomos d c = Prelude.filter (\f -> isHomo f d c)
                                  (allFunctions (Graph.domain d) (Graph.domain c))
