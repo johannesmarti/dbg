@@ -16,5 +16,5 @@ main :: IO ()
 main = do
   args <- getArgs
   let n = read (head args) :: Int
-  putStrLn (show (arcConsHomos (dg n) (hamburger)))
+  putStrLn (show (arcConsHomos (dg n) (force2)))
   --putStrLn (show (searchHomos (dg n) (triple)))
