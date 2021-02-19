@@ -19,8 +19,8 @@ triple :: Graph Char
 triple = assocToGraph trap
 
 
-hb Zero = [('a','a'),('a','c'),('c','b'),('b','c'),('b','a')]
-hb One = [('b','b'),('b','c'),('c','a'),('a','c'),('a','b')]
+hb Zero = [('a','a'),('a','c'),('c','b'),('b','c'),('b','a'),('c','a')]
+hb One = [('b','b'),('b','c'),('c','a'),('a','c'),('a','b'),('c','b')]
 
 hamburger :: Graph Char
 hamburger = assocToGraph hb
