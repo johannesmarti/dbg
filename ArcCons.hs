@@ -14,13 +14,18 @@ import Graph
 
 type Approx x y = Map x (Set y)
 
+initialApprox :: Set x -> Set y -> Approx x y
+initialApprox dom codom = Map.fromSet (\_ -> codom) dom
+
+{- Turns an approximation into a function. It assumes that the approximation is
+never empty at any value. -}
+readOffFunction :: Approx x y -> Function x y
+readOffFunction = Map.map (Set.elemAt 0)
+
 type Worklist x = [(Arc x,Bool)]
 
 completeWorklist :: Ord x => Graph x -> Worklist x
 completeWorklist graph = concatMap (\a -> [(a,True),(a,False)]) (arcs graph)
-
-initialApprox :: Set x -> Set y -> Approx x y
-initialApprox dom codom = Map.fromSet (\_ -> codom) dom
 
 addNodeToWorklist :: Ord x => Graph x -> x -> Worklist x -> Worklist x
 addNodeToWorklist graph node worklist = newItems `Data.List.union` worklist
@@ -51,21 +56,10 @@ arcConsInner d c worklist approx = arcConsWorker worklist approx where
            then Nothing
            else arcConsWorker newWorklist newApx
 
-approxToFunction :: (Ord x, Ord y) => Approx x y -> Either (Function x y) ([Approx x y],x)
-approxToFunction apx = worker (Map.toList (Map.map Set.toList apx)) Map.empty where
-  worker [] accum = Left accum
-  worker ((k,[]):_) _ = error "there is an issue"
-  worker ((k,[s]):rest) accum = worker rest (Map.insert k s accum)
-  worker ((k,list):rest) accum = Right (Prelude.map singelize list,k) where
-    singelize s = Map.insert k (Set.singleton s) (Map.map Set.fromList (Map.fromList rest)) `Map.union` Map.map Set.singleton accum 
-
-readOffFunction :: Approx x y -> Function x y
-readOffFunction = Map.map (Set.elemAt 0)
-
 hasSplit :: (Ord x,Ord y) => Approx x y -> Maybe x
 hasSplit approx = fmap fst (pickElemWith (not . isSingleton) approx) where
   isSingleton set = Set.size set <= 1
-  pickElemWith predicate = Map.lookupMin . (Map.filter predicate)
+  pickElemWith predicate = Map.lookupMax . (Map.filter predicate)
 
 splittingsAt :: (Ord x, Ord y) => Approx x y -> x -> [Approx x y]
 splittingsAt approx node = let
