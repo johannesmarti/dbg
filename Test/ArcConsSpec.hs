@@ -2,6 +2,7 @@ module Test.ArcConsSpec (
    spec
 ) where
 
+import Data.Map as Map
 import Data.Set as Set
 import Test.Hspec
 
@@ -10,12 +11,31 @@ import DeBruijn
 import Graph
 import Patterns
 
+spec :: Spec
+spec = do
+  describe "checking the internals" details
+  describe "now checking the interface" interface
+
+easyMap = Map.map Set.fromList . Map.fromList
+ap1 = easyMap [(3,[6]),(2,[7])]
+ap2 = easyMap [(1,[2]),(3,[1,2,3]),(12,[99])]
+
+details :: Spec
+details =
+  describe "hasSplit" $ do
+    it "[] has no split" $
+      hasSplit (easyMap []) `shouldBe` Nothing
+    it "[(3,[6]),(2,[7])] has no split" $
+      hasSplit ap1 `shouldBe` Nothing
+    it "[(1,[2]),(3,[1,2,3]),(12,[99])] has split at 3" $
+      hasSplit ap2 `shouldBe` Just 3
+
 db1 = deBruijnGraph 1
 db2 = deBruijnGraph 2
 db3 = deBruijnGraph 3
 
-spec :: Spec
-spec = do
+interface :: Spec
+interface = do
   describe "no homo" $ do
     it "from db2 to db3" $
       arcConsHomos db2 db3 `shouldBe` []

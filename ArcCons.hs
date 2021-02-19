@@ -1,4 +1,6 @@
 module ArcCons (
+  Approx,
+  hasSplit,
   arcConsHomos,
 ) where
 
@@ -57,13 +59,27 @@ approxToFunction apx = worker (Map.toList (Map.map Set.toList apx)) Map.empty wh
   worker ((k,list):rest) accum = Right (Prelude.map singelize list,k) where
     singelize s = Map.insert k (Set.singleton s) (Map.map Set.fromList (Map.fromList rest)) `Map.union` Map.map Set.singleton accum 
 
+readOffFunction :: Approx x y -> Function x y
+readOffFunction = Map.map (Set.elemAt 0)
+
+hasSplit :: (Ord x,Ord y) => Approx x y -> Maybe x
+hasSplit approx = fmap fst (pickElemWith (not . isSingleton) approx) where
+  isSingleton set = Set.size set <= 1
+  pickElemWith predicate = Map.lookupMin . (Map.filter predicate)
+
+splittingsAt :: (Ord x, Ord y) => Approx x y -> x -> [Approx x y]
+splittingsAt approx node = let
+    valueList = Set.toList (approx ! node)
+    singlified s = Map.insert node (Set.singleton s) approx
+  in Prelude.map singlified valueList
+
 arcConsHomos :: (Ord x, Ord y) => Graph x -> Graph y -> [Function x y]
 arcConsHomos d c = let
     worker worklist apx = do
       clean <- maybeToList (arcConsInner d c worklist apx)
-      case approxToFunction clean of
-        Left fct                     -> return fct
-        Right (splittings,splitNode) -> do
-          split <- splittings
-          worker (addNodeToWorklist d splitNode []) split
+      case hasSplit clean of
+        Nothing        -> return (readOffFunction clean)
+        Just splitNode -> do
+                    split <- splittingsAt clean splitNode
+                    worker (addNodeToWorklist d splitNode []) split
   in worker (completeWorklist d) (initialApprox (Graph.domain d) (Graph.domain c))
