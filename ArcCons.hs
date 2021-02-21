@@ -11,6 +11,7 @@ import Data.Maybe (maybeToList)
 
 import Function
 import Graph
+import Homo
 
 type Approx x y = Map x (Set y)
 
@@ -67,7 +68,7 @@ splittingsAt approx node = let
     singlified s = Map.insert node (Set.singleton s) approx
   in Prelude.map singlified valueList
 
-arcConsHomos :: (Ord x, Ord y) => Graph x -> Graph y -> [Function x y]
+arcConsHomos :: (Ord x, Ord y) => HomoSearch x y
 arcConsHomos d c = let
     worker worklist apx = do
       clean <- maybeToList (arcConsInner d c worklist apx)

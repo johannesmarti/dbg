@@ -1,6 +1,8 @@
 module Homo (
+  HomoSearch,
   isHomo,
   searchHomos,
+  noHomo,
 ) where
 
 import Control.Exception.Base
@@ -9,6 +11,8 @@ import Data.Set as Set
 
 import Function
 import Graph
+
+type HomoSearch x y = Graph x -> Graph y -> [Function x y]
 
 isHomo :: (Ord x, Ord y) => Function x y -> Graph x -> Graph y -> Bool
 isHomo fct d c =
@@ -23,6 +27,9 @@ isHomo fct d c =
                             csuccs = successors c l (applyFct fct v)
                             succIsWell s = (applyFct fct s) `elem` csuccs
 
-searchHomos :: (Ord x, Ord y) => Graph x -> Graph y -> [Function x y]
+searchHomos :: (Ord x, Ord y) => HomoSearch x y
 searchHomos d c = Prelude.filter (\f -> isHomo f d c)
                                  (allFunctions (Graph.domain d) (Graph.domain c))
+
+noHomo :: HomoSearch x y -> Graph x -> Graph y -> Bool
+noHomo search d c = Prelude.null $ search d c
