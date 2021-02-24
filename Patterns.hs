@@ -1,7 +1,8 @@
 module Patterns (
   triple,
   hamburger,
-  force2,
+  force2d,
+  force3d,
 ) where
 
 import AssocGraph
@@ -29,8 +30,15 @@ hamburger = assocToGraph hb
 data N = Co | OZ | OO
   deriving (Eq,Ord,Show)
 
-f2 Zero = [(Co,Co),(Co,OZ),(Co,OO)]
-f2 One = [(OO,OO),(OO,OZ),(OZ,Co)]
+f2d Zero = [(Co,Co),(Co,OZ),(Co,OO)]
+f2d One = [(OO,OO),(OO,OZ),(OZ,Co)]
 
-force2 :: Graph N
-force2 = assocToGraph f2
+force2d :: Graph N
+force2d = assocToGraph f2d
+
+
+f3d Zero = [('a','a'),('a','c'),('c','a'),('c','b')]
+f3d One = [('a','c'),('b','a'),('b','b')]
+
+force3d :: Graph Char
+force3d = assocToGraph f3d
