@@ -10,6 +10,7 @@ module Graph (
 ) where
 
 import Control.Exception.Base
+import Data.List (intercalate)
 import Data.Set as Set
 
 data Label = Zero | One
@@ -47,3 +48,21 @@ arcs :: Ord x => Graph x -> [Arc x]
 arcs graph = concatMap arcsForLabel labels where
   dom = Set.toList $ domain graph
   arcsForLabel l = [(x,l,y) | x <- dom, y <- Set.toList $ successors graph l x]
+
+instance (Ord x, Show x) => Show (Graph x) where
+  show = unlines . prettyGraph
+
+prettyGraph :: (Ord x, Show x) => Graph x -> [String]
+prettyGraph g = basePrinter show (stdPrintSuccessors show) g
+
+stdPrintSuccessors :: (a -> String) -> [a] -> String
+stdPrintSuccessors printSuccessor successors =
+  "{" ++ (intercalate "," (fmap printSuccessor successors)) ++ "}"
+
+basePrinter :: Ord x => (x -> String) -> ([x] -> String) -> Graph x -> [String]
+basePrinter printNode printSuccessors g = let
+    succsForLabel v l lrep = " <" ++ lrep ++ " " ++
+                             (printSuccessors (Set.toList (successors g l v)))
+    lineForNode v = (printNode v) ++ succsForLabel v Zero "0"
+                                  ++ succsForLabel v One "1"
+  in fmap lineForNode (Set.toList . domain $ g)
