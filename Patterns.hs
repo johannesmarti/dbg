@@ -3,6 +3,7 @@ module Patterns (
   hamburger,
   force2d,
   force3d,
+  testPattern,
 ) where
 
 import AssocGraph
@@ -42,3 +43,18 @@ f3d One = [('a','c'),('b','a'),('b','b')]
 
 force3d :: Graph Char
 force3d = assocToGraph f3d
+
+
+noPat1 Zero = [('a','a'),('a','c'),('c','b'),('b','a'),('b','c')]
+noPat1 One = [('a','c'),('a','b'),('c','a'),('b','a'),('b','b')]
+
+noPattern1 :: Graph Char
+noPattern1 = assocToGraph noPat1
+
+
+test Zero = [('a','a'),('a','c'),('c','b'),('b','a'),('b','c')]
+test One = [('a','c'),('a','b'),('c','a'),('b','a'),('b','b')]
+
+testPattern :: Graph Char
+testPattern = assocToGraph test
+

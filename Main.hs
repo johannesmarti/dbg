@@ -17,5 +17,5 @@ main :: IO ()
 main = do
   args <- getArgs
   let n = read (head args) :: Int
-  --putStrLn (show (arcConsHomos (dg n) (force3d)))
-  putStrLn (show (searchForGraph n (force3d)))
+  putStrLn (show (arcConsHomos (dg n) (testPattern)))
+  --putStrLn (show (searchForGraph n (testPattern)))
