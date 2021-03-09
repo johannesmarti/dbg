@@ -10,7 +10,7 @@ import AssocGraph
 import Graph
 import MapGraph
 
-assocToGraph :: Ord a => AssocGraph a -> Graph a
+assocToGraph :: (Ord a, Show a) => AssocGraph a -> Graph a
 assocToGraph = MapGraph.toGraph . MapGraph.fromGraph . AssocGraph.toGraph
 
 

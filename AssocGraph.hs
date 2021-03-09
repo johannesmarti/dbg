@@ -10,7 +10,7 @@ import Graph
 
 type AssocGraph a = Label -> [(a,a)]
 
-toGraph :: Ord a => AssocGraph a -> Graph a
+toGraph :: (Ord a, Show a) => AssocGraph a -> Graph a
 toGraph aList = Graph.fromFunctions dom succ pred where
   ldom l = Set.fromList (fmap fst (aList l)) `union` Set.fromList (fmap snd (aList l))
   dom = Data.Set.Extra.concatMap ldom labels

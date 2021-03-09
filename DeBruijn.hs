@@ -4,7 +4,9 @@ module DeBruijn (
 
 import Control.Exception.Base
 import Data.Bits
+import Data.Char (intToDigit)
 import Data.Set as Set
+import Numeric (showHex, showIntAtBase)
 
 import Graph
 
@@ -17,7 +19,7 @@ zeroes = zeroBits
 deBruijnGraph :: Dimension -> Graph Node
 deBruijnGraph dimension = assert (dimension >= 1) $
                           assert (dimension <= finiteBitSize zeroes) $
-  fromFunctions dom succ pred where
+  fromFunctionsWithNodePrinter nodePrinter dom succ pred where
     dom = fromList [zeroes.. (DeBruijn.mask dimension)]
     succ Zero n = assert (isNode dimension n) $
       if isZeroNode dimension n
@@ -31,6 +33,9 @@ deBruijnGraph dimension = assert (dimension >= 1) $
       singleton (shift n (-1))
     pred One  n = assert (isNode dimension n) $
       singleton (setBit (shift n (-1)) (dimension - 1))
+    nodePrinter n = let str = showIntAtBase 2 intToDigit n ""
+                        leadingZeros = replicate (dimension - length str) '0'
+                      in leadingZeros ++ str
 
 size :: Dimension -> Node
 size dimension = shift 1 dimension

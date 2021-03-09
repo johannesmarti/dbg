@@ -5,6 +5,7 @@ module Graph (
   Graph,
   MapFunction,
   domain, successors, predecessors,
+  fromFunctionsWithNodePrinter,
   fromFunctions,
   arcs,
 ) where
@@ -26,23 +27,27 @@ type MapFunction x = Label -> x -> Set x
 data Graph x = Graph {
   domain       :: Set x,
   successors   :: MapFunction x,
-  predecessors :: MapFunction x
+  predecessors :: MapFunction x,
+  printNode    :: x -> String
 }
 
-fromFunctions :: Ord x => Set x -> MapFunction x -> MapFunction x -> Graph x
-fromFunctions dom succ pred =
-  assert (all ((`isSubsetOf` dom) . (uncurry succ)) product) $
-  assert (all ((`isSubsetOf` dom) . (uncurry pred)) product) $
-  assert (sameOnDom product (uncurry pred) (uncurry pred')) $
-    (Graph dom succ pred) where
-      pred' l = foldConverse dom (succ l)
-      product = cartesianProduct labels dom
+fromFunctions :: (Ord x, Show x) => Set x -> MapFunction x -> MapFunction x -> Graph x
+fromFunctions = fromFunctionsWithNodePrinter show
 
 foldConverse :: Ord y => Set x -> (x -> Set y) -> (y -> Set x)
 foldConverse dom fct v = Set.filter (\u -> v `Set.member` fct u) dom
 
 sameOnDom :: (Ord x, Eq y) => Set x -> (x -> y) -> (x -> y) -> Bool
 sameOnDom dom f g = all (\a -> f a == g a) dom
+
+fromFunctionsWithNodePrinter :: Ord x => (x -> String) -> Set x -> MapFunction x -> MapFunction x -> Graph x
+fromFunctionsWithNodePrinter nodePrinter dom succ pred =
+  assert (all ((`isSubsetOf` dom) . (uncurry succ)) product) $
+  assert (all ((`isSubsetOf` dom) . (uncurry pred)) product) $
+  assert (sameOnDom product (uncurry pred) (uncurry pred')) $
+    Graph dom succ pred nodePrinter where
+      pred' l = foldConverse dom (succ l)
+      product = cartesianProduct labels dom
 
 arcs :: Ord x => Graph x -> [Arc x]
 arcs graph = concatMap arcsForLabel labels where
@@ -53,7 +58,7 @@ instance (Ord x, Show x) => Show (Graph x) where
   show = unlines . prettyGraph
 
 prettyGraph :: (Ord x, Show x) => Graph x -> [String]
-prettyGraph g = basePrinter show (stdPrintSuccessors show) g
+prettyGraph g = basePrinter (printNode g) (stdPrintSuccessors (printNode g)) g
 
 stdPrintSuccessors :: (a -> String) -> [a] -> String
 stdPrintSuccessors printSuccessor successors =

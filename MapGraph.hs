@@ -25,7 +25,7 @@ predecessors :: Ord x => MapGraph x -> MapFunction x
 predecessors mg l v = assert (v `Set.member` MapGraph.domain mg) $
   findWithDefault Set.empty (l,v) (predecessorMap mg)
 
-toGraph :: Ord a => MapGraph a -> Graph a
+toGraph :: (Ord a, Show a) => MapGraph a -> Graph a
 toGraph mg = Graph.fromFunctions dom succ pred where
   dom = MapGraph.domain mg
   succ = MapGraph.successors mg
