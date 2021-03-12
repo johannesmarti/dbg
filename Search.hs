@@ -1,5 +1,5 @@
 module Search (
-  searchForGraph,
+  searchForDbgHomo,
 ) where
 
 import ArcCons
@@ -13,8 +13,8 @@ instance Show LargeNumber where
   show (IsNumber n)   = show n
   show (LargerThan n) = show n ++ "<"
 
-searchForGraph :: Ord x => Int -> Graph x -> LargeNumber
-searchForGraph cutoff graph = worker 1 where
+searchForDbgHomo :: Ord x => Int -> Graph x -> LargeNumber
+searchForDbgHomo cutoff graph = worker 1 where
   worker i = if i > cutoff
                then LargerThan cutoff
              else if noHomo arcConsHomos (deBruijnGraph i) graph
