@@ -1,6 +1,9 @@
 module BitGraph (
   bitGraph,
   allGraphsOfSize,
+  hasBothFp,
+  noDoubleRefl,
+  notTrivial,
 ) where
 
 import Control.Exception.Base
@@ -38,7 +41,7 @@ allGraphsOfSize :: Int -> [Word]
 allGraphsOfSize n = [nullWord .. totalGraph n]
 
 enoughBits :: Int -> Bool
-enoughBits size = numBits size <= finiteBitSize nullWord
+enoughBits size = 0 <= size && numBits size <= finiteBitSize nullWord
 
 isValidBitset :: Int -> Word -> Bool
 isValidBitset size bitset = bitset <= totalGraph size
@@ -56,3 +59,32 @@ hasArc size bitset (from,label,to) = assert (enoughBits size) $
   position = from * size + to
   index = offset + position
     in testBit bitset index
+
+diagonal :: Int -> Label -> Word
+diagonal size label = assert (enoughBits size) $
+                      shiftL baseDiagonal offset where
+  offset = if label == Zero then 0 else size * size
+  shifter pattern = shiftL pattern (size + 1) .|. 1
+  nTimes n op start = if n == 0 then start else nTimes (n - 1) op (op start)
+  baseDiagonal = nTimes (size - 1) shifter 1
+
+hasNoFp :: Int -> Label -> Word -> Bool
+hasNoFp size label word = word .&. diagonal size label == 0
+
+hasBothFp :: Int -> Word -> Bool
+hasBothFp size word = not (hasNoFp size Zero word) && not (hasNoFp size One word)
+
+doubleRefl :: Int -> Int -> Word
+doubleRefl size node = assert (enoughBits size && isNode size node) $
+                       pattern where
+  offset = size * size
+  position = node * size + node
+  pattern = setBit (setBit 0 position) (offset + position)
+
+noDoubleRefl :: Int -> Word -> Bool
+noDoubleRefl size word = all notDoubleReflAt [0 .. size-1] where
+  notDoubleReflAt node = let pat = doubleRefl size node
+                          in pat /= pat .&. word
+
+notTrivial :: Int -> Word -> Bool
+notTrivial size word = hasBothFp size word && noDoubleRefl size word
