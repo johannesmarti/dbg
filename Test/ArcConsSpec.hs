@@ -41,14 +41,14 @@ interface = do
       arcConsHomos db2 db3 `shouldBe` []
     it "from db2 to triple" $
       arcConsHomos db2 triple `shouldBe` []
-    it "from db1 to force2" $
-      arcConsHomos db1 force2 `shouldBe` []
+    it "from db1 to force2d" $
+      arcConsHomos db1 force2d `shouldBe` []
   describe "unique homo" $ do
     it "from db2 to db2" $
       length (arcConsHomos db2 db2) `shouldBe` 1
     it "from db3 to db2" $
       length (arcConsHomos db3 db2) `shouldBe` 1
-    it "from db2 to force2" $
-      length (arcConsHomos db2 force2) `shouldBe` 1
-    it "from db3 to force2" $
-      length (arcConsHomos db3 force2) `shouldBe` 1
+    it "from db2 to force2d" $
+      length (arcConsHomos db2 force2d) `shouldBe` 1
+    it "from db3 to force2d" $
+      length (arcConsHomos db3 force2d) `shouldBe` 1

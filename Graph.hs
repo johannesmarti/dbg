@@ -28,6 +28,7 @@ data Graph x = Graph {
   domain       :: Set x,
   successors   :: MapFunction x,
   predecessors :: MapFunction x,
+--  hasArc       :: Arc x -> Bool,
   printNode    :: x -> String
 }
 
