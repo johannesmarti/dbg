@@ -19,7 +19,7 @@ main = do
   args <- getArgs
   let n = read (head args) :: Int
   --putStrLn (show (arcConsHomos (dg n) (testPattern)))
-  --putStrLn (show (searchForDbgHomo n (allPaths)))
+  --putStrLn (show (searchDbgHomo n (allPaths)))
   let bitmaps = filter (notTrivial 3) (allGraphsOfSize 3)
   let list = filter ((homoLargerThan 3 2) . (bitGraph 3)) bitmaps
   --putStrLn (show (map (bitGraph 3) list))
