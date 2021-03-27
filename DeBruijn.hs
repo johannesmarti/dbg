@@ -1,5 +1,7 @@
 module DeBruijn (
-  deBruijnGraph,
+  DBG,
+  dbg,
+  dbgI,
 ) where
 
 import Control.Exception.Base
@@ -8,7 +10,7 @@ import Data.Char (intToDigit)
 import Data.Set as Set
 import Numeric (showHex, showIntAtBase)
 
-import Graph
+import Graph hiding (domain,successors,predecessors)
 
 type Dimension = Int
 type Node = Word
@@ -16,26 +18,33 @@ type Node = Word
 zeroes :: Word
 zeroes = zeroBits
 
-deBruijnGraph :: Dimension -> Graph Node
-deBruijnGraph dimension = assert (dimension >= 1) $
-                          assert (dimension <= finiteBitSize zeroes) $
-  fromFunctionsWithNodePrinter nodePrinter dom succ pred where
-    dom = fromList [zeroes.. (DeBruijn.mask dimension)]
-    succ Zero n = assert (isNode dimension n) $
-      if isZeroNode dimension n
-        then fromList [succZero dimension n, succOne dimension n]
+newtype DBG = DBG {dimension :: Dimension}
+
+dbgI :: GraphI DBG Node
+dbgI = GraphI domain successors predecessors
+
+domain :: DBG -> Set Node
+domain (DBG dim) = fromList [zeroes .. (DeBruijn.mask dim)]
+
+successors :: DBG -> Graph.MapFunction Node
+successors (DBG dim) Zero n = assert (isNode dim n) $
+      if isZeroNode dim n
+        then fromList [succZero dim n, succOne dim n]
         else Set.empty
-    succ One  n = assert (isNode dimension n) $
-      if isOneNode dimension n
-        then fromList [succZero dimension n, succOne dimension n]
+successors (DBG dim) One n = assert (isNode dim n) $
+      if isOneNode dim n
+        then fromList [succZero dim n, succOne dim n]
         else Set.empty
-    pred Zero n = assert (isNode dimension n) $
+
+predecessors :: DBG -> Graph.MapFunction Node
+predecessors (DBG dim) Zero n = assert (isNode dim n) $
       singleton (shift n (-1))
-    pred One  n = assert (isNode dimension n) $
-      singleton (setBit (shift n (-1)) (dimension - 1))
-    nodePrinter n = let str = showIntAtBase 2 intToDigit n ""
-                        leadingZeros = replicate (dimension - length str) '0'
-                      in leadingZeros ++ str
+predecessors (DBG dim) One  n = assert (isNode dim n) $
+      singleton (setBit (shift n (-1)) (dim - 1))
+
+dbg :: Dimension -> DBG
+dbg dim = assert (dim >= 1) $
+          assert (dim <= finiteBitSize zeroes) $ DBG dim
 
 size :: Dimension -> Node
 size dimension = shift 1 dimension
@@ -57,3 +66,11 @@ succZero dimension node = (shift node 1) .&. (DeBruijn.mask dimension)
 
 succOne :: Dimension -> Node -> Node
 succOne dimension node = setBit (succZero dimension node) 0
+
+instance Show DBG where
+  show g = unlines $ Graph.prettyGraph dbgI (nodePrinter g) g
+
+nodePrinter :: DBG -> Node -> String
+nodePrinter g n = let str = showIntAtBase 2 intToDigit n ""
+                      leadingZeros = replicate ((dimension g) - length str) '0'
+                  in leadingZeros ++ str
