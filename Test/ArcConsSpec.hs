@@ -9,6 +9,7 @@ import Test.Hspec
 import ArcCons
 import DeBruijn
 import Graph
+import MapGraph
 import Patterns
 
 spec :: Spec
@@ -30,25 +31,21 @@ details =
     it "[(1,[2]),(3,[1,2,3]),(12,[99])] has split at 3" $
       hasSplit ap2 `shouldBe` Just 3
 
-db1 = deBruijnGraph 1
-db2 = deBruijnGraph 2
-db3 = deBruijnGraph 3
-
 interface :: Spec
 interface = do
   describe "no homo" $ do
     it "from db2 to db3" $
-      arcConsHomos db2 db3 `shouldBe` []
+      arcConsHomos dbgI dbgI (dbg 2) (dbg 3) `shouldBe` []
     it "from db2 to triple" $
-      arcConsHomos db2 triple `shouldBe` []
+      arcConsHomos dbgI mapGraphI (dbg 2) triple `shouldBe` []
     it "from db1 to force2d" $
-      arcConsHomos db1 force2d `shouldBe` []
+      arcConsHomos dbgI mapGraphI (dbg 1) force2d `shouldBe` []
   describe "unique homo" $ do
     it "from db2 to db2" $
-      length (arcConsHomos db2 db2) `shouldBe` 1
+      length (arcConsHomos dbgI dbgI (dbg 2) (dbg 2)) `shouldBe` 1
     it "from db3 to db2" $
-      length (arcConsHomos db3 db2) `shouldBe` 1
+      length (arcConsHomos dbgI dbgI (dbg 3) (dbg 2)) `shouldBe` 1
     it "from db2 to force2d" $
-      length (arcConsHomos db2 force2d) `shouldBe` 1
+      length (arcConsHomos dbgI mapGraphI (dbg 2) force2d) `shouldBe` 1
     it "from db3 to force2d" $
-      length (arcConsHomos db3 force2d) `shouldBe` 1
+      length (arcConsHomos dbgI mapGraphI (dbg 3) force2d) `shouldBe` 1

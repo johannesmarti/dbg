@@ -1,5 +1,5 @@
 module BitGraph (
-  bitGraph,
+  bitGraphI,
   allGraphsOfSize,
   hasBothFp,
   noDoubleRefl,
@@ -12,20 +12,24 @@ import qualified Data.Set as Set
 
 import Graph
 
-{- Might want to add to the graph a way of creating graphs from the arcAt
-function. -}
-bitGraph :: Int -> Word -> Graph Int
-bitGraph size bitset = assert (enoughBits size) $
-                       assert (isValidBitset size bitset) $
-  fromFunctions dom succ pred where
-    nodes = [0 .. size-1]
-    isArc = hasArc size bitset
-    dom = Set.fromList nodes
-    succ label node = assert (isNode size node) $
-                      Set.fromList $ filter (\v -> isArc (node,label,v)) nodes
-    pred label node = assert (isNode size node) $
-                      Set.fromList $ filter (\v -> isArc (v,label,node)) nodes
- 
+bitGraphI :: Int -> GraphI Word Int
+bitGraphI size = GraphI (dom size) (succs size) (preds size)
+
+nodes :: Int -> [Int]
+nodes size = [0 .. size-1]
+
+dom :: Int -> Word -> Set.Set Int
+dom size bitset = assert (enoughBits size) $
+                  assert (isValidBitset size bitset) $ Set.fromList (nodes size)
+
+succs :: Int -> Word -> MapFunction Int
+succs size bitset label node = assert (isNode size node) $
+  Set.fromList $ filter (\v -> hasArc size bitset (node,label,v)) (nodes size)
+
+preds :: Int -> Word -> MapFunction Int
+preds size bitset label node = assert (isNode size node) $
+  Set.fromList $ filter (\v -> hasArc size bitset (v,label,node)) (nodes size)
+
 nullWord :: Word
 nullWord = zeroBits
 

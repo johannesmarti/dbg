@@ -8,20 +8,18 @@ import Test.Hspec
 import DeBruijn
 import Graph
 import Homo
+import MapGraph
 import Patterns
-
-db2 = deBruijnGraph 2
-db3 = deBruijnGraph 3
 
 spec :: Spec
 spec = do
   describe "no homo" $ do
     it "from db2 to db3" $
-      searchHomos db2 db3 `shouldBe` []
+      searchHomos dbgI dbgI (dbg 2) (dbg 3) `shouldBe` []
     it "from db2 to triple" $
-      searchHomos db2 triple `shouldBe` []
+      searchHomos dbgI mapGraphI (dbg 2) triple `shouldBe` []
   describe "unique homo" $ do
     it "from db2 to db2" $
-      length (searchHomos db2 db2) `shouldBe` 1
+      length (searchHomos dbgI dbgI (dbg 2) (dbg 2)) `shouldBe` 1
     it "from db3 to db2" $
-      length (searchHomos db3 db2) `shouldBe` 1
+      length (searchHomos dbgI dbgI (dbg 3) (dbg 2)) `shouldBe` 1

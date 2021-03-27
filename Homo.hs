@@ -12,24 +12,24 @@ import Data.Set as Set
 import Function
 import Graph
 
-type HomoSearch x y = Graph x -> Graph y -> [Function x y]
+type HomoSearch g1 g2 x y = g1 -> g2 -> [Function x y]
 
-isHomo :: (Ord x, Ord y) => Function x y -> Graph x -> Graph y -> Bool
-isHomo fct d c =
-  assert (dom `isSubsetOf` Graph.domain d) $
-  assert (Function.range fct `isSubsetOf` Graph.domain c) $
+isHomo :: (Ord x, Ord y) => GraphI g1 x -> GraphI g2 y -> Function x y -> g1 -> g2 -> Bool
+isHomo di ci fct d c =
+  assert (dom `isSubsetOf` Graph.domain di d) $
+  assert (Function.range fct `isSubsetOf` Graph.domain ci c) $
   all pairMapsWell' product where
     dom = Function.domain fct
     product = cartesianProduct labels dom
-    pairMapsWell (l,v) = (Set.map (applyFct fct) (successors d l v)) `isSubsetOf`
-                                   (successors c l (applyFct fct v))
-    pairMapsWell' (l,v) = all succIsWell (successors d l v) where
-                            csuccs = successors c l (applyFct fct v)
+    pairMapsWell (l,v) = (Set.map (applyFct fct) (successors di d l v)) `isSubsetOf`
+                                   (successors ci c l (applyFct fct v))
+    pairMapsWell' (l,v) = all succIsWell (successors di d l v) where
+                            csuccs = successors ci c l (applyFct fct v)
                             succIsWell s = (applyFct fct s) `elem` csuccs
 
-searchHomos :: (Ord x, Ord y) => HomoSearch x y
-searchHomos d c = Prelude.filter (\f -> isHomo f d c)
-                                 (allFunctions (Graph.domain d) (Graph.domain c))
+searchHomos :: (Ord x, Ord y) => GraphI g1 x -> GraphI g2 y -> HomoSearch g1 g2 x y
+searchHomos di ci d c = Prelude.filter (\f -> isHomo di ci f d c)
+                                 (allFunctions (Graph.domain di d) (Graph.domain ci c))
 
-noHomo :: HomoSearch x y -> Graph x -> Graph y -> Bool
+noHomo :: HomoSearch g1 g2 x y -> g1 -> g2 -> Bool
 noHomo search d c = Prelude.null $ search d c

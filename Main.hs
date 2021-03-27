@@ -12,15 +12,13 @@ import Search
 
 import Patterns
 
-dg = deBruijnGraph
-
 main :: IO ()
 main = do
   args <- getArgs
   let n = read (head args) :: Int
-  --putStrLn (show (arcConsHomos (dg n) (testPattern)))
+  --putStrLn (show (arcConsHomos (dbg n) (testPattern)))
   --putStrLn (show (searchDbgHomo n (allPaths)))
   let bitmaps = filter (notTrivial 3) (allGraphsOfSize 3)
-  let list = filter ((homoLargerThan 3 2) . (bitGraph 3)) bitmaps
+  let list = filter ((homoLargerThan (bitGraphI 3) 3 2)) bitmaps
   --putStrLn (show (map (bitGraph 3) list))
   putStrLn (show $ length list)

@@ -25,34 +25,34 @@ readOffFunction = Map.map (Set.elemAt 0)
 
 type Worklist x = [(Arc x,Bool)]
 
-completeWorklist :: Ord x => Graph x -> Worklist x
-completeWorklist graph = concatMap (\a -> [(a,True),(a,False)]) (arcs graph)
+completeWorklist :: Ord x => GraphI g x -> g -> Worklist x
+completeWorklist gi graph = concatMap (\a -> [(a,True),(a,False)]) (arcs gi graph)
 
-addNodeToWorklist :: Ord x => Graph x -> x -> Worklist x -> Worklist x
-addNodeToWorklist graph node worklist = newItems `Data.List.union` worklist
+addNodeToWorklist :: Ord x => GraphI g x -> g -> x -> Worklist x -> Worklist x
+addNodeToWorklist gi graph node worklist = newItems `Data.List.union` worklist
   where
     newItems = concatMap itemsForLabel labels
     itemsForLabel l =
-      [((node,l,o),False) | o <- Set.toList $ successors graph l node]
-        ++ [((o,l,node),True) | o <- Set.toList $ predecessors graph l node]
+      [((node,l,o),False) | o <- Set.toList $ successors gi graph l node]
+        ++ [((o,l,node),True) | o <- Set.toList $ predecessors gi graph l node]
 
 
-arcCons :: (Ord x, Ord y) => Graph x -> Graph y -> Approx x y
-                                     -> Maybe (Approx x y)
-arcCons d c approx = arcConsInner d c (completeWorklist d) approx
+arcCons :: (Ord x, Ord y) => GraphI g1 x -> GraphI g2 y -> g1 -> g2
+                                     -> Approx x y -> Maybe (Approx x y)
+arcCons di ci d c approx = arcConsInner di ci d c (completeWorklist di d) approx
 
-arcConsInner :: (Ord x, Ord y) => Graph x -> Graph y -> Worklist x
+arcConsInner :: (Ord x, Ord y) => GraphI g1 x -> GraphI g2 y -> g1 -> g2 -> Worklist x
                                   -> Approx x y -> Maybe (Approx x y)
-arcConsInner d c worklist approx = arcConsWorker worklist approx where
+arcConsInner di ci d c worklist approx = arcConsWorker worklist approx where
   arcConsWorker [] apx = Just apx
   arcConsWorker (((a,l,b),checkForward):list) apx = let
-    guys = (if checkForward then successors else predecessors) c l
+    guys = (if checkForward then successors else predecessors) ci c l
     (next,other) = if checkForward then (a,b) else (b,a)
     (remove,keep) = Set.partition (\candi -> guys candi `disjoint` (apx ! other)) (apx ! next)
     newApx = Map.insert next keep apx
     newWorklist = if Set.null remove
                     then list
-                    else addNodeToWorklist d next list
+                    else addNodeToWorklist di d next list
       in if Set.null keep
            then Nothing
            else arcConsWorker newWorklist newApx
@@ -68,13 +68,13 @@ splittingsAt approx node = let
     singlified s = Map.insert node (Set.singleton s) approx
   in Prelude.map singlified valueList
 
-arcConsHomos :: (Ord x, Ord y) => HomoSearch x y
-arcConsHomos d c = let
+arcConsHomos :: (Ord x, Ord y) => GraphI g1 x -> GraphI g2 y ->  HomoSearch g1 g2 x y
+arcConsHomos di ci d c = let
     worker worklist apx = do
-      clean <- maybeToList (arcConsInner d c worklist apx)
+      clean <- maybeToList (arcConsInner di ci d c worklist apx)
       case hasSplit clean of
         Nothing        -> return (readOffFunction clean)
         Just splitNode -> do
                     split <- splittingsAt clean splitNode
-                    worker (addNodeToWorklist d splitNode []) split
-  in worker (completeWorklist d) (initialApprox (Graph.domain d) (Graph.domain c))
+                    worker (addNodeToWorklist di d splitNode []) split
+  in worker (completeWorklist di d) (initialApprox (Graph.domain di d) (Graph.domain ci c))
