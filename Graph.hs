@@ -1,3 +1,6 @@
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE AllowAmbiguousTypes #-}
+
 module Graph (
   Label(..),
   labels,
@@ -24,16 +27,10 @@ labels = Set.fromList [Zero, One]
 
 type MapFunction x = Label -> x -> Set x
 
-data Graph x = Graph {
-  domain       :: Set x,
-  successors   :: MapFunction x,
-  predecessors :: MapFunction x,
---  hasArc       :: Arc x -> Bool,
-  printNode    :: x -> String
-}
-
-fromFunctions :: (Ord x, Show x) => Set x -> MapFunction x -> MapFunction x -> Graph x
-fromFunctions = fromFunctionsWithNodePrinter show
+class Graph g x where
+  domain       :: g -> Set x
+  successors   :: g -> MapFunction x
+  predecessors :: g -> MapFunction x
 
 foldConverse :: Ord y => Set x -> (x -> Set y) -> (y -> Set x)
 foldConverse dom fct v = Set.filter (\u -> v `Set.member` fct u) dom
@@ -41,31 +38,35 @@ foldConverse dom fct v = Set.filter (\u -> v `Set.member` fct u) dom
 sameOnDom :: (Ord x, Eq y) => Set x -> (x -> y) -> (x -> y) -> Bool
 sameOnDom dom f g = all (\a -> f a == g a) dom
 
-fromFunctionsWithNodePrinter :: Ord x => (x -> String) -> Set x -> MapFunction x -> MapFunction x -> Graph x
-fromFunctionsWithNodePrinter nodePrinter dom succ pred =
-  assert (all ((`isSubsetOf` dom) . (uncurry succ)) product) $
-  assert (all ((`isSubsetOf` dom) . (uncurry pred)) product) $
-  assert (sameOnDom product (uncurry pred) (uncurry pred')) $
-    Graph dom succ pred nodePrinter where
-      pred' l = foldConverse dom (succ l)
-      product = cartesianProduct labels dom
+graphCompatibility :: (Ord x, Graph g x) => g -> Bool
+graphCompatibility graph = 
+ (all ((`isSubsetOf` dom) . (uncurry succ)) product) &&
+ (all ((`isSubsetOf` dom) . (uncurry pred)) product) &&
+ (sameOnDom product (uncurry pred) (uncurry pred')) where
+    succ = successors graph
+    pred = predecessors graph
+    dom = domain graph
+    pred' l = foldConverse dom (succ l)
+    product = cartesianProduct labels dom
 
-arcs :: Ord x => Graph x -> [Arc x]
+arcs :: (Ord x, Graph g x) => g -> [Arc x]
 arcs graph = concatMap arcsForLabel labels where
   dom = Set.toList $ domain graph
   arcsForLabel l = [(x,l,y) | x <- dom, y <- Set.toList $ successors graph l x]
 
+{-
 instance (Ord x, Show x) => Show (Graph x) where
   show = unlines . prettyGraph
+-}
 
-prettyGraph :: (Ord x, Show x) => Graph x -> [String]
-prettyGraph g = basePrinter (printNode g) (stdPrintSuccessors (printNode g)) g
+prettyGraph :: (Ord x, Graph g x) => (x -> String) -> g -> [String]
+prettyGraph printNode g = basePrinter (printNode g) (stdPrintSuccessors (printNode g)) g
 
 stdPrintSuccessors :: (a -> String) -> [a] -> String
 stdPrintSuccessors printSuccessor successors =
   "{" ++ (intercalate "," (fmap printSuccessor successors)) ++ "}"
 
-basePrinter :: Ord x => (x -> String) -> ([x] -> String) -> Graph x -> [String]
+basePrinter :: (Ord x, Graph g x) => (x -> String) -> ([x] -> String) -> g -> [String]
 basePrinter printNode printSuccessors g = let
     succsForLabel v l lrep = " <" ++ lrep ++ " " ++
                              (printSuccessors (Set.toList (successors g l v)))
