@@ -48,7 +48,7 @@ arcConsInner di ci d c worklist approx = arcConsWorker worklist approx where
   arcConsWorker (((a,l,b),checkForward):list) apx = let
     guys = (if checkForward then successors else predecessors) ci c l
     (next,other) = if checkForward then (a,b) else (b,a)
-    (remove,keep) = Set.partition (\candi -> guys candi `disjoint` (apx ! other)) (apx ! next)
+    (remove,keep) = Set.partition (\candi -> guys candi `Set.disjoint` (apx ! other)) (apx ! next)
     newApx = Map.insert next keep apx
     newWorklist = if Set.null remove
                     then list
