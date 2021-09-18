@@ -9,6 +9,7 @@ import qualified Test.MapGraphSpec
 import qualified Test.DeBruijnSpec
 import qualified Test.HomoSpec
 import qualified Test.ArcConsSpec
+import qualified Test.UnlabeledBitGraphSpec
 
 main :: IO ()
 main = hspec spec
@@ -20,4 +21,5 @@ spec = do
   describe "DeBruijn" Test.DeBruijnSpec.spec
   describe "Homo" Test.HomoSpec.spec
   describe "ArcCons" Test.ArcConsSpec.spec
+  describe "UnlabeledBitGraph" Test.UnlabeledBitGraphSpec.spec
 
