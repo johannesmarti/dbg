@@ -1,6 +1,7 @@
 module BitGraph (
   bitGraphI,
   allGraphsOfSize,
+  graphOfLabel,
   hasBothFp,
   noDoubleRefl,
   notTrivial,
@@ -12,7 +13,9 @@ import qualified Data.Set as Set
 
 import Graph
 
-bitGraphI :: Int -> GraphI Word Int
+type BitGraph = Word
+
+bitGraphI :: Int -> GraphI BitGraph Int
 bitGraphI size = GraphI (dom size) (succs size) (preds size)
 
 nodes :: Int -> [Int]
@@ -63,6 +66,15 @@ hasArc size bitset (from,label,to) = assert (enoughBits size) $
   position = from * size + to
   index = offset + position
     in testBit bitset index
+
+graphOfLabel :: Int -> Word -> Label -> Word
+graphOfLabel size bitset label = assert (enoughBits size) $
+                                 assert (isValidBitset size bitset) $ let
+  offset = size * size
+  bitmask = (shiftL 1 offset) - 1
+    in if label = Zero
+         then bitset .&. bitmask
+         else shiftR bitset offset
 
 diagonal :: Int -> Label -> Word
 diagonal size label = assert (enoughBits size) $
