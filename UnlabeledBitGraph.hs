@@ -2,6 +2,7 @@ module UnlabeledBitGraph (
   allGraphsOfSize,
   nullWord,
   totalGraph,
+  diagonal,
   hasUniv,
   hasNoRefl,
   compose,

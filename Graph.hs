@@ -14,13 +14,7 @@ import Control.Exception.Base
 import Data.List (intercalate)
 import Data.Set as Set
 
-data Label = Zero | One
-  deriving (Eq,Ord,Show)
-
-type Arc x = (x,Label,x)
-
-labels :: Set Label
-labels = Set.fromList [Zero, One]
+import Label
 
 type MapFunction x = Label -> x -> Set x
 

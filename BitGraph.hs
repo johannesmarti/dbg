@@ -1,7 +1,9 @@
 module BitGraph (
+  BitGraph,
   bitGraphI,
   allGraphsOfSize,
-  graphOfLabel,
+  totalGraph,
+  relationOfLabel,
   hasBothFp,
   noDoubleRefl,
   notTrivial,
@@ -67,12 +69,12 @@ hasArc size bitset (from,label,to) = assert (enoughBits size) $
   index = offset + position
     in testBit bitset index
 
-graphOfLabel :: Int -> Word -> Label -> Word
-graphOfLabel size bitset label = assert (enoughBits size) $
+relationOfLabel :: Int -> Word -> Label -> Word
+relationOfLabel size bitset label = assert (enoughBits size) $
                                  assert (isValidBitset size bitset) $ let
   offset = size * size
   bitmask = (shiftL 1 offset) - 1
-    in if label = Zero
+    in if label == Zero
          then bitset .&. bitmask
          else shiftR bitset offset
 

@@ -10,7 +10,7 @@ import Data.Set as Set
 
 import qualified Graph
 
--- domains and codomains are stored as the keys that exists in the maps
+-- TODO: Maybe we should but the Label into the codomain by mapping xs to pairs of sets
 data MapGraph x = MapGraph {
   domain         :: Set x,
   successorMap   :: Map (Graph.Label,x) (Set x),
