@@ -4,7 +4,7 @@ module Graph (
   Arc,
   GraphI(GraphI),
   MapFunction,
-  compatible,
+  wellDefined,
   domain, successors, predecessors,
   arcs,
   prettyGraph
@@ -30,8 +30,8 @@ foldConverse dom fct v = Set.filter (\u -> v `Set.member` fct u) dom
 sameOnDom :: (Ord x, Eq y) => Set x -> (x -> y) -> (x -> y) -> Bool
 sameOnDom dom f g = all (\a -> f a == g a) dom
 
-compatible :: Ord x => GraphI g x -> g -> Bool
-compatible gi graph = 
+wellDefined :: Ord x => GraphI g x -> g -> Bool
+wellDefined gi graph = 
  (all ((`isSubsetOf` dom) . (uncurry succ)) product) &&
  (all ((`isSubsetOf` dom) . (uncurry pred)) product) &&
  (sameOnDom product (uncurry pred) (uncurry pred')) where

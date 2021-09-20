@@ -30,7 +30,7 @@ predecessors mg l v = assert (v `Set.member` MapGraph.domain mg) $
 
 fromGraph :: Ord a => Graph.GraphI g a -> g -> MapGraph a
 fromGraph gi graph = 
-  assert (Graph.compatible mapGraphI result) result where
+  assert (Graph.wellDefined mapGraphI result) result where
     result = MapGraph dom sm pm
     dom = Graph.domain gi graph
     product = Set.cartesianProduct Graph.labels dom

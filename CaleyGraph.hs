@@ -38,6 +38,6 @@ rightCaleyGraph size bitgraph =
       newWorklist = adder zeroSucc $ adder oneSucc rest
         in keepAdding newWorklist newM
 
-caleyGraphCondition :: Int -> CaleyGraph -> Bool
-caleyGraphCondition size cg =
-  all (not . hasNoRefl size) (domain cg) && undefined
+reflexivityCondition :: Int -> CaleyGraph -> Bool
+reflexivityCondition size cg =
+  all (not . hasNoRefl size) (domain cg)
