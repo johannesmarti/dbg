@@ -13,8 +13,9 @@ import UnlabeledBitGraph
 
 data CaleyGraph = CaleyGraph {
   successorMap :: Map.Map Word (Word,Word),
-  -- infiniteElements is the subset of the domain that is hit by infinitely many words over Zero One.
-  infiniteElements :: Set.Set Word
+  -- nonWellfoundedElements is the subset of the domain that is hit by infinitely many words over Zero One.
+  wellfoundedElements :: Set.Set Word,
+  nonWellfoundedElements :: Set.Set Word
 } deriving Show
 
 domain :: CaleyGraph -> Set Word
@@ -28,7 +29,7 @@ succ cg node label = assert (node `elem` domain cg) $
 
 rightCaleyGraph :: Int -> BG.BitGraph -> CaleyGraph
 rightCaleyGraph size bitgraph =
-  CaleyGraph succMap infinites where
+  CaleyGraph succMap wellfounded nonWellfounded where
     zeroRel = BG.relationOfLabel size bitgraph Zero
     oneRel = BG.relationOfLabel size bitgraph One
     keepAdding [] m p = (m,p)
@@ -43,17 +44,18 @@ rightCaleyGraph size bitgraph =
       newWorklist = adder zeroSucc $ adder oneSucc rest
         in keepAdding newWorklist newM newPred
     (succMap, predMap) = keepAdding [diagonal size] Map.empty Map.empty
-    computeNonWellfounded [] infinites = infinites
-    computeNonWellfounded (next:rest) infinites = let
-      in if Map.findWithDefault Set.empty next predMap `Set.disjoint` infinites
+    computeWellfounded [] finites = finites
+    computeWellfounded (next:rest) finites = let
+      in if Map.findWithDefault Set.empty next predMap `Set.isSubsetOf` finites
            then let (zeroSucc,oneSucc) = succMap ! next
-                    adder elem = if elem `Set.member` infinites
+                    adder elem = if elem `Set.notMember` finites
                                     then insertSet elem
                                     else id
                     restPlus = adder zeroSucc $ adder oneSucc rest
-             in computeNonWellfounded restPlus (Set.delete next infinites)
-           else computeNonWellfounded rest infinites
-    infinites = computeNonWellfounded [diagonal size] (keysSet succMap)
+             in computeWellfounded restPlus (Set.insert next finites)
+           else computeWellfounded rest finites
+    wellfounded = computeWellfounded [diagonal size] Set.empty
+    nonWellfounded = (keysSet succMap) Set.\\ wellfounded
 
 
 reflexivityCondition :: Int -> CaleyGraph -> Bool
