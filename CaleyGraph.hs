@@ -1,5 +1,10 @@
 module CaleyGraph (
-
+  CaleyGraph,
+  relationOfWord,
+  rightCaleyGraph,
+  reflexivityCondition,
+  setIsGood,
+  isPossibleValue,  
 ) where
 
 import Control.Exception.Base
@@ -13,7 +18,7 @@ import UnlabeledBitGraph
 
 data CaleyGraph = CaleyGraph {
   successorMap :: Map.Map Word (Word,Word),
-  -- nonWellfoundedElements is the subset of the domain that is hit by infinitely many words over Zero One.
+  -- nonWellfoundedElements is the subset of the domain that is hit by infinitely many words over {Zero, One}.
   wellfoundedElements :: Set.Set Word,
   nonWellfoundedElements :: Set.Set Word
 } deriving Show
@@ -21,8 +26,8 @@ data CaleyGraph = CaleyGraph {
 domain :: CaleyGraph -> Set Word
 domain = keysSet . successorMap
 
-succ :: CaleyGraph -> Word -> Label -> Word
-succ cg node label = assert (node `elem` domain cg) $
+successor :: CaleyGraph -> Word -> Label -> Word
+successor cg node label = assert (node `elem` domain cg) $
   case label of
     Zero -> fst $ (successorMap cg ! node)
     One  -> snd $ (successorMap cg ! node)
@@ -57,7 +62,20 @@ rightCaleyGraph size bitgraph =
     wellfounded = computeWellfounded [diagonal size] Set.empty
     nonWellfounded = (keysSet succMap) Set.\\ wellfounded
 
+relationOfWord :: Int -> CaleyGraph -> [Label] -> Word
+relationOfWord size cg word = Prelude.foldl (successor cg) (diagonal size) word
 
 reflexivityCondition :: Int -> CaleyGraph -> Bool
 reflexivityCondition size cg =
   all (not . hasNoRefl size) (domain cg)
+
+setIsGood :: Int -> CaleyGraph -> Set.Set Int -> Bool
+setIsGood size cg set = all hasRefl (wellfoundedElements cg) &&
+                        all hasUniv (nonWellfoundedElements cg) where
+  hasRefl rel = any (\r -> hasArc size rel (r,r)) set
+  hasUniv rel = any (\u -> all (\v -> hasArc size rel (u,v)) set) set
+
+isPossibleValue :: Int -> CaleyGraph -> [Label] -> Set.Set Int -> Int -> Bool
+isPossibleValue size cg word range node =
+  all (\v -> hasArc size (relationOfWord size cg word) (node,v)) range
+

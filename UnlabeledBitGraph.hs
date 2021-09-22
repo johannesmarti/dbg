@@ -1,7 +1,9 @@
 module UnlabeledBitGraph (
+  nodes,
   allGraphsOfSize,
   nullWord,
   totalGraph,
+  hasArc,
   diagonal,
   hasUniv,
   hasNoRefl,
