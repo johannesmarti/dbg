@@ -1,6 +1,7 @@
 module BitGraph (
   BitGraph,
   bitGraphI,
+  nodes,
   allGraphsOfSize,
   totalGraph,
   relationOfLabel,

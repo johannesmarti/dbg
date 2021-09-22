@@ -2,6 +2,7 @@ module DeBruijn (
   DBG,
   dbg,
   dbgI,
+  nodeToList,
 ) where
 
 import Control.Exception.Base
@@ -66,6 +67,11 @@ succZero dimension node = (shift node 1) .&. (DeBruijn.mask dimension)
 
 succOne :: Dimension -> Node -> Node
 succOne dimension node = setBit (succZero dimension node) 0
+
+nodeToList :: Dimension -> Node -> [Label]
+nodeToList dim node = assert (isNode dim node) $ reverse $
+  Prelude.map setLabel [0 .. dim - 1] where
+    setLabel i = if testBit node i then One else Zero
 
 instance Show DBG where
   show g = unlines $ Graph.prettyGraph dbgI (nodePrinter g) g

@@ -1,6 +1,7 @@
 module ArcCons (
   Approx,
   hasSplit,
+  arcConsHomosFromApprox,
   arcConsHomos,
 ) where
 
@@ -15,8 +16,8 @@ import Homo
 
 type Approx x y = Map x (Set y)
 
-initialApprox :: Set x -> Set y -> Approx x y
-initialApprox dom codom = Map.fromSet (\_ -> codom) dom
+fullApprox :: Set x -> Set y -> Approx x y
+fullApprox dom codom = Map.fromSet (\_ -> codom) dom
 
 {- Turns an approximation into a function. It assumes that the approximation is
 never empty at any value. -}
@@ -68,8 +69,10 @@ splittingsAt approx node = let
     singlified s = Map.insert node (Set.singleton s) approx
   in Prelude.map singlified valueList
 
-arcConsHomos :: (Ord x, Ord y) => GraphI g1 x -> GraphI g2 y ->  HomoSearch g1 g2 x y
-arcConsHomos di ci d c = let
+
+arcConsHomosFromApprox :: (Ord x, Ord y) => GraphI g1 x -> GraphI g2 y
+                            -> Approx x y -> HomoSearch g1 g2 x y
+arcConsHomosFromApprox di ci approx d c = let
     worker worklist apx = do
       clean <- maybeToList (arcConsInner di ci d c worklist apx)
       case hasSplit clean of
@@ -77,4 +80,9 @@ arcConsHomos di ci d c = let
         Just splitNode -> do
                     split <- splittingsAt clean splitNode
                     worker (addNodeToWorklist di d splitNode []) split
-  in worker (completeWorklist di d) (initialApprox (Graph.domain di d) (Graph.domain ci c))
+  in worker (completeWorklist di d) approx
+
+arcConsHomos :: (Ord x, Ord y) => GraphI g1 x -> GraphI g2 y -> HomoSearch g1 g2 x y
+arcConsHomos di ci d c = arcConsHomosFromApprox di ci
+  (fullApprox (Graph.domain di d) (Graph.domain ci c)) d c
+
