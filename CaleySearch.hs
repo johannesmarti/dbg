@@ -12,7 +12,6 @@ import DeBruijn
 import Graph
 import Homo
 
-
 import Debug.Trace
 
 data LargeNumber = IsNumber Int | LargerThan Int
@@ -32,12 +31,12 @@ noHomos size i graph cg candidates = all check candidates where
                else True
 
 searchDbgHomo :: Int -> Int -> BitGraph -> CaleyGraph -> Set.Set (Set.Set Int) -> LargeNumber
-searchDbgHomo size cutoff graph cg candidates = trace (show graph ++ " " ++ show candidates) $ worker 1 where
-  worker i = trace (show i) $ if i > cutoff
+searchDbgHomo size cutoff graph cg candidates = worker 1 where
+  worker i = if i > cutoff
                then LargerThan cutoff
              else if noHomos size i graph cg candidates
                then worker (i + 1)
-             else IsNumber i
+             else (if i >= 5 then trace (show graph ++ " at " ++ show i ++ " " ++ show candidates) IsNumber i else IsNumber i)
 
 homoLargerThan :: Int -> Int -> Int -> Word -> Bool
 homoLargerThan size cutoff n graph = let

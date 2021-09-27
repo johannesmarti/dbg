@@ -5,6 +5,8 @@ module Patterns (
   force3d,
   allPaths,
   testPattern,
+  forceFive1,
+  forceFive2,
 ) where
 
 import AssocGraph
@@ -64,3 +66,8 @@ test One = [('a','c'),('a','b'),('c','a'),('b','a'),('b','b')]
 testPattern :: MapGraph Char
 testPattern = assocToMap test
 
+forceFive1 :: Word
+forceFive1 = 1156301202
+
+forceFive2 :: Word
+forceFive2 = 561965061
