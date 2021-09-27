@@ -1,5 +1,6 @@
 module ArcCons (
   Approx,
+  isPossible,
   hasSplit,
   arcConsHomosFromApprox,
   arcConsHomos,
@@ -18,6 +19,9 @@ type Approx x y = Map x (Set y)
 
 fullApprox :: Set x -> Set y -> Approx x y
 fullApprox dom codom = Map.fromSet (\_ -> codom) dom
+
+isPossible :: Approx x y -> Bool
+isPossible approx = all (not . Set.null) (Map.elems approx)
 
 {- Turns an approximation into a function. It assumes that the approximation is
 never empty at any value. -}

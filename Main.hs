@@ -19,8 +19,9 @@ main = do
   let n = read (head args) :: Int
   --putStrLn (show (arcConsHomos (dbg n) (testPattern)))
   --putStrLn (show (searchDbgHomo n (allPaths)))
-  let bitmaps = filter (notTrivial 4) (allGraphsOfSize 4)
+  --let bitmaps = filter (notTrivial 4) (allGraphsOfSize 4)
+  let bitmaps = filter (notTrivial 3) (allGraphsOfSize 3)
   --let list = filter ((homoLargerThan (bitGraphI 3) 6 2)) bitmaps
-  let list = filter ((CS.homoLargerThan 4 5 3)) bitmaps
+  let list = filter ((CS.homoLargerThan 3 4 2)) bitmaps
   --putStrLn (show (map (bitGraph 3) list))
   putStrLn (show $ length list)

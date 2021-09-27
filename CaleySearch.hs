@@ -22,16 +22,18 @@ instance Show LargeNumber where
   show (LargerThan n) = show n ++ "<"
 
 noHomos :: Int -> Int -> BitGraph -> CaleyGraph -> Set.Set (Set.Set Int) -> Bool
-noHomos size i graph cg candidates = trace (show graph ++ " " ++ show candidates) $ all check candidates where
+noHomos size i graph cg candidates = all check candidates where
   deBruijnGraph = dbg i
   computeApprox candi = Map.fromSet f (domain dbgI deBruijnGraph) where
         f dbgnode = Set.filter (isPossibleValue size cg (nodeToList i dbgnode) candi) candi
   check candi = let approx = computeApprox candi
-          in noHomo (arcConsHomosFromApprox dbgI (bitGraphI size) approx) (dbg i) graph
+          in if isPossible approx
+               then noHomo (arcConsHomosFromApprox dbgI (bitGraphI size) approx) (dbg i) graph
+               else True
 
 searchDbgHomo :: Int -> Int -> BitGraph -> CaleyGraph -> Set.Set (Set.Set Int) -> LargeNumber
-searchDbgHomo size cutoff graph cg candidates = worker 1 where
-  worker i = if i > cutoff
+searchDbgHomo size cutoff graph cg candidates = trace (show graph ++ " " ++ show candidates) $ worker 1 where
+  worker i = trace (show i) $ if i > cutoff
                then LargerThan cutoff
              else if noHomos size i graph cg candidates
                then worker (i + 1)
