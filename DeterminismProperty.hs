@@ -6,6 +6,7 @@ module DeterminismProperty (
   eqClass,
   identify,
   hasDeterminismProperty,
+  determinismPartition,
 ) where
 
 import Control.Exception
@@ -41,8 +42,13 @@ identify partition x y = let
          then partition
          else Map.map modifier partition
 
-hasDeterminismProperty :: Ord x => GraphI g x -> g -> Set x -> Maybe (Partition x)
-hasDeterminismProperty gi g set = assert (set `isSubsetOf` (domain gi g)) $
+hasDeterminismProperty :: Ord x => GraphI g x -> g -> Set x -> Bool
+hasDeterminismProperty gi g set = case determinismPartition gi g set of
+  Just _  -> True
+  Nothing -> False
+
+determinismPartition :: Ord x => GraphI g x -> g -> Set x -> Maybe (Partition x)
+determinismPartition gi g set = assert (set `isSubsetOf` (domain gi g)) $
   updatePartition pairs (discrete set) where
     pairs = ps (Set.toList set)
     ps [] = []
