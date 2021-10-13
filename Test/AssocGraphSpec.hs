@@ -15,7 +15,7 @@ spec :: Spec
 spec = do
   describe "simple graph g1" $ do
     it "is coherent" $
-      compatible assocGraphI f1
+      wellDefined assocGraphI f1
     it "0-sucss of 1 match [1,2]" $
       successors assocGraphI f1 Zero 1 `shouldBe` Set.fromList [1,2]
     it "0-pred of 5 match [2]" $

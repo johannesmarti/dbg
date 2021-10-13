@@ -10,4 +10,4 @@ import Graph
 spec :: Spec
 spec = do
     it "dbg 3 is coherent" $
-      compatible dbgI (dbg 3)
+      wellDefined dbgI (dbg 3)
