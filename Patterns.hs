@@ -7,6 +7,7 @@ module Patterns (
   testPattern,
   forceFive1,
   forceFive2,
+  strange3,
 ) where
 
 import AssocGraph
@@ -71,3 +72,8 @@ forceFive1 = 1156301202
 
 forceFive2 :: Word
 forceFive2 = 561965061
+
+s3 Zero = [('a','a'),('a','b'),('b','a'),('b','c'),('c','b')]
+s3 One = [('b','b'),('b','c'),('c','c'),('c','a')]
+strange3 :: MapGraph Char
+strange3 = assocToMap s3
