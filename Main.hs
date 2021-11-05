@@ -19,6 +19,7 @@ import qualified SmartSearch as SS
 
 import Patterns
 
+{-
 main :: IO ()
 main = let res = arcConsHomos dbgI mapGraphI (dbg 8) strange3
            allNodes = domain mapGraphI strange3
@@ -29,13 +30,13 @@ main = let res = arcConsHomos dbgI mapGraphI (dbg 8) strange3
       putStrLn ("subsets: " ++ show subsets)
       putStrLn ("detSubsets: " ++ show detSubsets)
       putStrLn ("ndetSubsets: " ++ show ndetSubsets)
+-}
 
-{-
 main :: IO ()
 main = do
   args <- getArgs
   let n = read (head args) :: Int
-  putStrLn (show (SS.homoLargerThan 3 8 2 15274))
+  --putStrLn (show (SS.homoLargerThan 3 8 2 15274))
   --putStrLn (show (searchDbgHomo n (allPaths)))
   --let bitmaps = filter (notTrivial 4) (allGraphsOfSize 4)
   let total = totalGraph 4
@@ -44,12 +45,10 @@ main = do
   let p = (345 + 20)
   let step = total `div` q
   let start = 561888294
-  return ()
+  --return ()
   --let bitmaps = filter (notTrivial 4) [start .. start + step]
-  --let bitmaps = filter (notTrivial 3) (allGraphsOfSize 3)
+  let bitmaps = Prelude.filter (notTrivial 3) (allGraphsOfSize 3)
   --let list = filter ((CS.homoLargerThan 3 6 2)) bitmaps
-  --let list = filter ((SS.homoLargerThan 3 6 2)) bitmaps
+  let list = Prelude.filter ((SS.homoLargerThan 3 6 2)) bitmaps
   --let list = filter ((CS.homoLargerThan 4 6 4)) bitmaps
-  --putStrLn (show (map (bitGraph 3) list))
-  --putStrLn (show $ length list)
--}
+  putStrLn (show $ length list)
