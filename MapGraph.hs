@@ -9,6 +9,7 @@ module MapGraph (
 import Control.Exception.Base
 import Data.Map.Strict as Map
 import Data.Set as Set
+import Data.Set.Extra as SetExtra
 
 import qualified Graph
 
@@ -60,12 +61,15 @@ projection :: (Ord a, Ord b) => Graph.GraphI g a -> g -> (a -> b) -> MapGraph b
 projection gi g projection =
   assert (Graph.wellDefined mapGraphI result) result where
     result = MapGraph dom sm pm
-    dom = Graph.domain gi graph
+    oldDomain = Graph.domain gi g
+    dom = Set.map projection oldDomain
     product = Set.cartesianProduct Graph.labels dom
-    psucc (l,n) = Graph.successors gi g l n `Set.intersection` subdomain
+    preimage n = Set.filter (\m -> projection m == n) oldDomain
+    mapper direction l = SetExtra.concatMap (Set.map projection . direction gi g l) . preimage
+    psucc (l,n) = (mapper Graph.successors l) n
     activeSuccDom = Set.filter (\p -> not (Set.null (psucc p))) product
     sm = Map.fromSet psucc activeSuccDom
-    ppred (l,n) = Graph.predecessors gi g l n `Set.intersection` subdomain
+    ppred (l,n) = (mapper Graph.predecessors l) n
     activePredDom = Set.filter (\p -> not (Set.null (ppred p))) product
     pm = Map.fromSet ppred activePredDom
 
