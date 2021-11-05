@@ -2,6 +2,8 @@ module MapGraph (
   MapGraph,
   mapGraphI,
   fromGraph,
+  subGraph,
+  projection,
 ) where
 
 import Control.Exception.Base
@@ -10,7 +12,7 @@ import Data.Set as Set
 
 import qualified Graph
 
--- TODO: Maybe we should but the Label into the codomain by mapping xs to pairs of sets
+-- TODO: Maybe we should put the Label into the codomain by mapping xs to pairs of sets
 data MapGraph x = MapGraph {
   domain         :: Set x,
   successorMap   :: Map (Graph.Label,x) (Set x),
@@ -38,6 +40,32 @@ fromGraph gi graph =
     activeSuccDom = Set.filter (\p -> not (Set.null (psucc p))) product
     sm = Map.fromSet psucc activeSuccDom
     ppred = uncurry (Graph.predecessors gi graph)
+    activePredDom = Set.filter (\p -> not (Set.null (ppred p))) product
+    pm = Map.fromSet ppred activePredDom
+
+subGraph :: Ord a => Graph.GraphI g a -> g -> Set a -> MapGraph a
+subGraph gi g subdomain = assert (subdomain `isSubsetOf` Graph.domain gi g) $
+  assert (Graph.wellDefined mapGraphI result) result where
+    result = MapGraph dom sm pm
+    dom = subdomain
+    product = Set.cartesianProduct Graph.labels dom
+    psucc (l,n) = Graph.successors gi g l n `Set.intersection` subdomain
+    activeSuccDom = Set.filter (\p -> not (Set.null (psucc p))) product
+    sm = Map.fromSet psucc activeSuccDom
+    ppred (l,n) = Graph.predecessors gi g l n `Set.intersection` subdomain
+    activePredDom = Set.filter (\p -> not (Set.null (ppred p))) product
+    pm = Map.fromSet ppred activePredDom
+
+projection :: (Ord a, Ord b) => Graph.GraphI g a -> g -> (a -> b) -> MapGraph b
+projection gi g projection =
+  assert (Graph.wellDefined mapGraphI result) result where
+    result = MapGraph dom sm pm
+    dom = Graph.domain gi graph
+    product = Set.cartesianProduct Graph.labels dom
+    psucc (l,n) = Graph.successors gi g l n `Set.intersection` subdomain
+    activeSuccDom = Set.filter (\p -> not (Set.null (psucc p))) product
+    sm = Map.fromSet psucc activeSuccDom
+    ppred (l,n) = Graph.predecessors gi g l n `Set.intersection` subdomain
     activePredDom = Set.filter (\p -> not (Set.null (ppred p))) product
     pm = Map.fromSet ppred activePredDom
 
