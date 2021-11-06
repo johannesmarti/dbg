@@ -50,5 +50,6 @@ main = do
   let bitmaps = Prelude.filter (notTrivial 3) (allGraphsOfSize 3)
   --let list = filter ((CS.homoLargerThan 3 6 2)) bitmaps
   let list = Prelude.filter ((SS.homoLargerThan 3 6 2)) bitmaps
+  --let list = Prelude.filter ((CS.homoLargerThan 3 6 2)) bitmaps
   --let list = filter ((CS.homoLargerThan 4 6 4)) bitmaps
   putStrLn (show $ length list)
