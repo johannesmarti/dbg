@@ -39,17 +39,13 @@ spec = do
       (dbg 3) `shouldSatisfy` (not . isConstructionDeterministic dbgI)
     it "force3d" $
       force3d `shouldSatisfy` (not . isConstructionDeterministic mapGraphI)
-  describe "has Determinism Property" $ do
     it "hamburger" $
-      determinismPartition mapGraphI hamburger (domain mapGraphI hamburger)
-        `shouldSatisfy` isJust
-    it "strange3" $
-      determinismPartition mapGraphI hamburger (domain mapGraphI strange3)
-        `shouldSatisfy` isJust
-  describe "does not have Determinism Property" $ do
+      hamburger `shouldSatisfy` (not . isConstructionDeterministic mapGraphI)
+  describe "does have weak determinism property" $ do
+    it "hamburger" $
+      hamburger `shouldSatisfy` (isWeaklyConstructionDeterministic mapGraphI)
+  describe "does not have weak determinism property" $ do
     it "dbg 3" $
-      determinismPartition dbgI (dbg 3) (domain dbgI (dbg 3))
-        `shouldSatisfy` isNothing
+      (dbg 3) `shouldSatisfy` (not . isWeaklyConstructionDeterministic dbgI)
     it "force3d" $
-      determinismPartition mapGraphI force3d (domain mapGraphI force3d)
-        `shouldSatisfy` isNothing
+      force3d `shouldSatisfy` (not . isWeaklyConstructionDeterministic mapGraphI)

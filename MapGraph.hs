@@ -2,7 +2,7 @@ module MapGraph (
   MapGraph,
   mapGraphI,
   fromGraph,
-  subGraph,
+  subgraph,
   projection,
 ) where
 
@@ -44,8 +44,8 @@ fromGraph gi graph =
     activePredDom = Set.filter (\p -> not (Set.null (ppred p))) product
     pm = Map.fromSet ppred activePredDom
 
-subGraph :: Ord a => Graph.GraphI g a -> g -> Set a -> MapGraph a
-subGraph gi g subdomain = assert (subdomain `isSubsetOf` Graph.domain gi g) $
+subgraph :: Ord a => Graph.GraphI g a -> g -> Set a -> MapGraph a
+subgraph gi g subdomain = assert (subdomain `isSubsetOf` Graph.domain gi g) $
   assert (Graph.wellDefined mapGraphI result) result where
     result = MapGraph dom sm pm
     dom = subdomain
