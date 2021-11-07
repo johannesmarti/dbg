@@ -5,9 +5,8 @@ module Patterns (
   force3d,
   allPaths,
   testPattern,
-  forceFive1,
-  forceFive2,
   strange3,
+  strongDet,
 ) where
 
 import AssocGraph
@@ -67,13 +66,12 @@ test One = [('a','c'),('a','b'),('c','a'),('b','a'),('b','b')]
 testPattern :: MapGraph Char
 testPattern = assocToMap test
 
-forceFive1 :: Word
-forceFive1 = 1156301202
-
-forceFive2 :: Word
-forceFive2 = 561965061
-
 s3 Zero = [('a','a'),('a','b'),('b','a'),('b','c'),('c','b')]
 s3 One = [('b','b'),('b','c'),('c','c'),('c','a')]
 strange3 :: MapGraph Char
 strange3 = assocToMap s3
+
+sd Zero = [('a','a'),('a','c'),('b','a'),('b','c'),('c','b')]
+sd One = [('a','c'),('a','b'),('b','a'),('b','b'),('c','a'),('c','b')]
+strongDet :: MapGraph Char
+strongDet = assocToMap sd

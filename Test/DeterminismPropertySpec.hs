@@ -34,6 +34,9 @@ spec = do
     let pt = (identify p2 3 5)
     it "trivial after identifying everything" $
       pt `shouldSatisfy` isTrivial
+  describe "does have strong determinism property" $ do
+    it "strongDet" $
+      strongDet `shouldSatisfy` (isConstructionDeterministic mapGraphI)
   describe "does not have strong determinism property" $ do
     it "dbg 3" $
       (dbg 3) `shouldSatisfy` (not . isConstructionDeterministic dbgI)
@@ -41,9 +44,13 @@ spec = do
       force3d `shouldSatisfy` (not . isConstructionDeterministic mapGraphI)
     it "hamburger" $
       hamburger `shouldSatisfy` (not . isConstructionDeterministic mapGraphI)
+    it "strange3" $
+      strange3 `shouldSatisfy` (not . isConstructionDeterministic mapGraphI)
   describe "does have weak determinism property" $ do
     it "hamburger" $
       hamburger `shouldSatisfy` (isWeaklyConstructionDeterministic mapGraphI)
+    it "strange3" $
+      strange3 `shouldSatisfy` (isWeaklyConstructionDeterministic mapGraphI)
   describe "does not have weak determinism property" $ do
     it "dbg 3" $
       (dbg 3) `shouldSatisfy` (not . isWeaklyConstructionDeterministic dbgI)
