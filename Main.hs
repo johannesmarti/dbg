@@ -5,7 +5,7 @@ module Main (
 
 import System.Environment
 
-import Data.Set as Set
+import qualified Data.Set as Set
 
 import ArcCons
 import ConciseGraph
@@ -36,17 +36,17 @@ main :: IO ()
 main = do
   --args <- getArgs
   --let n = read (head args) :: Int
-  --putStrLn (showem 3 14731)
-  --putStrLn (show (searchDbgHomo (conciseGraphI 3) 6 14731))
-  --putStrLn (show (SS.searchUpTo 3 6 14731))
+  putStrLn (showem 4 3942849)
+  putStrLn (show (searchDbgHomo (conciseGraphI 4) 8 3942849))
+  putStrLn (show (SS.searchUpTo 4 9 3942849))
   --let bitmaps = filter (notTrivial 4) (allGraphsOfSize 4)
   --return ()
-  --let bitmaps = filter (notTrivial 4) [start .. start + step]
-  let bitmaps = Prelude.filter (notTrivial 3) (allGraphsOfSize 3)
-  --let list = filter ((CS.homoLargerThan 3 6 2)) bitmaps
-  --let list = Prelude.filter ((SS.homoLargerThan 4 6 4)) bitmaps
-  --let list = Prelude.filter ((CS.homoLargerThan 3 6 2)) bitmaps
-  let list = Prelude.filter (\g -> SS.searchUpTo 3 5 g == SS.Unknown) bitmaps
-  --let list = filter ((CS.homoLargerThan 4 6 4)) bitmaps
-  putStrLn (show $ length list)
+  --let start = 3938472
+  --let step = (totalGraph 4) `div` (1024 * 512)
+  --let bitmaps = Prelude.filter (notTrivial 4) [start .. start + step]
+  ----let bitmaps = Prelude.filter (notTrivial 3) (allGraphsOfSize 3)
+  ----let bitmaps = Prelude.filter (notTrivial 4) (allGraphsOfSize 4)
+  --let list = Prelude.filter (\g -> SS.searchUpTo 4 8 g == Unknown) bitmaps
+  ----let list = filter ((CS.homoLargerThan 4 6 4)) bitmaps
   --putStrLn (show $ head list)
+  ----putStrLn (show $ head list)
