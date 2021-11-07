@@ -39,17 +39,11 @@ main = do
   --putStrLn (show (SS.homoLargerThan 3 8 2 15274))
   --putStrLn (show (searchDbgHomo n (allPaths)))
   --let bitmaps = filter (notTrivial 4) (allGraphsOfSize 4)
-  let total = totalGraph 4
-  --let q = 1024 * 8
-  let q = 1024 * 512
-  let p = (345 + 20)
-  let step = total `div` q
-  let start = 561888294
   --return ()
   --let bitmaps = filter (notTrivial 4) [start .. start + step]
-  let bitmaps = Prelude.filter (notTrivial 3) (allGraphsOfSize 3)
+  let bitmaps = Prelude.filter (notTrivial 4) (allGraphsOfSize 4)
   --let list = filter ((CS.homoLargerThan 3 6 2)) bitmaps
-  let list = Prelude.filter ((SS.homoLargerThan 3 6 2)) bitmaps
+  let list = Prelude.filter ((SS.homoLargerThan 4 6 4)) bitmaps
   --let list = Prelude.filter ((CS.homoLargerThan 3 6 2)) bitmaps
   --let list = filter ((CS.homoLargerThan 4 6 4)) bitmaps
   putStrLn (show $ length list)

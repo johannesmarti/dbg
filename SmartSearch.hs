@@ -36,8 +36,8 @@ searchDbgHomo size cutoff graph cg candidates = worker 1 where
   worker i = if i > cutoff
                then LargerThan cutoff
              else if noHomos size i graph cg candidates
-               then (if i == 4 then trace (show graph ++ " VIER! " ++ show candidates) $ worker (i + 1) else worker (i + 1))
-             else (if i >= 4 then trace (show graph ++ " at " ++ show i ++ " " ++ show candidates) IsNumber i else IsNumber i)
+               then (if i == 6 then trace (show graph ++ " Six! " ++ show candidates) $ worker (i + 1) else worker (i + 1))
+             else (if i >= 5 then trace (show graph ++ " at " ++ show i ++ " " ++ show candidates) IsNumber i else IsNumber i)
 
 homoLargerThan :: Int -> Int -> Int -> Word -> Bool
 homoLargerThan size cutoff n graph = let
