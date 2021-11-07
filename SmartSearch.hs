@@ -1,4 +1,5 @@
 module SmartSearch (
+  Result(..),
   searchUpTo,
 ) where
 
@@ -30,7 +31,7 @@ instance Monoid Result where
   mempty = NoHomo
 
 searchDbgHomo :: Size -> Int -> ConciseSubGraph -> Result
-searchDbgHomo size cutoff subgraph = trace ("sdom: " ++ show (subdomain subgraph)) $ let
+searchDbgHomo size cutoff subgraph = let
     cg = ConciseSubGraph.caleyGraph size subgraph
     dom = subdomain subgraph
     searchHomo dim = if dim > cutoff then Unknown
@@ -38,10 +39,10 @@ searchDbgHomo size cutoff subgraph = trace ("sdom: " ++ show (subdomain subgraph
                 deBruijnGraph = dbg dim
                 approx = Map.fromSet f (domain dbgI deBruijnGraph)
                 f dbgnode = Set.filter (isPossibleValue size cg (nodeToList dim dbgnode) dom) (Set.fromList dom)
-             in (trace (show approx) )$ if isPossible approx && not (noHomo (arcConsHomosFromApprox dbgI (conciseSubGraphI size) approx) deBruijnGraph subgraph)
+             in if isPossible approx && not (noHomo (arcConsHomosFromApprox dbgI (conciseSubGraphI size) approx) deBruijnGraph subgraph)
                   then HomoAt dim
                   else searchHomo (dim + 1)
-  in if isGood size cg
+  in if isGoodForDom size cg dom
        then searchHomo 1
        else NoHomo
 

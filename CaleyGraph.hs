@@ -3,6 +3,7 @@ module CaleyGraph (
   relationOfWord,
   rightCaleyGraph,
   isGood,
+  isGoodForDom,
   isPossibleValue,  
 ) where
 
@@ -64,6 +65,10 @@ relationOfWord size cg word = Prelude.foldl (successor cg) (diagonal size) word
 isGood :: Size -> CaleyGraph -> Bool
 isGood size cg = all (not . hasNoRefl size) (wellfoundedElements cg) &&
                  all (hasUniv size) (nonWellfoundedElements cg)
+
+isGoodForDom :: Size -> CaleyGraph -> [Node] -> Bool
+isGoodForDom size cg dom = all (not . hasNoReflInDom size dom) (wellfoundedElements cg) &&
+                           all (hasUnivInDom size dom) (nonWellfoundedElements cg)
 
 isPossibleValue :: Size -> CaleyGraph -> [Label] -> [Node] -> Node -> Bool
 isPossibleValue size cg word others node =

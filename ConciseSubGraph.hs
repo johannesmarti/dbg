@@ -4,6 +4,7 @@ module ConciseSubGraph (
   conciseSubGraphI,
   fromSubset,
   ConciseSubGraph.caleyGraph,
+  ConciseSubGraph.showem,
 ) where
 
 import Control.Exception.Base
@@ -43,3 +44,6 @@ listToBitmask = foldl setBit 0
 
 caleyGraph :: Size -> ConciseSubGraph -> CaleyGraph
 caleyGraph size = (ConciseGraph.caleyGraph size) . baseGraph
+
+showem :: Size -> ConciseSubGraph -> String
+showem size graph = unlines $ prettyGraph (conciseSubGraphI size) show graph

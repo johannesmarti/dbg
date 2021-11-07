@@ -15,7 +15,7 @@ import Graph
 import Homo
 import MapGraph
 import Search
-import qualified SmartSearch as SS
+import SmartSearch as SS
 
 import Patterns
 
@@ -32,24 +32,21 @@ main = let res = arcConsHomos dbgI mapGraphI (dbg 8) strange3
       putStrLn ("ndetSubsets: " ++ show ndetSubsets)
 -}
 
-showem :: Size -> ConciseGraph -> String
-showem size graph = unlines $ prettyGraph (conciseGraphI size) show graph
-
 main :: IO ()
 main = do
-  args <- getArgs
-  let n = read (head args) :: Int
-  putStrLn (showem 3 14731)
-  putStrLn (show (searchDbgHomo (conciseGraphI 3) 6 14731))
-  putStrLn (show (SS.searchUpTo 3 6 14731))
+  --args <- getArgs
+  --let n = read (head args) :: Int
+  --putStrLn (showem 3 14731)
+  --putStrLn (show (searchDbgHomo (conciseGraphI 3) 6 14731))
+  --putStrLn (show (SS.searchUpTo 3 6 14731))
   --let bitmaps = filter (notTrivial 4) (allGraphsOfSize 4)
   --return ()
   --let bitmaps = filter (notTrivial 4) [start .. start + step]
-  --let bitmaps = Prelude.filter (notTrivial 3) (allGraphsOfSize 3)
+  let bitmaps = Prelude.filter (notTrivial 3) (allGraphsOfSize 3)
   --let list = filter ((CS.homoLargerThan 3 6 2)) bitmaps
   --let list = Prelude.filter ((SS.homoLargerThan 4 6 4)) bitmaps
   --let list = Prelude.filter ((CS.homoLargerThan 3 6 2)) bitmaps
-  --let list = Prelude.filter (SS.noResultUpTo 3 3) bitmaps
+  let list = Prelude.filter (\g -> SS.searchUpTo 3 5 g == SS.Unknown) bitmaps
   --let list = filter ((CS.homoLargerThan 4 6 4)) bitmaps
-  --putStrLn (show $ length list)
+  putStrLn (show $ length list)
   --putStrLn (show $ head list)

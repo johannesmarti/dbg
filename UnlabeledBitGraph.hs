@@ -11,7 +11,9 @@ module UnlabeledBitGraph (
   hasArc,
   diagonal,
   hasUniv,
+  hasUnivInDom,
   hasNoRefl,
+  hasNoReflInDom,
   compose,
 ) where
 
@@ -82,16 +84,34 @@ compose size a b = assert (enoughBits size) $
   succsOfInPos node = shiftL (succsOf node) (node * size)
     in foldl (.|.) 0 (map succsOfInPos (nodes size))
 
+bitsOfInternal :: Size -> [Node] -> UnlabeledBitGraph
+bitsOfInternal size dom = foldl (\accum n -> accum .|. (shiftL bitsOfSuccsInSubset (n * size))) 0 dom where
+  bitsOfSuccsInSubset = listToBitmask dom
+
+listToBitmask :: [Node] -> UnlabeledBitGraph
+listToBitmask = foldl setBit 0
+
 diagonal :: Size -> UnlabeledBitGraph
 diagonal size = assert (enoughBits size) $
                 nTimes (size - 1) shifter 1 where
   shifter pattern = shiftL pattern (size + 1) .|. 1
   nTimes n op start = if n == 0 then start else nTimes (n - 1) op (op start)
 
+diagonalInDom :: Size -> [Node] -> UnlabeledBitGraph
+diagonalInDom size dom = bitsOfInternal size dom .&. diagonal size
+
 hasNoRefl :: Size -> UnlabeledBitGraph -> Bool
 hasNoRefl size word = word .&. diagonal size == 0
+
+hasNoReflInDom :: Size -> [Node] -> UnlabeledBitGraph -> Bool
+hasNoReflInDom size dom word = word .&. diagonalInDom size dom == 0
 
 hasUniv :: Size -> UnlabeledBitGraph -> Bool
 hasUniv size word = any isUniv (nodes size) where
   isUniv node = let mask = shiftL (maskForSuccs size) (size * node)
+                  in word .&. mask == mask
+
+hasUnivInDom :: Size -> [Node] -> UnlabeledBitGraph -> Bool
+hasUnivInDom size dom word = any isUniv dom where
+  isUniv node = let mask = shiftL (listToBitmask dom) (size * node)
                   in word .&. mask == mask

@@ -13,6 +13,7 @@ module ConciseGraph (
   hasBothFp,
   noDoubleRefl,
   notTrivial,
+  showem,
 ) where
 
 import Control.Exception.Base
@@ -120,3 +121,6 @@ noDoubleRefl size word = all notDoubleReflAt [0 .. size-1] where
 
 notTrivial :: Size -> ConciseGraph -> Bool
 notTrivial size word = hasBothFp size word && noDoubleRefl size word
+
+showem :: Size -> ConciseGraph -> String
+showem size graph = unlines $ prettyGraph (conciseGraphI size) show graph
