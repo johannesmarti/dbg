@@ -15,7 +15,6 @@ import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 
 import Graph
-import MapGraph
 
 type Partition a = Map.Map a a
 

@@ -3,6 +3,8 @@ module BitGraph (
   bitGraphI,
 ) where
 
+-- WORK IN PROGRESS! --
+
 import Data.Bits
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
@@ -24,6 +26,9 @@ bitsOfLabel bg One  = oneBitMap bg
 
 bitGraphI :: Ord x => GraphI (BitGraph x) x
 bitGraphI = GraphI dom succs preds
+
+bitGraphRawI :: GraphI (BitGraph x) Node 
+bitGraphRawI = undefined
 
 dom :: Ord x => BitGraph x -> Set.Set x
 dom bitgraph = Map.keysSet (encoder bitgraph)

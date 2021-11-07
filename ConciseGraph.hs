@@ -1,8 +1,11 @@
 module ConciseGraph (
   ConciseGraph,
+  Node,
   Size,
   conciseGraphI,
   nodes,
+  hasArc,
+  isNode,
   allGraphsOfSize,
   totalGraph,
   relationOfLabel,
@@ -18,23 +21,24 @@ import qualified Data.Set as Set
 import Graph
 
 type ConciseGraph = Word
+type Node = Int
 type Size = Int
 
-conciseGraphI :: Size -> GraphI ConciseGraph Int
+conciseGraphI :: Size -> GraphI ConciseGraph Node
 conciseGraphI size = GraphI (dom size) (succs size) (preds size)
 
-nodes :: Size -> [Int]
+nodes :: Size -> [Node]
 nodes size = [0 .. size-1]
 
-dom :: Size -> ConciseGraph -> Set.Set Int
+dom :: Size -> ConciseGraph -> Set.Set Node
 dom size bitset = assert (enoughBits size) $
                   assert (isValidBitset size bitset) $ Set.fromList (nodes size)
 
-succs :: Size -> ConciseGraph -> MapFunction Int
+succs :: Size -> ConciseGraph -> MapFunction Node
 succs size bitset label node = assert (isNode size node) $
   Set.fromList $ filter (\v -> hasArc size bitset (node,label,v)) (nodes size)
 
-preds :: Size -> ConciseGraph -> MapFunction Int
+preds :: Size -> ConciseGraph -> MapFunction Node
 preds size bitset label node = assert (isNode size node) $
   Set.fromList $ filter (\v -> hasArc size bitset (v,label,node)) (nodes size)
 
@@ -58,11 +62,11 @@ enoughBits size = 0 <= size && numBits size <= finiteBitSize nullConciseGraph
 isValidBitset :: Size -> ConciseGraph -> Bool
 isValidBitset size bitset = bitset <= totalGraph size
 
-isNode :: Size -> Int -> Bool
+isNode :: Size -> Node -> Bool
 isNode size node = 0 <= node && node <= size
 
 -- Maybe we should get rid of all these asserts here!
-hasArc :: Size -> ConciseGraph -> Arc Int -> Bool
+hasArc :: Size -> ConciseGraph -> Arc Node -> Bool
 hasArc size bitset (from,label,to) = assert (enoughBits size) $
                                      assert (isValidBitset size bitset) $
                                      assert (isNode size from) $
@@ -95,7 +99,7 @@ hasNoFp size label word = word .&. diagonal size label == 0
 hasBothFp :: Size -> ConciseGraph -> Bool
 hasBothFp size word = not (hasNoFp size Zero word) && not (hasNoFp size One word)
 
-doubleRefl :: Size -> Int -> ConciseGraph
+doubleRefl :: Size -> Node -> ConciseGraph
 doubleRefl size node = assert (enoughBits size && isNode size node) $
                        pattern where
   offset = size * size
