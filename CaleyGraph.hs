@@ -2,8 +2,6 @@ module CaleyGraph (
   CaleyGraph,
   relationOfWord,
   rightCaleyGraph,
-  reflexivityCondition,
-  setIsGood,
   isPossibleValue,  
 ) where
 
@@ -32,7 +30,7 @@ successor cg node label = assert (node `elem` domain cg) $
     Zero -> fst $ (successorMap cg ! node)
     One  -> snd $ (successorMap cg ! node)
 
-rightCaleyGraph :: Int -> BG.BitGraph -> CaleyGraph
+rightCaleyGraph :: Size -> BG.BitGraph -> CaleyGraph
 rightCaleyGraph size bitgraph =
   CaleyGraph succMap wellfounded nonWellfounded where
     zeroRel = BG.relationOfLabel size bitgraph Zero
@@ -62,20 +60,20 @@ rightCaleyGraph size bitgraph =
     wellfounded = computeWellfounded [diagonal size] Set.empty
     nonWellfounded = (keysSet succMap) Set.\\ wellfounded
 
-relationOfWord :: Int -> CaleyGraph -> [Label] -> Word
+relationOfWord :: Size -> CaleyGraph -> [Label] -> Word
 relationOfWord size cg word = Prelude.foldl (successor cg) (diagonal size) word
 
-reflexivityCondition :: Int -> CaleyGraph -> Bool
+{-
+reflexivityCondition :: Size -> CaleyGraph -> Bool
 reflexivityCondition size cg =
   all (not . hasNoRefl size) (domain cg)
+-}
 
-setIsGood :: Int -> CaleyGraph -> Set.Set Int -> Bool
-setIsGood size cg set = all hasRefl (wellfoundedElements cg) &&
-                        all hasUniv (nonWellfoundedElements cg) where
-  hasRefl rel = any (\r -> hasArc size rel (r,r)) set
-  hasUniv rel = any (\u -> all (\v -> hasArc size rel (u,v)) set) set
+isGood :: Size -> CaleyGraph -> Bool
+isGood size cg = all (not . hasNoRefl size) (wellfoundedElements cg) &&
+                 all (hasUniv size) (nonWellfoundedElements cg)
 
-isPossibleValue :: Int -> CaleyGraph -> [Label] -> Set.Set Int -> Int -> Bool
-isPossibleValue size cg word range node =
-  all (\v -> hasArc size (relationOfWord size cg word) (node,v)) range
+isPossibleValue :: Size -> CaleyGraph -> [Label] -> Int -> Bool
+isPossibleValue size cg word node =
+  all (\v -> hasArc size (relationOfWord size cg word) (node,v)) (nodes size)
 
