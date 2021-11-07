@@ -28,7 +28,12 @@ preds size csg label node = assert (isNode size node) $
   Set.fromList $ filter (\v -> hasArc size (baseGraph csg) (v,label,node)) (dom csg)
 
 fromSubset :: Size -> ConciseGraph -> Set.Set Node -> ConciseSubGraph
-fromSubset size superGraph subset = assert (subset `Set.isSubsetOf` Set.fromList (nodes size)) $ ConciseSubGraph bg dom where
+fromSubset size superGraph subset = assert (all (< size) dom) $ ConciseSubGraph bg dom where
   dom = Set.toList subset
   bg = superGraph .&. bitsOfInternalArcs
-  bitsOfInternalArcs = undefined
+  bitsOfInternalArcs = bitsOfInternalInRel .|. (shiftL bitsOfInternalInRel (size * size))
+  bitsOfSuccsInSubset = listToBitmask dom
+  bitsOfInternalInRel = foldl (\accum n -> accum .|. (shiftL bitsOfSuccsInSubset (n * size))) 0 dom
+
+listToBitmask :: [Node] -> ConciseGraph
+listToBitmask = foldl setBit 0
