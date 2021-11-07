@@ -1,7 +1,10 @@
 module UnlabeledBitGraph (
   UnlabeledBitGraph,
+  Node,
   Size,
   nodes,
+  succsAsList,
+  predsAsList,
   allGraphsOfSize,
   nullWord,
   totalGraph,
@@ -17,9 +20,10 @@ import Data.Bits
 import qualified Data.Set as Set
 
 type UnlabeledBitGraph = Word
+type Node = Int
 type Size = Int
 
-nodes :: Size -> [Int]
+nodes :: Size -> [Node]
 nodes size = [0 .. size-1]
 
 nullWord :: UnlabeledBitGraph
@@ -42,14 +46,14 @@ enoughBits size = 0 <= size && numBits size <= finiteBitSize nullWord
 isValidBitset :: Size -> UnlabeledBitGraph -> Bool
 isValidBitset size bitset = bitset <= totalGraph size
 
-isNode :: Size -> Int -> Bool
+isNode :: Size -> Node -> Bool
 isNode size node = 0 <= node && node <= size
 
 maskForSuccs :: Size -> UnlabeledBitGraph
 maskForSuccs size = (shiftL 1 size) - 1
 
 -- Maybe we should get rid of all these asserts here!
-hasArc :: Size -> UnlabeledBitGraph -> (Int,Int) -> Bool
+hasArc :: Size -> UnlabeledBitGraph -> (Node,Node) -> Bool
 hasArc size bitset (from, to) = assert (enoughBits size) $
                                 assert (isValidBitset size bitset) $
                                 assert (isNode size from) $
@@ -58,11 +62,15 @@ hasArc size bitset (from, to) = assert (enoughBits size) $
   index = position
     in testBit bitset index
 
-succsAsList :: Size -> UnlabeledBitGraph -> Int -> [Int]
+succsAsList :: Size -> UnlabeledBitGraph -> Node -> [Node]
 succsAsList size bitset node = assert (isNode size node) $
   filter (\v -> hasArc size bitset (node,v)) (nodes size)
 
-succsAsBits :: Size -> UnlabeledBitGraph -> Int -> UnlabeledBitGraph
+predsAsList :: Size -> UnlabeledBitGraph -> Node -> [Node]
+predsAsList size bitset node = assert (isNode size node) $
+  filter (\v -> hasArc size bitset (v,node)) (nodes size)
+
+succsAsBits :: Size -> UnlabeledBitGraph -> Node -> UnlabeledBitGraph
 succsAsBits size bitset node = assert (isNode size node) $
   (shiftR bitset (node * size)) .&. maskForSuccs size
 

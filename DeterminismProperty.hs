@@ -8,7 +8,6 @@ module DeterminismProperty (
   isConstructionDeterministic,
   isWeaklyConstructionDeterministic,
   deterministicPartition,
-  hasDeterminismProperty,
 ) where
 
 import Control.Exception
@@ -69,7 +68,3 @@ deterministicPartition gi g = inner (discrete (domain gi g)) where
       in if Prelude.null overlappings
            then partition
            else inner coarserPartition
-
-hasDeterminismProperty :: Ord x => GraphI g x -> g -> Set.Set x -> Bool
-hasDeterminismProperty gi g set =
-  isWeaklyConstructionDeterministic mapGraphI (subgraph gi g set)
