@@ -1,6 +1,5 @@
 module Search (
   searchDbgHomo,
-  homoLargerThan,
 ) where
 
 import ArcCons
@@ -21,9 +20,3 @@ searchDbgHomo gi cutoff graph = worker 1 where
              else if noHomo (arcConsHomos dbgI gi) (dbg i) graph
                then worker (i + 1)
              else IsNumber i
-
-homoLargerThan :: Ord x => GraphI g x -> Int -> Int -> g -> Bool
-homoLargerThan gi cutoff n graph =
-  case searchDbgHomo gi cutoff graph of
-    IsNumber m   -> m > n
-    LargerThan n -> False

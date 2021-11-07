@@ -1,12 +1,13 @@
 module SmartSearch (
-  homoLargerThan,
+  searchUpTo,
 ) where
 
-import Data.Set as Set
-import Data.Map.Strict as Map
+import qualified Data.Set as Set
+import qualified Data.Map.Strict as Map
 
 import ArcCons
-import BitGraph
+import ConciseGraph
+import ConciseSubGraph
 import CaleyGraph
 import DeBruijn
 import Graph
@@ -15,38 +16,39 @@ import DeterminismProperty
 
 import Debug.Trace
 
-data LargeNumber = IsNumber Int | LargerThan Int
+data Result = NoHomo | HomoAt Int | Unknown
+  deriving (Eq, Show)
 
-instance Show LargeNumber where
-  show (IsNumber n)   = show n
-  show (LargerThan n) = show n ++ "<"
+instance Semigroup Result where
+  NoHomo <> x    = x
+  HomoAt n <> _  = HomoAt n
+  Unknown <> NoHomo = Unknown
+  Unknown <> HomoAt n = HomoAt n
+  Unknown <> Unknown = Unknown
 
-noHomos :: Int -> Int -> BitGraph -> CaleyGraph -> Set.Set (Set.Set Int) -> Bool
-noHomos size i graph cg candidates = all check candidates where
-  deBruijnGraph = dbg i
-  computeApprox candi = Map.fromSet f (domain dbgI deBruijnGraph) where
-        f dbgnode = Set.filter (isPossibleValue size cg (nodeToList i dbgnode) candi) candi
-  check candi = let approx = computeApprox candi
-          in if isPossible approx
-               then noHomo (arcConsHomosFromApprox dbgI (bitGraphI size) approx) (dbg i) graph
-               else True
+instance Monoid Result where
+  mempty = NoHomo
 
-searchDbgHomo :: Int -> Int -> BitGraph -> CaleyGraph -> Set.Set (Set.Set Int) -> LargeNumber
-searchDbgHomo size cutoff graph cg candidates = worker 1 where
-  worker i = if i > cutoff
-               then LargerThan cutoff
-             else if noHomos size i graph cg candidates
-               then (if i == 6 then trace (show graph ++ " Six! " ++ show candidates) $ worker (i + 1) else worker (i + 1))
-             else (if i >= 5 then trace (show graph ++ " at " ++ show i ++ " " ++ show candidates) IsNumber i else IsNumber i)
+searchDbgHomo :: Size -> Int -> ConciseSubGraph -> Result
+searchDbgHomo size cutoff subgraph = trace ("sdom: " ++ show (subdomain subgraph)) $ let
+    cg = ConciseSubGraph.caleyGraph size subgraph
+    dom = subdomain subgraph
+    searchHomo dim = if dim > cutoff then Unknown
+        else let 
+                deBruijnGraph = dbg dim
+                approx = Map.fromSet f (domain dbgI deBruijnGraph)
+                f dbgnode = Set.filter (isPossibleValue size cg (nodeToList dim dbgnode) dom) (Set.fromList dom)
+             in (trace (show approx) )$ if isPossible approx && not (noHomo (arcConsHomosFromApprox dbgI (conciseSubGraphI size) approx) deBruijnGraph subgraph)
+                  then HomoAt dim
+                  else searchHomo (dim + 1)
+  in if isGood size cg
+       then searchHomo 1
+       else NoHomo
 
-homoLargerThan :: Int -> Int -> Int -> Word -> Bool
-homoLargerThan size cutoff n graph = let
-    cg = rightCaleyGraph size graph
+searchUpTo :: Size -> Int -> ConciseGraph -> Result
+searchUpTo size cutoff graph = let
     allNodes = Set.fromList (nodes size)
-    subsets = Set.powerSet allNodes
-    candidates = Set.filter (\s -> setIsGood size cg s && not (hasDeterminismProperty (bitGraphI size) graph s)) subsets
-  in if reflexivityCondition size cg && not (Set.null candidates)
-       then case searchDbgHomo size cutoff graph cg candidates of
-              IsNumber m   -> m > n
-              LargerThan n -> False
-       else False
+    subsets = Set.filter (\s -> Set.size s >= 2) $ Set.powerSet allNodes
+    subgraphs = map (fromSubset size graph) (Set.toList subsets)
+    candidates = filter (\s -> not (isWeaklyConstructionDeterministic (conciseSubGraphI size) s)) subgraphs
+  in mconcat (map (searchDbgHomo size cutoff) candidates)

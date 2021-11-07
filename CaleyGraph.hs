@@ -2,6 +2,7 @@ module CaleyGraph (
   CaleyGraph,
   relationOfWord,
   rightCaleyGraph,
+  isGood,
   isPossibleValue,  
 ) where
 
@@ -10,31 +11,28 @@ import Data.List.Ordered
 import Data.Map.Strict as Map
 import Data.Set as Set
 
-import qualified BitGraph as BG
 import Label
 import UnlabeledBitGraph
 
 data CaleyGraph = CaleyGraph {
-  successorMap :: Map.Map Word (Word,Word),
+  successorMap :: Map.Map UnlabeledBitGraph (UnlabeledBitGraph,UnlabeledBitGraph),
   -- nonWellfoundedElements is the subset of the domain that is hit by infinitely many words over {Zero, One}.
-  wellfoundedElements :: Set.Set Word,
-  nonWellfoundedElements :: Set.Set Word
+  wellfoundedElements :: Set.Set UnlabeledBitGraph,
+  nonWellfoundedElements :: Set.Set UnlabeledBitGraph
 } deriving Show
 
-domain :: CaleyGraph -> Set Word
+domain :: CaleyGraph -> Set UnlabeledBitGraph
 domain = keysSet . successorMap
 
-successor :: CaleyGraph -> Word -> Label -> Word
+successor :: CaleyGraph -> UnlabeledBitGraph -> Label -> UnlabeledBitGraph
 successor cg node label = assert (node `elem` domain cg) $
   case label of
     Zero -> fst $ (successorMap cg ! node)
     One  -> snd $ (successorMap cg ! node)
 
-rightCaleyGraph :: Size -> BG.BitGraph -> CaleyGraph
-rightCaleyGraph size bitgraph =
+rightCaleyGraph :: Size -> (UnlabeledBitGraph,UnlabeledBitGraph) -> CaleyGraph
+rightCaleyGraph size (zeroRel,oneRel) =
   CaleyGraph succMap wellfounded nonWellfounded where
-    zeroRel = BG.relationOfLabel size bitgraph Zero
-    oneRel = BG.relationOfLabel size bitgraph One
     keepAdding [] m p = (m,p)
     keepAdding (next:rest) m p = let
       zeroSucc = compose size next zeroRel
@@ -60,20 +58,14 @@ rightCaleyGraph size bitgraph =
     wellfounded = computeWellfounded [diagonal size] Set.empty
     nonWellfounded = (keysSet succMap) Set.\\ wellfounded
 
-relationOfWord :: Size -> CaleyGraph -> [Label] -> Word
+relationOfWord :: Size -> CaleyGraph -> [Label] -> UnlabeledBitGraph
 relationOfWord size cg word = Prelude.foldl (successor cg) (diagonal size) word
-
-{-
-reflexivityCondition :: Size -> CaleyGraph -> Bool
-reflexivityCondition size cg =
-  all (not . hasNoRefl size) (domain cg)
--}
 
 isGood :: Size -> CaleyGraph -> Bool
 isGood size cg = all (not . hasNoRefl size) (wellfoundedElements cg) &&
                  all (hasUniv size) (nonWellfoundedElements cg)
 
-isPossibleValue :: Size -> CaleyGraph -> [Label] -> Int -> Bool
-isPossibleValue size cg word node =
-  all (\v -> hasArc size (relationOfWord size cg word) (node,v)) (nodes size)
+isPossibleValue :: Size -> CaleyGraph -> [Label] -> [Node] -> Node -> Bool
+isPossibleValue size cg word others node =
+  all (\v -> hasArc size (relationOfWord size cg word) (node,v)) others
 

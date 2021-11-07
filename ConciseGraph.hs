@@ -9,6 +9,7 @@ module ConciseGraph (
   allGraphsOfSize,
   totalGraph,
   relationOfLabel,
+  caleyGraph,
   hasBothFp,
   noDoubleRefl,
   notTrivial,
@@ -18,6 +19,7 @@ import Control.Exception.Base
 import Data.Bits
 import qualified Data.Set as Set
 
+import CaleyGraph
 import Graph
 
 type ConciseGraph = Word
@@ -84,6 +86,11 @@ relationOfLabel size bitset label = assert (enoughBits size) $
     in if label == Zero
          then bitset .&. bitmask
          else shiftR bitset offset
+
+caleyGraph :: Size -> ConciseGraph -> CaleyGraph
+caleyGraph size graph  = rightCaleyGraph size
+                            (relationOfLabel size graph Zero,
+                             relationOfLabel size graph One)
 
 diagonal :: Size -> Label -> ConciseGraph
 diagonal size label = assert (enoughBits size) $
