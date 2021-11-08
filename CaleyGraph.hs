@@ -63,7 +63,15 @@ relationOfWord :: Size -> CaleyGraph -> [Label] -> UnlabeledBitGraph
 relationOfWord size cg word = Prelude.foldl (successor cg) (diagonal size) word
 
 finiteWords :: Size -> CaleyGraph -> [([Label],UnlabeledBitGraph)]
-finiteWords size cg = undefined
+finiteWords size cg = generateFiniteWords [([], diagonal size)] where
+  generateFiniteWords [] = []
+  generateFiniteWords ((nextWord, nextRel):rest) =
+    let (zeroSucc,oneSucc) = successorMap cg Map.! nextRel
+    in if nextRel `Set.member` wellfoundedElements cg
+         then (reverse nextWord,nextRel) :
+                     (generateFiniteWords ((Zero:nextWord,zeroSucc)
+                                         : (One:nextWord,oneSucc) : rest))
+         else generateFiniteWords rest
 
 multiples :: Size -> UnlabeledBitGraph -> Set.Set UnlabeledBitGraph
 multiples size rel = generateMultiples rel (Set.singleton rel) where
