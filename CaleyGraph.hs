@@ -9,8 +9,8 @@ module CaleyGraph (
 
 import Control.Exception.Base
 import Data.List.Ordered
-import Data.Map.Strict as Map
-import Data.Set as Set
+import qualified Data.Map.Strict as Map
+import qualified Data.Set as Set
 
 import Label
 import UnlabeledBitGraph
@@ -22,14 +22,14 @@ data CaleyGraph = CaleyGraph {
   nonWellfoundedElements :: Set.Set UnlabeledBitGraph
 } deriving Show
 
-domain :: CaleyGraph -> Set UnlabeledBitGraph
-domain = keysSet . successorMap
+domain :: CaleyGraph -> Set.Set UnlabeledBitGraph
+domain = Map.keysSet . successorMap
 
 successor :: CaleyGraph -> UnlabeledBitGraph -> Label -> UnlabeledBitGraph
 successor cg node label = assert (node `elem` domain cg) $
   case label of
-    Zero -> fst $ (successorMap cg ! node)
-    One  -> snd $ (successorMap cg ! node)
+    Zero -> fst $ (successorMap cg Map.! node)
+    One  -> snd $ (successorMap cg Map.! node)
 
 rightCaleyGraph :: Size -> (UnlabeledBitGraph,UnlabeledBitGraph) -> CaleyGraph
 rightCaleyGraph size (zeroRel,oneRel) =
@@ -49,7 +49,7 @@ rightCaleyGraph size (zeroRel,oneRel) =
     computeWellfounded [] finites = finites
     computeWellfounded (next:rest) finites = let
       in if Map.findWithDefault Set.empty next predMap `Set.isSubsetOf` finites
-           then let (zeroSucc,oneSucc) = succMap ! next
+           then let (zeroSucc,oneSucc) = succMap Map.! next
                     adder elem = if elem `Set.notMember` finites
                                     then insertSet elem
                                     else id
@@ -57,10 +57,21 @@ rightCaleyGraph size (zeroRel,oneRel) =
              in computeWellfounded restPlus (Set.insert next finites)
            else computeWellfounded rest finites
     wellfounded = computeWellfounded [diagonal size] Set.empty
-    nonWellfounded = (keysSet succMap) Set.\\ wellfounded
+    nonWellfounded = (Map.keysSet succMap) Set.\\ wellfounded
 
 relationOfWord :: Size -> CaleyGraph -> [Label] -> UnlabeledBitGraph
 relationOfWord size cg word = Prelude.foldl (successor cg) (diagonal size) word
+
+finiteWords :: Size -> CaleyGraph -> [([Label],UnlabeledBitGraph)]
+finiteWords size cg = undefined
+
+multiples :: Size -> UnlabeledBitGraph -> Set.Set UnlabeledBitGraph
+multiples size rel = generateMultiples rel (Set.singleton rel) where
+  generateMultiples r accum = let
+      next = compose size r rel
+    in if next `Set.member` accum
+         then accum
+         else generateMultiples next (Set.insert next accum)
 
 isGood :: Size -> CaleyGraph -> Bool
 isGood size cg = all (not . hasNoRefl size) (wellfoundedElements cg) &&
@@ -69,6 +80,10 @@ isGood size cg = all (not . hasNoRefl size) (wellfoundedElements cg) &&
 isGoodForDom :: Size -> CaleyGraph -> [Node] -> Bool
 isGoodForDom size cg dom = all (not . hasNoReflInDom size dom) (wellfoundedElements cg) &&
                            all (hasUnivInDom size dom) (nonWellfoundedElements cg)
+
+{-
+ Should check that every finite word has a reflexive point that is universal in some multiple of the relation of that finite word.
+-}
 
 isPossibleValue :: Size -> CaleyGraph -> [Label] -> [Node] -> Node -> Bool
 isPossibleValue size cg word others node =
