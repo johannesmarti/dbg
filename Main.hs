@@ -20,7 +20,8 @@ import SmartSearch as SS
 import Patterns
 
 main :: IO ()
-main = mapM_ checkOne unknownAt9
+--main = mapM_ (checkOne 4) unknownAt9
+main = mainRange
 
 {-
 main :: IO ()
@@ -35,16 +36,13 @@ main = let res = arcConsHomos dbgI mapGraphI (dbg 8) strange3
       putStrLn ("ndetSubsets: " ++ show ndetSubsets)
 -}
 
-mainCheckOne :: IO ()
-mainCheckOne = checkOne 4993476
-
-checkOne :: ConciseGraph -> IO ()
-checkOne graph = do
+checkOne :: Size -> ConciseGraph -> IO ()
+checkOne size graph = do
   putStrLn (show graph)
   putStrLn "=============="
-  putStr (showem 4 graph)
-  --putStrLn (show (searchDbgHomo (conciseGraphI 4) 10 graph))
-  putStrLn (show (SS.searchUpTo 4 10 graph))
+  putStr (showem size graph)
+  --putStrLn (show (searchDbgHomo (conciseGraphI size) 10 graph))
+  putStrLn (show (SS.searchUpTo size 10 graph))
   putStrLn "\n"
 
 unknownAt9 :: [ConciseGraph]
@@ -54,14 +52,15 @@ mainRange :: IO ()
 mainRange = do
   --args <- getArgs
   --let n = read (head args) :: Int
-  let start = 3938472
-  let step = (totalGraph 4) `div` (1024 * 32)
-  let bitmaps = Prelude.filter (notTrivial 4) [start .. start + step]
-  ----let bitmaps = Prelude.filter (notTrivial 3) (allGraphsOfSize 3)
+--  let start = 3938472
+--  let step = (totalGraph 4) `div` (1024 * 32)
+--  let bitmaps = Prelude.filter (notTrivial 4) [start .. start + step]
+  let bitmaps = Prelude.filter (notTrivial 3) (allGraphsOfSize 3)
   ----let bitmaps = Prelude.filter (notTrivial 4) (allGraphsOfSize 4)
   --let list = Prelude.filter (\g -> SS.searchUpTo 4 9 g == HomoAt 9) bitmaps
-  let list = Prelude.filter (\g -> SS.searchUpTo 4 9 g == Unknown 9) bitmaps
+  let list = Prelude.filter (\g -> SS.searchUpTo 3 9 g == HomoAt 4) bitmaps
   --let list = Prelude.filter (\g -> SS.searchUpTo 4 10 g == HomoAt 10) bitmaps
   --let list = Prelude.filter (\g -> SS.searchUpTo 4 10 g == Unknown) bitmaps
   putStrLn (show $ length list)
-  putStrLn (show $ list)
+  mapM_ (checkOne 3) list
+  --putStrLn (show $ list)

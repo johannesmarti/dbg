@@ -62,6 +62,6 @@ basePrinter :: Ord x => GraphI g x -> (x -> String) -> ([x] -> String) -> g -> [
 basePrinter gi printNode printSuccessors g = let
     succsForLabel v l lrep = " <" ++ lrep ++ " " ++
                              (printSuccessors (Set.toList (successors gi g l v)))
-    lineForNode v = (printNode v) ++ succsForLabel v Zero "z"
-                                  ++ succsForLabel v One "o"
+    lineForNode v = (printNode v) ++ succsForLabel v Zero "0"
+                                  ++ succsForLabel v One "1"
   in fmap lineForNode (Set.toList . (domain gi) $ g)
