@@ -10,10 +10,14 @@ module UnlabeledBitGraph (
   totalGraph,
   hasArc,
   diagonal,
+  isRefl,
+  isUnivInDom,
   hasUniv,
   hasUnivInDom,
   hasNoRefl,
   hasNoReflInDom,
+  hasReflAndUnivInMultiple,
+  hasReflAndUnivInMultipleDom,
   compose,
 ) where
 
@@ -89,7 +93,7 @@ bitsOfInternal size dom = foldl (\accum n -> accum .|. (shiftL bitsOfSuccsInSubs
   bitsOfSuccsInSubset = listToBitmask dom
 
 listToBitmask :: [Node] -> UnlabeledBitGraph
-listToBitmask = foldl setBit 0
+listToBitmask list = foldl setBit 0 list
 
 diagonal :: Size -> UnlabeledBitGraph
 diagonal size = assert (enoughBits size) $
@@ -106,12 +110,45 @@ hasNoRefl size word = word .&. diagonal size == 0
 hasNoReflInDom :: Size -> [Node] -> UnlabeledBitGraph -> Bool
 hasNoReflInDom size dom word = word .&. diagonalInDom size dom == 0
 
+isRefl :: Size -> UnlabeledBitGraph -> Node -> Bool
+isRefl size graph node = hasArc size graph (node,node)
+
+isUniv :: Size -> UnlabeledBitGraph -> Node -> Bool
+isUniv size graph node = graph .&. mask == mask where
+  mask = shiftL (maskForSuccs size) (size * node)
+
 hasUniv :: Size -> UnlabeledBitGraph -> Bool
-hasUniv size word = any isUniv (nodes size) where
-  isUniv node = let mask = shiftL (maskForSuccs size) (size * node)
-                  in word .&. mask == mask
+hasUniv size word = any (isUniv size word) (nodes size)
+
+isUnivInDom :: Size -> [Node] -> UnlabeledBitGraph -> Node -> Bool
+isUnivInDom size dom graph node = assert (all (< size) dom) $
+  graph .&. mask == mask where
+    mask = shiftL (listToBitmask dom) (size * node)
 
 hasUnivInDom :: Size -> [Node] -> UnlabeledBitGraph -> Bool
-hasUnivInDom size dom word = any isUniv dom where
-  isUniv node = let mask = shiftL (listToBitmask dom) (size * node)
-                  in word .&. mask == mask
+hasUnivInDom size dom graph = any (isUnivInDom size dom graph) dom
+
+multiples :: Size -> UnlabeledBitGraph -> Set.Set UnlabeledBitGraph
+multiples size rel = generateMultiples rel (Set.singleton rel) where
+  generateMultiples r accum = let
+      next = compose size r rel
+    in if next `Set.member` accum
+         then accum
+         else generateMultiples next (Set.insert next accum)
+
+isReflAndUnivInMultiple :: Size -> UnlabeledBitGraph -> Node -> Bool
+isReflAndUnivInMultiple size graph node = isRefl size graph node &&
+  any (\m -> isUniv size m node) (multiples size graph)
+
+hasReflAndUnivInMultiple :: Size -> UnlabeledBitGraph -> Bool
+hasReflAndUnivInMultiple size graph = 
+  any (isReflAndUnivInMultiple size graph) (nodes size)
+
+isReflAndUnivInMultipleDom :: Size -> [Node] -> UnlabeledBitGraph -> Node -> Bool
+isReflAndUnivInMultipleDom size dom graph node = isRefl size graph node &&
+  any (\m -> isUnivInDom size dom m node) (multiples size graph)
+
+hasReflAndUnivInMultipleDom :: Size -> [Node] -> UnlabeledBitGraph -> Bool
+hasReflAndUnivInMultipleDom size dom graph = 
+  any (isReflAndUnivInMultipleDom size dom graph) dom
+

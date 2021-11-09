@@ -3,8 +3,11 @@ module CaleyGraph (
   relationOfWord,
   rightCaleyGraph,
   isGood,
+  isReallyGood,
   isGoodForDom,
+  isReallyGoodForDom,
   isPossibleValue,  
+  isReallyPossibleValue,  
 ) where
 
 import Control.Exception.Base
@@ -73,14 +76,6 @@ finiteWords size cg = generateFiniteWords [([], diagonal size)] where
                                          : (One:nextWord,oneSucc) : rest))
          else generateFiniteWords rest
 
-multiples :: Size -> UnlabeledBitGraph -> Set.Set UnlabeledBitGraph
-multiples size rel = generateMultiples rel (Set.singleton rel) where
-  generateMultiples r accum = let
-      next = compose size r rel
-    in if next `Set.member` accum
-         then accum
-         else generateMultiples next (Set.insert next accum)
-
 isGood :: Size -> CaleyGraph -> Bool
 isGood size cg = all (not . hasNoRefl size) (wellfoundedElements cg) &&
                  all (hasUniv size) (nonWellfoundedElements cg)
@@ -89,11 +84,35 @@ isGoodForDom :: Size -> CaleyGraph -> [Node] -> Bool
 isGoodForDom size cg dom = all (not . hasNoReflInDom size dom) (wellfoundedElements cg) &&
                            all (hasUnivInDom size dom) (nonWellfoundedElements cg)
 
-{-
- Should check that every finite word has a reflexive point that is universal in some multiple of the relation of that finite word.
--}
+{- These would probabely be much quicker if we would cache the multiples as
+part of the CaleyGraph -}
+isReallyGood :: Size -> CaleyGraph -> Bool
+isReallyGood size cg = all (hasUniv size) (nonWellfoundedElements cg) &&
+  all (\rel -> hasReflAndUnivInMultiple size rel) (wellfoundedElements cg)
+
+isReallyGoodForDom :: Size -> CaleyGraph -> [Node] -> Bool
+isReallyGoodForDom size cg dom =
+  all (hasUnivInDom size dom) (nonWellfoundedElements cg) &&
+  all (\rel -> hasReflAndUnivInMultipleDom size dom rel) (wellfoundedElements cg)
+
+splits :: [a] -> [([a],[a])]
+splits xx = zipWith splitAt [1..(length xx)] (repeat xx)
+
+repeatingInits :: Eq a => [a] -> [[a]]
+repeatingInits = map fst . filter isRepeat . splits where
+  isRepeat (initial, rest) = eatThroughRest initial rest where
+    eatThroughRest [] r = eatThroughRest initial r
+    eatThroughRest i [] = True
+    eatThroughRest (i:is) (r:rs) =
+      if i == r then eatThroughRest is rs
+                else False
 
 isPossibleValue :: Size -> CaleyGraph -> [Label] -> [Node] -> Node -> Bool
 isPossibleValue size cg word others node =
   all (\v -> hasArc size (relationOfWord size cg word) (node,v)) others
+
+isReallyPossibleValue :: Size -> CaleyGraph -> [Label] -> [Node] -> Node -> Bool
+isReallyPossibleValue size cg word others node =
+  all (\v -> hasArc size (relationOfWord size cg word) (node,v)) others &&
+  all (\i -> hasArc size (relationOfWord size cg i) (node,node)) (repeatingInits word)
 
