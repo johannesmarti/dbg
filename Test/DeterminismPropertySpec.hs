@@ -8,6 +8,7 @@ import Test.Hspec
 
 import DeBruijn
 import Graph
+import ConciseGraph
 import Patterns
 import MapGraph
 import DeterminismProperty
@@ -46,6 +47,8 @@ spec = do
       hamburger `shouldSatisfy` (not . isConstructionDeterministic mapGraphI)
     it "strange3" $
       strange3 `shouldSatisfy` (not . isConstructionDeterministic mapGraphI)
+    it "4003476 of size 4" $
+      4003476 `shouldSatisfy` (not . isConstructionDeterministic (conciseGraphI 4))
   describe "does have weak determinism property" $ do
     it "hamburger" $
       hamburger `shouldSatisfy` (isWeaklyConstructionDeterministic mapGraphI)
@@ -58,3 +61,5 @@ spec = do
       (dbg 3) `shouldSatisfy` (not . isWeaklyConstructionDeterministic dbgI)
     it "force3d" $
       force3d `shouldSatisfy` (not . isWeaklyConstructionDeterministic mapGraphI)
+    it "4003476 of size 4" $
+      4003476 `shouldSatisfy` (not . isWeaklyConstructionDeterministic (conciseGraphI 4))
