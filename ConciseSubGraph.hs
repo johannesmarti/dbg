@@ -18,7 +18,7 @@ import Graph
 data ConciseSubGraph = ConciseSubGraph {
   baseGraph :: ConciseGraph,
   subdomain :: [Node]
-}
+} deriving Show
 
 conciseSubGraphI :: Size -> GraphI ConciseSubGraph Int
 conciseSubGraphI size = GraphI (Set.fromList . subdomain) (succs size) (preds size)

@@ -22,7 +22,9 @@ data Result = NoHomo | HomoAt Int | Unknown Int
 
 instance Semigroup Result where
   NoHomo <> x    = x
-  HomoAt n <> _  = HomoAt n
+  HomoAt n <> NoHomo = HomoAt n
+  HomoAt n <> HomoAt m = HomoAt (min n m)
+  HomoAt n <> Unknown _ = HomoAt n
   Unknown d <> NoHomo = Unknown d
   Unknown _ <> HomoAt n = HomoAt n
   Unknown d <> Unknown e = Unknown (min d e)
@@ -30,21 +32,23 @@ instance Semigroup Result where
 instance Monoid Result where
   mempty = NoHomo
 
-searchDbgHomo :: Size -> Int -> ConciseSubGraph -> Result
-searchDbgHomo size cutoff subgraph = let
-    cg = ConciseSubGraph.caleyGraph size subgraph
+homoAtLevel :: Size -> Int -> (ConciseSubGraph,CaleyGraph) -> Bool
+homoAtLevel size level (subgraph,cg) = let
+    dim = level
     dom = subdomain subgraph
-    searchHomo dim = if dim > cutoff then Unknown cutoff
-        else let 
-                deBruijnGraph = dbg dim
-                approx = Map.fromSet f (domain dbgI deBruijnGraph)
-                f dbgnode = Set.filter (isReallyPossibleValue size cg (nodeToList dim dbgnode) dom) (Set.fromList dom)
-             in if isPossible approx && not (noHomo (arcConsHomosFromApprox dbgI (conciseSubGraphI size) approx) deBruijnGraph subgraph)
-                  then HomoAt dim
-                  else searchHomo (dim + 1)
-  in if isReallyGoodForDom size cg dom
-       then searchHomo 1
-       else NoHomo
+    deBruijnGraph = dbg dim
+    approx = Map.fromSet f (domain dbgI deBruijnGraph)
+    f dbgnode = Set.filter (isReallyPossibleValue size cg (nodeToList dim dbgnode) dom) (Set.fromList dom)
+  in isPossible approx && not (noHomo (arcConsHomosFromApprox dbgI (conciseSubGraphI size) approx) deBruijnGraph subgraph)
+
+searchLevels :: Size -> [(ConciseSubGraph,CaleyGraph)] -> Int -> Int -> Result
+searchLevels size candidates cutoff level =
+  if level > cutoff
+    then Unknown cutoff
+    else let 
+         in if any (homoAtLevel size level) candidates
+              then HomoAt level
+              else searchLevels size candidates cutoff (level + 1)
 
 searchUpTo :: Size -> Int -> ConciseGraph -> Result
 searchUpTo size cutoff graph = let
@@ -52,4 +56,7 @@ searchUpTo size cutoff graph = let
     subsets = Set.filter (\s -> Set.size s >= 2) $ Set.powerSet allNodes
     subgraphs = map (fromSubset size graph) (Set.toList subsets)
     candidates = filter (\s -> not (isWeaklyConstructionDeterministic (conciseSubGraphI size) s)) subgraphs
-  in mconcat (map (searchDbgHomo size cutoff) candidates)
+    candidatesWithCaley = map (\sg -> (sg, ConciseSubGraph.caleyGraph size sg)) candidates
+    isReallyGoodPair (sg, cg) = isReallyGoodForDom size cg (subdomain sg)
+    reallyGoodCandidates = filter isReallyGoodPair candidatesWithCaley
+  in searchLevels size reallyGoodCandidates cutoff 1

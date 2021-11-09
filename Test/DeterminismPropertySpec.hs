@@ -52,6 +52,8 @@ spec = do
     it "strange3" $
       strange3 `shouldSatisfy` (isWeaklyConstructionDeterministic mapGraphI)
   describe "does not have weak determinism property" $ do
+    it "dbg 1" $
+      (dbg 1) `shouldSatisfy` (not . isWeaklyConstructionDeterministic dbgI)
     it "dbg 3" $
       (dbg 3) `shouldSatisfy` (not . isWeaklyConstructionDeterministic dbgI)
     it "force3d" $

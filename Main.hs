@@ -58,9 +58,10 @@ mainRange = do
   let bitmaps = Prelude.filter (notTrivial 3) (allGraphsOfSize 3)
   ----let bitmaps = Prelude.filter (notTrivial 4) (allGraphsOfSize 4)
   --let list = Prelude.filter (\g -> SS.searchUpTo 4 9 g == HomoAt 9) bitmaps
-  let list = Prelude.filter (\g -> SS.searchUpTo 3 9 g == HomoAt 4) bitmaps
+  --let list = Prelude.filter (\g -> SS.searchUpTo 3 9 g == HomoAt 3) bitmaps
+  let list = Prelude.filter (\g -> SS.searchUpTo 3 2 g == Unknown 2) bitmaps
   --let list = Prelude.filter (\g -> SS.searchUpTo 4 10 g == HomoAt 10) bitmaps
   --let list = Prelude.filter (\g -> SS.searchUpTo 4 10 g == Unknown) bitmaps
   putStrLn (show $ length list)
-  mapM_ (checkOne 3) list
+  --mapM_ (checkOne 3) list
   --putStrLn (show $ list)
