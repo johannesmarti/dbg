@@ -59,4 +59,6 @@ searchUpTo size cutoff graph = let
     candidatesWithCaley = map (\sg -> (sg, ConciseSubGraph.caleyGraph size sg)) candidates
     isReallyGoodPair (sg, cg) = isReallyGoodForDom size cg (subdomain sg)
     reallyGoodCandidates = filter isReallyGoodPair candidatesWithCaley
-  in searchLevels size reallyGoodCandidates cutoff 1
+  in if null reallyGoodCandidates
+       then NoHomo
+       else searchLevels size reallyGoodCandidates cutoff 1
