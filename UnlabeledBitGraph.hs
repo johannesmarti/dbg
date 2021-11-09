@@ -149,6 +149,6 @@ isReflAndUnivInMultipleDom size dom graph node = isRefl size graph node &&
   any (\m -> isUnivInDom size dom m node) (multiples size graph)
 
 hasReflAndUnivInMultipleDom :: Size -> [Node] -> UnlabeledBitGraph -> Bool
-hasReflAndUnivInMultipleDom size dom graph = 
+hasReflAndUnivInMultipleDom size dom graph =
   any (isReflAndUnivInMultipleDom size dom graph) dom
 

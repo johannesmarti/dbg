@@ -88,12 +88,12 @@ isGoodForDom size cg dom = all (not . hasNoReflInDom size dom) (wellfoundedEleme
 part of the CaleyGraph -}
 isReallyGood :: Size -> CaleyGraph -> Bool
 isReallyGood size cg = all (hasUniv size) (nonWellfoundedElements cg) &&
-  all (\rel -> hasReflAndUnivInMultiple size rel) (wellfoundedElements cg)
+  all (\rel -> rel == diagonal size || hasReflAndUnivInMultiple size rel) (wellfoundedElements cg)
 
 isReallyGoodForDom :: Size -> CaleyGraph -> [Node] -> Bool
 isReallyGoodForDom size cg dom =
   all (hasUnivInDom size dom) (nonWellfoundedElements cg) &&
-  all (\rel -> hasReflAndUnivInMultipleDom size dom rel) (wellfoundedElements cg)
+  all (\rel -> rel == diagonal size || hasReflAndUnivInMultipleDom size dom rel) (wellfoundedElements cg)
 
 splits :: [a] -> [([a],[a])]
 splits xx = zipWith splitAt [1..(length xx)] (repeat xx)

@@ -30,10 +30,28 @@ spec = do
       hasUniv 2 11  `shouldBe` True
     it "1010 has no univ in size 2" $
       hasUniv 2 10  `shouldBe` False
-    it "000000111 has univ in size 2" $
+    it "000000111 has univ in size 3" $
       hasUniv 3 7  `shouldBe` True
-    it "000001000 has no univ in size 2" $
+    it "000001000 has no univ in size 3" $
       hasUniv 3 8  `shouldBe` False
+  describe "checking hasReflAndUnivInMultiple on examples" $ do
+    it "000000111 has refl and univ in size 3" $
+      hasReflAndUnivInMultiple 3 7  `shouldBe` True
+    it "000001000 has no refl and univ in size 3" $
+      hasReflAndUnivInMultiple 3 8  `shouldBe` False
+    it "000100011 has refl and univ in size 3" $
+      hasReflAndUnivInMultiple 3 35  `shouldBe` True
+  describe "checking hasReflAndUnivInMultipleDom on examples" $ do
+    it "000000111 has refl and univ in size 3 and dom [0,1]" $
+      hasReflAndUnivInMultipleDom 3 [0,1] 7  `shouldBe` True
+    it "000001000 has no refl and univ in size 3 and dom [0,2]" $
+      hasReflAndUnivInMultipleDom 3 [0,2] 8  `shouldBe` False
+    it "000010000 has refl and univ in size 3 and dom [1]" $
+      hasReflAndUnivInMultipleDom 3 [1] 16  `shouldBe` True
+    it "000000011 has refl and univ in size 3 and dom [0,1]" $
+      hasReflAndUnivInMultipleDom 3 [0,1] 3  `shouldBe` True
+    it "000000011 has no refl and univ in size 3 and dom [0,2]" $
+      hasReflAndUnivInMultipleDom 3 [0,2] 3  `shouldBe` False
   describe "checking some compositons" $ do
     it "5 . top = 7 (in 3)" $
       compose 3 5 (totalGraph 3) `shouldBe` 7

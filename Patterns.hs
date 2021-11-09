@@ -7,9 +7,12 @@ module Patterns (
   testPattern,
   strange3,
   strongDet,
+  caleySchreck,
+  caleySchreckSize,
 ) where
 
 import AssocGraph
+import ConciseGraph
 import Graph
 import MapGraph
 
@@ -75,3 +78,8 @@ sd Zero = [('a','a'),('a','c'),('b','a'),('b','c'),('c','b')]
 sd One = [('a','c'),('a','b'),('b','a'),('b','b'),('c','a'),('c','b')]
 strongDet :: MapGraph Char
 strongDet = assocToMap sd
+
+caleySchreck :: ConciseGraph
+caleySchreck = 3942849
+caleySchreckSize :: Size
+caleySchreckSize = 4

@@ -38,11 +38,11 @@ searchDbgHomo size cutoff subgraph = let
         else let 
                 deBruijnGraph = dbg dim
                 approx = Map.fromSet f (domain dbgI deBruijnGraph)
-                f dbgnode = Set.filter (isPossibleValue size cg (nodeToList dim dbgnode) dom) (Set.fromList dom)
+                f dbgnode = Set.filter (isReallyPossibleValue size cg (nodeToList dim dbgnode) dom) (Set.fromList dom)
              in if isPossible approx && not (noHomo (arcConsHomosFromApprox dbgI (conciseSubGraphI size) approx) deBruijnGraph subgraph)
                   then HomoAt dim
                   else searchHomo (dim + 1)
-  in if isGoodForDom size cg dom
+  in if isReallyGoodForDom size cg dom
        then searchHomo 1
        else NoHomo
 

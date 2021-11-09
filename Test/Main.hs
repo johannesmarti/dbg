@@ -11,6 +11,7 @@ import qualified Test.HomoSpec
 import qualified Test.ArcConsSpec
 import qualified Test.UnlabeledBitGraphSpec
 import qualified Test.DeterminismPropertySpec
+import qualified Test.CaleyGraphSpec
 
 main :: IO ()
 main = hspec spec
@@ -24,4 +25,5 @@ spec = do
   describe "ArcCons" Test.ArcConsSpec.spec
   describe "UnlabeledBitGraph" Test.UnlabeledBitGraphSpec.spec
   describe "DeterminismProperty" Test.DeterminismPropertySpec.spec
+  describe "CaleyGraph" Test.CaleyGraphSpec.spec
 
