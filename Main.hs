@@ -52,16 +52,16 @@ mainRange :: IO ()
 mainRange = do
   --args <- getArgs
   --let n = read (head args) :: Int
---  let start = 3938472
---  let step = (totalGraph 4) `div` (1024 * 32)
---  let bitmaps = Prelude.filter (notTrivial 4) [start .. start + step]
-  let bitmaps = Prelude.filter (notTrivial 3) (allGraphsOfSize 3)
+  let start = 3938472
+  let step = (totalGraph 4) `div` (1024 * 32)
+  let bitmaps = Prelude.filter (notTrivial 4) [start .. start + step]
+--  let bitmaps = Prelude.filter (notTrivial 3) (allGraphsOfSize 3)
   ----let bitmaps = Prelude.filter (notTrivial 4) (allGraphsOfSize 4)
   --let list = Prelude.filter (\g -> SS.searchUpTo 4 9 g == HomoAt 9) bitmaps
   --let list = Prelude.filter (\g -> SS.searchUpTo 3 9 g == HomoAt 3) bitmaps
-  let list = Prelude.filter (\g -> SS.searchUpTo 3 2 g == Unknown 2) bitmaps
+  --let list = Prelude.filter (\g -> SS.searchUpTo 3 2 g == Unknown 2) bitmaps
   --let list = Prelude.filter (\g -> SS.searchUpTo 4 10 g == HomoAt 10) bitmaps
-  --let list = Prelude.filter (\g -> SS.searchUpTo 4 10 g == Unknown) bitmaps
+  let list = Prelude.filter (\g -> SS.searchUpTo 4 9 g == UnknownAt 9) bitmaps
   putStrLn (show $ length list)
   --mapM_ (checkOne 3) list
   --putStrLn (show $ list)

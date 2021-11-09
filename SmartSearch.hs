@@ -17,17 +17,17 @@ import DeterminismProperty
 
 import Debug.Trace
 
-data Result = NoHomo | HomoAt Int | Unknown Int
+data Result = NoHomo | HomoAt Int | UnknownAt Int
   deriving (Eq, Show)
 
 instance Semigroup Result where
   NoHomo <> x    = x
   HomoAt n <> NoHomo = HomoAt n
   HomoAt n <> HomoAt m = HomoAt (min n m)
-  HomoAt n <> Unknown _ = HomoAt n
-  Unknown d <> NoHomo = Unknown d
-  Unknown _ <> HomoAt n = HomoAt n
-  Unknown d <> Unknown e = Unknown (min d e)
+  HomoAt n <> UnknownAt _ = HomoAt n
+  UnknownAt d <> NoHomo = UnknownAt d
+  UnknownAt _ <> HomoAt n = HomoAt n
+  UnknownAt d <> UnknownAt e = UnknownAt (min d e)
 
 instance Monoid Result where
   mempty = NoHomo
@@ -44,7 +44,7 @@ homoAtLevel size level (subgraph,cg) = let
 searchLevels :: Size -> [(ConciseSubGraph,CaleyGraph)] -> Int -> Int -> Result
 searchLevels size candidates cutoff level =
   if level > cutoff
-    then Unknown cutoff
+    then UnknownAt cutoff
     else let 
          in if any (homoAtLevel size level) candidates
               then HomoAt level
