@@ -17,15 +17,15 @@ import DeterminismProperty
 
 import Debug.Trace
 
-data Result = NoHomo | HomoAt Int | Unknown
+data Result = NoHomo | HomoAt Int | Unknown Int
   deriving (Eq, Show)
 
 instance Semigroup Result where
   NoHomo <> x    = x
   HomoAt n <> _  = HomoAt n
-  Unknown <> NoHomo = Unknown
-  Unknown <> HomoAt n = HomoAt n
-  Unknown <> Unknown = Unknown
+  Unknown d <> NoHomo = Unknown d
+  Unknown _ <> HomoAt n = HomoAt n
+  Unknown d <> Unknown e = Unknown (min d e)
 
 instance Monoid Result where
   mempty = NoHomo
@@ -34,7 +34,7 @@ searchDbgHomo :: Size -> Int -> ConciseSubGraph -> Result
 searchDbgHomo size cutoff subgraph = let
     cg = ConciseSubGraph.caleyGraph size subgraph
     dom = subdomain subgraph
-    searchHomo dim = if dim > cutoff then Unknown
+    searchHomo dim = if dim > cutoff then Unknown cutoff
         else let 
                 deBruijnGraph = dbg dim
                 approx = Map.fromSet f (domain dbgI deBruijnGraph)
