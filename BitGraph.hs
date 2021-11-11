@@ -1,5 +1,5 @@
 module BitGraph (
-  BitGraph,
+  BitGraph(..),
   Node,
   bitGraphI,
 ) where
@@ -8,14 +8,19 @@ import Data.Bits
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 
-import UnlabeledBitGraph
+import ConciseGraph hiding (Node, Size, nodes)
 import Graph
+import UnlabeledBitGraph
 
 data BitGraph = BitGraph {
   size       :: Int,
   zeroBitMap :: UnlabeledBitGraph,
   oneBitMap  :: UnlabeledBitGraph
 }
+
+fromConciseGraph :: Size -> ConciseGraph -> BitGraph
+fromConciseGraph size cg = BitGraph size (relationOfLabel size cg Zero)
+                                         (relationOfLabel size cg One)
 
 bitsOfLabel :: BitGraph -> Label -> UnlabeledBitGraph
 bitsOfLabel bg Zero = zeroBitMap bg

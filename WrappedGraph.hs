@@ -1,5 +1,5 @@
 module WrappedGraph (
-  WrappedGraph,
+  WrappedGraph(..),
   wrappedGraphI,
 ) where
 

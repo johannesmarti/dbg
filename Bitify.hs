@@ -1,14 +1,21 @@
 module Bitify (
-
+  bitify,
 ) where
+
+import qualified Data.Set as Set
 
 import BitGraph
 import Coding
 import Graph
 import WrappedGraph
 
-bitify :: Ord x => GraphI g x -> g -> WrappedGraph BitGraph x Node
-bitify gi g = undefined
+bitify :: Ord x => GraphI g x -> g -> WrappedGraph BitGraph Node x
+bitify gi g = WrappedGraph bitGraphI bg c where
+  bg = BitGraph size 0 0
+  c = fromAssoc assoc
+  oldDom = Graph.domain gi g
+  size = Set.size oldDom
+  assoc = zip (Set.toList oldDom) [0 .. ]
 
 {-
 -- Should Maybe stay on top of sets?

@@ -1,5 +1,6 @@
 module Coding (
   Coding,
+  fromAssoc,
   aggressiveEncode,
   aggressiveDecode,
   domain,
@@ -8,11 +9,17 @@ module Coding (
 
 import qualified Data.Map as Map
 import qualified Data.Set as Set
+import Data.Tuple (swap)
 
 data Coding x y = Coding {
   encoder    :: Map.Map x y,
   decoder    :: Map.Map y x
 }
+
+fromAssoc :: (Ord x, Ord y) => [(x,y)] -> Coding x y
+fromAssoc assoc = Coding enMap deMap where -- should check injectivity
+  enMap = Map.fromList assoc
+  deMap = Map.fromList (map swap assoc)
 
 encode :: Ord x => Coding x y -> x -> Maybe y
 encode coding node = Map.lookup node (encoder coding)
