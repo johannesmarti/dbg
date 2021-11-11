@@ -11,7 +11,7 @@ import Graph
 import WrappedGraph
 
 bitify :: Ord x => GraphI g x -> g -> WrappedGraph BitGraph Node x
-bitify gi g = assert (wellDefined wrappedGraphI wrappedGraph) wrappedGraph where
+bitify gi g = assert (wellDefined wrappedGraphI wrappedGraph) $ wrappedGraph where
   wrappedGraph = WrappedGraph bitGraphI bg c
   bg = fromArcs size newArcs
   c = fromAssoc assoc

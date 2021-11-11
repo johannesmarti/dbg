@@ -46,4 +46,4 @@ succs :: BitGraph -> MapFunction Node
 succs bg label node = Set.fromList $ succsAsList (size bg) (bitsOfLabel bg label) node
 
 preds :: BitGraph -> MapFunction Node
-preds bg label node = Set.fromList $ succsAsList (size bg) (bitsOfLabel bg label) node
+preds bg label node = Set.fromList $ predsAsList (size bg) (bitsOfLabel bg label) node
