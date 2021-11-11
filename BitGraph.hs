@@ -1,7 +1,11 @@
 module BitGraph (
-  BitGraph(..),
+  BitGraph,
+  size,
+  zeroBitMap,
+  oneBitMap,
   Node,
   bitGraphI,
+  fromArcs,
 ) where
 
 import Data.Bits
@@ -21,6 +25,12 @@ data BitGraph = BitGraph {
 fromConciseGraph :: Size -> ConciseGraph -> BitGraph
 fromConciseGraph size cg = BitGraph size (relationOfLabel size cg Zero)
                                          (relationOfLabel size cg One)
+
+fromArcs :: Size -> [Arc Node] -> BitGraph
+fromArcs size arcs = BitGraph size zbm obm where
+  (zbm, obm) = foldl setLabeledArc (nullWord, nullWord) arcs
+  setLabeledArc (zeroWord,oneWord) (u,Zero,v) = (setArc size zeroWord (u,v), oneWord)
+  setLabeledArc (zeroWord,oneWord) (u,One ,v) = (zeroWord, setArc size oneWord (u,v))
 
 bitsOfLabel :: BitGraph -> Label -> UnlabeledBitGraph
 bitsOfLabel bg Zero = zeroBitMap bg

@@ -9,6 +9,7 @@ module UnlabeledBitGraph (
   nullWord,
   totalGraph,
   hasArc,
+  setArc,
   diagonal,
   isRefl,
   isUnivInDom,
@@ -64,9 +65,16 @@ hasArc size bitset (from, to) = assert (enoughBits size) $
                                 assert (isValidBitset size bitset) $
                                 assert (isNode size from) $
                                 assert (isNode size to) $ let
-  position = from * size + to
-  index = position
+  index = from * size + to
     in testBit bitset index
+
+setArc :: Size -> UnlabeledBitGraph -> (Node,Node) -> UnlabeledBitGraph
+setArc size bitset (from, to) = assert (enoughBits size) $
+                                assert (isValidBitset size bitset) $
+                                assert (isNode size from) $
+                                assert (isNode size to) $ let
+  index = from * size + to
+    in setBit bitset index
 
 succsAsList :: Size -> UnlabeledBitGraph -> Node -> [Node]
 succsAsList size bitset node = assert (isNode size node) $
