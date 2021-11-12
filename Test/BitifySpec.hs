@@ -5,6 +5,7 @@ module Test.BitifySpec (
 import qualified Data.Set as Set
 import Test.Hspec
 
+import BitGraph
 import Bitify
 import Graph
 import MapGraph
@@ -22,3 +23,7 @@ spec = do
       predecessors wrappedGraphI bitburger One 'a' `shouldBe` Set.fromList ['c']
     it "1-pred of b match [a,c,b]" $
       predecessors wrappedGraphI bitburger One 'b' `shouldBe` Set.fromList ['a','c','b']
+  describe "bitify allPaths" $ do
+    let bitpaths = bitify mapGraphI allPaths
+    it "bitpaths has 8 elements" $
+      (size . innerGraph) bitpaths `shouldBe` 8
