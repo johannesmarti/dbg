@@ -27,3 +27,6 @@ succs (WrappedGraph iI ig c) label node = Set.map (aggressiveDecode c) $
 preds :: (Ord x, Ord y) => WrappedGraph g x y -> MapFunction y
 preds (WrappedGraph iI ig c) label node = Set.map (aggressiveDecode c) $
                                             predecessors iI ig label (aggressiveEncode c node)
+
+instance (Ord x, Ord y, Show y) => Show (WrappedGraph g x y) where
+  show = unlines . (Graph.prettyGraph wrappedGraphI show)

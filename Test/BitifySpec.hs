@@ -23,7 +23,11 @@ spec = do
       predecessors wrappedGraphI bitburger One 'a' `shouldBe` Set.fromList ['c']
     it "1-pred of b match [a,c,b]" $
       predecessors wrappedGraphI bitburger One 'b' `shouldBe` Set.fromList ['a','c','b']
+    it "bitburger satisfies caley condition" $
+      bitburger `shouldSatisfy` caleyCondition
   describe "bitify allPaths" $ do
     let bitpaths = bitify mapGraphI allPaths
     it "bitpaths has 8 elements" $
       (size . innerGraph) bitpaths `shouldBe` 8
+    it "bitpaths satisfies caley condition" $
+      bitpaths `shouldSatisfy` caleyCondition

@@ -1,8 +1,8 @@
 module ConciseGraph (
   ConciseGraph,
-  Node,
-  Size,
   conciseGraphI,
+  Size,
+  Node,
   nodes,
   hasArc,
   isNode,
@@ -21,17 +21,13 @@ import Data.Bits
 import qualified Data.Set as Set
 
 import CaleyGraph
+import UnlabeledBitGraph (Node,Size,nodes)
 import Graph
 
 type ConciseGraph = Word
-type Node = Int
-type Size = Int
 
 conciseGraphI :: Size -> GraphI ConciseGraph Node
 conciseGraphI size = GraphI (dom size) (succs size) (preds size)
-
-nodes :: Size -> [Node]
-nodes size = [0 .. size-1]
 
 dom :: Size -> ConciseGraph -> Set.Set Node
 dom size bitset = assert (enoughBits size) $

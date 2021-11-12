@@ -1,5 +1,5 @@
 module CaleyGraph (
-  CaleyGraph,
+  CaleyGraph(..),
   relationOfWord,
   rightCaleyGraph,
   isGood,

@@ -17,7 +17,7 @@ domain :: Ord a => AssocGraph a -> Set a
 domain aList = Data.Set.Extra.concatMap ldom Graph.labels where
   ldom l = Set.fromList (fmap fst (aList l)) `union`
            Set.fromList (fmap snd (aList l))
-  
+
 successors :: Ord a => AssocGraph a -> Graph.MapFunction a
 successors aList l v = Set.fromList [t | (s,t) <- aList l, s == v]
 

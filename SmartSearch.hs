@@ -20,6 +20,7 @@ import Debug.Trace
 data Result = NoHomo | HomoAt Int | UnknownAt Int
   deriving (Eq, Show)
 
+{-
 instance Semigroup Result where
   NoHomo <> x    = x
   HomoAt n <> NoHomo = HomoAt n
@@ -31,6 +32,7 @@ instance Semigroup Result where
 
 instance Monoid Result where
   mempty = NoHomo
+-}
 
 homoAtLevel :: Size -> Int -> (ConciseSubGraph,CaleyGraph) -> Bool
 homoAtLevel size level (subgraph,cg) = let

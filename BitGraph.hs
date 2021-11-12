@@ -6,13 +6,15 @@ module BitGraph (
   Node,
   bitGraphI,
   fromArcs,
+  caleyGraph,
 ) where
 
 import Data.Bits
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 
-import ConciseGraph hiding (Node, Size, nodes)
+import CaleyGraph
+import ConciseGraph (ConciseGraph,relationOfLabel)
 import Graph
 import UnlabeledBitGraph
 
@@ -47,3 +49,8 @@ succs bg label node = Set.fromList $ succsAsList (size bg) (bitsOfLabel bg label
 
 preds :: BitGraph -> MapFunction Node
 preds bg label node = Set.fromList $ predsAsList (size bg) (bitsOfLabel bg label) node
+
+caleyGraph :: BitGraph -> CaleyGraph
+caleyGraph graph  = rightCaleyGraph (size graph)
+                                    (zeroBitMap graph, oneBitMap graph)
+

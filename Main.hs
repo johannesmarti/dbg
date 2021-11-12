@@ -16,12 +16,13 @@ import Homo
 import MapGraph
 import Search
 import SmartSearch as SS
+import Bitify
 
 import Patterns
 
 main :: IO ()
 --main = mapM_ (checkOne 4) unknownAt9
-main = mainRange
+main = easyReport mapGraphI allPaths
 
 {-
 main :: IO ()
