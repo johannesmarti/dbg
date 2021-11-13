@@ -2,6 +2,7 @@ module CaleyGraph (
   CaleyGraph(..),
   relationOfWord,
   rightCaleyGraph,
+  finiteWords,
   isGood,
   isReallyGood,
   isGoodForDom,

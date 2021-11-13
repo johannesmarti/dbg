@@ -9,6 +9,9 @@ module Patterns (
   strongDet,
   caleySchreck,
   caleySchreckSize,
+  slowFourConcise,
+  slowFourSize,
+  slowFour,
 ) where
 
 import AssocGraph
@@ -83,3 +86,14 @@ caleySchreck :: ConciseGraph
 caleySchreck = 3942849
 caleySchreckSize :: Size
 caleySchreckSize = 4
+
+
+slowFourConcise :: ConciseGraph
+slowFourConcise = 4003476
+slowFourSize :: Size
+slowFourSize = 4
+s4 Zero = [('a','a'),('a','b'),('b','c'),('b','d'),('c','a'),('d','c')]
+s4 One = [('b','b'),('b','c'),('b','a'),('b','b'),('c','a'),('c','b')]
+slowFour :: MapGraph Char
+slowFour = assocToMap s4
+

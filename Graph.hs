@@ -7,7 +7,8 @@ module Graph (
   wellDefined,
   domain, successors, predecessors,
   arcs,
-  prettyGraph
+  prettyGraph,
+  stdPrintSuccessors,
 ) where
 
 import Control.Exception.Base

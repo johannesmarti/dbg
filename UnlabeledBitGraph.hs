@@ -20,11 +20,14 @@ module UnlabeledBitGraph (
   hasReflAndUnivInMultiple,
   hasReflAndUnivInMultipleDom,
   compose,
+  prettyUnlabeled,
 ) where
 
 import Control.Exception.Base
 import Data.Bits
 import qualified Data.Set as Set
+
+import Graph (stdPrintSuccessors)
 
 type UnlabeledBitGraph = Word
 type Node = Int
@@ -160,3 +163,10 @@ hasReflAndUnivInMultipleDom :: Size -> [Node] -> UnlabeledBitGraph -> Bool
 hasReflAndUnivInMultipleDom size dom graph =
   any (isReflAndUnivInMultipleDom size dom graph) dom
 
+prettyUnlabeled :: Size -> (Node -> String) -> UnlabeledBitGraph -> [String]
+prettyUnlabeled s printNode g = basePrinter s printNode (stdPrintSuccessors printNode) g
+
+basePrinter :: Size -> (Node -> String) -> ([Node] -> String) -> UnlabeledBitGraph -> [String]
+basePrinter s printNode printSuccessors g = let
+    lineForNode v = (printNode v) ++ " < " ++ printSuccessors (succsAsList s g v)
+  in fmap lineForNode (nodes s)

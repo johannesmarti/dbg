@@ -22,7 +22,9 @@ import Patterns
 
 main :: IO ()
 --main = mapM_ (checkOne 4) unknownAt9
-main = easyReport mapGraphI allPaths
+main = checkOne slowFourSize slowFourConcise
+--main = easyReport mapGraphI slowFour
+--main = easyReport dbgI (dbg 3)
 
 {-
 main :: IO ()
