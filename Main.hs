@@ -37,9 +37,8 @@ niceLifting gi g =
   let lg = lift gi g
       llg = lift mapGraphI lg
       lllg = lift mapGraphI llg
-      homos = arcConsHomos mapGraphI mapGraphI llg lg
-  in do --print (head homos)
-        print llg
+      homos = arcConsHomos mapGraphI gi lg g
+  in do print (head homos)
 
 {-
 main :: IO ()
