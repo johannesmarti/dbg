@@ -97,8 +97,6 @@ slowFour = assocToMap s4
 cel Zero = [('a','a'),('a','b'),
             ('b','b'),('b','c'),
             ('c','a'),('c','c')]
-cel One = [('a','a'),('a','b'),('a','c'),
-           ('b','a'),('b','b'),('b','c'),
-           ('c','a'),('c','b'),('c','c')]
+cel One = [('a','b'),('b','c'),('c','a')]
 celtic :: MapGraph Char
 celtic = assocToMap cel

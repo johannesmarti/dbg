@@ -36,8 +36,9 @@ niceLifting :: (Show x, Ord x) => GraphI g x -> g -> IO ()
 niceLifting gi g =
   let lg = lift gi g
       llg = lift mapGraphI lg
+      lllg = lift mapGraphI llg
       homos = arcConsHomos mapGraphI mapGraphI llg lg
-  in do print lg -- print (head homos)
+  in do --print (head homos)
         print llg
 
 {-
