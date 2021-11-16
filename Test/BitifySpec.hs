@@ -29,5 +29,5 @@ spec = do
     let bitpaths = bitify mapGraphI allPaths
     it "bitpaths has 8 elements" $
       (size . innerGraph) bitpaths `shouldBe` 8
-    it "bitpaths satisfies caley condition" $
-      bitpaths `shouldSatisfy` caleyCondition
+    it "bitpaths does not saitisfy caley condition" $
+      bitpaths `shouldSatisfy` (not . caleyCondition)

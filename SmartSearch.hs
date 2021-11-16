@@ -41,7 +41,7 @@ homoAtLevel size level (subgraph,cg) = let
     deBruijnGraph = dbg dim
     approx = Map.fromSet f (domain dbgI deBruijnGraph)
     f dbgnode = Set.filter (isReallyPossibleValue size cg (nodeToList dim dbgnode) dom) (Set.fromList dom)
-  in isPossible approx && (trace ("\nstarting search at level " ++ show level ++ " with approximation:\n" ++ show approx) $ not (noHomo (arcConsHomosFromApprox dbgI (conciseSubGraphI size) approx) deBruijnGraph subgraph))
+  in isPossible approx && (not (noHomo (arcConsHomosFromApprox dbgI (conciseSubGraphI size) approx) deBruijnGraph subgraph))
 
 searchLevels :: Size -> [(ConciseSubGraph,CaleyGraph)] -> Int -> Int -> Result
 searchLevels size candidates cutoff level =

@@ -12,15 +12,13 @@ module Patterns (
   slowFourConcise,
   slowFourSize,
   slowFour,
+  celtic,
 ) where
 
 import AssocGraph
 import ConciseGraph
 import Graph
 import MapGraph
-
-assocToMap :: Ord a => AssocGraph a -> MapGraph a
-assocToMap = MapGraph.fromGraph assocGraphI
 
 trap Zero = [('a','a'),('a','c'),('c','b'),('c','a')]
 trap One = [('b','b'),('b','c'),('c','a'),('a','c')]
@@ -87,7 +85,6 @@ caleySchreck = 3942849
 caleySchreckSize :: Size
 caleySchreckSize = 4
 
-
 slowFourConcise :: ConciseGraph
 slowFourConcise = 4003476
 slowFourSize :: Size
@@ -97,3 +94,11 @@ s4 One = [('b','b'),('b','c'),('b','a'),('b','b'),('c','a'),('c','b')]
 slowFour :: MapGraph Char
 slowFour = assocToMap s4
 
+cel Zero = [('a','a'),('a','b'),
+            ('b','b'),('b','c'),
+            ('c','a'),('c','c')]
+cel One = [('a','a'),('a','b'),('a','c'),
+           ('b','a'),('b','b'),('b','c'),
+           ('c','a'),('c','b'),('c','c')]
+celtic :: MapGraph Char
+celtic = assocToMap cel

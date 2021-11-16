@@ -1,11 +1,13 @@
 module AssocGraph (
   AssocGraph,
   assocGraphI,
+  assocToMap,
 ) where
 
 import Data.Set as Set
 import Data.Set.Extra
 
+import qualified MapGraph
 import qualified Graph
 
 type AssocGraph a = Graph.Label -> [(a,a)]
@@ -23,3 +25,7 @@ successors aList l v = Set.fromList [t | (s,t) <- aList l, s == v]
 
 predecessors :: Ord a => AssocGraph a -> Graph.MapFunction a
 predecessors aList l v = Set.fromList [t | (t,s) <- aList l, s == v]
+
+assocToMap :: Ord a => AssocGraph a -> MapGraph.MapGraph a
+assocToMap = MapGraph.fromGraph assocGraphI
+

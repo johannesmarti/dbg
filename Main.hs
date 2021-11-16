@@ -7,12 +7,14 @@ import System.Environment
 
 import qualified Data.Set as Set
 
+import AssocGraph
 import ArcCons
 import ConciseGraph
 import DeBruijn
 import DeterminismProperty
 import Graph
 import Homo
+import Lifting
 import MapGraph
 import Search
 import SmartSearch as SS
@@ -20,11 +22,22 @@ import Bitify
 
 import Patterns
 
+lift gi = assocToMap . (lifting gi)
+
 main :: IO ()
 --main = mapM_ (checkOne 4) unknownAt9
-main = checkOne slowFourSize slowFourConcise
+--main = niceLifting (conciseGraphI slowFourSize) slowFourConcise
+--main = niceLifting dbgI (dbg 1)
+main = niceLifting mapGraphI celtic
 --main = easyReport mapGraphI slowFour
 --main = easyReport dbgI (dbg 3)
+
+niceLifting :: (Show x, Ord x) => GraphI g x -> g -> IO ()
+niceLifting gi g =
+  let lg = lift gi g
+      llg = lift mapGraphI lg
+      homos = arcConsHomos mapGraphI mapGraphI llg lg
+  in do print (head homos)
 
 {-
 main :: IO ()
