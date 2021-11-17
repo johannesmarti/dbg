@@ -8,6 +8,7 @@ module Graph (
   domain, successors, predecessors,
   arcs,
   arcsOfLabel,
+  noPredecessor,
   prettyGraph,
   stdPrintSuccessors,
 ) where
@@ -72,3 +73,6 @@ basePrinter gi printNode printSuccessors g = let
     lineForNode v = (printNode v) ++ succsForLabel v Zero "0"
                                   ++ succsForLabel v One "1"
   in fmap lineForNode (Set.toList . (domain gi) $ g)
+
+noPredecessor :: Ord x => GraphI g x -> g -> x -> Bool
+noPredecessor gi g node = any (\l -> Prelude.null $ predecessors gi g l node) labels

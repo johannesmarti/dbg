@@ -3,18 +3,21 @@ module BitGraph (
   size,
   zeroBitMap,
   oneBitMap,
+  fromConciseGraph,
+  toConciseGraph,
   Node,
   bitGraphI,
   fromArcs,
   caleyGraph,
 ) where
 
+import Control.Exception.Base
 import Data.Bits
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 
 import CaleyGraph
-import ConciseGraph (ConciseGraph,relationOfLabel)
+import ConciseGraph (ConciseGraph,relationOfLabel,enoughBits)
 import Graph
 import UnlabeledBitGraph
 
@@ -25,8 +28,13 @@ data BitGraph = BitGraph {
 }
 
 fromConciseGraph :: Size -> ConciseGraph -> BitGraph
-fromConciseGraph size cg = BitGraph size (relationOfLabel size cg Zero)
-                                         (relationOfLabel size cg One)
+fromConciseGraph s cg = BitGraph s (relationOfLabel s cg Zero)
+                                   (relationOfLabel s cg One)
+
+toConciseGraph :: BitGraph -> (ConciseGraph, Size)
+toConciseGraph bg = let s = size bg
+                        cg = (zeroBitMap bg) .|. shiftL (oneBitMap bg) (s * s)
+  in assert (ConciseGraph.enoughBits s) $ (cg,s)
 
 fromArcs :: Size -> [Arc Node] -> BitGraph
 fromArcs size arcs = BitGraph size zbm obm where

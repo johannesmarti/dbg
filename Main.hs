@@ -9,6 +9,7 @@ import qualified Data.Set as Set
 
 import AssocGraph
 import ArcCons
+import BitGraph
 import ConciseGraph
 import DeBruijn
 import DeterminismProperty
@@ -16,6 +17,7 @@ import Graph
 import Homo
 import Lifting
 import MapGraph
+import WrappedGraph
 import Search
 import SmartSearch as SS
 import Bitify
@@ -28,9 +30,10 @@ main :: IO ()
 --main = mapM_ (checkOne 4) unknownAt9
 --main = niceLifting (conciseGraphI slowFourSize) slowFourConcise
 --main = niceLifting dbgI (dbg 1)
-main = niceLifting mapGraphI celtic
+--main = niceLifting mapGraphI celtic
 --main = easyReport mapGraphI slowFour
 --main = easyReport dbgI (dbg 3)
+main = checkHomo mapGraphI slowSquare
 
 niceLifting :: (Show x, Ord x) => GraphI g x -> g -> IO ()
 niceLifting gi g =
@@ -53,13 +56,20 @@ main = let res = arcConsHomos dbgI mapGraphI (dbg 8) strange3
       putStrLn ("ndetSubsets: " ++ show ndetSubsets)
 -}
 
+checkHomo :: (Show x, Ord x) => GraphI g x -> g -> IO ()
+checkHomo gi graph = let
+    wg = bitify gi graph
+    (cg,size) = BitGraph.toConciseGraph (innerGraph wg)
+  in do putStrLn . unlines $ prettyGraph gi show graph
+        checkOne size cg
+
 checkOne :: Size -> ConciseGraph -> IO ()
 checkOne size graph = do
   putStrLn (show graph)
   putStrLn "=============="
   putStr (showem size graph)
   --putStrLn (show (searchDbgHomo (conciseGraphI size) 10 graph))
-  putStrLn (show (SS.searchUpTo size 10 graph))
+  putStrLn (show (SS.searchUpTo size 11 graph))
   putStrLn "\n"
 
 unknownAt9 :: [ConciseGraph]

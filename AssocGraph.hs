@@ -5,6 +5,7 @@ module AssocGraph (
   fromGraph,
   assocToMap,
   materialize,
+  subgraph,
   applyBijection,
 ) where
 
@@ -58,6 +59,10 @@ applyBijection :: Eq b => (a -> b) -> AssocGraph a -> AssocGraph b
 applyBijection b assocGraph = materialize $ mapper . assocGraph where
   liftedb (u,v) = (b u, b v)
   mapper = map liftedb
+
+subgraph :: Ord a => Set.Set a -> AssocGraph a -> AssocGraph a
+subgraph set aGraph = materialize $ (\l -> filter pred (aGraph l)) where
+  pred (x,y) = x `Set.member` set && y `Set.member` set
 
 assocToMap :: Ord a => AssocGraph a -> MapGraph.MapGraph a
 assocToMap = MapGraph.fromGraph assocGraphI

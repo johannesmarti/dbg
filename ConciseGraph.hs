@@ -10,6 +10,7 @@ module ConciseGraph (
   totalGraph,
   relationOfLabel,
   caleyGraph,
+  enoughBits,
   hasBothFp,
   noDoubleRefl,
   notTrivial,

@@ -13,6 +13,7 @@ module Patterns (
   slowFourSize,
   slowFour,
   celtic,
+  slowSquare,
 ) where
 
 import AssocGraph
@@ -100,3 +101,9 @@ cel Zero = [('a','a'),('a','b'),
 cel One = [('a','b'),('b','c'),('c','a')]
 celtic :: MapGraph Char
 celtic = assocToMap cel
+
+
+slowSquare' Zero = [('a', 'a'), ('a', 'b'), ('a', 'c'), ('b', 'b'), ('b', 'c'), ('b', 'd'), ('c', 'a'), ('d', 'a'), ('d', 'b')]
+slowSquare' One = [('a', 'b'), ('b', 'c'), ('b', 'd'), ('c', 'c'), ('d', 'a'), ('d', 'c'), ('d', 'd')]
+slowSquare :: MapGraph Char
+slowSquare = assocToMap slowSquare'

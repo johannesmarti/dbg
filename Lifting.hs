@@ -23,11 +23,11 @@ prettyLifted prettyBase (Doubleton u v) =
 instance Show x => Show (LiftedNode x) where
   show lifted = prettyLifted show lifted
 
-depth :: LiftedNode x -> Int
+depth :: Ord x => LiftedNode x -> Int
 depth (BaseNode _) = 0
 depth (Singleton u) = depth u + 1
-depth (Doubleton u v) = let du = depth u in assert (du == depth v && ) $
-                                            assert (u < v) $  du + 1
+depth (Doubleton u v) = let du = depth u in assert (du == depth v) $
+                                            assert (u < v) $ du + 1
 
 liftedRelation :: (a -> a -> Bool) -> (LiftedNode a) -> (LiftedNode a) -> Bool
 liftedRelation baseRel (BaseNode a) (BaseNode b) = baseRel a b
@@ -58,14 +58,19 @@ liftedGraphI = assocGraphI
 balanced :: Ord x => LiftedGraph x -> Bool
 balanced liftedGraph = let
     dom = Set.toList $ domain assocGraphI liftedGraph
-    depths = map depth dom 
+    depths = map depth dom
   in ListExtra.allSame depths
 
 toLiftedGraph :: Ord x => GraphI g x -> g -> LiftedGraph x
-toLiftedGraph gi g = applyBijection BaseNode (AssocGraph.fromGraph gi g)
+toLiftedGraph gi g = let
+    hasPredecessorsDom = Set.filter (\node -> not (noPredecessor gi g node))
+                                    (domain gi g)
+  in applyBijection BaseNode $
+      AssocGraph.subgraph hasPredecessorsDom (AssocGraph.fromGraph gi g)
 
 lift :: Ord x => LiftedGraph x -> LiftedGraph x
 lift agraph = assert (balanced agraph) $ undefined
+
 
 lifting :: Ord x => GraphI g x -> g -> AssocGraph (x,x)
 lifting gi g l = edges where
