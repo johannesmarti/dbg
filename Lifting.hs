@@ -26,7 +26,29 @@ instance Show x => Show (LiftedNode x) where
 depth :: LiftedNode x -> Int
 depth (BaseNode _) = 0
 depth (Singleton u) = depth u + 1
-depth (Doubleton u v) = let du = depth u in assert (du == depth v) $ du + 1
+depth (Doubleton u v) = let du = depth u in assert (du == depth v && ) $
+                                            assert (u < v) $  du + 1
+
+liftedRelation :: (a -> a -> Bool) -> (LiftedNode a) -> (LiftedNode a) -> Bool
+liftedRelation baseRel (BaseNode a) (BaseNode b) = baseRel a b
+liftedRelation baseRel (Singleton x) (Singleton y) = liftedRelation baseRel x y
+liftedRelation baseRel (Singleton x) (Doubleton y y') =
+  liftedRelation baseRel x y && liftedRelation baseRel x y'
+liftedRelation baseRel (Doubleton x x') (Singleton y) =
+  liftedRelation baseRel x y || liftedRelation baseRel x' y
+liftedRelation baseRel (Doubleton x x') (Doubleton y y') =
+  (liftedRelation baseRel x y && liftedRelation baseRel x y') ||
+  (liftedRelation baseRel x' y && liftedRelation baseRel x' y')
+liftedRelation baseRel _ _ = error "comparing unbalanced lifted nodes"
+
+covers :: Eq a => (LiftedNode a) -> (LiftedNode a) -> Bool
+covers (BaseNode a) (BaseNode b) = a == b
+covers (Singleton x) (Singleton y) = covers x y
+covers (Singleton x) (Doubleton y y') = covers x y || covers x y'
+covers (Doubleton x x') (Singleton y) = covers x y && covers x' y
+covers (Doubleton x x') (Doubleton y y') =
+  (covers x y || covers x y') && (covers x' y || covers x' y')
+covers _ _ = error "comparing unbalanced lifted nodes"
 
 type LiftedGraph x = AssocGraph (LiftedNode x)
 
