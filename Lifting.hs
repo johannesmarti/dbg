@@ -43,7 +43,7 @@ toLiftedGraph :: Ord x => GraphI g x -> g -> LiftedGraph x
 toLiftedGraph gi g = applyBijection BaseNode (AssocGraph.fromGraph gi g)
 
 lift :: Ord x => LiftedGraph x -> LiftedGraph x
-lift agraph = undefined
+lift agraph = assert (balanced agraph) $ undefined
 
 lifting :: Ord x => GraphI g x -> g -> AssocGraph (x,x)
 lifting gi g l = edges where
