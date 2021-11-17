@@ -10,6 +10,7 @@ module Graph (
   arcsOfLabel,
   noPredecessor,
   prettyGraph,
+  prettyPredGraph,
   stdPrintSuccessors,
 ) where
 
@@ -59,12 +60,16 @@ instance (Ord x, Show x) => Show (Graph x) where
   show = unlines . prettyGraph
 -}
 
+noPredecessor :: Ord x => GraphI g x -> g -> x -> Bool
+noPredecessor gi g node = any (\l -> Prelude.null $ predecessors gi g l node) labels
+
 prettyGraph :: Ord x => GraphI g x -> (x -> String) -> g -> [String]
 prettyGraph gi printNode g = basePrinter gi printNode (stdPrintSuccessors printNode) g
 
 stdPrintSuccessors :: (a -> String) -> [a] -> String
 stdPrintSuccessors printSuccessor successors =
-  "{" ++ (intercalate "," (fmap printSuccessor successors)) ++ "}"
+  --"{" ++ (intercalate "," (fmap printSuccessor successors)) ++ "}"
+  "{" ++ (intercalate ", " (fmap printSuccessor successors)) ++ "}"
 
 basePrinter :: Ord x => GraphI g x -> (x -> String) -> ([x] -> String) -> g -> [String]
 basePrinter gi printNode printSuccessors g = let
@@ -74,5 +79,13 @@ basePrinter gi printNode printSuccessors g = let
                                   ++ succsForLabel v One "1"
   in fmap lineForNode (Set.toList . (domain gi) $ g)
 
-noPredecessor :: Ord x => GraphI g x -> g -> x -> Bool
-noPredecessor gi g node = any (\l -> Prelude.null $ predecessors gi g l node) labels
+prettyPredGraph :: Ord x => GraphI g x -> (x -> String) -> g -> [String]
+prettyPredGraph gi printNode g = basePredPrinter gi printNode (stdPrintSuccessors printNode) g
+
+basePredPrinter :: Ord x => GraphI g x -> (x -> String) -> ([x] -> String) -> g -> [String]
+basePredPrinter gi printNode printSuccessors g = let
+    predsForLabel v l lrep = (printSuccessors (Set.toList (predecessors gi g l v))) ++ " <" ++ lrep ++ " "
+    lineForNode v = predsForLabel v Zero "0"
+                    ++ predsForLabel v One "1" ++ (printNode v)
+  in fmap lineForNode (Set.toList . (domain gi) $ g)
+

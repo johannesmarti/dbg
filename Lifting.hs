@@ -1,4 +1,7 @@
 module Lifting (
+  toLiftedGraph,
+  liftedGraphI,
+  lift,
   lifting,
 ) where
 
@@ -41,14 +44,14 @@ liftedRelation baseRel (Doubleton x x') (Doubleton y y') =
   (liftedRelation baseRel x' y && liftedRelation baseRel x' y')
 liftedRelation baseRel _ _ = error "comparing unbalanced lifted nodes"
 
-covers :: Eq a => (LiftedNode a) -> (LiftedNode a) -> Bool
-covers (BaseNode a) (BaseNode b) = a == b
-covers (Singleton x) (Singleton y) = covers x y
-covers (Singleton x) (Doubleton y y') = covers x y || covers x y'
-covers (Doubleton x x') (Singleton y) = covers x y && covers x' y
-covers (Doubleton x x') (Doubleton y y') =
-  (covers x y || covers x y') && (covers x' y || covers x' y')
-covers _ _ = error "comparing unbalanced lifted nodes"
+isCovered :: Eq a => (LiftedNode a) -> (LiftedNode a) -> Bool
+isCovered (BaseNode a) (BaseNode b) = a == b
+isCovered (Singleton x) (Singleton y) = isCovered x y
+isCovered (Singleton x) (Doubleton y y') = isCovered x y || isCovered x y'
+isCovered (Doubleton x x') (Singleton y) = isCovered x y && isCovered x' y
+isCovered (Doubleton x x') (Doubleton y y') =
+  (isCovered x y || isCovered x y') && (isCovered x' y || isCovered x' y')
+isCovered _ _ = error "comparing unbalanced lifted nodes"
 
 type LiftedGraph x = AssocGraph (LiftedNode x)
 
@@ -68,9 +71,49 @@ toLiftedGraph gi g = let
   in applyBijection BaseNode $
       AssocGraph.subgraph hasPredecessorsDom (AssocGraph.fromGraph gi g)
 
-lift :: Ord x => LiftedGraph x -> LiftedGraph x
-lift agraph = assert (balanced agraph) $ undefined
+strictPairs :: [x] -> [(x,x)]
+strictPairs list = worker list [] where
+  worker [] accum = accum
+  worker (next:rest) accum = innerWorker next rest rest accum
+  innerWorker elem [] rest accum = worker rest accum
+  innerWorker elem (p:ps) rest accum = innerWorker elem ps rest ((elem, p):accum)
 
+graph :: (a -> b) -> [a] -> [(a, b)]
+graph _ [] = []
+graph f (a:as) = (a,f a) : (graph f as)
+
+lift :: Ord x => LiftedGraph x -> Maybe (LiftedGraph x)
+lift agraph = assert (balanced agraph) $ let
+    oldDomList = Set.toList $ (domain liftedGraphI agraph)
+    pred = predecessors liftedGraphI agraph
+    allDoubles = strictPairs oldDomList
+    intersecter (a,b) = (pred Zero a `Set.intersection` pred Zero b,
+                         pred One a `Set.intersection` pred One b)
+    candidates = filter (doIntersect . snd) (graph intersecter allDoubles)
+    doIntersect (sa,sb) = not (Set.null sa) && not (Set.null sb)
+    toAdd = filter notDominated candidates
+    notDominated ((a,b),(pz,po)) = not $ any dominates oldDomList where
+            dominates oldNode = a `isCovered` oldNode && b `isCovered` oldNode
+                                && (pz `Set.isSubsetOf` pred Zero oldNode &&
+                                    po `Set.isSubsetOf` pred One oldNode)
+    newNodesWithPreds = map (\((a,b),(pz,po)) -> (Doubleton a b,
+                             (Set.map Singleton pz,
+                              Set.map Singleton po))) toAdd
+    newNodes = map fst newNodesWithPreds
+    liftedOld = applyBijection Singleton agraph
+    withNewNodes = addNodesWithPreds newNodesWithPreds liftedOld
+    liftedGraph = addNodesWithSuccs succsOfNewNodes withNewNodes
+    succsOfNewNodes = map gaga newNodes
+    gaga d = let Doubleton a b = d
+                 succs = successors liftedGraphI withNewNodes
+                 zsuc = succs Graph.Zero (Singleton a) `Set.union` 
+                        succs Graph.Zero (Singleton b)
+                 osuc = succs Graph.One (Singleton a) `Set.union` 
+                        succs Graph.One (Singleton b)
+      in (d,(zsuc,osuc))
+  in if null toAdd
+       then Nothing
+       else Just liftedGraph
 
 lifting :: Ord x => GraphI g x -> g -> AssocGraph (x,x)
 lifting gi g l = edges where

@@ -24,24 +24,32 @@ import Bitify
 
 import Patterns
 
-lift gi = assocToMap . (lifting gi)
-
 main :: IO ()
 --main = mapM_ (checkOne 4) unknownAt9
 --main = niceLifting (conciseGraphI slowFourSize) slowFourConcise
 --main = niceLifting dbgI (dbg 1)
 --main = niceLifting mapGraphI celtic
 --main = easyReport mapGraphI slowFour
+main = niceLifting mapGraphI slowSquare
 --main = easyReport dbgI (dbg 3)
-main = checkHomo mapGraphI slowSquare
+--main = checkHomo mapGraphI slowSquare
+--main = checkHomo mapGraphI slowFour
+
+untilNothing :: (a -> Maybe a) -> a -> [a]
+untilNothing f g = let
+    val = f g
+  in case val of
+       Nothing -> []
+       Just x  -> x : untilNothing f x
 
 niceLifting :: (Show x, Ord x) => GraphI g x -> g -> IO ()
-niceLifting gi g =
-  let lg = lift gi g
-      llg = lift mapGraphI lg
-      lllg = lift mapGraphI llg
-      homos = arcConsHomos mapGraphI gi lg g
-  in do print (head homos)
+niceLifting gi graph =
+  let g = toLiftedGraph gi graph
+      lifts = untilNothing lift g
+      printer graph = putStrLn $ unlines $ prettyPredGraph liftedGraphI show graph
+      graphToSize g = Set.size $ domain liftedGraphI g
+  in do mapM_ printer (take 1 lifts)
+        mapM_ (print . graphToSize) (take 7 $ lifts)
 
 {-
 main :: IO ()
@@ -69,7 +77,7 @@ checkOne size graph = do
   putStrLn "=============="
   putStr (showem size graph)
   --putStrLn (show (searchDbgHomo (conciseGraphI size) 10 graph))
-  putStrLn (show (SS.searchUpTo size 11 graph))
+  putStrLn (show (SS.searchUpTo size 10 graph))
   putStrLn "\n"
 
 unknownAt9 :: [ConciseGraph]

@@ -7,6 +7,8 @@ module AssocGraph (
   materialize,
   subgraph,
   applyBijection,
+  addNodesWithSuccs,
+  addNodesWithPreds,
 ) where
 
 import Control.Exception.Base
@@ -48,12 +50,13 @@ isNubby :: Eq a => AssocGraph a -> Bool
 isNubby ag = isNubList (ag Graph.Zero) && isNubList (ag Graph.One)
 
 materialize :: Eq a => AssocGraph a -> AssocGraph a
-materialize ag = let
-    zeroArcs = ag Graph.Zero
-    oneArcs  = ag Graph.One
-    newGraph Graph.Zero = zeroArcs
-    newGraph Graph.One  = oneArcs
-  in assert (isNubby newGraph) $ newGraph
+materialize ag = fromPair (ag Graph.Zero, ag Graph.One)
+
+fromPair :: Eq a => ([(a,a)],[(a,a)]) -> AssocGraph a
+fromPair (zList,oList) = assert (isNubby newGraph) $ newGraph where
+  newGraph Graph.Zero = zList
+  newGraph Graph.One = oList
+
 
 applyBijection :: Eq b => (a -> b) -> AssocGraph a -> AssocGraph b
 applyBijection b assocGraph = materialize $ mapper . assocGraph where
@@ -66,4 +69,14 @@ subgraph set aGraph = materialize $ (\l -> filter pred (aGraph l)) where
 
 assocToMap :: Ord a => AssocGraph a -> MapGraph.MapGraph a
 assocToMap = MapGraph.fromGraph assocGraphI
+
+addNodesWithSuccs :: Ord a => [(a,(Set.Set a, Set.Set a))] -> AssocGraph a -> AssocGraph a
+addNodesWithSuccs toAdd graph = fromPair $
+  (foldl (\list (n,(sz,_)) -> [(n,v) | v <- Set.toList sz] ++ list) (graph Graph.Zero) toAdd,
+   foldl (\list (n,(_,so)) -> [(n,v) | v <- Set.toList so] ++ list) (graph Graph.One) toAdd)
+
+addNodesWithPreds :: Ord a => [(a,(Set.Set a, Set.Set a))] -> AssocGraph a -> AssocGraph a
+addNodesWithPreds toAdd graph = fromPair $
+  (foldl (\list (n,(sz,_)) -> [(v,n) | v <- Set.toList sz] ++ list) (graph Graph.Zero) toAdd,
+   foldl (\list (n,(_,so)) -> [(v,n) | v <- Set.toList so] ++ list) (graph Graph.One) toAdd)
 
