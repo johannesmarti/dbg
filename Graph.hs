@@ -9,6 +9,7 @@ module Graph (
   arcs,
   arcsOfLabel,
   noPredecessor,
+  hasDoubleRefl,
   prettyGraph,
   prettyPredGraph,
   stdPrintSuccessors,
@@ -78,6 +79,11 @@ basePrinter gi printNode printSuccessors g = let
     lineForNode v = (printNode v) ++ succsForLabel v Zero "0"
                                   ++ succsForLabel v One "1"
   in fmap lineForNode (Set.toList . (domain gi) $ g)
+
+hasDoubleRefl :: Ord x => GraphI g x -> g -> Bool
+hasDoubleRefl gi g = let
+    hasBothLoops n = all (\l -> n `Set.member` predecessors gi g l n) labels
+  in any hasBothLoops (domain gi g)
 
 prettyPredGraph :: Ord x => GraphI g x -> (x -> String) -> g -> [String]
 prettyPredGraph gi printNode g = basePredPrinter gi printNode (stdPrintSuccessors printNode) g
