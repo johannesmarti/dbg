@@ -53,6 +53,9 @@ isCovered (Doubleton x x') (Doubleton y y') =
   (isCovered x y || isCovered x y') && (isCovered x' y || isCovered x' y')
 isCovered _ _ = error "comparing unbalanced lifted nodes"
 
+setCovered :: Eq a => Set.Set (LiftedNode a) -> Set.Set (LiftedNode a) -> Bool
+setCovered x y = all (\n -> any (\m -> n `isCovered` m) y) x
+
 type LiftedGraph x = AssocGraph (LiftedNode x)
 
 liftedGraphI :: Ord x => GraphI (LiftedGraph x) (LiftedNode x)
@@ -94,8 +97,8 @@ lift agraph = assert (balanced agraph) $ let
     toAdd = filter notDominated candidates
     notDominated ((a,b),(pz,po)) = not $ any dominates oldDomList where
             dominates oldNode = a `isCovered` oldNode && b `isCovered` oldNode
-                                && (pz `Set.isSubsetOf` pred Zero oldNode &&
-                                    po `Set.isSubsetOf` pred One oldNode)
+                                && (pz `setCovered` pred Zero oldNode &&
+                                    po `setCovered` pred One oldNode)
     newNodesWithPreds = map (\((a,b),(pz,po)) -> (Doubleton a b,
                              (Set.map Singleton pz,
                               Set.map Singleton po))) toAdd
