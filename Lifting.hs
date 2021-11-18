@@ -21,7 +21,7 @@ prettyLifted prettyBase (BaseNode a) = prettyBase a
 prettyLifted prettyBase (Singleton u) =
   '[' : ((prettyLifted prettyBase u) ++ "]")
 prettyLifted prettyBase (Doubleton u v) =
-  '[' : ((prettyLifted prettyBase u) ++ "," ++ (prettyLifted prettyBase v) ++ "]")
+  '[' : ((prettyLifted prettyBase u) ++ (prettyLifted prettyBase v) ++ "]")
 
 instance Show x => Show (LiftedNode x) where
   show lifted = prettyLifted show lifted
@@ -88,6 +88,7 @@ graph f (a:as) = (a,f a) : (graph f as)
 lift :: Ord x => LiftedGraph x -> Maybe (LiftedGraph x)
 lift agraph = assert (balanced agraph) $ let
     oldDomList = Set.toList $ (domain liftedGraphI agraph)
+    setCondi = Set.isSubsetOf
     pred = predecessors liftedGraphI agraph
     allDoubles = strictPairs oldDomList
     intersecter (a,b) = (pred Zero a `Set.intersection` pred Zero b,
@@ -97,8 +98,8 @@ lift agraph = assert (balanced agraph) $ let
     toAdd = filter notDominated candidates
     notDominated ((a,b),(pz,po)) = not $ any dominates oldDomList where
             dominates oldNode = a `isCovered` oldNode && b `isCovered` oldNode
-                                && (pz `setCovered` pred Zero oldNode &&
-                                    po `setCovered` pred One oldNode)
+                                && (pz `setCondi` pred Zero oldNode &&
+                                    po `setCondi` pred One oldNode)
     newNodesWithPreds = map (\((a,b),(pz,po)) -> (Doubleton a b,
                              (Set.map Singleton pz,
                               Set.map Singleton po))) toAdd

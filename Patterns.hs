@@ -16,6 +16,7 @@ module Patterns (
   slowSquare,
   diverger3,
   diverger3Size,
+  totalIrreflexive
 ) where
 
 import AssocGraph
@@ -113,3 +114,9 @@ diverger3 :: ConciseGraph
 diverger3 = 44199
 diverger3Size :: Size
 diverger3Size = 3
+
+ti Zero = [(0,1),(0,2),(1,0),(1,2),(2,0),(2,1)]
+ti One = [(0,1),(0,2),(1,0),(1,2),(2,0),(2,1)]
+totalIrreflexive :: MapGraph Int
+totalIrreflexive = assocToMap ti
+

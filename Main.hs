@@ -35,12 +35,15 @@ main :: IO ()
 --main = checkHomo mapGraphI slowSquare
 --main = checkHomo mapGraphI slowFour
 --main = print $ searchLifting 7 mapGraphI force3d
-main = mainRange
+main = niceLifting mapGraphI totalIrreflexive
+--main = mainRange
 --main = checkOne 3 44199
 --main = niceLifting (conciseGraphI diverger3Size) diverger3
 --main = niceLifting mapGraphI force3d
 --main = niceLifting (conciseGraphI 4) 3946697
 --main = checkHomo (conciseGraphI 4) 3946697
+--main = niceLifting (conciseGraphI 4) 3941826
+--main = checkHomo (conciseGraphI 4) 3941826
 
 untilNothing :: (a -> Maybe a) -> a -> [a]
 untilNothing f g = let
@@ -59,8 +62,10 @@ niceLifting gi graph =
       lifts = takeTill (hasDoubleRefl liftedGraphI) $ untilNothing lift g
       printer graph = putStrLn $ unlines $ prettyPredGraph liftedGraphI show graph
       graphToSize g = Set.size $ domain liftedGraphI g
-  in do mapM_ printer (take 3 lifts)
-        mapM_ (print . graphToSize) (take 7 $ lifts)
+  in do putStr $ unlines $ prettyGraph gi show graph
+        putStrLn "=============="
+        mapM_ printer (take 3 lifts)
+        mapM_ (print . graphToSize) (take 5 $ lifts)
 
 searchLifting :: Ord x => Int -> GraphI g x -> g -> Result
 searchLifting cutoff gi graph = worker g 0 where
@@ -109,17 +114,16 @@ mainRange :: IO ()
 mainRange = do
   --args <- getArgs
   --let n = read (head args) :: Int
-  let start = 3938472
+  let start = 8273023 
   let step = (totalGraph 4) `div` (1024 * 32 * 32)
-  --let bitmaps = Prelude.filter (notTrivial 4) [start .. start + step]
-  let bitmaps = Prelude.filter (notTrivial 3) (allGraphsOfSize 3)
+  let bitmaps = Prelude.filter (notTrivial 4) [start .. start + step]
+  --let bitmaps = Prelude.filter (notTrivial 3) (allGraphsOfSize 3)
   --let list = Prelude.filter (\g -> SS.searchUpTo 3 9 g == HomoAt 3) bitmaps
-  let list = Prelude.filter (\g -> SS.searchUpTo 3 5 g == NoHomo) bitmaps
-  --let list = Prelude.filter (\g -> SS.searchUpTo 4 5 g == HomoAt 5) bitmaps
-  let bad = Prelude.filter (\g -> searchLifting 9 (conciseGraphI 3) g /= NoHomo) list
-  --let bad = Prelude.filter (\g -> searchLifting 5 (conciseGraphI 4) g /= HomoAt 5) list
-  --putStrLn (show $ take 5 $ list)
+  --let list = Prelude.filter (\g -> SS.searchUpTo 3 5 g /= NoHomo) bitmaps
+  let list = Prelude.filter (\g -> SS.searchUpTo 4 6 g == HomoAt 6) bitmaps
+  --let bad = Prelude.filter (\g -> searchLifting 9 (conciseGraphI 3) g == NoHomo) list
+  let bad = Prelude.filter (\g -> searchLifting 6 (conciseGraphI 4) g /= HomoAt 6) list
+  putStrLn (show $ take 5 $ list)
   --putStrLn (show $ length bad)
-  putStrLn (show $ length bad)
   putStrLn (show $ head $ bad)
   --mapM_ (checkOne 3) list
