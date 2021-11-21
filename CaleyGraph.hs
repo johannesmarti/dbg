@@ -9,6 +9,8 @@ module CaleyGraph (
   isReallyGoodForDom,
   isPossibleValue,  
   isReallyPossibleValue,  
+  printNodeWithSuccs,
+  prettyCaleyGraph,
 ) where
 
 import Control.Exception.Base
@@ -119,3 +121,10 @@ isReallyPossibleValue size cg word others node =
   all (\v -> hasArc size (relationOfWord size cg word) (node,v)) others &&
   all (\i -> hasArc size (relationOfWord size cg i) (node,node)) (repeatingInits word)
 
+printNodeWithSuccs :: CaleyGraph -> UnlabeledBitGraph -> String
+printNodeWithSuccs cg node = show node ++ " -> " ++ show succs where
+  succs = (successorMap cg) Map.! node
+
+prettyCaleyGraph :: CaleyGraph -> [String]
+prettyCaleyGraph cg = map printNode (Map.toList (successorMap cg)) where
+  printNode (node,succs) = show node ++ " -> " ++ show succs

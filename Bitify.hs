@@ -31,8 +31,8 @@ caleyCondition wg = isReallyGood (size inner) cg where
   inner = innerGraph wg
   cg = caleyGraph inner
 
-caleyReport :: (Ord x, Show x) => WrappedGraph BitGraph Node x -> [String]
-caleyReport wg = let
+pathReport :: (Ord x, Show x) => WrappedGraph BitGraph Node x -> [String]
+pathReport wg = let
     inner = innerGraph wg
     cg = caleyGraph inner
     s = size inner
@@ -40,6 +40,7 @@ caleyReport wg = let
     enc = aggressiveEncode c
     dec = aggressiveDecode c
     printRel r = prettyUnlabeled s (show . dec) r
+    printRelWithCode r = (printNodeWithSuccs cg r ++ ":") : (printRel r)
     wfs = wellfoundedElements cg
     nwfs = nonWellfoundedElements cg
     finWords = finiteWords s cg
@@ -50,14 +51,20 @@ caleyReport wg = let
       show wg,
       "It has " ++ show (Set.size wfs) ++ " finite and " ++
                    show (Set.size nwfs) ++ " infinite elements.", "",
+      "It " ++ (if isReallyGood s cg then "satisfies" else "does not satisfy") ++ " the path condition.", "",
       "It's finite words are:", show (map fst finWords),
       "Of which one with maximal length is " ++ show longestFinWord ++ ", " ++
       "which has relation:"] ++ (printRel relOfLongest) ++ ["",
-      "Two of its infinit relations are:"] ++ printRel firstInfinite ++
-     ["and"] ++ printRel lastInfinite
+      "Two of its infinite relations are:"] ++ printRel firstInfinite ++
+     ["and"] ++ printRel lastInfinite ++ [""] ++
+     ["The full CaleyGraph is:"] ++ prettyCaleyGraph cg ++
+     ["", "The complete list of its finite elements is:"] ++
+      concatMap printRelWithCode (Set.toList wfs) ++
+     ["", "The complete list of its infinite elements is:"] ++
+      concatMap printRelWithCode (Set.toList nwfs)
      
 
 easyReport :: (Ord x, Show x) => GraphI g x -> g -> IO ()
-easyReport gi g = putStr . unlines . caleyReport $ wg where
+easyReport gi g = putStr . unlines . pathReport $ wg where
   wg = bitify gi g
 

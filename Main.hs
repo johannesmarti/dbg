@@ -30,14 +30,15 @@ main :: IO ()
 --main = niceLifting dbgI (dbg 1)
 --main = niceLifting mapGraphI celtic
 --main = easyReport mapGraphI slowFour
+main = easyReport mapGraphI force3d
 --main = niceLifting mapGraphI slowSquare
 --main = easyReport dbgI (dbg 3)
 --main = checkHomo mapGraphI slowSquare
 --main = checkHomo mapGraphI slowFour
 --main = print $ searchLifting 7 mapGraphI force3d
-main = niceLifting mapGraphI totalIrreflexive
+--main = niceLifting mapGraphI totalIrreflexive
 --main = mainRange
---main = checkOne 3 44199
+--main = checkOne 4 3937948
 --main = niceLifting (conciseGraphI diverger3Size) diverger3
 --main = niceLifting mapGraphI force3d
 --main = niceLifting (conciseGraphI 4) 3946697
