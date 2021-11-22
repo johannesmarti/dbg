@@ -1,6 +1,6 @@
 module MapGraph (
   MapGraph,
-  mapGraphI,
+  mapGraphI, mapGraphIwithNodePrinter,
   fromGraph,
   subgraph,
   projection,
@@ -13,65 +13,63 @@ import Data.Set.Extra as SetExtra
 
 import qualified Graph
 
--- TODO: Maybe we should put the Label into the codomain by mapping xs to pairs of sets
-data MapGraph x = MapGraph {
-  domain         :: Set x,
-  successorMap   :: Map (Graph.Label,x) (Set x),
-  predecessorMap :: Map (Graph.Label,x) (Set x) 
-}
+newtype MapGraph x = MapGraph { succPredMap :: Map x (Set x, Set x) }
 
-mapGraphI :: Ord x => Graph.GraphI (MapGraph x) x
-mapGraphI = Graph.GraphI domain successors predecessors
+mapGraphI :: (Ord x,Show x) => Graph.GraphI (MapGraph x) x
+mapGraphI = mapGraphIwithNodePrinter show
 
-successors :: Ord x => MapGraph x -> Graph.MapFunction x
-successors mg l v = assert (v `Set.member` MapGraph.domain mg) $
-  findWithDefault Set.empty (l,v) (successorMap mg)
+mapGraphINoShow :: Ord x => Graph.GraphI (MapGraph x) x
+mapGraphINoShow = mapGraphIwithNodePrinter undefined
 
-predecessors :: Ord x => MapGraph x -> Graph.MapFunction x
-predecessors mg l v = assert (v `Set.member` MapGraph.domain mg) $
-  findWithDefault Set.empty (l,v) (predecessorMap mg)
+mapGraphIwithNodePrinter :: Ord x => (x -> String) -> Graph.GraphI (MapGraph x) x
+mapGraphIwithNodePrinter prettyNode = Graph.interfaceFromSuccPredPretty
+                                         domain successors predecessors
+                                         (\_ n -> prettyNode n) 
+
+domain :: Ord x => MapGraph x -> Set x
+domain = Map.keysSet . succPredMap
+
+succPredPair :: Ord x => MapGraph x -> x -> (Set x, Set x)
+succPredPair mg v = assert (v `Set.member` domain mg) $
+  findWithDefault (error "node not in mapGraph") v (succPredMap mg)
+
+successors :: Ord x => MapGraph x -> x -> Set x
+successors mg v = fst $ succPredPair mg v
+
+predecessors :: Ord x => MapGraph x -> x -> Set x
+predecessors mg v = snd $ succPredPair mg v
 
 fromGraph :: Ord a => Graph.GraphI g a -> g -> MapGraph a
 fromGraph gi graph = 
-  assert (Graph.wellDefined mapGraphI result) result where
-    result = MapGraph dom sm pm
+  assert (Graph.succPredInDom mapGraphINoShow result) $
+  assert (Graph.succPredMatch mapGraphINoShow result) result where
+    result = MapGraph spm
     dom = Graph.domain gi graph
-    product = Set.cartesianProduct Graph.labels dom
-    psucc = uncurry (Graph.successors gi graph)
-    activeSuccDom = Set.filter (\p -> not (Set.null (psucc p))) product
-    sm = Map.fromSet psucc activeSuccDom
-    ppred = uncurry (Graph.predecessors gi graph)
-    activePredDom = Set.filter (\p -> not (Set.null (ppred p))) product
-    pm = Map.fromSet ppred activePredDom
+    spmapping v = (Graph.successors gi graph v, Graph.predecessors gi graph v)
+    spm = Map.fromSet spmapping dom
 
 subgraph :: Ord a => Graph.GraphI g a -> g -> Set a -> MapGraph a
 subgraph gi g subdomain = assert (subdomain `isSubsetOf` Graph.domain gi g) $
-  assert (Graph.wellDefined mapGraphI result) result where
-    result = MapGraph dom sm pm
+  assert (Graph.succPredInDom mapGraphINoShow result) $
+  assert (Graph.succPredMatch mapGraphINoShow result) result where
+    result = MapGraph spm
     dom = subdomain
-    product = Set.cartesianProduct Graph.labels dom
-    psucc (l,n) = Graph.successors gi g l n `Set.intersection` subdomain
-    activeSuccDom = Set.filter (\p -> not (Set.null (psucc p))) product
-    sm = Map.fromSet psucc activeSuccDom
-    ppred (l,n) = Graph.predecessors gi g l n `Set.intersection` subdomain
-    activePredDom = Set.filter (\p -> not (Set.null (ppred p))) product
-    pm = Map.fromSet ppred activePredDom
+    spmapping v = (Graph.successors gi g v `Set.intersection` subdomain,
+                   Graph.predecessors gi g v `Set.intersection` subdomain)
+    spm = Map.fromSet spmapping dom
 
 projection :: (Ord a, Ord b) => Graph.GraphI g a -> g -> (a -> b) -> MapGraph b
 projection gi g projection =
-  assert (Graph.wellDefined mapGraphI result) result where
-    result = MapGraph dom sm pm
+  assert (Graph.succPredInDom mapGraphINoShow result) $
+  assert (Graph.succPredMatch mapGraphINoShow result) result where
+    result = MapGraph spm
     oldDomain = Graph.domain gi g
     dom = Set.map projection oldDomain
-    product = Set.cartesianProduct Graph.labels dom
     preimage n = Set.filter (\m -> projection m == n) oldDomain
-    mapper direction l = SetExtra.concatMap (Set.map projection . direction gi g l) . preimage
-    psucc (l,n) = (mapper Graph.successors l) n
-    activeSuccDom = Set.filter (\p -> not (Set.null (psucc p))) product
-    sm = Map.fromSet psucc activeSuccDom
-    ppred (l,n) = (mapper Graph.predecessors l) n
-    activePredDom = Set.filter (\p -> not (Set.null (ppred p))) product
-    pm = Map.fromSet ppred activePredDom
+    mapper direction = SetExtra.concatMap (Set.map projection . direction gi g) . preimage
+    spmapping v = (mapper Graph.successors v, mapper Graph.predecessors v)
+    spm = Map.fromSet spmapping dom
 
 instance (Ord x, Show x) => Show (MapGraph x) where
-  show = unlines . (Graph.prettyGraph mapGraphI show)
+  show = unlines . (Graph.prettyGraph mapGraphI)
+

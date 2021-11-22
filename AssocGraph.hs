@@ -18,7 +18,7 @@ import qualified Data.Set.Extra
 import qualified MapGraph
 import qualified Graph
 
-type AssocGraph a = Graph.Label -> [(a,a)]
+type AssocGraph a = [(a,a)]
 
 assocGraphI :: Ord a => Graph.GraphI (AssocGraph a) a
 assocGraphI = Graph.GraphI domain successors predecessors
