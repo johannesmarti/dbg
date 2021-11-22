@@ -2,14 +2,13 @@ module Lifting (
   toLiftedGraph,
   liftedGraphI,
   lift,
-  lifting,
 ) where
 
 import Control.Exception.Base
 import qualified Data.Set as Set
 import qualified Data.List.Extra as ListExtra
 
-import AssocGraph
+import MapGraph
 import Graph
 
 data LiftedNode x = BaseNode x | Singleton (LiftedNode x)
@@ -53,17 +52,14 @@ isCovered (Doubleton x x') (Doubleton y y') =
   (isCovered x y || isCovered x y') && (isCovered x' y || isCovered x' y')
 isCovered _ _ = error "comparing unbalanced lifted nodes"
 
-setCovered :: Eq a => Set.Set (LiftedNode a) -> Set.Set (LiftedNode a) -> Bool
-setCovered x y = all (\n -> any (\m -> n `isCovered` m) y) x
-
-type LiftedGraph x = AssocGraph (LiftedNode x)
+type LiftedGraph x = MapGraph (LiftedNode x)
 
 liftedGraphI :: Ord x => GraphI (LiftedGraph x) (LiftedNode x)
-liftedGraphI = assocGraphI
+liftedGraphI = mapGraphI
 
 balanced :: Ord x => LiftedGraph x -> Bool
 balanced liftedGraph = let
-    dom = Set.toList $ domain assocGraphI liftedGraph
+    dom = Set.toList $ domain liftedGraphI liftedGraph
     depths = map depth dom
   in ListExtra.allSame depths
 
@@ -118,15 +114,3 @@ lift agraph = assert (balanced agraph) $ let
   in if null toAdd
        then Nothing
        else Just liftedGraph
-
-lifting :: Ord x => GraphI g x -> g -> AssocGraph (x,x)
-lifting gi g l = edges where
-  oldDom = domain gi g
-  allPairsOfOld = Set.cartesianProduct oldDom oldDom
-  dom = Set.filter (\(a,b) -> a <= b) allPairsOfOld
-  allPairs = Set.toList (Set.cartesianProduct dom dom)
-  edges = filter sees allPairs
-  sees ((v,v'),(u,u')) = let sucv  = successors gi g l v
-                             sucv' = successors gi g l v'
-                           in (u `Set.member` sucv  && u' `Set.member` sucv) ||
-                              (u `Set.member` sucv' && u' `Set.member` sucv')
