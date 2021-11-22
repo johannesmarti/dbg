@@ -29,9 +29,12 @@ main :: IO ()
 --main = niceLifting (conciseGraphI slowFourSize) slowFourConcise
 --main = niceLifting dbgI (dbg 1)
 --main = niceLifting mapGraphI celtic
---main = easyReport mapGraphI slowFour
-main = easyReport mapGraphI force3d
+--main = easyReport mapGraphI force3d
 --main = niceLifting mapGraphI slowSquare
+--main = easyReport mapGraphI slowFour
+--main = easyReport (conciseGraphI 4) 3937948
+--main = easyReport (conciseGraphI 4) 4040284
+main = easyReport (conciseGraphI 4) 65967450
 --main = easyReport dbgI (dbg 3)
 --main = checkHomo mapGraphI slowSquare
 --main = checkHomo mapGraphI slowFour
