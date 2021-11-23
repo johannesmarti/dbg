@@ -1,14 +1,7 @@
 module AssocGraph (
   AssocGraph,
-  assocGraphI,
-  graphAsAssocGraph,
+  assocGraphI, assocGraphINoShow, assocGraphIwithNodePrinter,
   fromGraph,
-  assocToMap,
-  materialize,
-  subgraph,
-  applyBijection,
-  addNodesWithSuccs,
-  addNodesWithPreds,
 ) where
 
 import Control.Exception.Base
@@ -20,21 +13,29 @@ import qualified Graph
 
 type AssocGraph a = [(a,a)]
 
-assocGraphI :: Ord a => Graph.GraphI (AssocGraph a) a
-assocGraphI = Graph.GraphI domain successors predecessors
+assocGraphI :: (Ord a, Show a) => Graph.GraphI (AssocGraph a) a
+assocGraphI = assocGraphIwithNodePrinter show
 
+assocGraphINoShow :: Ord x => Graph.GraphI (AssocGraph x) x
+assocGraphINoShow = assocGraphIwithNodePrinter (error "can not show nodes of this graph")
 
-graphAsAssocGraph :: Ord a => Graph.GraphI g a -> g -> AssocGraph a
-graphAsAssocGraph gi g = Graph.arcsOfLabel gi g
-
-{- The point of fromGraph as opposed to graphsAsAssocGraph is to actually store the assoc list representation of the graph instead of recomputing it on demand! -}
-fromGraph :: Ord a => Graph.GraphI g a -> g -> AssocGraph a
-fromGraph gi g = materialize $ graphAsAssocGraph gi g
+assocGraphIwithNodePrinter :: Ord x => (x -> String) -> Graph.GraphI (AssocGraph x) x
+assocGraphIwithNodePrinter prettyNode = Graph.interfaceFromArcsPretty
+                                         id
+                                         (\_ n -> prettyNode n) 
 
 isNubList :: Eq a => [a] -> Bool
 isNubList list = worker [] list where
   worker _ [] = True
   worker seen (next:rest) = not (next `elem` seen) && (worker (next:seen) rest)
+
+fromGraph :: Ord a => Graph.GraphI g a -> g -> AssocGraph a
+fromGraph gi g = assert (isNubList list) list where list = Graph.arcs gi g
+
+{- The point of fromGraph as opposed to graphsAsAssocGraph is to actually store the assoc list representation of the graph instead of recomputing it on demand! -}
+{-
+fromGraph :: Ord a => Graph.GraphI g a -> g -> AssocGraph a
+fromGraph gi g = materialize $ graphAsAssocGraph gi g
 
 isNubby :: Eq a => AssocGraph a -> Bool
 isNubby ag = isNubList (ag Graph.Zero) && isNubList (ag Graph.One)
@@ -69,4 +70,5 @@ addNodesWithPreds :: Ord a => [(a,(Set.Set a, Set.Set a))] -> AssocGraph a -> As
 addNodesWithPreds toAdd graph = fromPair $
   (foldl (\list (n,(sz,_)) -> [(v,n) | v <- Set.toList sz] ++ list) (graph Graph.Zero) toAdd,
    foldl (\list (n,(_,so)) -> [(v,n) | v <- Set.toList so] ++ list) (graph Graph.One) toAdd)
+-}
 

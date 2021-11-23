@@ -2,6 +2,8 @@ module Graph (
   GraphI,
   domain, successors, predecessors, hasArc,
   interfaceFromSuccPredPretty,
+  interfaceFromHasArcPretty,
+  interfaceFromArcsPretty,
   arcs,
   succPredInDom,
   succPredMatch,
