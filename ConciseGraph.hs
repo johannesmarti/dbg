@@ -42,6 +42,12 @@ preds :: Size -> ConciseGraph -> MapFunction Node
 preds size bitset label node = assert (isNode size node) $
   Set.fromList $ filter (\v -> hasArc size bitset (v,label,node)) (nodes size)
 
+toConciseGraph :: BitGraph -> (ConciseGraph, Size)
+toConciseGraph bg = let s = size bg
+                        cg = (zeroBitMap bg) .|. shiftL (oneBitMap bg) (s * s)
+  in assert (ConciseGraph.enoughBits s) $ (cg,s)
+
+
 nullConciseGraph :: ConciseGraph
 nullConciseGraph = zeroBits
 

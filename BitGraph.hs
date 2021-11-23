@@ -1,64 +1,170 @@
 module BitGraph (
   BitGraph,
-  size,
-  zeroBitMap,
-  oneBitMap,
-  fromConciseGraph,
-  toConciseGraph,
   Node,
-  bitGraphI,
-  fromArcs,
-  caleyGraph,
+  Size,
+  nodes,
+  succsAsList,
+  predsAsList,
+  allGraphsOfSize,
+  nullWord,
+  totalGraph,
+  BitGraph.hasArc,
+  setArc,
+  diagonal,
+  isRefl,
+  isUnivInDom,
+  hasUniv,
+  hasUnivInDom,
+  hasNoRefl,
+  hasNoReflInDom,
+  hasReflAndUnivInMultiple,
+  hasReflAndUnivInMultipleDom,
+  compose,
 ) where
 
 import Control.Exception.Base
 import Data.Bits
-import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 
-import CaleyGraph
-import ConciseGraph (ConciseGraph,relationOfLabel,enoughBits)
 import Graph
-import UnlabeledBitGraph
 
-data BitGraph = BitGraph {
-  size       :: Int,
-  zeroBitMap :: UnlabeledBitGraph,
-  oneBitMap  :: UnlabeledBitGraph
-}
+type BitGraph = Word
+type Node = Int
+type Size = Int
 
-fromConciseGraph :: Size -> ConciseGraph -> BitGraph
-fromConciseGraph s cg = BitGraph s (relationOfLabel s cg Zero)
-                                   (relationOfLabel s cg One)
+bitGraphI :: Size -> Graph.GraphI (BitGraph) Node
+bitGraphI size = interfaceFromHasArcPretty (dom size)
+                                           (BitGraph.hasArc size)
+                                           (\_ n -> show n) 
 
-toConciseGraph :: BitGraph -> (ConciseGraph, Size)
-toConciseGraph bg = let s = size bg
-                        cg = (zeroBitMap bg) .|. shiftL (oneBitMap bg) (s * s)
-  in assert (ConciseGraph.enoughBits s) $ (cg,s)
+nodes :: Size -> [Node]
+nodes size = [0 .. size-1]
 
-fromArcs :: Size -> [Arc Node] -> BitGraph
-fromArcs size arcs = BitGraph size zbm obm where
-  (zbm, obm) = foldl setLabeledArc (nullWord, nullWord) arcs
-  setLabeledArc (zeroWord,oneWord) (u,Zero,v) = (setArc size zeroWord (u,v), oneWord)
-  setLabeledArc (zeroWord,oneWord) (u,One ,v) = (zeroWord, setArc size oneWord (u,v))
+dom :: Size -> BitGraph -> Set.Set Node
+dom size graph = Set.fromList $ nodes size
 
-bitsOfLabel :: BitGraph -> Label -> UnlabeledBitGraph
-bitsOfLabel bg Zero = zeroBitMap bg
-bitsOfLabel bg One  = oneBitMap bg
+nullWord :: BitGraph
+nullWord = zeroBits
 
-bitGraphI :: GraphI BitGraph Node
-bitGraphI = GraphI dom succs preds
+numBits :: Size -> Int
+numBits size = size * size
 
-dom :: BitGraph -> Set.Set Node
-dom bg = Set.fromList $ nodes (size bg)
+totalGraph :: Size -> BitGraph
+totalGraph size =
+  assert (enoughBits size) $
+  (shiftL 1 (numBits size)) - 1
 
-succs :: BitGraph -> MapFunction Node
-succs bg label node = Set.fromList $ succsAsList (size bg) (bitsOfLabel bg label) node
+allGraphsOfSize :: Size -> [BitGraph]
+allGraphsOfSize n = [nullWord .. totalGraph n]
 
-preds :: BitGraph -> MapFunction Node
-preds bg label node = Set.fromList $ predsAsList (size bg) (bitsOfLabel bg label) node
+enoughBits :: Size -> Bool
+enoughBits size = 0 <= size && numBits size <= finiteBitSize nullWord
 
-caleyGraph :: BitGraph -> CaleyGraph
-caleyGraph graph  = rightCaleyGraph (size graph)
-                                    (zeroBitMap graph, oneBitMap graph)
+isValidBitset :: Size -> BitGraph -> Bool
+isValidBitset size bitset = bitset <= totalGraph size
 
+isNode :: Size -> Node -> Bool
+isNode size node = 0 <= node && node <= size
+
+maskForSuccs :: Size -> BitGraph
+maskForSuccs size = (shiftL 1 size) - 1
+
+hasArc :: Size -> BitGraph -> (Node,Node) -> Bool
+hasArc size bitset (from, to) = assert (enoughBits size) $
+                                assert (isValidBitset size bitset) $
+                                assert (isNode size from) $
+                                assert (isNode size to) $ let
+  index = from * size + to
+    in testBit bitset index
+
+setArc :: Size -> BitGraph -> (Node,Node) -> BitGraph
+setArc size bitset (from, to) = assert (enoughBits size) $
+                                assert (isValidBitset size bitset) $
+                                assert (isNode size from) $
+                                assert (isNode size to) $ let
+  index = from * size + to
+    in setBit bitset index
+
+succsAsList :: Size -> BitGraph -> Node -> [Node]
+succsAsList size bitset node = assert (isNode size node) $
+  filter (\v -> BitGraph.hasArc size bitset (node,v)) (nodes size)
+
+predsAsList :: Size -> BitGraph -> Node -> [Node]
+predsAsList size bitset node = assert (isNode size node) $
+  filter (\v -> BitGraph.hasArc size bitset (v,node)) (nodes size)
+
+succsAsBits :: Size -> BitGraph -> Node -> BitGraph
+succsAsBits size bitset node = assert (isNode size node) $
+  (shiftR bitset (node * size)) .&. maskForSuccs size
+
+compose :: Size -> BitGraph -> BitGraph -> BitGraph
+compose size a b = assert (enoughBits size) $
+                   assert (isValidBitset size a) $
+                   assert (isValidBitset size b) $ let
+  succsOf node = foldl (.|.) 0 (map (succsAsBits size b) (succsAsList size a node))
+  succsOfInPos node = shiftL (succsOf node) (node * size)
+    in foldl (.|.) 0 (map succsOfInPos (nodes size))
+
+bitsOfInternal :: Size -> [Node] -> BitGraph
+bitsOfInternal size dom = foldl (\accum n -> accum .|. (shiftL bitsOfSuccsInSubset (n * size))) 0 dom where
+  bitsOfSuccsInSubset = listToBitmask dom
+
+listToBitmask :: [Node] -> BitGraph
+listToBitmask list = foldl setBit 0 list
+
+diagonal :: Size -> BitGraph
+diagonal size = assert (enoughBits size) $
+                nTimes (size - 1) shifter 1 where
+  shifter pattern = shiftL pattern (size + 1) .|. 1
+  nTimes n op start = if n == 0 then start else nTimes (n - 1) op (op start)
+
+diagonalInDom :: Size -> [Node] -> BitGraph
+diagonalInDom size dom = bitsOfInternal size dom .&. diagonal size
+
+hasNoRefl :: Size -> BitGraph -> Bool
+hasNoRefl size word = word .&. diagonal size == 0
+
+hasNoReflInDom :: Size -> [Node] -> BitGraph -> Bool
+hasNoReflInDom size dom word = word .&. diagonalInDom size dom == 0
+
+isRefl :: Size -> BitGraph -> Node -> Bool
+isRefl size graph node = BitGraph.hasArc size graph (node,node)
+
+isUniv :: Size -> BitGraph -> Node -> Bool
+isUniv size graph node = graph .&. mask == mask where
+  mask = shiftL (maskForSuccs size) (size * node)
+
+hasUniv :: Size -> BitGraph -> Bool
+hasUniv size word = any (isUniv size word) (nodes size)
+
+isUnivInDom :: Size -> [Node] -> BitGraph -> Node -> Bool
+isUnivInDom size dom graph node = assert (all (< size) dom) $
+  graph .&. mask == mask where
+    mask = shiftL (listToBitmask dom) (size * node)
+
+hasUnivInDom :: Size -> [Node] -> BitGraph -> Bool
+hasUnivInDom size dom graph = any (isUnivInDom size dom graph) dom
+
+multiples :: Size -> BitGraph -> Set.Set BitGraph
+multiples size rel = generateMultiples rel (Set.singleton rel) where
+  generateMultiples r accum = let
+      next = compose size r rel
+    in if next `Set.member` accum
+         then accum
+         else generateMultiples next (Set.insert next accum)
+
+isReflAndUnivInMultiple :: Size -> BitGraph -> Node -> Bool
+isReflAndUnivInMultiple size graph node = isRefl size graph node &&
+  any (\m -> isUniv size m node) (multiples size graph)
+
+hasReflAndUnivInMultiple :: Size -> BitGraph -> Bool
+hasReflAndUnivInMultiple size graph = 
+  any (isReflAndUnivInMultiple size graph) (nodes size)
+
+isReflAndUnivInMultipleDom :: Size -> [Node] -> BitGraph -> Node -> Bool
+isReflAndUnivInMultipleDom size dom graph node = isRefl size graph node &&
+  any (\m -> isUnivInDom size dom m node) (multiples size graph)
+
+hasReflAndUnivInMultipleDom :: Size -> [Node] -> BitGraph -> Bool
+hasReflAndUnivInMultipleDom size dom graph =
+  any (isReflAndUnivInMultipleDom size dom graph) dom

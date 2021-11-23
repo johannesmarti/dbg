@@ -19,7 +19,7 @@ mapGraphI :: (Ord x,Show x) => Graph.GraphI (MapGraph x) x
 mapGraphI = mapGraphIwithNodePrinter show
 
 mapGraphINoShow :: Ord x => Graph.GraphI (MapGraph x) x
-mapGraphINoShow = mapGraphIwithNodePrinter undefined
+mapGraphINoShow = mapGraphIwithNodePrinter (error "can not show nodes of this graph")
 
 mapGraphIwithNodePrinter :: Ord x => (x -> String) -> Graph.GraphI (MapGraph x) x
 mapGraphIwithNodePrinter prettyNode = Graph.interfaceFromSuccPredPretty

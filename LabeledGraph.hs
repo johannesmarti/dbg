@@ -29,37 +29,10 @@ data GraphI g x = GraphI {
   predecessors :: g -> MapFunction x
 }
 
-foldConverse :: Ord y => Set x -> (x -> Set y) -> (y -> Set x)
-foldConverse dom fct v = Set.filter (\u -> v `Set.member` fct u) dom
-
-sameOnDom :: (Ord x, Eq y) => Set x -> (x -> y) -> (x -> y) -> Bool
-sameOnDom dom f g = all (\a -> f a == g a) dom
-
-wellDefined :: Ord x => GraphI g x -> g -> Bool
-wellDefined gi graph = 
- (all ((`isSubsetOf` dom) . (uncurry succ)) product) &&
- (all ((`isSubsetOf` dom) . (uncurry pred)) product) &&
- (sameOnDom product (uncurry pred) (uncurry pred')) where
-    succ = successors gi graph
-    pred = predecessors gi graph
-    dom = domain gi graph
-    pred' l = foldConverse dom (succ l)
-    product = cartesianProduct labels dom
-
 arcs :: Ord x => GraphI g x -> g -> [Arc x]
 arcs gi graph = concatMap arcsForLabel labels where
   dom = Set.toList $ domain gi graph
   arcsForLabel l = [(x,l,y) | x <- dom, y <- Set.toList $ successors gi graph l x]
-
-arcsOfLabel :: Ord x => GraphI g x -> g -> Label -> [(x,x)]
-arcsOfLabel gi g l = [(x,y) | x <- dom, y <- succs x] where
-  dom = Set.toList $ domain gi g
-  succs v = Set.toList $ successors gi g l v
-
-{-
-instance (Ord x, Show x) => Show (Graph x) where
-  show = unlines . prettyGraph
--}
 
 noPredecessor :: Ord x => GraphI g x -> g -> x -> Bool
 noPredecessor gi g node = any (\l -> Prelude.null $ predecessors gi g l node) labels
