@@ -23,16 +23,6 @@ type AssocGraph a = [(a,a)]
 assocGraphI :: Ord a => Graph.GraphI (AssocGraph a) a
 assocGraphI = Graph.GraphI domain successors predecessors
 
-domain :: Ord a => AssocGraph a -> Set.Set a
-domain aList = Data.Set.Extra.concatMap ldom Graph.labels where
-  ldom l = Set.fromList (fmap fst (aList l)) `Set.union`
-           Set.fromList (fmap snd (aList l))
-
-successors :: Ord a => AssocGraph a -> Graph.MapFunction a
-successors aList l v = Set.fromList [t | (s,t) <- aList l, s == v]
-
-predecessors :: Ord a => AssocGraph a -> Graph.MapFunction a
-predecessors aList l v = Set.fromList [t | (t,s) <- aList l, s == v]
 
 graphAsAssocGraph :: Ord a => Graph.GraphI g a -> g -> AssocGraph a
 graphAsAssocGraph gi g = Graph.arcsOfLabel gi g

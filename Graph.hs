@@ -18,23 +18,47 @@ data GraphI g x = GraphI {
   successors   :: g -> x -> Set x,
   predecessors :: g -> x -> Set x,
   hasArc       :: g -> (x,x) -> Bool,
+  arcs         :: g -> [(x,x)],
   prettyNode   :: g -> x -> String
 }
 
 hasArcFromSucc :: Ord x => (g -> x -> Set x) -> (g -> (x,x) -> Bool)
 hasArcFromSucc succ g (v,u) = u `Set.member` succ g v
 
-succFromHasArc :: Ord x => (g -> x -> Set x)
+arcsFromSucc :: Ord x => (g -> Set x) -> (g -> x -> Set x) -> g -> [(x,x)]
+arcsFromSucc dom succ g = [(x,y) | x <- Set.toList $ dom g,
+                                   y <- Set.toList $ succ g x]
+
+succFromHasArc :: Ord x => (g -> Set x) -> (g -> (x,x) -> Bool) -> (g -> x -> Set x)
+succFromHasArc dom hasAr g v = Set.filter (\u -> hasAr g (v,u)) (dom g)
+
+predFromHasArc :: Ord x => (g -> Set x) -> (g -> (x,x) -> Bool) -> (g -> x -> Set x)
+predFromHasArc dom hasAr g v = Set.filter (\u -> hasAr g (u,v)) (dom g)
+
+arcsFromHasArc :: Ord x => (g -> Set x) -> (g -> (x,x) -> Bool) -> (g -> [(x,x)])
+arcsFromHasArc dom hasAr g = [(x,y) | x <- d, y <- d, hasAr g (x,y)] where
+  d = Set.toList $ dom g
+
 
 interfaceFromSuccPredPretty :: Ord x => (g -> Set x)
   -> (g -> x -> Set x) -> (g -> x -> Set x) -> (g -> x -> String) -> GraphI g x
 interfaceFromSuccPredPretty dom succ pred pretty =
-  GraphI dom succ pred (hasArcFromSucc succ) pretty
+  GraphI dom succ pred (hasArcFromSucc succ) (arcsFromSucc dom succ) pretty
 
 interfaceFromHasArcPretty :: Ord x => (g -> Set x)
   -> (g -> (x,x) -> Bool) -> (g -> x -> String) -> GraphI g x
-interfaceFromSuccPredPretty dom hasAr pretty =
-  GraphI dom (succFromHasArc dom hasAr) (predFromHasArc dom hasAr) hasAr pretty
+interfaceFromHasArcPretty dom hasAr pretty =
+  GraphI dom (succFromHasArc dom hasAr) (predFromHasArc dom hasAr) hasAr (arcsFromHasArc dom hasAr) pretty
+
+interfaceFromArcsPretty :: Ord x => (g -> [(x,x)]) -> (g -> x -> String) -> GraphI g x
+interfaceFromArcsPretty ar pretty = GraphI dom succ pred hasAr ar pretty where
+  dom g = Set.fromList (fmap fst arcs) `Set.union`
+          Set.fromList (fmap snd arcs) where
+              arcs = ar g
+  {- Here we assume that the domain is the active domain -}
+  succ g v = Set.fromList $ Prelude.map snd $ Prelude.filter (\(x,y) -> x == v) (ar g)
+  pred g v = Set.fromList $ Prelude.map fst $ Prelude.filter (\(x,y) -> y == v) (ar g)
+  hasAr g arc = arc `elem` (ar g)
 
 succPredInDom :: Ord x => GraphI g x -> g -> Bool
 succPredInDom gi graph =
@@ -55,10 +79,6 @@ succPredMatch gi graph =
  (sameOnDom dom (predecessors gi graph) pred') where
     dom = domain gi graph
     pred' = foldConverse dom (successors gi graph)
-
-arcs :: Ord x => GraphI g x -> g -> [(x,x)]
-arcs gi g = [(x,y) | x <- Set.toList $ (domain gi g),
-                     y <- Set.toList $ successors gi g x]
 
 prettyGraph :: Ord x => GraphI g x -> g -> [String]
 prettyGraph gi g = basePrinter gi printNode (stdPrintSet printNode) g where
