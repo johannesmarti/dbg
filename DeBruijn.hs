@@ -11,7 +11,7 @@ import Data.Char (intToDigit)
 import Data.Set as Set
 import Numeric (showHex, showIntAtBase)
 
-import Graph hiding (domain,successors,predecessors)
+import LabeledGraph hiding (domain,successors,predecessors)
 
 type Dimension = Int
 type Node = Word
@@ -21,13 +21,14 @@ zeroes = zeroBits
 
 newtype DBG = DBG {dimension :: Dimension}
 
-dbgI :: GraphI DBG Node
-dbgI = GraphI domain successors predecessors
+-- TODO: Quite some speedup might be possible by explicitely implemeniting arcs!
+dbgI :: LabeledGraphI DBG Node
+dbgI = interfaceFromSuccPredPretty domain successors predecessors nodePrinter
 
 domain :: DBG -> Set Node
 domain (DBG dim) = fromList [zeroes .. (DeBruijn.mask dim)]
 
-successors :: DBG -> Graph.MapFunction Node
+successors :: DBG -> MapFunction Node
 successors (DBG dim) Zero n = assert (isNode dim n) $
       if isZeroNode dim n
         then fromList [succZero dim n, succOne dim n]
@@ -37,7 +38,7 @@ successors (DBG dim) One n = assert (isNode dim n) $
         then fromList [succZero dim n, succOne dim n]
         else Set.empty
 
-predecessors :: DBG -> Graph.MapFunction Node
+predecessors :: DBG -> MapFunction Node
 predecessors (DBG dim) Zero n = assert (isNode dim n) $
       singleton (shift n (-1))
 predecessors (DBG dim) One  n = assert (isNode dim n) $
@@ -74,7 +75,7 @@ nodeToList dim node = assert (isNode dim node) $ reverse $
     setLabel i = if testBit node i then One else Zero
 
 instance Show DBG where
-  show g = unlines $ Graph.prettyGraph dbgI (nodePrinter g) g
+  show g = unlines $ prettyLabeledGraph dbgI g
 
 nodePrinter :: DBG -> Node -> String
 nodePrinter g n = let str = showIntAtBase 2 intToDigit n ""
