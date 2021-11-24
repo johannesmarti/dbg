@@ -7,6 +7,7 @@ module Graph (
   arcs,
   succPredInDom,
   succPredMatch,
+  stdPrintSet,
   prettyGraph,
   prettyPredGraph,
 ) where
