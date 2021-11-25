@@ -12,11 +12,12 @@ import Data.Set as Set
 import Data.Set.Extra as SetExtra
 
 import qualified Graph
+import Pretty
 
 newtype MapGraph x = MapGraph { succPredMap :: Map x (Set x, Set x) }
 
-mapGraphI :: (Ord x,Show x) => Graph.GraphI (MapGraph x) x
-mapGraphI = mapGraphIwithNodePrinter show
+mapGraphI :: (Ord x,Pretty x) => Graph.GraphI (MapGraph x) x
+mapGraphI = mapGraphIwithNodePrinter pretty
 
 mapGraphINoShow :: Ord x => Graph.GraphI (MapGraph x) x
 mapGraphINoShow = mapGraphIwithNodePrinter (error "can not show nodes of this graph")
@@ -70,6 +71,6 @@ projection gi g projection =
     spmapping v = (mapper Graph.successors v, mapper Graph.predecessors v)
     spm = Map.fromSet spmapping dom
 
-instance (Ord x, Show x) => Show (MapGraph x) where
+instance (Ord x, Pretty x) => Show (MapGraph x) where
   show = Graph.showG mapGraphI
 

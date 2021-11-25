@@ -10,12 +10,13 @@ import qualified Data.Set.Extra
 
 import qualified MapGraph
 import qualified Graph
+import Pretty
 
 {- This representation does not explicitely store the domain. Thus it is not able to correctely represent graphs which contain nodes that are not part of any arc! -}
 newtype AssocGraph a = AssocGraph {arcs :: [(a,a)]}
 
-assocGraphI :: (Ord a, Show a) => Graph.GraphI (AssocGraph a) a
-assocGraphI = assocGraphIwithNodePrinter show
+assocGraphI :: (Ord a, Pretty a) => Graph.GraphI (AssocGraph a) a
+assocGraphI = assocGraphIwithNodePrinter pretty
 
 assocGraphINoShow :: Ord x => Graph.GraphI (AssocGraph x) x
 assocGraphINoShow = assocGraphIwithNodePrinter (error "can not show nodes of this graph")
@@ -74,5 +75,5 @@ addNodesWithPreds toAdd graph = fromPair $
    foldl (\list (n,(_,so)) -> [(v,n) | v <- Set.toList so] ++ list) (graph Graph.One) toAdd)
 -}
 
-instance (Ord x, Show x) => Show (AssocGraph x) where
+instance (Ord x, Pretty x) => Show (AssocGraph x) where
   show = Graph.showG assocGraphI

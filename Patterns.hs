@@ -25,30 +25,28 @@ import PairGraph
 --import ConciseGraph
 import qualified Graph
 import LabeledGraph
+import Pretty
 
 type ConciseGraph = Word
 type Size = Int
 
 type LMapGraph x = PairGraph (MapGraph x)
-type CharLMapGraph = LMapGraph Char
+type LMapGraphChar = LMapGraph Char
 
-lMapGraphI :: (Ord x, Show x) => LabeledGraphI (LMapGraph x) x
+lMapGraphI :: (Ord x, Pretty x) => LabeledGraphI (LMapGraph x) x
 lMapGraphI = pairGraphI mapGraphI
-
-charLMapGraphI :: LabeledGraphI CharLMapGraph Char
-charLMapGraphI = pairGraphI (mapGraphIwithNodePrinter (\c -> [c]))
 
 assocToMap :: Ord x => (Label -> [(x,x)]) -> LMapGraph x
 assocToMap fct = fmap (MapGraph.fromGraph assocGraphINoShow) $ PairGraph.fromFunction (AssocGraph . fct)
 
 trap Zero = [('a','a'),('a','c'),('c','b'),('c','a')]
 trap One = [('b','b'),('b','c'),('c','a'),('a','c')]
-triple :: CharLMapGraph
+triple :: LMapGraphChar
 triple = assocToMap trap
 
 hb Zero = [('a','a'),('a','c'),('c','b'),('b','c'),('b','a'),('c','a')]
 hb One = [('b','b'),('b','c'),('c','a'),('a','c'),('a','b'),('c','b')]
-hamburger :: CharLMapGraph
+hamburger :: LMapGraphChar
 hamburger = assocToMap hb
 
 data N = Co | OZ | OO
@@ -61,12 +59,12 @@ force2d = assocToMap f2d
 
 f3d Zero = [('a','a'),('a','c'),('c','a'),('c','b')]
 f3d One = [('a','c'),('b','a'),('b','b')]
-force3d :: CharLMapGraph
+force3d :: LMapGraphChar
 force3d = assocToMap f3d
 
 noPat1 Zero = [('a','a'),('a','c'),('c','b'),('b','a'),('b','c')]
 noPat1 One = [('a','c'),('a','b'),('c','a'),('b','a'),('b','b')]
-noPattern1 :: CharLMapGraph
+noPattern1 :: LMapGraphChar
 noPattern1 = assocToMap noPat1
 
 u = 'u'
@@ -83,22 +81,22 @@ ap Zero = [(u,v),(u,w),(u,x),(v,u),(v,w),(v,x)
 ap One = [(a,a),(a,b),(a,c),(a,d),(b,a),(b,c),(b,d)
           ,(c,a),(c,b),(c,d),(d,a),(d,b),(d,c)
           ,(a,u),(b,v),(c,w),(d,x)]
-allPaths :: CharLMapGraph
+allPaths :: LMapGraphChar
 allPaths = assocToMap ap
 
 test Zero = [('a','a'),('a','c'),('c','b'),('b','a'),('b','c')]
 test One = [('a','c'),('a','b'),('c','a'),('b','a'),('b','b')]
-testPattern :: CharLMapGraph
+testPattern :: LMapGraphChar
 testPattern = assocToMap test
 
 s3 Zero = [('a','a'),('a','b'),('b','a'),('b','c'),('c','b')]
 s3 One = [('b','b'),('b','c'),('c','c'),('c','a')]
-strange3 :: CharLMapGraph
+strange3 :: LMapGraphChar
 strange3 = assocToMap s3
 
 sd Zero = [('a','a'),('a','c'),('b','a'),('b','c'),('c','b')]
 sd One = [('a','c'),('a','b'),('b','a'),('b','b'),('c','a'),('c','b')]
-strongDet :: CharLMapGraph
+strongDet :: LMapGraphChar
 strongDet = assocToMap sd
 
 caleySchreck :: ConciseGraph
@@ -112,19 +110,19 @@ slowFourSize :: Size
 slowFourSize = 4
 s4 Zero = [('a','a'),('a','b'),('b','c'),('b','d'),('c','a'),('d','c')]
 s4 One = [('b','b'),('b','c'),('c','a'),('c','c'),('c','d')]
-slowFour :: CharLMapGraph
+slowFour :: LMapGraphChar
 slowFour = assocToMap s4
 
 cel Zero = [('a','a'),('a','b'),
             ('b','b'),('b','c'),
             ('c','a'),('c','c')]
 cel One = [('a','b'),('b','c'),('c','a')]
-celtic :: CharLMapGraph
+celtic :: LMapGraphChar
 celtic = assocToMap cel
 
 slowSquare' Zero = [('a', 'a'), ('a', 'b'), ('a', 'c'), ('b', 'b'), ('b', 'c'), ('b', 'd'), ('c', 'a'), ('d', 'a'), ('d', 'b')]
 slowSquare' One = [('a', 'b'), ('b', 'c'), ('b', 'd'), ('c', 'c'), ('d', 'a'), ('d', 'c'), ('d', 'd')]
-slowSquare :: CharLMapGraph
+slowSquare :: LMapGraphChar
 slowSquare = assocToMap slowSquare'
 
 diverger3 :: ConciseGraph

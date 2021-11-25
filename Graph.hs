@@ -7,15 +7,15 @@ module Graph (
   arcs,
   succPredInDom,
   succPredMatch,
-  stdPrintSet,
   showG,
   prettyGraph,
   prettyPredGraph,
 ) where
 
 import Control.Exception.Base
-import Data.List (intercalate)
 import Data.Set as Set
+
+import Pretty
 
 data GraphI g x = GraphI {
   domain       :: g -> Set x,
@@ -87,11 +87,6 @@ succPredMatch gi graph =
 prettyGraph :: Ord x => GraphI g x -> g -> [String]
 prettyGraph gi g = basePrinter gi printNode (stdPrintSet printNode) g where
   printNode = prettyNode gi g
-
-stdPrintSet :: (a -> String) -> [a] -> String
-stdPrintSet printSuccessor successors =
-  --"{" ++ (intercalate "," (fmap printSuccessor successors)) ++ "}"
-  "{" ++ (intercalate ", " (fmap printSuccessor successors)) ++ "}"
 
 basePrinter :: Ord x => GraphI g x -> (x -> String) -> ([x] -> String) -> g -> [String]
 basePrinter gi printNode printSuccessors g = let

@@ -18,7 +18,7 @@ import Control.Exception.Base
 import Data.List (intercalate)
 import Data.Set as Set
 
-import Graph (stdPrintSet)
+import Pretty
 
 
 data Label = Zero | One
