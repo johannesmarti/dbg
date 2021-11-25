@@ -12,7 +12,7 @@ import Data.List
 import Data.Maybe (maybeToList)
 
 import Function
-import Graph
+import LabeledGraph
 import Homo
 
 type Approx x y = Map x (Set y)
@@ -30,10 +30,10 @@ readOffFunction = Map.map (Set.elemAt 0)
 
 type Worklist x = [(Arc x,Bool)]
 
-completeWorklist :: Ord x => GraphI g x -> g -> Worklist x
+completeWorklist :: Ord x => LabeledGraphI g x -> g -> Worklist x
 completeWorklist gi graph = concatMap (\a -> [(a,True),(a,False)]) (arcs gi graph)
 
-addNodeToWorklist :: Ord x => GraphI g x -> g -> x -> Worklist x -> Worklist x
+addNodeToWorklist :: Ord x => LabeledGraphI g x -> g -> x -> Worklist x -> Worklist x
 addNodeToWorklist gi graph node worklist = newItems `Data.List.union` worklist
   where
     newItems = concatMap itemsForLabel labels
@@ -42,11 +42,11 @@ addNodeToWorklist gi graph node worklist = newItems `Data.List.union` worklist
         ++ [((o,l,node),True) | o <- Set.toList $ predecessors gi graph l node]
 
 
-arcCons :: (Ord x, Ord y) => GraphI g1 x -> GraphI g2 y -> g1 -> g2
+arcCons :: (Ord x, Ord y) => LabeledGraphI g1 x -> LabeledGraphI g2 y -> g1 -> g2
                                      -> Approx x y -> Maybe (Approx x y)
 arcCons di ci d c approx = arcConsInner di ci d c (completeWorklist di d) approx
 
-arcConsInner :: (Ord x, Ord y) => GraphI g1 x -> GraphI g2 y -> g1 -> g2 -> Worklist x
+arcConsInner :: (Ord x, Ord y) => LabeledGraphI g1 x -> LabeledGraphI g2 y -> g1 -> g2 -> Worklist x
                                   -> Approx x y -> Maybe (Approx x y)
 arcConsInner di ci d c worklist approx = arcConsWorker worklist approx where
   arcConsWorker [] apx = Just apx
@@ -74,7 +74,7 @@ splittingsAt approx node = let
   in Prelude.map singlified valueList
 
 
-arcConsHomosFromApprox :: (Ord x, Ord y) => GraphI g1 x -> GraphI g2 y
+arcConsHomosFromApprox :: (Ord x, Ord y) => LabeledGraphI g1 x -> LabeledGraphI g2 y
                             -> Approx x y -> HomoSearch g1 g2 x y
 arcConsHomosFromApprox di ci approx d c = let
     worker worklist apx = do
@@ -86,7 +86,7 @@ arcConsHomosFromApprox di ci approx d c = let
                     worker (addNodeToWorklist di d splitNode []) split
   in worker (completeWorklist di d) approx
 
-arcConsHomos :: (Ord x, Ord y) => GraphI g1 x -> GraphI g2 y -> HomoSearch g1 g2 x y
+arcConsHomos :: (Ord x, Ord y) => LabeledGraphI g1 x -> LabeledGraphI g2 y -> HomoSearch g1 g2 x y
 arcConsHomos di ci d c = arcConsHomosFromApprox di ci
-  (fullApprox (Graph.domain di d) (Graph.domain ci c)) d c
+  (fullApprox (LabeledGraph.domain di d) (LabeledGraph.domain ci c)) d c
 
