@@ -11,6 +11,7 @@ import qualified Data.Set.Extra
 import qualified MapGraph
 import qualified Graph
 
+{- This representation does not explicitely store the domain. Thus it is not able to correctely represent graphs which contain nodes that are not part of any arc! -}
 type AssocGraph a = [(a,a)]
 
 assocGraphI :: (Ord a, Show a) => Graph.GraphI (AssocGraph a) a

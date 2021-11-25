@@ -5,6 +5,7 @@ module LabeledGraph (
   LabeledGraphI,
   MapFunction,
   domain, successors, predecessors, arcs,
+  interfaceFromAll,
   interfaceFromSuccPredPretty,
   noPredecessor,
   hasDoubleRefl,
@@ -36,6 +37,11 @@ data LabeledGraphI g x = LabeledGraphI {
   arcs         :: g -> [Arc x],
   prettyNode   :: g -> x -> String
 }
+
+interfaceFromAll :: (g -> Set x) -> (g -> MapFunction x)
+  -> (g -> MapFunction x) -> (g -> [Arc x]) -> (g -> x -> String) -> LabeledGraphI g x
+interfaceFromAll dom succ pred ar pretty =
+  LabeledGraphI dom succ pred ar pretty
 
 arcsFromSucc :: Ord x => (g -> Set x) -> (g -> MapFunction x) -> g -> [Arc x]
 arcsFromSucc dom succs graph = concatMap arcsForLabel labels where

@@ -1,6 +1,6 @@
 module Graph (
   GraphI,
-  domain, successors, predecessors, hasArc,
+  domain, successors, predecessors, hasArc, prettyNode,
   interfaceFromSuccPredPretty,
   interfaceFromHasArcPretty,
   interfaceFromArcsPretty,
