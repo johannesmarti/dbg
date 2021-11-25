@@ -1,5 +1,5 @@
 module AssocGraph (
-  AssocGraph,
+  AssocGraph(AssocGraph),
   assocGraphI, assocGraphINoShow, assocGraphIwithNodePrinter,
   fromGraph,
 ) where

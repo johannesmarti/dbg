@@ -3,6 +3,7 @@ module PairGraph (
   zeroGraph, oneGraph,
   pairGraphI,
   graphOfLabel,
+  fromFunction,
 ) where
 
 import Control.Exception.Base
@@ -15,6 +16,9 @@ data PairGraph g = PairGraph {
   zeroGraph :: g,
   oneGraph  :: g
 }
+
+instance Functor PairGraph where
+  fmap f (PairGraph zg og) = PairGraph (f zg) (f og)
 
 pairGraphI :: Eq x => Graph.GraphI g x -> LabeledGraphI(PairGraph g) x
 pairGraphI innerI = interfaceFromAll dom succ pred ar pretty where
@@ -33,6 +37,8 @@ graphOfLabel :: PairGraph g -> Label -> g
 graphOfLabel pg Zero = zeroGraph pg
 graphOfLabel pg One  = oneGraph pg
 
+fromFunction :: (Label -> g) -> PairGraph g
+fromFunction fct = PairGraph (fct Zero) (fct One)
 
 {-
 fromConciseGraph :: Size -> ConciseGraph -> BitGraph
