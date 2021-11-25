@@ -21,12 +21,12 @@ zeroes = zeroBits
 
 newtype DBG = DBG {dimension :: Dimension}
 
--- TODO: Quite some speedup might be possible by explicitely implemeniting arcs!
+-- TODO: Quite some speedup in the arccons might be possible by explicitely implemeniting arcs!
 dbgI :: LabeledGraphI DBG Node
 dbgI = interfaceFromSuccPredPretty domain successors predecessors nodePrinter
 
 domain :: DBG -> Set Node
-domain (DBG dim) = fromList [zeroes .. (DeBruijn.mask dim)]
+domain (DBG dim) = fromList [zeroes .. (DeBruijnGraph.mask dim)]
 
 successors :: DBG -> MapFunction Node
 successors (DBG dim) Zero n = assert (isNode dim n) $
@@ -52,10 +52,10 @@ size :: Dimension -> Node
 size dimension = shift 1 dimension
 
 mask :: Dimension -> Node
-mask dimension = (DeBruijn.size dimension) - 1
+mask dimension = (DeBruijnGraph.size dimension) - 1
 
 isNode :: Dimension -> Node -> Bool
-isNode dimension node = node < DeBruijn.size dimension
+isNode dimension node = node < DeBruijnGraph.size dimension
 
 isOneNode :: Dimension -> Node -> Bool
 isOneNode dimension node = testBit node (dimension - 1)
@@ -64,7 +64,7 @@ isZeroNode :: Dimension -> Node -> Bool
 isZeroNode dimension node = not (isOneNode dimension node)
 
 succZero :: Dimension -> Node -> Node
-succZero dimension node = (shift node 1) .&. (DeBruijn.mask dimension)
+succZero dimension node = (shift node 1) .&. (DeBruijnGraph.mask dimension)
 
 succOne :: Dimension -> Node -> Node
 succOne dimension node = setBit (succZero dimension node) 0

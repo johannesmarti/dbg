@@ -35,7 +35,6 @@ fromGraph :: Ord a => Graph.GraphI g a -> g -> AssocGraph a
 fromGraph gi g = assert (isNubList list) $ AssocGraph list where
   list = Graph.arcs gi g
 
-{- The point of fromGraph as opposed to graphsAsAssocGraph is to actually store the assoc list representation of the graph instead of recomputing it on demand! -}
 {-
 fromGraph :: Ord a => Graph.GraphI g a -> g -> AssocGraph a
 fromGraph gi g = materialize $ graphAsAssocGraph gi g

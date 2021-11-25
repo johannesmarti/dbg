@@ -5,10 +5,10 @@ module Test.HomoSpec (
 import Data.Set as Set
 import Test.Hspec
 
-import DeBruijn
-import Graph
+import DeBruijnGraph
+import LabeledGraph
+import CommonGraphTypes
 import Homo
-import MapGraph
 import Patterns
 
 spec :: Spec
@@ -17,7 +17,7 @@ spec = do
     it "from db2 to db3" $
       searchHomos dbgI dbgI (dbg 2) (dbg 3) `shouldBe` []
     it "from db2 to triple" $
-      searchHomos dbgI mapGraphI (dbg 2) triple `shouldBe` []
+      searchHomos dbgI lMapGraphI (dbg 2) triple `shouldBe` []
   describe "unique homo" $ do
     it "from db2 to db2" $
       length (searchHomos dbgI dbgI (dbg 2) (dbg 2)) `shouldBe` 1
