@@ -33,6 +33,7 @@ graphOfLabel :: PairGraph g -> Label -> g
 graphOfLabel pg Zero = zeroGraph pg
 graphOfLabel pg One  = oneGraph pg
 
+
 {-
 fromConciseGraph :: Size -> ConciseGraph -> BitGraph
 fromConciseGraph s cg = BitGraph s (relationOfLabel s cg Zero)

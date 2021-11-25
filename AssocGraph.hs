@@ -12,7 +12,7 @@ import qualified MapGraph
 import qualified Graph
 
 {- This representation does not explicitely store the domain. Thus it is not able to correctely represent graphs which contain nodes that are not part of any arc! -}
-type AssocGraph a = [(a,a)]
+newtype AssocGraph a = AssocGraph {arcs :: [(a,a)]}
 
 assocGraphI :: (Ord a, Show a) => Graph.GraphI (AssocGraph a) a
 assocGraphI = assocGraphIwithNodePrinter show
@@ -22,7 +22,7 @@ assocGraphINoShow = assocGraphIwithNodePrinter (error "can not show nodes of thi
 
 assocGraphIwithNodePrinter :: Ord x => (x -> String) -> Graph.GraphI (AssocGraph x) x
 assocGraphIwithNodePrinter prettyNode = Graph.interfaceFromArcsPretty
-                                         id
+                                         arcs
                                          (\_ n -> prettyNode n) 
 
 isNubList :: Eq a => [a] -> Bool
@@ -31,7 +31,8 @@ isNubList list = worker [] list where
   worker seen (next:rest) = not (next `elem` seen) && (worker (next:seen) rest)
 
 fromGraph :: Ord a => Graph.GraphI g a -> g -> AssocGraph a
-fromGraph gi g = assert (isNubList list) list where list = Graph.arcs gi g
+fromGraph gi g = assert (isNubList list) $ AssocGraph list where
+  list = Graph.arcs gi g
 
 {- The point of fromGraph as opposed to graphsAsAssocGraph is to actually store the assoc list representation of the graph instead of recomputing it on demand! -}
 {-
@@ -73,3 +74,5 @@ addNodesWithPreds toAdd graph = fromPair $
    foldl (\list (n,(_,so)) -> [(v,n) | v <- Set.toList so] ++ list) (graph Graph.One) toAdd)
 -}
 
+instance (Ord x, Show x) => Show (AssocGraph x) where
+  show = Graph.showG assocGraphI

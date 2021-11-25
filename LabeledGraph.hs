@@ -9,6 +9,7 @@ module LabeledGraph (
   interfaceFromSuccPredPretty,
   noPredecessor,
   hasDoubleRefl,
+  showLG,
   prettyLabeledGraph,
   prettyPredLabeledGraph,
 ) where
@@ -85,3 +86,5 @@ basePredPrinter gi printNode printSuccessors g = let
                     ++ predsForLabel v One "1" ++ (printNode v)
   in fmap lineForNode (Set.toList . (domain gi) $ g)
 
+showLG :: Ord x => LabeledGraphI g x -> g -> String
+showLG gi = unlines . (prettyLabeledGraph gi)

@@ -8,6 +8,7 @@ module Graph (
   succPredInDom,
   succPredMatch,
   stdPrintSet,
+  showG,
   prettyGraph,
   prettyPredGraph,
 ) where
@@ -106,3 +107,6 @@ basePredPrinter gi printNode printSuccessors g = let
     lineForNode v = (printSuccessors (Set.toList $ successors gi g v)) ++
                     " < " ++ (printNode v)
   in fmap lineForNode (Set.toList . (domain gi) $ g)
+
+showG :: Ord x => GraphI g x -> g -> String
+showG gi = unlines . (prettyGraph gi)

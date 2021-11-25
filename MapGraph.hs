@@ -71,5 +71,5 @@ projection gi g projection =
     spm = Map.fromSet spmapping dom
 
 instance (Ord x, Show x) => Show (MapGraph x) where
-  show = unlines . (Graph.prettyGraph mapGraphI)
+  show = Graph.showG mapGraphI
 

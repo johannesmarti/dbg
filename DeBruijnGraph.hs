@@ -1,4 +1,4 @@
-module DeBruijn (
+module DeBruijnGraph (
   DBG,
   dbg,
   dbgI,
@@ -75,7 +75,7 @@ nodeToList dim node = assert (isNode dim node) $ reverse $
     setLabel i = if testBit node i then One else Zero
 
 instance Show DBG where
-  show g = unlines $ prettyLabeledGraph dbgI g
+  show g = showLG dbgI g
 
 nodePrinter :: DBG -> Node -> String
 nodePrinter g n = let str = showIntAtBase 2 intToDigit n ""
