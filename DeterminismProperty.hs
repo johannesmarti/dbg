@@ -14,9 +14,10 @@ import Control.Exception
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 
-import Graph
+import Function hiding (domain)
+import LabeledGraph
 
-type Partition a = Map.Map a a
+type Partition a = Function a a
 
 discrete :: Set.Set a -> Partition a
 discrete = Map.fromSet id
@@ -43,7 +44,7 @@ identify partition x y = let
          then partition
          else Map.map modifier partition
 
-overlappingPairs :: (Ord x, Ord y) => GraphI g x -> g -> (x -> y) -> [(x,x)]
+overlappingPairs :: (Ord x, Ord y) => LabeledGraphI g x -> g -> (x -> y) -> [(x,x)]
 overlappingPairs gi g f = let
     pairs = ps (Set.toList (domain gi g))
     ps [] = []
@@ -52,14 +53,14 @@ overlappingPairs gi g f = let
     overlapOnLabel x y l = not . Set.null $ Set.map f (predecessors gi g l x) `Set.intersection` Set.map f (predecessors gi g l y)
   in Prelude.filter (uncurry overlappingConstruction) pairs
 
-isConstructionDeterministic :: Ord x => GraphI g x -> g -> Bool
+isConstructionDeterministic :: Ord x => LabeledGraphI g x -> g -> Bool
 isConstructionDeterministic gi g = Prelude.null $ overlappingPairs gi g id
 
-isWeaklyConstructionDeterministic :: Ord x => GraphI g x -> g -> Bool
+isWeaklyConstructionDeterministic :: Ord x => LabeledGraphI g x -> g -> Bool
 isWeaklyConstructionDeterministic gi g = not . isTrivial $
   deterministicPartition gi g
 
-deterministicPartition :: Ord x => GraphI g x -> g -> Partition x
+deterministicPartition :: Ord x => LabeledGraphI g x -> g -> Partition x
 deterministicPartition gi g = inner (discrete (domain gi g)) where
   inner partition = let
     overlappings = overlappingPairs gi g (representative partition)
