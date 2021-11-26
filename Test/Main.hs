@@ -8,7 +8,7 @@ import qualified Test.AssocGraphSpec
 import qualified Test.MapGraphSpec
 import qualified Test.HomoSpec
 import qualified Test.ArcConsSpec
---import qualified Test.UnlabeledBitGraphSpec
+import qualified Test.BitGraphSpec
 import qualified Test.DeterminismPropertySpec
 --import qualified Test.CaleyGraphSpec
 --import qualified Test.BitifySpec
@@ -22,7 +22,7 @@ spec = do
   describe "MapGraph" Test.MapGraphSpec.spec
   describe "Homo" Test.HomoSpec.spec
   describe "ArcCons" Test.ArcConsSpec.spec
---  describe "UnlabeledBitGraph" Test.UnlabeledBitGraphSpec.spec
+  describe "BitGraph" Test.BitGraphSpec.spec
   describe "DeterminismProperty" Test.DeterminismPropertySpec.spec
 --  describe "CaleyGraph" Test.CaleyGraphSpec.spec
 --  describe "Bitify" Test.BitifySpec.spec

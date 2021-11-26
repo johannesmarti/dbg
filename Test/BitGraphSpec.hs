@@ -1,10 +1,10 @@
-module Test.UnlabeledBitGraphSpec (
+module Test.BitGraphSpec (
    spec
 ) where
 
 import Test.Hspec
 
-import UnlabeledBitGraph
+import BitGraph
 
 spec :: Spec
 spec = do
