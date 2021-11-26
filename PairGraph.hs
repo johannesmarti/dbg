@@ -27,10 +27,7 @@ pairGraphI innerI = interfaceFromAll dom succ pred ar pretty where
            in assert (zd == od) zd
   succ pg label = Graph.successors innerI (graphOfLabel pg label)
   pred pg label = Graph.predecessors innerI (graphOfLabel pg label)
-  ar pg = let ins label = map (i label)
-              i label (x,y) = (x,label,y)
-          in (ins Zero $ Graph.arcs innerI (zeroGraph pg))
-             ++ (ins One $ Graph.arcs innerI (oneGraph pg))
+  ar pg l = Graph.arcs innerI (graphOfLabel pg l)
   pretty pg = Graph.prettyNode innerI (zeroGraph pg)
 
 graphOfLabel :: PairGraph g -> Label -> g

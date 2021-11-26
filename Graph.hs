@@ -1,6 +1,7 @@
 module Graph (
   GraphI,
   domain, successors, predecessors, hasArc, prettyNode,
+  interfaceFromAll,
   interfaceFromSuccPredPretty,
   interfaceFromHasArcPretty,
   interfaceFromArcsPretty,
@@ -25,6 +26,12 @@ data GraphI g x = GraphI {
   arcs         :: g -> [(x,x)],
   prettyNode   :: g -> x -> String
 }
+
+interfaceFromAll :: (g -> Set x) -> (g -> x -> Set x) -> (g -> x -> Set x)
+                    -> (g -> (x,x) -> Bool) -> (g -> [(x,x)])
+                    -> (g -> x -> String) -> GraphI g x
+interfaceFromAll dom succ pred hasAr ar pretty =
+  GraphI dom succ pred hasAr ar pretty
 
 hasArcFromSucc :: Ord x => (g -> x -> Set x) -> (g -> (x,x) -> Bool)
 hasArcFromSucc succ g (v,u) = u `Set.member` succ g v

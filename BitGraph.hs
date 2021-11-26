@@ -3,6 +3,7 @@ module BitGraph (
   Node,
   Size,
   bitGraphI,
+  fromArcs,
   nodes,
   succsAsList,
   predsAsList,
@@ -43,6 +44,10 @@ nodes size = [0 .. size-1]
 
 dom :: Size -> BitGraph -> Set.Set Node
 dom size graph = Set.fromList $ nodes size
+
+fromArcs :: Size -> [(Node,Node)] -> BitGraph
+fromArcs size arcs = bm where
+  bm = foldl (setArc size) nullWord arcs
 
 nullWord :: BitGraph
 nullWord = zeroBits

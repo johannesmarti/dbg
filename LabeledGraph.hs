@@ -4,7 +4,7 @@ module LabeledGraph (
   Arc,
   LabeledGraphI,
   MapFunction,
-  domain, successors, predecessors, arcs,
+  domain, successors, predecessors, arcs, arcsOfLabel,
   interfaceFromAll,
   interfaceFromSuccPredPretty,
   noPredecessor,
@@ -28,24 +28,30 @@ data LabeledGraphI g x = LabeledGraphI {
   domain       :: g -> Set x,
   successors   :: g -> MapFunction x,
   predecessors :: g -> MapFunction x,
-  arcs         :: g -> [Arc x],
+  arcsOfLabel  :: g -> Label -> [(x,x)],
   prettyNode   :: g -> x -> String
 }
 
 interfaceFromAll :: (g -> Set x) -> (g -> MapFunction x)
-  -> (g -> MapFunction x) -> (g -> [Arc x]) -> (g -> x -> String) -> LabeledGraphI g x
+  -> (g -> MapFunction x) -> (g -> Label -> [(x,x)]) -> (g -> x -> String) -> LabeledGraphI g x
 interfaceFromAll dom succ pred ar pretty =
   LabeledGraphI dom succ pred ar pretty
 
-arcsFromSucc :: Ord x => (g -> Set x) -> (g -> MapFunction x) -> g -> [Arc x]
-arcsFromSucc dom succs graph = concatMap arcsForLabel labels where
-  d = Set.toList $ dom graph
-  arcsForLabel l = [(x,l,y) | x <- d, y <- Set.toList $ succs graph l x]
+aOLFromSucc :: Ord x => (g -> Set x) -> (g -> MapFunction x) -> g -> Label -> [(x,x)]
+aOLFromSucc dom succs graph label =
+  [(x,y) | x <- d, y <- Set.toList $ succs graph label x] where
+    d = Set.toList $ dom graph
 
 interfaceFromSuccPredPretty :: Ord x => (g -> Set x) -> (g -> MapFunction x)
   -> (g -> MapFunction x) -> (g -> x -> String) -> LabeledGraphI g x
 interfaceFromSuccPredPretty dom succ pred pretty =
-  LabeledGraphI dom succ pred (arcsFromSucc dom succ) pretty
+  LabeledGraphI dom succ pred (aOLFromSucc dom succ) pretty
+
+
+arcs :: LabeledGraphI g x -> g -> [Arc x]
+arcs gi g = concatMap fromLabel labels where
+  fromLabel l = Prelude.map (insert l) (arcsOfLabel gi g l) 
+  insert l (x,y) = (x,l,y)
 
 noPredecessor :: Ord x => LabeledGraphI g x -> g -> x -> Bool
 noPredecessor gi g node = any (\l -> Prelude.null $ predecessors gi g l node) labels
