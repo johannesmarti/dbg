@@ -18,16 +18,9 @@ import Control.Exception.Base
 import Data.List (intercalate)
 import Data.Set as Set
 
+import Label
 import Pretty
 
-
-data Label = Zero | One
-  deriving (Eq,Ord,Show)
-
-type Arc x = (x,Label,x)
-
-labels :: Set.Set Label
-labels = Set.fromList [Zero, One]
 
 type MapFunction x = Label -> x -> Set x
 

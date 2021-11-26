@@ -4,6 +4,8 @@ module ConciseGraph (
   Size,
   Node,
   nodes,
+  fromLBitGraph,
+  toLBitGraph,
   hasArc,
   isNode,
   allGraphsOfSize,

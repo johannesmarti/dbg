@@ -9,6 +9,7 @@ module CommonLGraphTypes (
   lBitGraphI,
   assocFromFunction,
   mapFromFunction,
+  caleyGraphOfLBitGraph,
 ) where
 
 import qualified Graph
@@ -17,6 +18,7 @@ import LabeledGraph
 import PairGraph
 import AssocGraph
 import MapGraph
+import CaleyGraph
 import Pretty
 
 type LAssocGraph x = PairGraph (AssocGraph x)
@@ -37,6 +39,10 @@ assocFromFunction fct = PairGraph.fromFunction (AssocGraph . fct)
 
 mapFromFunction :: Ord x => (Label -> [(x,x)]) -> LMapGraph x
 mapFromFunction fct = fmap (MapGraph.fromGraph assocGraphINoShow) $ assocFromFunction fct
+
+caleyGraphOfLBitGraph :: Size -> LBitGraph -> CaleyGraph
+caleyGraphOfLBitGraph size bg = rightCaleyGraph size
+                                  (graphOfLabel bg Zero, graphOfLabel bg One)
 
 instance (Ord x, Pretty x) => Show (PairGraph (AssocGraph x)) where
   show g = unlines $ prettyLabeledGraph lAssocGraphI g

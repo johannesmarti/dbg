@@ -21,25 +21,25 @@ import qualified Data.Set as Set
 import Debug.Trace
 
 import Label
-import UnlabeledBitGraph
+import BitGraph
 
 data CaleyGraph = CaleyGraph {
-  successorMap :: Map.Map UnlabeledBitGraph (UnlabeledBitGraph,UnlabeledBitGraph),
+  successorMap :: Map.Map BitGraph (BitGraph,BitGraph),
   -- nonWellfoundedElements is the subset of the domain that is hit by infinitely many words over {Zero, One}.
-  wellfoundedElements :: Set.Set UnlabeledBitGraph,
-  nonWellfoundedElements :: Set.Set UnlabeledBitGraph
+  wellfoundedElements :: Set.Set BitGraph,
+  nonWellfoundedElements :: Set.Set BitGraph
 } deriving Show
 
-domain :: CaleyGraph -> Set.Set UnlabeledBitGraph
+domain :: CaleyGraph -> Set.Set BitGraph
 domain = Map.keysSet . successorMap
 
-successor :: CaleyGraph -> UnlabeledBitGraph -> Label -> UnlabeledBitGraph
+successor :: CaleyGraph -> BitGraph -> Label -> BitGraph
 successor cg node label = assert (node `elem` domain cg) $
   case label of
     Zero -> fst $ (successorMap cg Map.! node)
     One  -> snd $ (successorMap cg Map.! node)
 
-rightCaleyGraph :: Size -> (UnlabeledBitGraph,UnlabeledBitGraph) -> CaleyGraph
+rightCaleyGraph :: Size -> (BitGraph,BitGraph) -> CaleyGraph
 rightCaleyGraph size (zeroRel,oneRel) =
   CaleyGraph succMap wellfounded nonWellfounded where
     keepAdding [] m p = (m,p)
@@ -67,10 +67,10 @@ rightCaleyGraph size (zeroRel,oneRel) =
     wellfounded = computeWellfounded [diagonal size] Set.empty
     nonWellfounded = (Map.keysSet succMap) Set.\\ wellfounded
 
-relationOfWord :: Size -> CaleyGraph -> [Label] -> UnlabeledBitGraph
+relationOfWord :: Size -> CaleyGraph -> [Label] -> BitGraph
 relationOfWord size cg word = Prelude.foldl (successor cg) (diagonal size) word
 
-finiteWords :: Size -> CaleyGraph -> [([Label],UnlabeledBitGraph)]
+finiteWords :: Size -> CaleyGraph -> [([Label],BitGraph)]
 finiteWords size cg = generateFiniteWords [([], diagonal size)] where
   generateFiniteWords [] = []
   generateFiniteWords ((nextWord, nextRel):rest) =
@@ -121,7 +121,7 @@ isReallyPossibleValue size cg word others node =
   all (\v -> hasArc size (relationOfWord size cg word) (node,v)) others &&
   all (\i -> hasArc size (relationOfWord size cg i) (node,node)) (repeatingInits word)
 
-printNodeWithSuccs :: CaleyGraph -> UnlabeledBitGraph -> String
+printNodeWithSuccs :: CaleyGraph -> BitGraph -> String
 printNodeWithSuccs cg node = show node ++ " -> " ++ show succs where
   succs = (successorMap cg) Map.! node
 

@@ -6,13 +6,17 @@ import Test.Hspec
 
 import CaleyGraph
 import ConciseGraph
-import Graph
+import CommonLGraphTypes
+import LabeledGraph
 import Patterns
+
+caleyGraphOfConcise :: Size -> ConciseGraph -> CaleyGraph
+caleyGraphOfConcise size = (caleyGraphOfLBitGraph size) . (toLBitGraph size)
 
 spec :: Spec
 spec = do
   describe "caleyCondition" $ do
     it "caleySchreck is not good" $
-      (caleyGraph caleySchreckSize caleySchreck) `shouldSatisfy` (not . (isReallyGood caleySchreckSize))
+      (caleyGraphOfConcise caleySchreckSize caleySchreck) `shouldSatisfy` (not . (isReallyGood caleySchreckSize))
     it "4003476 of size 4 is good" $
-      (caleyGraph 4 4003476) `shouldSatisfy` (isReallyGood 4)
+      (caleyGraphOfConcise 4 4003476) `shouldSatisfy` (isReallyGood 4)

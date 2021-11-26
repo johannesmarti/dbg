@@ -29,4 +29,4 @@ preds (WrappedGraph iI ig c) label node = Set.map (aggressiveDecode c) $
                                             predecessors iI ig label (aggressiveEncode c node)
 
 instance (Ord x, Ord y, Show y) => Show (WrappedGraph g x y) where
-  show = unlines . (Graph.prettyGraph wrappedGraphI show)
+  show = unlines . (Graph.prettyGraph wrappedGraphI)
