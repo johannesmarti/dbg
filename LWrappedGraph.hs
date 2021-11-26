@@ -14,6 +14,11 @@ data LWrappedGraph g x y = LWrappedGraph {
   coding     :: Coding y x
 }
 
+{- need this for hspec to not freak out -}
+instance Show (LWrappedGraph g x y) where
+  show g = "someWrappedGraph"
+
+
 lWrappedGraphI :: (Ord x, Ord y, Pretty y) => LabeledGraphI g x
                                               -> LabeledGraphI (LWrappedGraph g x y) y
 lWrappedGraphI innerI = interfaceFromAll dom succ pred ar prettyNode where

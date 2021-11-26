@@ -11,7 +11,7 @@ import qualified Test.ArcConsSpec
 import qualified Test.BitGraphSpec
 import qualified Test.DeterminismPropertySpec
 import qualified Test.CaleyGraphSpec
---import qualified Test.BitifySpec
+import qualified Test.BitifySpec
 
 main :: IO ()
 main = hspec spec
@@ -25,5 +25,5 @@ spec = do
   describe "BitGraph" Test.BitGraphSpec.spec
   describe "DeterminismProperty" Test.DeterminismPropertySpec.spec
   describe "CaleyGraph" Test.CaleyGraphSpec.spec
---  describe "Bitify" Test.BitifySpec.spec
+  describe "Bitify" Test.BitifySpec.spec
 

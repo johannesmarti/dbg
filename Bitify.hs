@@ -1,6 +1,7 @@
 module Bitify (
   bitify,
   labeledBitify,
+  pathCondition,
 ) where
 
 import Control.Exception.Base
@@ -42,24 +43,13 @@ labeledBitify gi g = (wrappedGraph, size) where
   newArcs l = map enc (LabeledGraph.arcsOfLabel gi g l)
   enc (u,v) = (encode c u, encode c v)
 
-{-
-labeledBitify gi g = assert (wellDefined wrappedGraphI wrappedGraph) $ wrappedGraph where
-  wrappedGraph = WrappedGraph bitGraphI bg c
-  bg = fromArcs size newArcs
-  c = fromAssoc assoc
-  oldDom = Graph.domain gi g
-  size = Set.size oldDom
-  assoc = zip (Set.toList oldDom) [0 .. ]
-  newArcs = map enc (arcs gi g)
-  enc (u,l,v) = (aggressiveEncode c u, l, aggressiveEncode c v)
--}
+pathCondition :: Size -> LWrappedGraph LBitGraph Node x -> Bool
+pathCondition size wg = isReallyGood size cg where
+  inner = LWrappedGraph.innerGraph wg
+  cg = caleyGraphOfLBitGraph size inner
+
 
 {-
-caleyCondition :: WrappedGraph BitGraph Node x -> Bool
-caleyCondition wg = isReallyGood (size inner) cg where
-  inner = innerGraph wg
-  cg = caleyGraph inner
-
 pathReport :: (Ord x, Show x) => WrappedGraph BitGraph Node x -> [String]
 pathReport wg = let
     inner = innerGraph wg

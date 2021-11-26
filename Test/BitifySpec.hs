@@ -5,29 +5,30 @@ module Test.BitifySpec (
 import qualified Data.Set as Set
 import Test.Hspec
 
-import BitGraph
 import Bitify
-import Graph
-import MapGraph
+import LabeledGraph
 import Patterns
-import WrappedGraph
+import CommonLGraphTypes
+import LWrappedGraph
 
 
 spec :: Spec
 spec = do
   describe "bitify hamburger" $ do
-    let bitburger = bitify mapGraphI hamburger
+    let (bitburger, bsize) = labeledBitify lMapGraphI hamburger
+    let iface = lWrappedGraphI (lBitGraphI bsize)
     it "0-sucs of a match [a,c]" $
-      successors wrappedGraphI bitburger Zero 'a' `shouldBe` Set.fromList ['a','c']
+      successors iface bitburger Zero 'a' `shouldBe` Set.fromList ['a','c']
     it "1-pred of a match [c]" $
-      predecessors wrappedGraphI bitburger One 'a' `shouldBe` Set.fromList ['c']
+      predecessors iface bitburger One 'a' `shouldBe` Set.fromList ['c']
     it "1-pred of b match [a,c,b]" $
-      predecessors wrappedGraphI bitburger One 'b' `shouldBe` Set.fromList ['a','c','b']
+      predecessors iface bitburger One 'b' `shouldBe` Set.fromList ['a','c','b']
     it "bitburger satisfies caley condition" $
-      bitburger `shouldSatisfy` caleyCondition
+      bitburger `shouldSatisfy` (pathCondition bsize)
   describe "bitify allPaths" $ do
-    let bitpaths = bitify mapGraphI allPaths
+    let (bitpaths, psize) = labeledBitify lMapGraphI allPaths
+    let pface = lWrappedGraphI (lBitGraphI psize)
     it "bitpaths has 8 elements" $
-      (size . innerGraph) bitpaths `shouldBe` 8
+      Set.size (domain pface bitpaths) `shouldBe` 8
     it "bitpaths does not saitisfy caley condition" $
-      bitpaths `shouldSatisfy` (not . caleyCondition)
+      bitpaths `shouldSatisfy` (not . (pathCondition psize))
