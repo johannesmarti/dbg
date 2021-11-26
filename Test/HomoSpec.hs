@@ -7,7 +7,7 @@ import Test.Hspec
 
 import DeBruijnGraph
 import LabeledGraph
-import CommonGraphTypes
+import CommonLGraphTypes
 import Homo
 import Patterns
 

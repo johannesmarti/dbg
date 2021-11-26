@@ -6,11 +6,11 @@ import Data.Maybe
 import Data.Set
 import Test.Hspec
 
-import DeBruijn
-import Graph
+import DeBruijnGraph
+import LabeledGraph
 import ConciseGraph
 import Patterns
-import MapGraph
+import CommonLGraphTypes
 import DeterminismProperty
 
 
@@ -37,29 +37,29 @@ spec = do
       pt `shouldSatisfy` isTrivial
   describe "does have strong determinism property" $ do
     it "strongDet" $
-      strongDet `shouldSatisfy` (isConstructionDeterministic mapGraphI)
+      strongDet `shouldSatisfy` (isConstructionDeterministic lMapGraphI)
   describe "does not have strong determinism property" $ do
     it "dbg 3" $
       (dbg 3) `shouldSatisfy` (not . isConstructionDeterministic dbgI)
     it "force3d" $
-      force3d `shouldSatisfy` (not . isConstructionDeterministic mapGraphI)
+      force3d `shouldSatisfy` (not . isConstructionDeterministic lMapGraphI)
     it "hamburger" $
-      hamburger `shouldSatisfy` (not . isConstructionDeterministic mapGraphI)
+      hamburger `shouldSatisfy` (not . isConstructionDeterministic lMapGraphI)
     it "strange3" $
-      strange3 `shouldSatisfy` (not . isConstructionDeterministic mapGraphI)
+      strange3 `shouldSatisfy` (not . isConstructionDeterministic lMapGraphI)
     it "4003476 of size 4" $
       4003476 `shouldSatisfy` (not . isConstructionDeterministic (conciseGraphI 4))
   describe "does have weak determinism property" $ do
     it "hamburger" $
-      hamburger `shouldSatisfy` (isWeaklyConstructionDeterministic mapGraphI)
+      hamburger `shouldSatisfy` (isWeaklyConstructionDeterministic lMapGraphI)
     it "strange3" $
-      strange3 `shouldSatisfy` (isWeaklyConstructionDeterministic mapGraphI)
+      strange3 `shouldSatisfy` (isWeaklyConstructionDeterministic lMapGraphI)
   describe "does not have weak determinism property" $ do
     it "dbg 1" $
       (dbg 1) `shouldSatisfy` (not . isWeaklyConstructionDeterministic dbgI)
     it "dbg 3" $
       (dbg 3) `shouldSatisfy` (not . isWeaklyConstructionDeterministic dbgI)
     it "force3d" $
-      force3d `shouldSatisfy` (not . isWeaklyConstructionDeterministic mapGraphI)
+      force3d `shouldSatisfy` (not . isWeaklyConstructionDeterministic lMapGraphI)
     it "4003476 of size 4" $
       4003476 `shouldSatisfy` (not . isWeaklyConstructionDeterministic (conciseGraphI 4))

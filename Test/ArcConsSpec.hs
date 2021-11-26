@@ -9,7 +9,7 @@ import Test.Hspec
 import ArcCons
 import DeBruijnGraph
 import LabeledGraph
-import CommonGraphTypes
+import CommonLGraphTypes
 import Patterns
 
 spec :: Spec

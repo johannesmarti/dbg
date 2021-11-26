@@ -5,7 +5,7 @@ module Test.AssocGraphSpec (
 import Data.Set as Set
 import Test.Hspec
 
-import CommonGraphTypes
+import CommonLGraphTypes
 import LabeledGraph
 
 f1 Zero = [(1,2),(1,1),(2,5)]

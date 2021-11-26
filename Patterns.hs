@@ -19,7 +19,7 @@ module Patterns (
   totalIrreflexive
 ) where
 
-import CommonGraphTypes
+import CommonLGraphTypes
 import Pretty
 
 type ConciseGraph = Word

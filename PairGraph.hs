@@ -41,13 +41,10 @@ fromFunction :: (Label -> g) -> PairGraph g
 fromFunction fct = PairGraph (fct Zero) (fct One)
 
 {-
-fromConciseGraph :: Size -> ConciseGraph -> BitGraph
-fromConciseGraph s cg = BitGraph s (relationOfLabel s cg Zero)
-                                   (relationOfLabel s cg One)
-
 fromArcs :: Size -> [Arc Node] -> BitGraph
 fromArcs size arcs = BitGraph size zbm obm where
   (zbm, obm) = foldl setLabeledArc (nullWord, nullWord) arcs
   setLabeledArc (zeroWord,oneWord) (u,Zero,v) = (setArc size zeroWord (u,v), oneWord)
   setLabeledArc (zeroWord,oneWord) (u,One ,v) = (zeroWord, setArc size oneWord (u,v))
 -}
+

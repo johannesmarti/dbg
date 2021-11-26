@@ -2,6 +2,7 @@ module BitGraph (
   BitGraph,
   Node,
   Size,
+  bitGraphI,
   nodes,
   succsAsList,
   predsAsList,
