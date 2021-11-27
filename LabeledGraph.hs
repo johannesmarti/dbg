@@ -4,7 +4,7 @@ module LabeledGraph (
   Arc,
   LabeledGraphI,
   MapFunction,
-  domain, successors, predecessors, arcs, arcsOfLabel,
+  domain, successors, predecessors, hasArc, arcs, arcsOfLabel, prettyNode,
   interfaceFromAll,
   interfaceFromSuccPredPretty,
   noPredecessor,
@@ -28,14 +28,18 @@ data LabeledGraphI g x = LabeledGraphI {
   domain       :: g -> Set x,
   successors   :: g -> MapFunction x,
   predecessors :: g -> MapFunction x,
+  hasArc       :: g -> Label -> (x,x) -> Bool,
   arcsOfLabel  :: g -> Label -> [(x,x)],
   prettyNode   :: g -> x -> String
 }
 
-interfaceFromAll :: (g -> Set x) -> (g -> MapFunction x)
-  -> (g -> MapFunction x) -> (g -> Label -> [(x,x)]) -> (g -> x -> String) -> LabeledGraphI g x
-interfaceFromAll dom succ pred ar pretty =
-  LabeledGraphI dom succ pred ar pretty
+interfaceFromAll :: (g -> Set x) -> (g -> MapFunction x) -> (g -> MapFunction x)
+                    -> (g -> Label -> (x,x) -> Bool) -> (g -> Label -> [(x,x)])                     -> (g -> x -> String) -> LabeledGraphI g x
+interfaceFromAll dom succ pred hasAr ar pretty =
+  LabeledGraphI dom succ pred hasAr ar pretty
+
+hasArcFromSucc :: Ord x => (g -> MapFunction x) -> g -> Label -> (x,x) -> Bool
+hasArcFromSucc succ g l (v,w) = w `Set.member` (succ g l v)
 
 aOLFromSucc :: Ord x => (g -> Set x) -> (g -> MapFunction x) -> g -> Label -> [(x,x)]
 aOLFromSucc dom succs graph label =
@@ -45,7 +49,8 @@ aOLFromSucc dom succs graph label =
 interfaceFromSuccPredPretty :: Ord x => (g -> Set x) -> (g -> MapFunction x)
   -> (g -> MapFunction x) -> (g -> x -> String) -> LabeledGraphI g x
 interfaceFromSuccPredPretty dom succ pred pretty =
-  LabeledGraphI dom succ pred (aOLFromSucc dom succ) pretty
+  LabeledGraphI dom succ pred (hasArcFromSucc succ)
+                              (aOLFromSucc dom succ) pretty
 
 
 arcs :: LabeledGraphI g x -> g -> [Arc x]

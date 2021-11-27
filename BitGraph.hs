@@ -8,9 +8,9 @@ module BitGraph (
   succsAsList,
   predsAsList,
   allGraphsOfSize,
+  hasBitForArc,
   nullWord,
   totalGraph,
-  BitGraph.hasArc,
   setArc,
   diagonal,
   isRefl,
@@ -36,7 +36,7 @@ type Size = Int
 
 bitGraphI :: Size -> Graph.GraphI (BitGraph) Node
 bitGraphI size = interfaceFromHasArcPretty (dom size)
-                                           (BitGraph.hasArc size)
+                                           (hasBitForArc size)
                                            (\_ n -> show n) 
 
 nodes :: Size -> [Node]
@@ -75,8 +75,8 @@ isNode size node = 0 <= node && node <= size
 maskForSuccs :: Size -> BitGraph
 maskForSuccs size = (shiftL 1 size) - 1
 
-hasArc :: Size -> BitGraph -> (Node,Node) -> Bool
-hasArc size bitset (from, to) = assert (enoughBits size) $
+hasBitForArc :: Size -> BitGraph -> (Node,Node) -> Bool
+hasBitForArc size bitset (from, to) = assert (enoughBits size) $
                                 assert (isValidBitset size bitset) $
                                 assert (isNode size from) $
                                 assert (isNode size to) $ let
@@ -93,11 +93,11 @@ setArc size bitset (from, to) = assert (enoughBits size) $
 
 succsAsList :: Size -> BitGraph -> Node -> [Node]
 succsAsList size bitset node = assert (isNode size node) $
-  filter (\v -> BitGraph.hasArc size bitset (node,v)) (nodes size)
+  filter (\v -> hasBitForArc size bitset (node,v)) (nodes size)
 
 predsAsList :: Size -> BitGraph -> Node -> [Node]
 predsAsList size bitset node = assert (isNode size node) $
-  filter (\v -> BitGraph.hasArc size bitset (v,node)) (nodes size)
+  filter (\v -> hasBitForArc size bitset (v,node)) (nodes size)
 
 succsAsBits :: Size -> BitGraph -> Node -> BitGraph
 succsAsBits size bitset node = assert (isNode size node) $
@@ -134,7 +134,7 @@ hasNoReflInDom :: Size -> [Node] -> BitGraph -> Bool
 hasNoReflInDom size dom word = word .&. diagonalInDom size dom == 0
 
 isRefl :: Size -> BitGraph -> Node -> Bool
-isRefl size graph node = BitGraph.hasArc size graph (node,node)
+isRefl size graph node = hasBitForArc size graph (node,node)
 
 isUniv :: Size -> BitGraph -> Node -> Bool
 isUniv size graph node = graph .&. mask == mask where

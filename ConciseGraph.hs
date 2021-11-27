@@ -6,7 +6,7 @@ module ConciseGraph (
   nodes,
   fromLBitGraph,
   toLBitGraph,
-  hasArc,
+  hasBitForArc,
   isNode,
   allGraphsOfSize,
   totalGraph,
@@ -41,11 +41,11 @@ dom size bitset = assert (enoughBits size) $
 
 succs :: Size -> ConciseGraph -> MapFunction Node
 succs size bitset label node = assert (isNode size node) $
-  Set.fromList $ filter (\v -> hasArc size bitset (node,label,v)) (nodes size)
+  Set.fromList $ filter (\v -> hasBitForArc size bitset (node,label,v)) (nodes size)
 
 preds :: Size -> ConciseGraph -> MapFunction Node
 preds size bitset label node = assert (isNode size node) $
-  Set.fromList $ filter (\v -> hasArc size bitset (v,label,node)) (nodes size)
+  Set.fromList $ filter (\v -> hasBitForArc size bitset (v,label,node)) (nodes size)
 
 fromLBitGraph :: Size -> LBitGraph -> ConciseGraph
 fromLBitGraph s bg =
@@ -80,8 +80,8 @@ isNode :: Size -> Node -> Bool
 isNode size node = 0 <= node && node <= size
 
 -- Maybe we should get rid of all these asserts here!
-hasArc :: Size -> ConciseGraph -> Arc Node -> Bool
-hasArc size bitset (from,label,to) = assert (enoughBits size) $
+hasBitForArc :: Size -> ConciseGraph -> Arc Node -> Bool
+hasBitForArc size bitset (from,label,to) = assert (enoughBits size) $
                                      assert (isValidBitset size bitset) $
                                      assert (isNode size from) $
                                      assert (isNode size to) $ let

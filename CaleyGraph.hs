@@ -114,12 +114,12 @@ repeatingInits = map fst . filter isRepeat . splits where
 
 isPossibleValue :: Size -> CaleyGraph -> [Label] -> [Node] -> Node -> Bool
 isPossibleValue size cg word others node =
-  all (\v -> hasArc size (relationOfWord size cg word) (node,v)) others
+  all (\v -> hasBitForArc size (relationOfWord size cg word) (node,v)) others
 
 isReallyPossibleValue :: Size -> CaleyGraph -> [Label] -> [Node] -> Node -> Bool
 isReallyPossibleValue size cg word others node =
-  all (\v -> hasArc size (relationOfWord size cg word) (node,v)) others &&
-  all (\i -> hasArc size (relationOfWord size cg i) (node,node)) (repeatingInits word)
+  all (\v -> hasBitForArc size (relationOfWord size cg word) (node,v)) others &&
+  all (\i -> hasBitForArc size (relationOfWord size cg i) (node,node)) (repeatingInits word)
 
 printNodeWithSuccs :: CaleyGraph -> BitGraph -> String
 printNodeWithSuccs cg node = show node ++ " -> " ++ show succs where

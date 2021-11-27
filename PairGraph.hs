@@ -21,12 +21,13 @@ instance Functor PairGraph where
   fmap f (PairGraph zg og) = PairGraph (f zg) (f og)
 
 pairGraphI :: Eq x => Graph.GraphI g x -> LabeledGraphI(PairGraph g) x
-pairGraphI innerI = interfaceFromAll dom succ pred ar pretty where
+pairGraphI innerI = interfaceFromAll dom succ pred hasAr ar pretty where
   dom pg = let zd = Graph.domain innerI (zeroGraph pg)
                od = Graph.domain innerI (oneGraph pg)
            in assert (zd == od) zd
   succ pg label = Graph.successors innerI (graphOfLabel pg label)
   pred pg label = Graph.predecessors innerI (graphOfLabel pg label)
+  hasAr pg label = Graph.hasArc innerI (graphOfLabel pg label)
   ar pg l = Graph.arcs innerI (graphOfLabel pg l)
   pretty pg = Graph.prettyNode innerI (zeroGraph pg)
 
