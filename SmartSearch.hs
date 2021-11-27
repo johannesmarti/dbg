@@ -17,6 +17,7 @@ import LabeledGraph
 import Homo
 import DeterminismProperty
 import Pretty
+import Coding hiding (domain)
 
 import Debug.Trace
 
@@ -41,12 +42,25 @@ homoAtLevel :: (Ord x, Pretty x) => Int -> (LMapGraph x,LWrappedGraph LBitGraph 
 homoAtLevel level (g,wg,s,cg) = let
     dim = level
     deBruijnGraph = dbg dim
+    c = coding wg
+    dom = domain lMapGraphI g
+    approx = Map.fromSet f (domain dbgI deBruijnGraph)
+    f dbgnode = Set.filter (isPossVal (nodeToList dim dbgnode)) dom
+    isPossVal word node = isPossibleValue s cg word (encode c node)
+  in isPossible approx && (not (noHomo (arcConsHomosFromApprox dbgI lMapGraphI approx) deBruijnGraph g))
+
+{-
+homoAtLevel :: (Ord x, Pretty x) => Int -> (LMapGraph x,LWrappedGraph LBitGraph Node x,Size,CaleyGraph) -> Bool
+homoAtLevel level (g,wg,s,cg) = let
+    dim = level
+    deBruijnGraph = dbg dim
     bg = innerGraph wg
     bgI = lBitGraphI s
     dom = domain bgI bg
     approx = Map.fromSet f (domain dbgI deBruijnGraph)
     f dbgnode = Set.filter (isPossibleValue s cg (nodeToList dim dbgnode)) dom
   in isPossible approx && (not (noHomo (arcConsHomosFromApprox dbgI bgI approx) deBruijnGraph bg))
+-}
 
 searchLevels :: (Ord x, Pretty x) => [(LMapGraph x,LWrappedGraph LBitGraph Node x,Size,CaleyGraph)] -> Int -> Int -> Result
 searchLevels candidates cutoff level =
