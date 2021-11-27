@@ -7,6 +7,7 @@ import System.Environment
 
 import qualified Data.Set as Set
 
+import Analysis
 import AssocGraph
 import ArcCons
 import BitGraph
@@ -21,7 +22,7 @@ import WrappedGraph
 import Search
 import SmartSearch as SS
 import Bitify
-
+import CommonLGraphTypes
 import Patterns
 
 main :: IO ()
@@ -29,7 +30,7 @@ main :: IO ()
 --main = niceLifting (conciseGraphI slowFourSize) slowFourConcise
 --main = niceLifting dbgI (dbg 1)
 --main = niceLifting mapGraphI celtic
---main = easyReport mapGraphI force3d
+main = easyReport lMapGraphI force3d
 --main = niceLifting mapGraphI slowSquare
 --main = easyReport mapGraphI slowFour
 --main = easyReport (conciseGraphI 4) 3937948
@@ -40,7 +41,7 @@ main :: IO ()
 --main = checkHomo mapGraphI slowFour
 --main = print $ searchLifting 7 mapGraphI force3d
 --main = niceLifting mapGraphI totalIrreflexive
-main = mainRange
+--main = mainRange
 --main = checkOne 4 3937948
 --main = niceLifting (conciseGraphI diverger3Size) diverger3
 --main = niceLifting mapGraphI force3d
