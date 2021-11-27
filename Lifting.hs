@@ -22,8 +22,16 @@ prettyLifted prettyBase (Singleton u) =
 prettyLifted prettyBase (Doubleton u v) =
   '[' : ((prettyLifted prettyBase u) ++ (prettyLifted prettyBase v) ++ "]")
 
+instance (Pretty x) => Pretty (LiftedNode x) where
+  pretty lifted = prettyLifted pretty lifted
+
 instance Show x => Show (LiftedNode x) where
   show lifted = prettyLifted show lifted
+
+instance Functor Lifted where
+  fmap f (BaseNode a) = BaseNode (f a)
+  fmap f (Singleton x) = Singleton (fmap f x)
+  fmap f (Doubleton x y) = Doubleton (fmap f x) (fmap f y)
 
 depth :: Ord x => LiftedNode x -> Int
 depth (BaseNode _) = 0
