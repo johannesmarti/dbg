@@ -11,11 +11,11 @@ import AssocGraph
 import ArcCons
 import BitGraph
 import ConciseGraph
-import DeBruijn
+import DeBruijnGraph
 import DeterminismProperty
 import Graph
 import Homo
-import Lifting
+--import Lifting
 import MapGraph
 import WrappedGraph
 import Search
@@ -34,13 +34,13 @@ main :: IO ()
 --main = easyReport mapGraphI slowFour
 --main = easyReport (conciseGraphI 4) 3937948
 --main = easyReport (conciseGraphI 4) 4040284
-main = easyReport (conciseGraphI 4) 65967450
+--main = easyReport (conciseGraphI 4) 65967450
 --main = easyReport dbgI (dbg 3)
 --main = checkHomo mapGraphI slowSquare
 --main = checkHomo mapGraphI slowFour
 --main = print $ searchLifting 7 mapGraphI force3d
 --main = niceLifting mapGraphI totalIrreflexive
---main = mainRange
+main = mainRange
 --main = checkOne 4 3937948
 --main = niceLifting (conciseGraphI diverger3Size) diverger3
 --main = niceLifting mapGraphI force3d
@@ -60,6 +60,7 @@ takeTill :: (a -> Bool) -> [a] -> [a]
 takeTill p [] = []
 takeTill p (x:xs) = if p x then [x] else x : takeTill p xs
 
+{-
 niceLifting :: (Show x, Ord x) => GraphI g x -> g -> IO ()
 niceLifting gi graph =
   let g = toLiftedGraph gi graph
@@ -82,7 +83,6 @@ searchLifting cutoff gi graph = worker g 0 where
            Nothing -> NoHomo
            Just ll -> worker ll (level + 1)
 
-{-
 main :: IO ()
 main = let res = arcConsHomos dbgI mapGraphI (dbg 8) strange3
            allNodes = domain mapGraphI strange3
@@ -95,13 +95,16 @@ main = let res = arcConsHomos dbgI mapGraphI (dbg 8) strange3
       putStrLn ("ndetSubsets: " ++ show ndetSubsets)
 -}
 
+{-
 checkHomo :: (Show x, Ord x) => GraphI g x -> g -> IO ()
 checkHomo gi graph = let
     wg = bitify gi graph
     (cg,size) = BitGraph.toConciseGraph (innerGraph wg)
   in do putStrLn . unlines $ prettyGraph gi show graph
         checkOne size cg
+-}
 
+{-
 checkOne :: Size -> ConciseGraph -> IO ()
 checkOne size graph = do
   putStrLn (show graph)
@@ -110,6 +113,7 @@ checkOne size graph = do
   --putStrLn (show (searchDbgHomo (conciseGraphI size) 10 graph))
   putStrLn (show (SS.searchUpTo size 10 graph))
   putStrLn "\n"
+-}
 
 unknownAt9 :: [ConciseGraph]
 unknownAt9 = [4003476,4019856,4019860,4039000,4041040,4041048,4065821,4065885,4065949,4066005,4066013]
@@ -119,15 +123,15 @@ mainRange = do
   --args <- getArgs
   --let n = read (head args) :: Int
   let start = 8273023 
-  let step = (totalGraph 4) `div` (1024 * 32 * 32)
-  let bitmaps = Prelude.filter (notTrivial 4) [start .. start + step]
-  --let bitmaps = Prelude.filter (notTrivial 3) (allGraphsOfSize 3)
+  let step = (ConciseGraph.totalGraph 4) `div` (1024 * 32 * 32)
+  --let bitmaps = Prelude.filter (notTrivial 4) [start .. start + step]
+  let bitmaps = Prelude.filter (notTrivial 3) (ConciseGraph.allGraphsOfSize 3)
   --let list = Prelude.filter (\g -> SS.searchUpTo 3 9 g == HomoAt 3) bitmaps
-  --let list = Prelude.filter (\g -> SS.searchUpTo 3 5 g /= NoHomo) bitmaps
-  let list = Prelude.filter (\g -> SS.searchUpTo 4 6 g == HomoAt 6) bitmaps
+  let list = Prelude.filter (\g -> SS.searchUpTo (conciseGraphI 3) 6 g == HomoAt 3) bitmaps
+  --let list = Prelude.filter (\g -> SS.searchUpTo 4 6 g == HomoAt 6) bitmaps
   --let bad = Prelude.filter (\g -> searchLifting 9 (conciseGraphI 3) g == NoHomo) list
-  let bad = Prelude.filter (\g -> searchLifting 6 (conciseGraphI 4) g /= HomoAt 6) list
-  putStrLn (show $ take 5 $ list)
+  --let bad = Prelude.filter (\g -> searchLifting 6 (conciseGraphI 4) g /= HomoAt 6) list
+  putStrLn (show $ length $ list)
   --putStrLn (show $ length bad)
-  putStrLn (show $ head $ bad)
+  --putStrLn (show $ head $ bad)
   --mapM_ (checkOne 3) list
