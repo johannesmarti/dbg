@@ -23,7 +23,7 @@ spec = do
     let p1 = identify (identify pDis 1 2) 2 3
     it "identifications are transitive" $
       representative p1 1 `shouldBe` representative p1 3
-    it "non-identify shold be distinct" $
+    it "non-identify should be distinct" $
       (representative p1 2 == representative p1 4) `shouldBe` False
     let p2 = identify (identify p1 2 4) 5 6
     it "classes are the same" $

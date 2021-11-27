@@ -7,13 +7,16 @@ import qualified Data.Set as Set
 import qualified Data.Map.Strict as Map
 
 import ArcCons
-import ConciseGraph
-import ConciseSubGraph
+import Bitify
+import CommonLGraphTypes
+import BitGraph (Node,Size)
+import LWrappedGraph
 import CaleyGraph
-import DeBruijn
-import Graph
+import DeBruijnGraph
+import LabeledGraph
 import Homo
 import DeterminismProperty
+import Pretty
 
 import Debug.Trace
 
@@ -34,33 +37,37 @@ instance Monoid Result where
   mempty = NoHomo
 -}
 
-homoAtLevel :: Size -> Int -> (ConciseSubGraph,CaleyGraph) -> Bool
-homoAtLevel size level (subgraph,cg) = let
+homoAtLevel :: (Ord x, Pretty x) => Int -> (LMapGraph x,LWrappedGraph LBitGraph Node x,Size,CaleyGraph) -> Bool
+homoAtLevel level (g,wg,s,cg) = let
     dim = level
-    dom = subdomain subgraph
     deBruijnGraph = dbg dim
+    bg = innerGraph wg
+    bgI = lBitGraphI s
+    dom = domain bgI bg
     approx = Map.fromSet f (domain dbgI deBruijnGraph)
-    f dbgnode = Set.filter (isReallyPossibleValue size cg (nodeToList dim dbgnode) dom) (Set.fromList dom)
-  in isPossible approx && (not (noHomo (arcConsHomosFromApprox dbgI (conciseSubGraphI size) approx) deBruijnGraph subgraph))
+    f dbgnode = Set.filter (isPossibleValue s cg (nodeToList dim dbgnode)) dom
+  in isPossible approx && (not (noHomo (arcConsHomosFromApprox dbgI bgI approx) deBruijnGraph bg))
 
-searchLevels :: Size -> [(ConciseSubGraph,CaleyGraph)] -> Int -> Int -> Result
-searchLevels size candidates cutoff level =
+searchLevels :: (Ord x, Pretty x) => [(LMapGraph x,LWrappedGraph LBitGraph Node x,Size,CaleyGraph)] -> Int -> Int -> Result
+searchLevels candidates cutoff level =
   if level > cutoff
     then UnknownAt cutoff
     else let 
-         in if any (homoAtLevel size level) candidates
+         in if any (homoAtLevel level) candidates
               then HomoAt level
-              else searchLevels size candidates cutoff (level + 1)
+              else searchLevels candidates cutoff (level + 1)
 
-searchUpTo :: Size -> Int -> ConciseGraph -> Result
-searchUpTo size cutoff graph = let
-    allNodes = Set.fromList (nodes size)
-    subsets = Set.filter (\s -> Set.size s >= 2) $ Set.powerSet allNodes
-    subgraphs = map (fromSubset size graph) (Set.toList subsets)
-    candidates = filter (\s -> not (isWeaklyConstructionDeterministic (conciseSubGraphI size) s)) subgraphs
-    candidatesWithCaley = map (\sg -> (sg, ConciseSubGraph.caleyGraph size sg)) candidates
-    isReallyGoodPair (sg, cg) = isReallyGoodForDom size cg (subdomain sg)
-    reallyGoodCandidates = filter isReallyGoodPair candidatesWithCaley
-  in if null reallyGoodCandidates
+searchUpTo :: (Ord x, Pretty x) => LabeledGraphI g x -> Int -> g -> Result
+searchUpTo gi cutoff graph = let
+    dom = domain gi graph
+    subsets = Set.toList $ Set.filter (\s -> Set.size s >= 2) $ Set.powerSet dom
+    subgraphs = map (lMapSubgraphFromLGraph gi graph) subsets
+    candidates = filter (\s -> not (isWeaklyConstructionDeterministic lMapGraphI s)) subgraphs
+    bityCandidates = map (\c -> (c, labeledBitify lMapGraphI c)) candidates
+    candidatesWithCaley = map (\(g,(wg,s)) -> (g, wg, s, caleyGraphOfLBitGraph s(innerGraph wg))) bityCandidates
+    isGoodCandi (g, wg, s, cg) = isGood s cg
+    goodCandidates = filter isGoodCandi candidatesWithCaley
+  in if null goodCandidates
        then NoHomo
-       else searchLevels size reallyGoodCandidates cutoff 1
+       else searchLevels goodCandidates cutoff 1
+

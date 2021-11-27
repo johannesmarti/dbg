@@ -44,7 +44,7 @@ labeledBitify gi g = (wrappedGraph, size) where
   enc (u,v) = (encode c u, encode c v)
 
 pathCondition :: Size -> LWrappedGraph LBitGraph Node x -> Bool
-pathCondition size wg = isReallyGood size cg where
+pathCondition size wg = isGood size cg where
   inner = LWrappedGraph.innerGraph wg
   cg = caleyGraphOfLBitGraph size inner
 

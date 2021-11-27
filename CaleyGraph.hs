@@ -4,11 +4,7 @@ module CaleyGraph (
   rightCaleyGraph,
   finiteWords,
   isGood,
-  isReallyGood,
-  isGoodForDom,
-  isReallyGoodForDom,
   isPossibleValue,  
-  isReallyPossibleValue,  
   printNodeWithSuccs,
   prettyCaleyGraph,
 ) where
@@ -81,24 +77,11 @@ finiteWords size cg = generateFiniteWords [([], diagonal size)] where
                                          : (One:nextWord,oneSucc) : rest))
          else generateFiniteWords rest
 
-isGood :: Size -> CaleyGraph -> Bool
-isGood size cg = all (not . hasNoRefl size) (wellfoundedElements cg) &&
-                 all (hasUniv size) (nonWellfoundedElements cg)
-
-isGoodForDom :: Size -> CaleyGraph -> [Node] -> Bool
-isGoodForDom size cg dom = all (not . hasNoReflInDom size dom) (wellfoundedElements cg) &&
-                           all (hasUnivInDom size dom) (nonWellfoundedElements cg)
-
 {- These would probabely be much quicker if we would cache the multiples as
 part of the CaleyGraph -}
-isReallyGood :: Size -> CaleyGraph -> Bool
-isReallyGood size cg = all (hasUniv size) (nonWellfoundedElements cg) &&
+isGood :: Size -> CaleyGraph -> Bool
+isGood size cg = all (hasUniv size) (nonWellfoundedElements cg) &&
   all (\rel -> rel == diagonal size || hasReflAndUnivInMultiple size rel) (wellfoundedElements cg)
-
-isReallyGoodForDom :: Size -> CaleyGraph -> [Node] -> Bool
-isReallyGoodForDom size cg dom =
-  all (hasUnivInDom size dom) (nonWellfoundedElements cg) &&
-  all (\rel -> rel == diagonal size || hasReflAndUnivInMultipleDom size dom rel) (wellfoundedElements cg)
 
 splits :: [a] -> [([a],[a])]
 splits xx = zipWith splitAt [1..(length xx)] (repeat xx)
@@ -112,13 +95,9 @@ repeatingInits = map fst . filter isRepeat . splits where
       if i == r then eatThroughRest is rs
                 else False
 
-isPossibleValue :: Size -> CaleyGraph -> [Label] -> [Node] -> Node -> Bool
-isPossibleValue size cg word others node =
-  all (\v -> hasBitForArc size (relationOfWord size cg word) (node,v)) others
-
-isReallyPossibleValue :: Size -> CaleyGraph -> [Label] -> [Node] -> Node -> Bool
-isReallyPossibleValue size cg word others node =
-  all (\v -> hasBitForArc size (relationOfWord size cg word) (node,v)) others &&
+isPossibleValue :: Size -> CaleyGraph -> [Label] -> Node -> Bool
+isPossibleValue size cg word node =
+  all (\v -> hasBitForArc size (relationOfWord size cg word) (node,v)) (nodes size) &&
   all (\i -> hasBitForArc size (relationOfWord size cg i) (node,node)) (repeatingInits word)
 
 printNodeWithSuccs :: CaleyGraph -> BitGraph -> String

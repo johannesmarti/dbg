@@ -9,8 +9,12 @@ module CommonLGraphTypes (
   lBitGraphI,
   assocFromFunction,
   mapFromFunction,
+  lMapGraphFromLGraph,
+  lMapSubgraphFromLGraph,
   caleyGraphOfLBitGraph,
 ) where
+
+import Data.Set
 
 import qualified Graph
 import BitGraph
@@ -43,9 +47,14 @@ assocFromFunction fct = PairGraph.fromFunction (AssocGraph . fct)
 mapFromFunction :: Ord x => (Label -> [(x,x)]) -> LMapGraph x
 mapFromFunction fct = fmap (MapGraph.fromGraph assocGraphINoShow) $ assocFromFunction fct
 
-mapFromLGraph :: Ord x => LabeledGraphI g x -> g -> LMapGraph x
-mapFromLGraph lgi g = PairGraph.fromFunction f where
+lMapGraphFromLGraph :: Ord x => LabeledGraphI g x -> g -> LMapGraph x
+lMapGraphFromLGraph lgi g = PairGraph.fromFunction f where
   f l = MapGraph.fromGraph (graphOfLabelI lgi l) g
+
+lMapSubgraphFromLGraph :: Ord x => LabeledGraphI g x -> g -> Set x
+                                   -> LMapGraph x
+lMapSubgraphFromLGraph lgi g subdomain = PairGraph.fromFunction f where
+  f l = MapGraph.subgraph (graphOfLabelI lgi l) g subdomain
 
 caleyGraphOfLBitGraph :: Size -> LBitGraph -> CaleyGraph
 caleyGraphOfLBitGraph size bg = rightCaleyGraph size
