@@ -1,7 +1,7 @@
 module Lifting (
   LiftedGraph,
   liftedGraphI,
-  --toLiftedGraph,
+  toLiftedGraph,
   --lift,
 ) where
 
@@ -30,12 +30,10 @@ instance Show x => Show (Lifted x) where
 instance Pretty x => Pretty (Lifted x) where
   pretty lifted = prettyLifted pretty lifted
 
-{-
 instance Functor Lifted where
-  fmap f (BaseNode a) = f a
+  fmap f (BaseNode a) = BaseNode (f a)
   fmap f (Singleton x) = Singleton (fmap f x)
   fmap f (Doubleton x y) = Doubleton (fmap f x) (fmap f y)
--}
 
 
 depth :: Ord x => Lifted x -> Int
@@ -79,13 +77,10 @@ balanced liftedGraph = let
     depths = map depth dom
   in ListExtra.allSame depths
 
-{-
-toLiftedGraph :: Ord x => GraphI g x -> g -> LiftedGraph x
-toLiftedGraph gi g = let
-    hasPredecessorsDom = Set.filter (\node -> not (noPredecessor gi g node))
-                                    (domain gi g)
-  in applyBijection BaseNode $
-      AssocGraph.subgraph hasPredecessorsDom (AssocGraph.fromGraph gi g)
+
+toLiftedGraph :: Ord x => LabeledGraphI g x -> g -> LiftedGraph x
+toLiftedGraph gi g = assert (not (any (noPredecessor gi g) (domain gi g))) $
+  lMapApplyBijection gi g BaseNode 
 
 strictPairs :: [x] -> [(x,x)]
 strictPairs list = worker list [] where
@@ -94,6 +89,7 @@ strictPairs list = worker list [] where
   innerWorker elem [] rest accum = worker rest accum
   innerWorker elem (p:ps) rest accum = innerWorker elem ps rest ((elem, p):accum)
 
+{-
 graph :: (a -> b) -> [a] -> [(a, b)]
 graph _ [] = []
 graph f (a:as) = (a,f a) : (graph f as)

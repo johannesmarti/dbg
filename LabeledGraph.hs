@@ -61,6 +61,9 @@ arcs gi g = concatMap fromLabel labels where
 noPredecessor :: Ord x => LabeledGraphI g x -> g -> x -> Bool
 noPredecessor gi g node = any (\l -> Prelude.null $ predecessors gi g l node) labels
 
+hasBothPredecessorDom :: Ord x => LabeledGraphI g x -> g -> Set x
+hasBothPredecessorDom gi g = Set.filter (\n -> not (noPredecessor gi g n)) (domain gi g)
+
 hasDoubleRefl :: Ord x => LabeledGraphI g x -> g -> Bool
 hasDoubleRefl gi g = let
     hasBothLoops n = all (\l -> n `Set.member` predecessors gi g l n) labels

@@ -4,6 +4,7 @@ module MapGraph (
   fromGraph,
   subgraph,
   projection,
+  applyBijection,
 ) where
 
 import Control.Exception.Base
@@ -70,6 +71,18 @@ projection gi g projection =
     mapper direction = SetExtra.concatMap (Set.map projection . direction gi g) . preimage
     spmapping v = (mapper Graph.successors v, mapper Graph.predecessors v)
     spm = Map.fromSet spmapping dom
+
+applyBijection :: (Ord a, Ord b) => Graph.GraphI g a -> g -> (a -> b) -> MapGraph b
+applyBijection gi g b =
+  assert (Graph.succPredInDom mapGraphINotPretty result) $
+  assert (Graph.succPredMatch mapGraphINotPretty result) result where
+    result = MapGraph nmg
+    oldDomain = Graph.domain gi g
+    mapper direction = Set.map b . direction gi g
+    spmapping v = (mapper Graph.successors v, mapper Graph.predecessors v)
+    spm = Map.fromSet spmapping oldDomain
+    nmg = Map.mapKeys b spm
+
 
 instance (Ord x, Pretty x) => Show (MapGraph x) where
   show = Graph.showG mapGraphI
