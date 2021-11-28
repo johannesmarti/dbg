@@ -6,11 +6,13 @@ module CommonLGraphTypes (
   LBitGraph,
   lAssocGraphI,
   lMapGraphI,
+  lMapGraphINotPretty,
   lBitGraphI,
   assocFromFunction,
   mapFromFunction,
   lMapGraphFromLGraph,
   lMapSubgraphFromLGraph,
+  lMapApplyBijection, 
   caleyGraphOfLBitGraph,
 ) where
 
@@ -38,6 +40,9 @@ lAssocGraphI = pairGraphI assocGraphI
 lMapGraphI :: (Ord x, Pretty x) => LabeledGraphI (LMapGraph x) x
 lMapGraphI = pairGraphI mapGraphI
 
+lMapGraphINotPretty :: Ord x => LabeledGraphI (LMapGraph x) x
+lMapGraphINotPretty = pairGraphI mapGraphINotPretty
+
 lBitGraphI :: Size -> LabeledGraphI (LBitGraph) Node
 lBitGraphI size = pairGraphI (bitGraphI size)
 
@@ -55,6 +60,11 @@ lMapSubgraphFromLGraph :: Ord x => LabeledGraphI g x -> g -> Set x
                                    -> LMapGraph x
 lMapSubgraphFromLGraph lgi g subdomain = PairGraph.fromFunction f where
   f l = MapGraph.subgraph (graphOfLabelI lgi l) g subdomain
+
+lMapApplyBijection :: (Ord a, Ord b) => LabeledGraphI g a -> g -> (a -> b) -> LMapGraph b
+lMapApplyBijection gi g b = PairGraph.fromFunction f where
+  f l = MapGraph.applyBijection (graphOfLabelI gi l) g b
+ 
 
 caleyGraphOfLBitGraph :: Size -> LBitGraph -> CaleyGraph
 caleyGraphOfLBitGraph size bg = rightCaleyGraph size

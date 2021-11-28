@@ -1,6 +1,6 @@
 module AssocGraph (
   AssocGraph(AssocGraph),
-  assocGraphI, assocGraphINoShow, assocGraphIwithNodePrinter,
+  assocGraphI, assocGraphINotPretty, assocGraphIwithNodePrinter,
   fromGraph,
 ) where
 
@@ -8,7 +8,6 @@ import Control.Exception.Base
 import qualified Data.Set as Set
 import qualified Data.Set.Extra
 
-import qualified MapGraph
 import qualified Graph
 import Pretty
 
@@ -18,8 +17,8 @@ newtype AssocGraph a = AssocGraph {arcs :: [(a,a)]}
 assocGraphI :: (Ord a, Pretty a) => Graph.GraphI (AssocGraph a) a
 assocGraphI = assocGraphIwithNodePrinter pretty
 
-assocGraphINoShow :: Ord x => Graph.GraphI (AssocGraph x) x
-assocGraphINoShow = assocGraphIwithNodePrinter (error "can not show nodes of this graph")
+assocGraphINotPretty :: Ord x => Graph.GraphI (AssocGraph x) x
+assocGraphINotPretty = assocGraphIwithNodePrinter (error "can not show nodes of this graph")
 
 assocGraphIwithNodePrinter :: Ord x => (x -> String) -> Graph.GraphI (AssocGraph x) x
 assocGraphIwithNodePrinter prettyNode = Graph.interfaceFromArcsPretty
