@@ -6,6 +6,7 @@ module CommonLGraphTypes (
   LBitGraph,
   lAssocGraphI,
   lMapGraphI,
+  lMapGraphINotPretty,
   lBitGraphI,
   assocFromFunction,
   mapFromFunction,
@@ -37,6 +38,9 @@ lAssocGraphI = pairGraphI assocGraphI
 
 lMapGraphI :: (Ord x, Pretty x) => LabeledGraphI (LMapGraph x) x
 lMapGraphI = pairGraphI mapGraphI
+
+lMapGraphINotPretty :: Ord x => LabeledGraphI (LMapGraph x) x
+lMapGraphINotPretty = pairGraphI mapGraphINotPretty
 
 lBitGraphI :: Size -> LabeledGraphI (LBitGraph) Node
 lBitGraphI size = pairGraphI (bitGraphI size)

@@ -8,30 +8,42 @@ import Control.Exception.Base
 import qualified Data.Set as Set
 import qualified Data.List.Extra as ListExtra
 
-import MapGraph
-import Graph
+import CommonLGraphTypes
+import LabeledGraph
+import Pretty
 
-data LiftedNode x = BaseNode x | Singleton (LiftedNode x)
-                               | Doubleton (LiftedNode x) (LiftedNode x)
+data Lifted x = BaseNode x | Singleton (Lifted x)
+                           | Doubleton (Lifted x) (Lifted x)
   deriving (Eq,Ord)
 
-prettyLifted :: (x -> String) -> LiftedNode x -> String
+prettyLifted :: (x -> String) -> Lifted x -> String
 prettyLifted prettyBase (BaseNode a) = prettyBase a
 prettyLifted prettyBase (Singleton u) =
   '[' : ((prettyLifted prettyBase u) ++ "]")
 prettyLifted prettyBase (Doubleton u v) =
   '[' : ((prettyLifted prettyBase u) ++ (prettyLifted prettyBase v) ++ "]")
 
-instance Show x => Show (LiftedNode x) where
+instance Show x => Show (Lifted x) where
   show lifted = prettyLifted show lifted
 
-depth :: Ord x => LiftedNode x -> Int
+instance Pretty x => Pretty (Lifted x) where
+  pretty lifted = prettyLifted pretty lifted
+
+{-
+instance Functor Lifted where
+  fmap f (BaseNode a) = f a
+  fmap f (Singleton x) = Singleton (fmap f x)
+  fmap f (Doubleton x y) = Doubleton (fmap f x) (fmap f y)
+-}
+
+
+depth :: Ord x => Lifted x -> Int
 depth (BaseNode _) = 0
 depth (Singleton u) = depth u + 1
 depth (Doubleton u v) = let du = depth u in assert (du == depth v) $
                                             assert (u < v) $ du + 1
 
-liftedRelation :: (a -> a -> Bool) -> (LiftedNode a) -> (LiftedNode a) -> Bool
+liftedRelation :: (a -> a -> Bool) -> (Lifted a) -> (Lifted a) -> Bool
 liftedRelation baseRel (BaseNode a) (BaseNode b) = baseRel a b
 liftedRelation baseRel (Singleton x) (Singleton y) = liftedRelation baseRel x y
 liftedRelation baseRel (Singleton x) (Doubleton y y') =
@@ -43,7 +55,7 @@ liftedRelation baseRel (Doubleton x x') (Doubleton y y') =
   (liftedRelation baseRel x' y && liftedRelation baseRel x' y')
 liftedRelation baseRel _ _ = error "comparing unbalanced lifted nodes"
 
-isCovered :: Eq a => (LiftedNode a) -> (LiftedNode a) -> Bool
+isCovered :: Eq a => (Lifted a) -> (Lifted a) -> Bool
 isCovered (BaseNode a) (BaseNode b) = a == b
 isCovered (Singleton x) (Singleton y) = isCovered x y
 isCovered (Singleton x) (Doubleton y y') = isCovered x y || isCovered x y'
@@ -52,17 +64,21 @@ isCovered (Doubleton x x') (Doubleton y y') =
   (isCovered x y || isCovered x y') && (isCovered x' y || isCovered x' y')
 isCovered _ _ = error "comparing unbalanced lifted nodes"
 
-type LiftedGraph x = MapGraph (LiftedNode x)
+type LiftedGraph x = LMapGraph (Lifted x)
 
-liftedGraphI :: Ord x => GraphI (LiftedGraph x) (LiftedNode x)
-liftedGraphI = mapGraphI
+liftedGraphI :: (Ord x, Pretty x) => LabeledGraphI (LiftedGraph x) (Lifted x)
+liftedGraphI = lMapGraphI
+
+liftedGraphINotPretty :: Ord x => LabeledGraphI (LiftedGraph x) (Lifted x)
+liftedGraphINotPretty = lMapGraphINotPretty
 
 balanced :: Ord x => LiftedGraph x -> Bool
 balanced liftedGraph = let
-    dom = Set.toList $ domain liftedGraphI liftedGraph
+    dom = Set.toList $ domain liftedGraphINotPretty liftedGraph
     depths = map depth dom
   in ListExtra.allSame depths
 
+{-
 toLiftedGraph :: Ord x => GraphI g x -> g -> LiftedGraph x
 toLiftedGraph gi g = let
     hasPredecessorsDom = Set.filter (\node -> not (noPredecessor gi g node))
@@ -114,3 +130,4 @@ lift agraph = assert (balanced agraph) $ let
   in if null toAdd
        then Nothing
        else Just liftedGraph
+-}

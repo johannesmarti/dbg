@@ -1,6 +1,6 @@
 module MapGraph (
   MapGraph,
-  mapGraphI, mapGraphIwithNodePrinter,
+  mapGraphI, mapGraphINotPretty, mapGraphIwithNodePrinter,
   fromGraph,
   subgraph,
   projection,
@@ -19,8 +19,8 @@ newtype MapGraph x = MapGraph { succPredMap :: Map x (Set x, Set x) }
 mapGraphI :: (Ord x,Pretty x) => Graph.GraphI (MapGraph x) x
 mapGraphI = mapGraphIwithNodePrinter pretty
 
-mapGraphINoShow :: Ord x => Graph.GraphI (MapGraph x) x
-mapGraphINoShow = mapGraphIwithNodePrinter (error "can not show nodes of this graph")
+mapGraphINotPretty :: Ord x => Graph.GraphI (MapGraph x) x
+mapGraphINotPretty = mapGraphIwithNodePrinter (error "can not show nodes of this graph")
 
 mapGraphIwithNodePrinter :: Ord x => (x -> String) -> Graph.GraphI (MapGraph x) x
 mapGraphIwithNodePrinter prettyNode = Graph.interfaceFromSuccPredPretty
@@ -42,8 +42,8 @@ predecessors mg v = snd $ succPredPair mg v
 
 fromGraph :: Ord a => Graph.GraphI g a -> g -> MapGraph a
 fromGraph gi graph = 
-  assert (Graph.succPredInDom mapGraphINoShow result) $
-  assert (Graph.succPredMatch mapGraphINoShow result) result where
+  assert (Graph.succPredInDom mapGraphINotPretty result) $
+  assert (Graph.succPredMatch mapGraphINotPretty result) result where
     result = MapGraph spm
     dom = Graph.domain gi graph
     spmapping v = (Graph.successors gi graph v, Graph.predecessors gi graph v)
@@ -51,8 +51,8 @@ fromGraph gi graph =
 
 subgraph :: Ord a => Graph.GraphI g a -> g -> Set a -> MapGraph a
 subgraph gi g subdomain = assert (subdomain `isSubsetOf` Graph.domain gi g) $
-  assert (Graph.succPredInDom mapGraphINoShow result) $
-  assert (Graph.succPredMatch mapGraphINoShow result) result where
+  assert (Graph.succPredInDom mapGraphINotPretty result) $
+  assert (Graph.succPredMatch mapGraphINotPretty result) result where
     result = MapGraph spm
     dom = subdomain
     spmapping v = (Graph.successors gi g v `Set.intersection` subdomain,
@@ -61,8 +61,8 @@ subgraph gi g subdomain = assert (subdomain `isSubsetOf` Graph.domain gi g) $
 
 projection :: (Ord a, Ord b) => Graph.GraphI g a -> g -> (a -> b) -> MapGraph b
 projection gi g projection =
-  assert (Graph.succPredInDom mapGraphINoShow result) $
-  assert (Graph.succPredMatch mapGraphINoShow result) result where
+  assert (Graph.succPredInDom mapGraphINotPretty result) $
+  assert (Graph.succPredMatch mapGraphINotPretty result) result where
     result = MapGraph spm
     oldDomain = Graph.domain gi g
     dom = Set.map projection oldDomain
