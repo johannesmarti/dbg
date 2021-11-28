@@ -89,42 +89,54 @@ strictPairs list = worker list [] where
   innerWorker elem [] rest accum = worker rest accum
   innerWorker elem (p:ps) rest accum = innerWorker elem ps rest ((elem, p):accum)
 
+liftedNodesWithPred :: Ord x => LabeledGraphI g x -> g -> [((x,x), (Set.Set x, Set.Set x))]
+liftedNodesWithPred gi g = let
+    domList = Set.toList $ domain gi g
+    pred = predecessors gi g
+    alldoubles = strictPairs domList
+    intersecter (a,b) = (pred Zero a `Set.intersection` pred Zero b,
+                         pred One a `Set.intersection` pred One b)
+    graph f list = map (\x -> (x,f(x))) list
+    candidates = filter (dointersect . snd) (graph intersecter alldoubles)
+    dointersect (sa,sb) = not (Set.null sa) && not (Set.null sb)
+  in candidates
+
+liftedNodes :: Ord x => LabeledGraphI g x -> g -> [(x,x)]
+liftedNodes gi g = map fst $ liftedNodesWithPred gi g
+
 {-
-graph :: (a -> b) -> [a] -> [(a, b)]
-graph _ [] = []
-graph f (a:as) = (a,f a) : (graph f as)
 
 lift :: Ord x => LiftedGraph x -> Maybe (LiftedGraph x)
 lift agraph = assert (balanced agraph) $ let
-    oldDomList = Set.toList $ (domain liftedGraphI agraph)
-    setCondi = Set.isSubsetOf
-    pred = predecessors liftedGraphI agraph
-    allDoubles = strictPairs oldDomList
-    intersecter (a,b) = (pred Zero a `Set.intersection` pred Zero b,
-                         pred One a `Set.intersection` pred One b)
-    candidates = filter (doIntersect . snd) (graph intersecter allDoubles)
-    doIntersect (sa,sb) = not (Set.null sa) && not (Set.null sb)
-    toAdd = filter notDominated candidates
-    notDominated ((a,b),(pz,po)) = not $ any dominates oldDomList where
-            dominates oldNode = a `isCovered` oldNode && b `isCovered` oldNode
-                                && (pz `setCondi` pred Zero oldNode &&
-                                    po `setCondi` pred One oldNode)
-    newNodesWithPreds = map (\((a,b),(pz,po)) -> (Doubleton a b,
-                             (Set.map Singleton pz,
-                              Set.map Singleton po))) toAdd
-    newNodes = map fst newNodesWithPreds
-    liftedOld = applyBijection Singleton agraph
-    withNewNodes = addNodesWithPreds newNodesWithPreds liftedOld
-    liftedGraph = addNodesWithSuccs succsOfNewNodes withNewNodes
-    succsOfNewNodes = map gaga newNodes
-    gaga d = let Doubleton a b = d
-                 succs = successors liftedGraphI withNewNodes
-                 zsuc = succs Graph.Zero (Singleton a) `Set.union` 
-                        succs Graph.Zero (Singleton b)
-                 osuc = succs Graph.One (Singleton a) `Set.union` 
-                        succs Graph.One (Singleton b)
+    olddomlist = set.tolist $ (domain liftedgraphi agraph)
+    setcondi = set.issubsetof
+    pred = predecessors liftedgraphi agraph
+    alldoubles = strictpairs olddomlist
+    intersecter (a,b) = (pred zero a `set.intersection` pred zero b,
+                         pred one a `set.intersection` pred one b)
+    candidates = filter (dointersect . snd) (graph intersecter alldoubles)
+    dointersect (sa,sb) = not (set.null sa) && not (set.null sb)
+    toadd = filter notdominated candidates
+    notdominated ((a,b),(pz,po)) = not $ any dominates olddomlist where
+            dominates oldnode = a `iscovered` oldnode && b `iscovered` oldnode
+                                && (pz `setcondi` pred zero oldnode &&
+                                    po `setcondi` pred one oldnode)
+    newnodeswithpreds = map (\((a,b),(pz,po)) -> (doubleton a b,
+                             (set.map singleton pz,
+                              set.map singleton po))) toadd
+    newnodes = map fst newnodeswithpreds
+    liftedold = applybijection singleton agraph
+    withnewnodes = addnodeswithpreds newnodeswithpreds liftedold
+    liftedgraph = addnodeswithsuccs succsofnewnodes withnewnodes
+    succsofnewnodes = map gaga newnodes
+    gaga d = let doubleton a b = d
+                 succs = successors liftedgraphi withnewnodes
+                 zsuc = succs graph.zero (singleton a) `set.union` 
+                        succs graph.zero (singleton b)
+                 osuc = succs graph.one (singleton a) `set.union` 
+                        succs graph.one (singleton b)
       in (d,(zsuc,osuc))
-  in if null toAdd
-       then Nothing
-       else Just liftedGraph
+  in if null toadd
+       then nothing
+       else just liftedgraph
 -}
