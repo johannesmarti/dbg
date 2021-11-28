@@ -1,7 +1,8 @@
 module Lifting (
-  toLiftedGraph,
+  LiftedGraph,
   liftedGraphI,
-  lift,
+  --toLiftedGraph,
+  --lift,
 ) where
 
 import Control.Exception.Base
