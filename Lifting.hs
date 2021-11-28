@@ -105,7 +105,6 @@ liftedNodes :: Ord x => LabeledGraphI g x -> g -> [(x,x)]
 liftedNodes gi g = map fst $ liftedNodesWithPred gi g
 
 {-
-
 lift :: Ord x => LiftedGraph x -> Maybe (LiftedGraph x)
 lift agraph = assert (balanced agraph) $ let
     olddomlist = set.tolist $ (domain liftedgraphi agraph)
