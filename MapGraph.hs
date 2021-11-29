@@ -7,6 +7,8 @@ module MapGraph (
   applyBijection,
   addNode,
   addArc,
+  addNodes,
+  addArcs,
 ) where
 
 import Control.Exception.Base
@@ -89,6 +91,9 @@ addNode :: Ord x => MapGraph x -> x -> MapGraph x
 addNode (MapGraph map) node = assert (node `Map.notMember` map) $
   MapGraph $ Map.insert node (Set.empty,Set.empty) map
 
+addNodes :: Ord x => MapGraph x -> [x] -> MapGraph x
+addNodes g list = Prelude.foldl addNode g list
+
 addArc :: Ord x => MapGraph x -> (x,x) -> MapGraph x
 addArc (MapGraph map) (v,w) = assert (v `Map.member` map) $
                               assert (w `Map.member` map) $
@@ -98,6 +103,9 @@ addArc (MapGraph map) (v,w) = assert (v `Map.member` map) $
   imap = Map.adjust insw v map
   jmap = Map.adjust insv w imap
   res = MapGraph jmap
+
+addArcs :: Ord x => MapGraph x -> [(x,x)] -> MapGraph x
+addArcs g list = Prelude.foldl addArc g list
 
 
 instance (Ord x, Pretty x) => Show (MapGraph x) where
