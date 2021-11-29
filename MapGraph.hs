@@ -5,6 +5,8 @@ module MapGraph (
   subgraph,
   projection,
   applyBijection,
+  addNode,
+  addArc,
 ) where
 
 import Control.Exception.Base
@@ -82,6 +84,20 @@ applyBijection gi g b =
     spmapping v = (mapper Graph.successors v, mapper Graph.predecessors v)
     spm = Map.fromSet spmapping oldDomain
     nmg = Map.mapKeys b spm
+
+addNode :: Ord x => MapGraph x -> x -> MapGraph x
+addNode (MapGraph map) node = assert (node `Map.notMember` map) $
+  MapGraph $ Map.insert node (Set.empty,Set.empty) map
+
+addArc :: Ord x => MapGraph x -> (x,x) -> MapGraph x
+addArc (MapGraph map) (v,w) = assert (v `Map.member` map) $
+                              assert (w `Map.member` map) $
+                              assert (Graph.hasArc mapGraphINotPretty res (v,w)) res where
+  insw (ss,ps) = (Set.insert w ss, ps)
+  insv (ss,ps) = (ss, Set.insert v ps)
+  imap = Map.adjust insw v map
+  jmap = Map.adjust insv w imap
+  res = MapGraph jmap
 
 
 instance (Ord x, Pretty x) => Show (MapGraph x) where
