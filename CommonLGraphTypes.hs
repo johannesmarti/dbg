@@ -50,7 +50,7 @@ assocFromFunction :: Ord x => (Label -> [(x,x)]) -> LAssocGraph x
 assocFromFunction fct = PairGraph.fromFunction (AssocGraph . fct)
 
 mapFromFunction :: Ord x => (Label -> [(x,x)]) -> LMapGraph x
-mapFromFunction fct = fmap (MapGraph.fromGraph assocGraphINoShow) $ assocFromFunction fct
+mapFromFunction fct = fmap (MapGraph.fromGraph assocGraphINotPretty) $ assocFromFunction fct
 
 lMapGraphFromLGraph :: Ord x => LabeledGraphI g x -> g -> LMapGraph x
 lMapGraphFromLGraph lgi g = PairGraph.fromFunction f where

@@ -1,4 +1,4 @@
-module Analysis (
+module Analytics (
   pathReport,
   easyReport,
 ) where

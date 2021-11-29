@@ -88,7 +88,7 @@ strictPairs list = worker list [] where
   innerWorker elem [] rest accum = worker rest accum
   innerWorker elem (p:ps) rest accum = innerWorker elem ps rest ((elem, p):accum)
 
-liftedNodesWithPred :: Ord x => LabeledGraphI g x -> g -> [((x,x), (Set.Set x, Set.Set x))]
+liftedPairsWithPred :: Ord x => LabeledGraphI g x -> g -> [((x,x), (Set.Set x, Set.Set x))]
 liftedNodesWithPred gi g = let
     domList = Set.toList $ domain gi g
     pred = predecessors gi g
@@ -100,8 +100,8 @@ liftedNodesWithPred gi g = let
     dointersect (sa,sb) = not (Set.null sa) && not (Set.null sb)
   in candidates
 
-liftedNodes :: Ord x => LabeledGraphI g x -> g -> [(x,x)]
-liftedNodes gi g = map fst $ liftedNodesWithPred gi g
+liftedPairs :: Ord x => LabeledGraphI g x -> g -> [(x,x)]
+liftedPairs gi g = map fst $ liftedNodesWithPred gi g
 
 {-
 lift :: Ord x => LiftedGraph x -> Maybe (LiftedGraph x)
