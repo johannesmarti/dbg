@@ -2,7 +2,7 @@ module Lifting (
   LiftedGraph,
   liftedGraphI,
   toLiftedGraph,
-  --lift,
+  lift,
 ) where
 
 import Control.Exception.Base
@@ -88,8 +88,10 @@ strictPairs list = worker list [] where
   innerWorker elem [] rest accum = worker rest accum
   innerWorker elem (p:ps) rest accum = innerWorker elem ps rest ((elem, p):accum)
 
-liftedPairsWithPred :: Ord x => LabeledGraphI g x -> g -> [((x,x), (Set.Set x, Set.Set x))]
-liftedNodesWithPred gi g = let
+type LiftingCandidate x = ((x,x), (Set.Set x, Set.Set x))
+
+liftedPairsWithPred :: Ord x => LabeledGraphI g x -> g -> [LiftingCandidate x]
+liftedPairsWithPred gi g = let
     domList = Set.toList $ domain gi g
     pred = predecessors gi g
     alldoubles = strictPairs domList
@@ -101,40 +103,47 @@ liftedNodesWithPred gi g = let
   in candidates
 
 liftedPairs :: Ord x => LabeledGraphI g x -> g -> [(x,x)]
-liftedPairs gi g = map fst $ liftedNodesWithPred gi g
+liftedPairs gi g = map fst $ liftedPairsWithPred gi g
 
-{-
+lMapAddNodes :: Ord x => LMapGraph x -> [((Set.Set x, Set.Set x), x, (Set.Set x, Set.Set x))] -> LMapGraph x
+lMapAddNodes = undefined
+
+liftWithFilter :: Ord x => (LiftedGraph x -> LiftingCandidate (Lifted x) -> Bool)
+                           -> (LiftedGraph x) -> Maybe (LiftedGraph x)
+liftWithFilter newNodeFilter graph = assert (balanced graph) $ let
+    liftedPairs = liftedPairsWithPred liftedGraphINotPretty graph
+    candidatesWithPred = filter (newNodeFilter graph) liftedPairs
+    candidates = map fst candidatesWithPred
+    doubler (x,y) = Doubleton x y
+    liftUp ((x,y), pd) = let
+        plainPredOfL Zero = fst pd
+        plainPredOfL One = snd pd
+        forLabel l = let
+            succ = successors liftedGraphINotPretty graph l
+            plainXsucc = succ x
+            plainYsucc = succ y
+            plainDsucc = filter bothInOne candidates
+            bothInOne (u,v) =
+              (u `Set.member` plainXsucc && v `Set.member` plainXsucc) ||
+              (u `Set.member` plainYsucc && v `Set.member` plainYsucc)
+            singleSucc = Set.map Singleton (plainXsucc `Set.union` plainYsucc)
+            doubleSucc = Set.fromList $ map doubler plainDsucc
+            plainPred = plainPredOfL l
+            plainDPred = filter oneIsPred candidates
+            oneIsPred (u,v) = u `Set.member` plainPred ||
+                              v `Set.member` plainPred
+            singlePred = Set.map Singleton plainPred
+            doublePred = Set.fromList $ (map doubler plainDPred)
+          in (singlePred `Set.union` doublePred,doubleSucc `Set.union` singleSucc)
+        (zp,zs) = forLabel Zero
+        (op,os) = forLabel One
+      in ((zp,op), Doubleton x y, (zs,os))
+    newNodes = map liftUp candidatesWithPred
+    liftedOld = lMapApplyBijection liftedGraphINotPretty graph Singleton
+  in if null candidates
+       then Nothing
+       else Just $ lMapAddNodes liftedOld newNodes
+
+
 lift :: Ord x => LiftedGraph x -> Maybe (LiftedGraph x)
-lift agraph = assert (balanced agraph) $ let
-    olddomlist = set.tolist $ (domain liftedgraphi agraph)
-    setcondi = set.issubsetof
-    pred = predecessors liftedgraphi agraph
-    alldoubles = strictpairs olddomlist
-    intersecter (a,b) = (pred zero a `set.intersection` pred zero b,
-                         pred one a `set.intersection` pred one b)
-    candidates = filter (dointersect . snd) (graph intersecter alldoubles)
-    dointersect (sa,sb) = not (set.null sa) && not (set.null sb)
-    toadd = filter notdominated candidates
-    notdominated ((a,b),(pz,po)) = not $ any dominates olddomlist where
-            dominates oldnode = a `iscovered` oldnode && b `iscovered` oldnode
-                                && (pz `setcondi` pred zero oldnode &&
-                                    po `setcondi` pred one oldnode)
-    newnodeswithpreds = map (\((a,b),(pz,po)) -> (doubleton a b,
-                             (set.map singleton pz,
-                              set.map singleton po))) toadd
-    newnodes = map fst newnodeswithpreds
-    liftedold = applybijection singleton agraph
-    withnewnodes = addnodeswithpreds newnodeswithpreds liftedold
-    liftedgraph = addnodeswithsuccs succsofnewnodes withnewnodes
-    succsofnewnodes = map gaga newnodes
-    gaga d = let doubleton a b = d
-                 succs = successors liftedgraphi withnewnodes
-                 zsuc = succs graph.zero (singleton a) `set.union` 
-                        succs graph.zero (singleton b)
-                 osuc = succs graph.one (singleton a) `set.union` 
-                        succs graph.one (singleton b)
-      in (d,(zsuc,osuc))
-  in if null toadd
-       then nothing
-       else just liftedgraph
--}
+lift = liftWithFilter (\_ _ -> True)
