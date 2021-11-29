@@ -135,8 +135,8 @@ liftWithFilter newNodeFilter graph = assert (balanced graph) $ let
         arcs = map (\p -> (Doubleton x y, Singleton p)) plainSuccs
       in arcs
     -- this between could maybe be added to fromOld!
-    betweenNewEdges l = concatMap (betweenNewForNode l) candidatesWithPred
-    betweenNewForNode l ((x,y), (pz,po)) = let
+    betweenNewEdges l = concatMap (fromNewForNode l) candidatesWithPred
+    fromNewForNode l ((x,y), (pz,po)) = let
         preds = case l of Zero -> pz
                           One  -> po
         plainDPreds = filter oneIsPred candidates
