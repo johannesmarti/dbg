@@ -105,8 +105,11 @@ liftedPairsWithPred gi g = let
 liftedPairs :: Ord x => LabeledGraphI g x -> g -> [(x,x)]
 liftedPairs gi g = map fst $ liftedPairsWithPred gi g
 
-lMapAddNodes :: Ord x => LMapGraph x -> [((Set.Set x, Set.Set x), x, (Set.Set x, Set.Set x))] -> LMapGraph x
+lMapAddNodes :: Ord x => LMapGraph x -> [x] -> LMapGraph x
 lMapAddNodes = undefined
+
+lMapAddArcs :: Ord x => LMapGraph x -> Label -> [(x,x)] -> LMapGraph x
+lMapAddArcs = undefined
 
 liftWithFilter :: Ord x => (LiftedGraph x -> LiftingCandidate (Lifted x) -> Bool)
                            -> (LiftedGraph x) -> Maybe (LiftedGraph x)
@@ -114,35 +117,41 @@ liftWithFilter newNodeFilter graph = assert (balanced graph) $ let
     liftedPairs = liftedPairsWithPred liftedGraphINotPretty graph
     candidatesWithPred = filter (newNodeFilter graph) liftedPairs
     candidates = map fst candidatesWithPred
+    newNodes = map doubler candidates
     doubler (x,y) = Doubleton x y
-    liftUp ((x,y), pd) = let
-        plainPredOfL Zero = fst pd
-        plainPredOfL One = snd pd
-        forLabel l = let
-            succ = successors liftedGraphINotPretty graph l
-            plainXsucc = succ x
-            plainYsucc = succ y
-            plainDsucc = filter bothInOne candidates
-            bothInOne (u,v) =
-              (u `Set.member` plainXsucc && v `Set.member` plainXsucc) ||
-              (u `Set.member` plainYsucc && v `Set.member` plainYsucc)
-            singleSucc = Set.map Singleton (plainXsucc `Set.union` plainYsucc)
-            doubleSucc = Set.fromList $ map doubler plainDsucc
-            plainPred = plainPredOfL l
-            plainDPred = filter oneIsPred candidates
-            oneIsPred (u,v) = u `Set.member` plainPred ||
-                              v `Set.member` plainPred
-            singlePred = Set.map Singleton plainPred
-            doublePred = Set.fromList $ (map doubler plainDPred)
-          in (singlePred `Set.union` doublePred,doubleSucc `Set.union` singleSucc)
-        (zp,zs) = forLabel Zero
-        (op,os) = forLabel One
-      in ((zp,op), Doubleton x y, (zs,os))
-    newNodes = map liftUp candidatesWithPred
+    fromOldEdges l = concatMap (fromOldForNode l) candidatesWithPred
+    fromOldForNode l ((x,y), (pz,po)) = let
+        preds = Set.toList $ case l of
+                               Zero -> pz
+                               One  -> po
+        arcs = map (\p -> (Singleton p, Doubleton x y)) preds
+      in arcs
+    toOldEdges l = concatMap (toOldForNode l) candidates
+    toOldForNode l (x,y) = let
+        succ = successors liftedGraphINotPretty graph l
+        plainXsucc = succ x
+        plainYsucc = succ y
+        plainSuccs = Set.toList $ (plainXsucc `Set.union` plainYsucc)
+        arcs = map (\p -> (Doubleton x y, Singleton p)) plainSuccs
+      in arcs
+    -- this between could maybe be added to fromOld!
+    betweenNewEdges l = concatMap (betweenNewForNode l) candidatesWithPred
+    betweenNewForNode l ((x,y), (pz,po)) = let
+        preds = case l of Zero -> pz
+                          One  -> po
+        plainDPreds = filter oneIsPred candidates
+        oneIsPred (u,v) = u `Set.member` preds ||
+                          v `Set.member` preds
+        arcs = map (\(u,v) -> (Doubleton u v, Doubleton x y)) plainDPreds
+      in arcs
+    newArcsForLabel l = fromOldEdges l ++ toOldEdges l ++ betweenNewEdges l
     liftedOld = lMapApplyBijection liftedGraphINotPretty graph Singleton
-  in if null candidates
+    withNewNodes = lMapAddNodes liftedOld newNodes
+    withZeroArcs = lMapAddArcs withNewNodes Zero (newArcsForLabel Zero)
+    newGraph = lMapAddArcs withZeroArcs One (newArcsForLabel One)
+  in if null newNodes
        then Nothing
-       else Just $ lMapAddNodes liftedOld newNodes
+       else Just $ newGraph
 
 
 lift :: Ord x => LiftedGraph x -> Maybe (LiftedGraph x)
