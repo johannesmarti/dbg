@@ -13,6 +13,8 @@ module CommonLGraphTypes (
   lMapGraphFromLGraph,
   lMapSubgraphFromLGraph,
   lMapApplyBijection, 
+  lMapAddNodes,
+  lMapAddArcs,
   caleyGraphOfLBitGraph,
 ) where
 
@@ -65,6 +67,15 @@ lMapApplyBijection :: (Ord a, Ord b) => LabeledGraphI g a -> g -> (a -> b) -> LM
 lMapApplyBijection gi g b = PairGraph.fromFunction f where
   f l = MapGraph.applyBijection (graphOfLabelI gi l) g b
  
+lMapAddNodes :: Ord x => LMapGraph x -> [x] -> LMapGraph x
+lMapAddNodes lmg nodes = PairGraph.fromFunction f where
+  f l = MapGraph.addNodes (PairGraph.graphOfLabel lmg l) nodes
+
+lMapAddArcs :: Ord x => LMapGraph x -> Label -> [(x,x)] -> LMapGraph x
+lMapAddArcs lmg label arcs = PairGraph.fromFunction f where
+  f l = if l == label
+          then MapGraph.addArcs (PairGraph.graphOfLabel lmg l) arcs
+          else PairGraph.graphOfLabel lmg l
 
 caleyGraphOfLBitGraph :: Size -> LBitGraph -> CaleyGraph
 caleyGraphOfLBitGraph size bg = rightCaleyGraph size

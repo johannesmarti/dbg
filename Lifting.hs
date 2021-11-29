@@ -105,12 +105,6 @@ liftedPairsWithPred gi g = let
 liftedPairs :: Ord x => LabeledGraphI g x -> g -> [(x,x)]
 liftedPairs gi g = map fst $ liftedPairsWithPred gi g
 
-lMapAddNodes :: Ord x => LMapGraph x -> [x] -> LMapGraph x
-lMapAddNodes = undefined
-
-lMapAddArcs :: Ord x => LMapGraph x -> Label -> [(x,x)] -> LMapGraph x
-lMapAddArcs = undefined
-
 liftWithFilter :: Ord x => (LiftedGraph x -> LiftingCandidate (Lifted x) -> Bool)
                            -> (LiftedGraph x) -> Maybe (LiftedGraph x)
 liftWithFilter newNodeFilter graph = assert (balanced graph) $ let
