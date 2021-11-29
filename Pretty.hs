@@ -17,6 +17,10 @@ instance Pretty Char where
 instance Pretty Int where
   pretty i = show i
 
+instance Pretty Word where
+  pretty i = show i
+
+
 stdPrintSet :: (a -> String) -> [a] -> String
 stdPrintSet printSuccessor successors =
   --"{" ++ (intercalate "," (fmap printSuccessor successors)) ++ "}"

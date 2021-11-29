@@ -46,7 +46,8 @@ main :: IO ()
 --main = mainRange
 --main = checkOne 4 3937948
 --main = niceLifting (conciseGraphI diverger3Size) diverger3
-main = niceLifting lMapGraphI force3d
+--main = niceLifting lMapGraphI force3d
+main = niceLifting dbgI (dbg 2)
 --main = niceLifting (conciseGraphI 4) 3946697
 --main = checkHomo (conciseGraphI 4) 3946697
 --main = niceLifting (conciseGraphI 4) 3941826
