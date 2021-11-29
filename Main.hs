@@ -7,16 +7,16 @@ import System.Environment
 
 import qualified Data.Set as Set
 
-import Analysis
+import Analytics
 import AssocGraph
 import ArcCons
 import BitGraph
 import ConciseGraph
 import DeBruijnGraph
 import DeterminismProperty
-import Graph
+import qualified Graph
 import Homo
---import Lifting
+import Lifting
 import MapGraph
 import WrappedGraph
 import Search
@@ -24,13 +24,15 @@ import SmartSearch as SS
 import Bitify
 import CommonLGraphTypes
 import Patterns
+import Pretty
+import LabeledGraph
 
 main :: IO ()
 --main = mapM_ (checkOne 4) unknownAt9
 --main = niceLifting (conciseGraphI slowFourSize) slowFourConcise
 --main = niceLifting dbgI (dbg 1)
 --main = niceLifting mapGraphI celtic
-main = easyReport lMapGraphI force3d
+--main = easyReport lMapGraphI force3d
 --main = niceLifting mapGraphI slowSquare
 --main = easyReport mapGraphI slowFour
 --main = easyReport (conciseGraphI 4) 3937948
@@ -44,7 +46,7 @@ main = easyReport lMapGraphI force3d
 --main = mainRange
 --main = checkOne 4 3937948
 --main = niceLifting (conciseGraphI diverger3Size) diverger3
---main = niceLifting mapGraphI force3d
+main = niceLifting lMapGraphI force3d
 --main = niceLifting (conciseGraphI 4) 3946697
 --main = checkHomo (conciseGraphI 4) 3946697
 --main = niceLifting (conciseGraphI 4) 3941826
@@ -61,18 +63,18 @@ takeTill :: (a -> Bool) -> [a] -> [a]
 takeTill p [] = []
 takeTill p (x:xs) = if p x then [x] else x : takeTill p xs
 
-{-
-niceLifting :: (Show x, Ord x) => GraphI g x -> g -> IO ()
+niceLifting :: (Pretty x, Ord x) => LabeledGraphI g x -> g -> IO ()
 niceLifting gi graph =
   let g = toLiftedGraph gi graph
       lifts = takeTill (hasDoubleRefl liftedGraphI) $ untilNothing lift g
-      printer graph = putStrLn $ unlines $ prettyPredGraph liftedGraphI show graph
-      graphToSize g = Set.size $ domain liftedGraphI g
-  in do putStr $ unlines $ prettyGraph gi show graph
+      printer graph = putStrLn $ unlines $ prettyPredLabeledGraph liftedGraphI graph
+      graphToSize g = Set.size $ LabeledGraph.domain liftedGraphI g
+  in do putStr $ unlines $ prettyLabeledGraph gi graph
         putStrLn "=============="
         mapM_ printer (take 3 lifts)
         mapM_ (print . graphToSize) (take 5 $ lifts)
 
+{-
 searchLifting :: Ord x => Int -> GraphI g x -> g -> Result
 searchLifting cutoff gi graph = worker g 0 where
   g = toLiftedGraph gi graph
