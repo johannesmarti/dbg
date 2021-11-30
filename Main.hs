@@ -7,7 +7,7 @@ import System.Environment
 
 import qualified Data.Set as Set
 
-import Analytics
+import Reports
 import AssocGraph
 import ArcCons
 import BitGraph
@@ -33,7 +33,7 @@ main :: IO ()
 --main = niceLifting dbgI (dbg 1)
 --main = niceLifting mapGraphI celtic
 --main = easyReport lMapGraphI force3d
-main = easyPathReport dbgI (dbg 2)
+--main = easyPathReport dbgI (dbg 2)
 --main = niceLifting mapGraphI slowSquare
 --main = easyReport mapGraphI slowFour
 --main = easyReport (conciseGraphI 4) 3937948
@@ -48,33 +48,12 @@ main = easyPathReport dbgI (dbg 2)
 --main = checkOne 4 3937948
 --main = niceLifting (conciseGraphI diverger3Size) diverger3
 --main = niceLifting lMapGraphI force3d
---main = niceLifting dbgI (dbg 2)
+main = easyLiftingReport 4 dbgI (dbg 2)
 --main = niceLifting (conciseGraphI 4) 3946697
 --main = checkHomo (conciseGraphI 4) 3946697
 --main = niceLifting (conciseGraphI 4) 3941826
 --main = checkHomo (conciseGraphI 4) 3941826
 
-untilNothing :: (a -> Maybe a) -> a -> [a]
-untilNothing f g = let
-    val = f g
-  in case val of
-       Nothing -> []
-       Just x  -> x : untilNothing f x
-
-takeTill :: (a -> Bool) -> [a] -> [a]
-takeTill p [] = []
-takeTill p (x:xs) = if p x then [x] else x : takeTill p xs
-
-niceLifting :: (Pretty x, Ord x) => LabeledGraphI g x -> g -> IO ()
-niceLifting gi graph =
-  let g = toLiftedGraph gi graph
-      lifts = takeTill (hasDoubleRefl liftedGraphI) $ untilNothing lift g
-      printer graph = putStrLn $ unlines $ prettyPredLabeledGraph liftedGraphI graph
-      graphToSize g = Set.size $ LabeledGraph.domain liftedGraphI g
-  in do putStr $ unlines $ prettyLabeledGraph gi graph
-        putStrLn "=============="
-        mapM_ printer (take 3 lifts)
-        mapM_ (print . graphToSize) (take 5 $ lifts)
 
 {-
 searchLifting :: Ord x => Int -> GraphI g x -> g -> Result
@@ -119,9 +98,6 @@ checkOne size graph = do
   putStrLn (show (SS.searchUpTo size 10 graph))
   putStrLn "\n"
 -}
-
-unknownAt9 :: [ConciseGraph]
-unknownAt9 = [4003476,4019856,4019860,4039000,4041040,4041048,4065821,4065885,4065949,4066005,4066013]
 
 mainRange :: IO ()
 mainRange = do

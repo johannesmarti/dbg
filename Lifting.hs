@@ -1,6 +1,7 @@
 module Lifting (
   LiftedGraph,
   liftedGraphI,
+  liftedGraphIWithNodePrinter,
   prettyLifted,
   toLiftedGraph,
   lift,
@@ -67,6 +68,9 @@ type LiftedGraph x = LMapGraph (Lifted x)
 
 liftedGraphI :: (Ord x, Pretty x) => LabeledGraphI (LiftedGraph x) (Lifted x)
 liftedGraphI = lMapGraphI
+
+liftedGraphIWithNodePrinter :: Ord x => (x -> String) -> LabeledGraphI (LiftedGraph x) (Lifted x)
+liftedGraphIWithNodePrinter printer = lMapGraphIWithNodePrinter (prettyLifted printer)
 
 liftedGraphINotPretty :: Ord x => LabeledGraphI (LiftedGraph x) (Lifted x)
 liftedGraphINotPretty = lMapGraphINotPretty

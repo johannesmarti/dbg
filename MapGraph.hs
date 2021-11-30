@@ -1,6 +1,6 @@
 module MapGraph (
   MapGraph,
-  mapGraphI, mapGraphINotPretty, mapGraphIwithNodePrinter,
+  mapGraphI, mapGraphINotPretty, mapGraphIWithNodePrinter,
   fromGraph,
   subgraph,
   projection,
@@ -22,13 +22,13 @@ import Pretty
 newtype MapGraph x = MapGraph { succPredMap :: Map x (Set x, Set x) }
 
 mapGraphI :: (Ord x,Pretty x) => Graph.GraphI (MapGraph x) x
-mapGraphI = mapGraphIwithNodePrinter pretty
+mapGraphI = mapGraphIWithNodePrinter pretty
 
 mapGraphINotPretty :: Ord x => Graph.GraphI (MapGraph x) x
-mapGraphINotPretty = mapGraphIwithNodePrinter (error "can not show nodes of this graph")
+mapGraphINotPretty = mapGraphIWithNodePrinter (error "can not show nodes of this graph")
 
-mapGraphIwithNodePrinter :: Ord x => (x -> String) -> Graph.GraphI (MapGraph x) x
-mapGraphIwithNodePrinter prettyNode = Graph.interfaceFromSuccPredPretty
+mapGraphIWithNodePrinter :: Ord x => (x -> String) -> Graph.GraphI (MapGraph x) x
+mapGraphIWithNodePrinter prettyNode = Graph.interfaceFromSuccPredPretty
                                          domain successors predecessors
                                          (\_ n -> prettyNode n) 
 

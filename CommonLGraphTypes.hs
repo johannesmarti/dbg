@@ -6,6 +6,7 @@ module CommonLGraphTypes (
   LBitGraph,
   lAssocGraphI,
   lMapGraphI,
+  lMapGraphIWithNodePrinter,
   lMapGraphINotPretty,
   lBitGraphI,
   assocFromFunction,
@@ -41,6 +42,9 @@ lAssocGraphI = pairGraphI assocGraphI
 
 lMapGraphI :: (Ord x, Pretty x) => LabeledGraphI (LMapGraph x) x
 lMapGraphI = pairGraphI mapGraphI
+
+lMapGraphIWithNodePrinter :: Ord x => (x -> String) -> LabeledGraphI (LMapGraph x) x
+lMapGraphIWithNodePrinter printer = pairGraphI (mapGraphIWithNodePrinter printer)
 
 lMapGraphINotPretty :: Ord x => LabeledGraphI (LMapGraph x) x
 lMapGraphINotPretty = pairGraphI mapGraphINotPretty

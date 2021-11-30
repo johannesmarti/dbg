@@ -1,10 +1,10 @@
-module Analytics (
-  pathReport,
-  easyPathReport,
+module Reports (
+  pathReport, easyPathReport,
+  liftingReport, easyLiftingReport,
 ) where
 
 import qualified Data.Set as Set
-import Data.List (maximumBy)
+import Data.List (maximumBy,intercalate)
 
 import Bitify
 import LWrappedGraph
@@ -16,6 +16,7 @@ import BitGraph
 import Coding
 import Pretty
 import Graph as Graph
+import Lifting
 
 pathReport :: Ord x => LabeledGraphI g x -> g -> [String]
 pathReport gi g = let
@@ -49,19 +50,31 @@ pathReport gi g = let
 easyPathReport :: Ord x => LabeledGraphI g x -> g -> IO ()
 easyPathReport gi g = putStr . unlines $ (pathReport gi g)
 
-liftingReport :: Ord x => LabeledGraphI g x -> g -> [String]
-liftingReport gi graph =
-  let g = toLiftedGraph gi graph
-      lifts = takeTill (hasDoubleRefl liftedGraphI) $ untilNothing lift g
-      printer graph = putStrLn $ unlines $ prettyPredLabeledGraph liftedGraphI graph
-      graphToSize g = Set.size $ LabeledGraph.domain liftedGraphI g
-  in do putStr $ unlines $ prettyLabeledGraph gi graph
-        putStrLn "=============="
-        mapM_ printer (take 3 lifts)
-        mapM_ (print . graphToSize) (take 5 $ lifts)
+untilNothing :: (a -> Maybe a) -> a -> [a]
+untilNothing f g = let
+    val = f g
+  in case val of
+       Nothing -> []
+       Just x  -> x : untilNothing f x
 
-easyliftingReport :: Ord x => LabeledGraphI g x -> g -> IO ()
-easyliftingReport gi g = putStr . unlines $ (pathReport gi g)
+takeTill :: (a -> Bool) -> [a] -> [a]
+takeTill p [] = []
+takeTill p (x:xs) = if p x then [x] else x : takeTill p xs
+
+liftingReport :: Ord x => Int -> LabeledGraphI g x -> g -> [String]
+liftingReport bound gi graph =
+  let g = toLiftedGraph gi graph
+      lI = liftedGraphIWithNodePrinter (LabeledGraph.prettyNode gi graph)
+      lifts = take bound $ takeTill (hasDoubleRefl lI) $ untilNothing lift g
+      printer gr = prettyPredLabeledGraph lI gr
+      graphToSize g = Set.size $ LabeledGraph.domain lI g
+  in  prettyLabeledGraph gi graph ++
+      ["=============="] ++
+      ["Size of the liftings: " ++ show (map graphToSize lifts)] ++
+      intercalate [""] (map printer lifts)
+
+easyLiftingReport :: Ord x => Int -> LabeledGraphI g x -> g -> IO ()
+easyLiftingReport b gi g = putStr . unlines $ (liftingReport b gi g)
 
 liftingPathReport :: Ord x => LabeledGraphI g x -> g -> [String]
 liftingPathReport = undefined
