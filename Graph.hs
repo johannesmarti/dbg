@@ -10,7 +10,9 @@ module Graph (
   succPredMatch,
   showG,
   prettyGraph,
+  prettyGraphWithNP,
   prettyPredGraph,
+  prettyPredGraphWithNP,
 ) where
 
 import Control.Exception.Base
@@ -92,8 +94,10 @@ succPredMatch gi graph =
     pred' = foldConverse dom (successors gi graph)
 
 prettyGraph :: Ord x => GraphI g x -> g -> [String]
-prettyGraph gi g = basePrinter gi printNode (stdPrintSet printNode) g where
-  printNode = prettyNode gi g
+prettyGraph gi g = prettyGraphWithNP (prettyNode gi g) gi g
+
+prettyGraphWithNP :: Ord x => (x -> String) -> GraphI g x -> g -> [String]
+prettyGraphWithNP printNode gi g = basePrinter gi printNode (stdPrintSet printNode) g
 
 basePrinter :: Ord x => GraphI g x -> (x -> String) -> ([x] -> String) -> g -> [String]
 basePrinter gi printNode printSuccessors g = let
@@ -101,8 +105,10 @@ basePrinter gi printNode printSuccessors g = let
   in fmap lineForNode (Set.toList . (domain gi) $ g)
 
 prettyPredGraph :: Ord x => GraphI g x -> g -> [String]
-prettyPredGraph gi g = basePredPrinter gi printNode (stdPrintSet printNode) g where
-  printNode = prettyNode gi g
+prettyPredGraph gi g = prettyPredGraphWithNP (prettyNode gi g) gi g
+
+prettyPredGraphWithNP :: Ord x => (x -> String) -> GraphI g x -> g -> [String]
+prettyPredGraphWithNP printNode gi g = basePredPrinter gi printNode (stdPrintSet printNode) g
 
 basePredPrinter :: Ord x => GraphI g x -> (x -> String) -> ([x] -> String) -> g -> [String]
 basePredPrinter gi printNode printSuccessors g = let

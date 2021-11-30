@@ -33,6 +33,7 @@ main :: IO ()
 --main = niceLifting dbgI (dbg 1)
 --main = niceLifting mapGraphI celtic
 --main = easyReport lMapGraphI force3d
+main = easyPathReport dbgI (dbg 2)
 --main = niceLifting mapGraphI slowSquare
 --main = easyReport mapGraphI slowFour
 --main = easyReport (conciseGraphI 4) 3937948
@@ -47,7 +48,7 @@ main :: IO ()
 --main = checkOne 4 3937948
 --main = niceLifting (conciseGraphI diverger3Size) diverger3
 --main = niceLifting lMapGraphI force3d
-main = niceLifting dbgI (dbg 2)
+--main = niceLifting dbgI (dbg 2)
 --main = niceLifting (conciseGraphI 4) 3946697
 --main = checkHomo (conciseGraphI 4) 3946697
 --main = niceLifting (conciseGraphI 4) 3941826

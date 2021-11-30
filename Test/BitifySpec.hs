@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances #-}
 module Test.BitifySpec (
    spec
 ) where
@@ -5,12 +6,16 @@ module Test.BitifySpec (
 import qualified Data.Set as Set
 import Test.Hspec
 
+import BitGraph
 import Bitify
 import LabeledGraph
 import Patterns
 import CommonLGraphTypes
 import LWrappedGraph
 
+
+instance Show (LWrappedGraph LBitGraph Node y) where
+  show g = "fuck type classes"
 
 spec :: Spec
 spec = do

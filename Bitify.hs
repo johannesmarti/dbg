@@ -24,21 +24,23 @@ setToCoding set = fromAssoc assoc where
 
 bitify :: Ord x => GraphI g x -> g -> (WrappedGraph BitGraph Node x, Size)
 bitify gi g = (wrappedGraph,size) where
-  wrappedGraph = WrappedGraph bg c
+  wrappedGraph = WrappedGraph bg c printer
   bg = BitGraph.fromArcs size newArcs
   oldDom = Graph.domain gi g
   c = setToCoding oldDom
+  printer = Graph.prettyNode gi g
   size = Set.size oldDom
   newArcs = map enc (Graph.arcs gi g)
   enc (u,v) = (encode c u, encode c v)
 
 labeledBitify :: Ord x => LabeledGraphI g x -> g -> (LWrappedGraph LBitGraph Node x, Size)
 labeledBitify gi g = (wrappedGraph, size) where
-  wrappedGraph = LWrappedGraph lbg c
+  wrappedGraph = LWrappedGraph lbg c printer
   bitGraphPerLabel l = BitGraph.fromArcs size (newArcs l)
   lbg = PairGraph.fromFunction bitGraphPerLabel
   oldDom = LabeledGraph.domain gi g
   c = setToCoding oldDom
+  printer = LabeledGraph.prettyNode gi g
   size = Set.size oldDom
   newArcs l = map enc (LabeledGraph.arcsOfLabel gi g l)
   enc (u,v) = (encode c u, encode c v)

@@ -1,6 +1,7 @@
 module Lifting (
   LiftedGraph,
   liftedGraphI,
+  prettyLifted,
   toLiftedGraph,
   lift,
 ) where
@@ -22,7 +23,7 @@ prettyLifted prettyBase (BaseNode a) = prettyBase a
 prettyLifted prettyBase (Singleton u) =
   '[' : ((prettyLifted prettyBase u) ++ "]")
 prettyLifted prettyBase (Doubleton u v) =
-  '[' : ((prettyLifted prettyBase u) ++ (prettyLifted prettyBase v) ++ "]")
+  '[' : ((prettyLifted prettyBase u) ++ " " ++ (prettyLifted prettyBase v) ++ "]")
 
 instance Show x => Show (Lifted x) where
   show lifted = prettyLifted show lifted
