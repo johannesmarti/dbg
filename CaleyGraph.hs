@@ -82,7 +82,8 @@ finiteWords size cg = generateFiniteWords [([], diagonal size)] where
 part of the CaleyGraph -}
 isGood :: Size -> CaleyGraph -> Bool
 isGood size cg = all (hasUniv size) (nonWellfoundedElements cg) &&
-  all (\rel -> rel == diagonal size || hasReflAndUnivInMultiple size rel) (wellfoundedElements cg)
+  all (\rel -> rel == diagonal size || hasReflAndUnivInMultiple size rel) (wellfoundedElements cg) &&
+  all (\n -> any (\r -> isUniv size r n) (domain cg)) (nodes size)
 
 splits :: [a] -> [([a],[a])]
 splits xx = zipWith splitAt [1..(length xx)] (repeat xx)

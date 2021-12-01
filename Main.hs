@@ -34,7 +34,7 @@ main :: IO ()
 --main = checkHomo mapGraphI slowFour
 --main = print $ searchLifting 7 mapGraphI force3d
 --main = niceLifting mapGraphI totalIrreflexive
---main = mainRange
+main = mainRange
 --main = print $ searchLifting 7 (conciseGraphI 4) 4072605
 --main = print $ SS.searchUpTo 11 (conciseGraphI 4) 4072605
 --main = easyLiftingReport 4 (conciseGraphI 4) 4072605
@@ -44,7 +44,7 @@ main :: IO ()
 --main = easyPathReport coolSubPatternI coolSubPattern
 --main = easyLiftingReport 4 coolSubPatternI coolSubPattern
 
-main = easyLiftingReport 4 coolPatternI coolPattern
+--main = easyLiftingReport 4 coolPatternI coolPattern
 
 
 --main = print $ searchLifting 7 (conciseGraphI 4) 8281106
@@ -114,7 +114,7 @@ mainRange = do
   --let list = Prelude.filter (\g -> SS.searchUpTo 4 6 g == HomoAt 6) bitmaps
   let filtered = Prelude.filter (\g -> SS.searchUpTo 9 (conciseGraphI 4) g == UnknownAt 9) bitmaps
   let hehe = Prelude.filter (\g -> searchLifting 4 (conciseGraphI 4) g == UnknownAt 4) filtered
-  --let list = Prelude.filter (\g -> searchLifting 6 (conciseGraphI 3) g == UnknownAt 3) bitmaps
+  --let list = Prelude.filter (\g -> searchLifting 6 (conciseGraphI 3) g == HomoAt 3) bitmaps
   --let bad = Prelude.filter (\g -> searchLifting 9 (conciseGraphI 3) g == NoHomo) list
   --let bad = Prelude.filter (\g -> searchLifting 6 (conciseGraphI 4) g /= HomoAt 6) list
   --let hehe = Prelude.filter (\g -> SS.searchUpTo (conciseGraphI 4) 8 g == UnknownAt 8) list

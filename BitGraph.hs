@@ -14,6 +14,7 @@ module BitGraph (
   setArc,
   diagonal,
   isRefl,
+  isUniv,
   isUnivInDom,
   hasUniv,
   hasUnivInDom,
