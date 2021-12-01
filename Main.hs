@@ -29,22 +29,18 @@ import LabeledGraph
 
 main :: IO ()
 --main = mapM_ (checkOne 4) unknownAt9
---main = easyPathReport dbgI (dbg 2)
+--main = easyLiftingPathReport 3 dbgI (dbg 2)
 --main = checkHomo mapGraphI slowSquare
 --main = checkHomo mapGraphI slowFour
 --main = print $ searchLifting 7 mapGraphI force3d
 --main = niceLifting mapGraphI totalIrreflexive
 --main = mainRange
 
-main = print $ searchLifting 23 (conciseGraphI 4) 4966674
+--main = print $ searchLifting 23 (conciseGraphI 4) 4966674
 --main = print $ SS.searchUpTo 12 (conciseGraphI 4) 4966674
-main = easyLiftingReport 7 (conciseGraphI 4) 4966674
+main = easyLiftingPathReport 3 (conciseGraphI 4) 4966674
+--main = easyLiftingReport 10 (conciseGraphI 4) 4966674
 
---main = print $ SS.searchUpTo 11 (conciseGraphI 4) 4072605
---main = print $ SS.searchUpTo 11 (conciseGraphI 4) 4082329
---main = print $ searchLifting 6 (conciseGraphI 4) 4082329
---main = easyLiftingReport 4 (conciseGraphI 4) 4966674
---main = easyPathReport (conciseGraphI 4) 4072605
 
 --main = print $ SS.searchUpTo 10 lMapGraphI slowSquare
 --main = print $ searchLifting 6 lMapGraphI slowSquare

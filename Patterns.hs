@@ -14,8 +14,9 @@ module Patterns (
   slowFour,
   celtic,
   slowSquare,
-  coolPattern, coolPatternI,
-  coolSubPattern, coolSubPatternI,
+  deadEnd, deadEndI,
+  deadEndWithoutEnd, deadEndWithoutEndI,
+  slowLifting, slowLiftingI,
 ) where
 
 import qualified Data.Set as Set
@@ -116,19 +117,18 @@ slowSquare' One = [('a', 'b'), ('b', 'c'), ('b', 'd'), ('c', 'c'), ('d', 'a'), (
 slowSquare :: LMapGraph Char
 slowSquare = mapFromFunction slowSquare'
 
-coolPattern :: Word
-coolPattern = 4072604
-coolPatternI :: LabeledGraphI Word Node
-coolPatternI = (conciseGraphI 4)
+deadEnd :: Word
+deadEnd = 4072604
+deadEndI :: LabeledGraphI Word Node
+deadEndI = (conciseGraphI 4)
 
-coolSubPattern :: LMapGraph Node
-coolSubPattern = lMapSubgraphFromLGraph coolPatternI coolPattern (Set.fromList [0,1,3])
-coolSubPatternI :: LabeledGraphI (LMapGraph Node) Node
-coolSubPatternI = lMapGraphI
+deadEndWithoutEnd :: LMapGraph Node
+deadEndWithoutEnd = lMapSubgraphFromLGraph deadEndI deadEnd (Set.fromList [0,1,3])
+deadEndWithoutEndI :: LabeledGraphI (LMapGraph Node) Node
+deadEndWithoutEndI = lMapGraphI
 
 {- Here the lifting converges quite slowly -}
 slowLifting :: Word
 slowLifting = 4966674
 slowLiftingI :: LabeledGraphI Word Node
 slowLiftingI = (conciseGraphI 4)
-

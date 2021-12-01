@@ -65,13 +65,13 @@ liftingReport :: Ord x => Int -> LabeledGraphI g x -> g -> [String]
 liftingReport bound gi graph =
   let g = toLiftedGraph gi graph
       lI = liftedGraphIWithNodePrinter (LabeledGraph.prettyNode gi graph)
-      lifts = take bound $ takeTill (hasDoubleRefl lI) $ untilNothing lift g
+      lifts = take bound $ takeTill (hasDoubleRefl lI) $ untilNothing (liftWithFilter dominationFilter) g
       printer gr = prettyPredLabeledGraph lI gr
       graphToSize g = Set.size $ LabeledGraph.domain lI g
   in  prettyLabeledGraph gi graph ++
       ["=============="] ++
       ["Size of the liftings: " ++ show (map graphToSize lifts)] ++
-      intercalate [""] (map printer (take 2 $ lifts))
+      intercalate [""] (map printer lifts)
 
 easyLiftingReport :: Ord x => Int -> LabeledGraphI g x -> g -> IO ()
 easyLiftingReport b gi g = putStr . unlines $ (liftingReport b gi g)
