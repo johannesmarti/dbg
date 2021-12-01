@@ -1,11 +1,13 @@
 module Reports (
   pathReport, easyPathReport,
   liftingReport, easyLiftingReport,
+  liftingPathReport, easyLiftingPathReport,
 ) where
 
 import qualified Data.Set as Set
 import Data.List (maximumBy,intercalate)
 
+import FctGraph
 import Bitify
 import LWrappedGraph
 import qualified WrappedGraph as WG
@@ -32,8 +34,6 @@ pathReport gi g = let
     nwfs = nonWellfoundedElements cg
     finWords = finiteWords s cg
     (longestFinWord,relOfLongest) = maximumBy (\(a,_) (b,_) -> compare (length a) (length b)) finWords
-    firstInfinite = Set.findMin nwfs
-    lastInfinite = Set.findMax nwfs
   in ["About the Caley-graph of the pattern:"] ++
       LabeledGraph.prettyLabeledGraph gi g ++
      ["It has " ++ show (Set.size wfs) ++ " finite and " ++
@@ -76,5 +76,47 @@ liftingReport bound gi graph =
 easyLiftingReport :: Ord x => Int -> LabeledGraphI g x -> g -> IO ()
 easyLiftingReport b gi g = putStr . unlines $ (liftingReport b gi g)
 
-liftingPathReport :: Ord x => LabeledGraphI g x -> g -> [String]
-liftingPathReport = undefined
+liftingPathReport :: Ord x => Int -> LabeledGraphI g x -> g -> [String]
+liftingPathReport bound gi graph =
+  let
+      lI = liftedGraphIWithNodePrinter (LabeledGraph.prettyNode gi graph)
+      baseLiftedGraph = toLiftedGraph gi graph
+      lifts = take bound $ takeTill (hasDoubleRefl lI) $ untilNothing lift baseLiftedGraph
+      fctGraph l bg = let wg = WG.WrappedGraph bg c undefined
+                      in fctGraphFromDomain (LabeledGraph.domain liftedGraphINotPretty l) (liftedRelation (\x y -> Graph.hasArc (WG.wrappedGraphI (bitGraphI s)) wg (x,y)))
+      printSuper l r = Graph.prettyGraph (fctGraphIWithNodePrinter (LabeledGraph.prettyNode lI l)) (fctGraph l r)
+      printSuperRel l r = (printNodeWithSuccs cg r ++ ":") : (printSuper l r)
+      cgRels = CaleyGraph.domain cg
+      printLifting lg = intercalate [""] $ map (printSuperRel lg) (Set.toList cgRels)
+      graphToSize g = Set.size $ LabeledGraph.domain lI g
+      (wg,s) = labeledBitify gi graph
+      inner = innerGraph wg
+      cg = caleyGraphOfLBitGraph s inner
+      c = coding wg
+      enc = encode c
+      dec = decode c
+      printRel r = Graph.prettyGraph (WG.wrappedGraphI (bitGraphI s)) (WG.WrappedGraph r c (LabeledGraph.prettyNode gi graph))
+      printRelWithCode r = (printNodeWithSuccs cg r ++ ":") : (printRel r)
+      wfs = wellfoundedElements cg
+      nwfs = nonWellfoundedElements cg
+      finWords = finiteWords s cg
+      (longestFinWord,relOfLongest) = maximumBy (\(a,_) (b,_) -> compare (length a) (length b)) finWords
+  in  prettyLabeledGraph gi graph ++
+      ["=============="] ++
+      ["The Caley graph has " ++ show (Set.size wfs) ++ " finite and " ++
+                    show (Set.size nwfs) ++ " infinite elements.", "",
+       "It " ++ (if isGood s cg then "satisfies" else "does not satisfy") ++ " the path condition.", "",
+       "It's finite words are:", show (map fst finWords),
+       "Of which one with maximal length is " ++ show longestFinWord ++ ".", ""] ++
+      ["The full CaleyGraph is:"] ++ prettyCaleyGraph cg ++
+      ["", "The complete list of its finite elements is:"] ++
+       concatMap printRelWithCode (Set.toList wfs) ++
+      ["", "The complete list of its infinite elements is:"] ++
+      concatMap printRelWithCode (Set.toList nwfs) ++
+      ["=============="] ++
+      ["Size of the liftings: " ++ show (map graphToSize lifts)] ++
+      intercalate ["", ""] (map printLifting lifts)
+
+easyLiftingPathReport :: Ord x => Int -> LabeledGraphI g x -> g -> IO ()
+easyLiftingPathReport b gi g = putStr . unlines $ (liftingPathReport b gi g)
+

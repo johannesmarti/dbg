@@ -1,6 +1,6 @@
 module FctGraph (
   FctGraph,
-  fctGraphI, fctGraphINotPretty, fctGraphIwithNodePrinter,
+  fctGraphI, fctGraphINotPretty, fctGraphIWithNodePrinter,
   fctGraphFromDomain,
 ) where
 
@@ -16,16 +16,16 @@ data FctGraph x = FctGraph {
 }
 
 fctGraphI :: (Ord x, Pretty x) => Graph.GraphI (FctGraph x) x
-fctGraphI = fctGraphIwithNodePrinter pretty
+fctGraphI = fctGraphIWithNodePrinter pretty
 
 fctGraphINotPretty :: Ord x => Graph.GraphI (FctGraph x) x
-fctGraphINotPretty = fctGraphIwithNodePrinter (error "can not show nodes of this graph")
+fctGraphINotPretty = fctGraphIWithNodePrinter (error "can not show nodes of this graph")
 
-fctGraphIwithNodePrinter :: Ord x => (x -> String) -> Graph.GraphI (FctGraph x) x
-fctGraphIwithNodePrinter prettyNode = Graph.interfaceFromHasArcPretty
-					 domain
-                                         hasAr
-                                         (\_ n -> prettyNode n) where
+fctGraphIWithNodePrinter :: Ord x => (x -> String) -> Graph.GraphI (FctGraph x) x
+fctGraphIWithNodePrinter prettyNode = Graph.interfaceFromHasArcPretty
+                                        domain
+                                        hasAr
+                                        (\_ n -> prettyNode n) where
   hasAr fg (x,y) = function fg x y
 
 fctGraphFromDomain :: Ord x => Set.Set x -> (x -> x -> Bool) -> FctGraph x

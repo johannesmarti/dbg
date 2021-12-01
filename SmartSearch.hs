@@ -11,7 +11,7 @@ import Bitify
 import CommonLGraphTypes
 import BitGraph (Node,Size)
 import LWrappedGraph
-import CaleyGraph
+import CaleyGraph hiding (domain)
 import DeBruijnGraph
 import LabeledGraph
 import Homo

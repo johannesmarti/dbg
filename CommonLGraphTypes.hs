@@ -27,7 +27,7 @@ import LabeledGraph
 import PairGraph
 import AssocGraph
 import MapGraph
-import CaleyGraph
+import CaleyGraph hiding (domain)
 import Pretty
 
 type LAssocGraph x = PairGraph (AssocGraph x)

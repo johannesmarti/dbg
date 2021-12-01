@@ -1,8 +1,11 @@
 module Lifting (
+  Lifted,
+  prettyLifted,
+  liftedRelation,
   LiftedGraph,
   liftedGraphI,
+  liftedGraphINotPretty,
   liftedGraphIWithNodePrinter,
-  prettyLifted,
   toLiftedGraph,
   lift,
 ) where

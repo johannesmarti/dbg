@@ -1,5 +1,6 @@
 module CaleyGraph (
   CaleyGraph(..),
+  domain,
   relationOfWord,
   rightCaleyGraph,
   finiteWords,

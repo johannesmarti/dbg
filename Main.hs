@@ -29,29 +29,16 @@ import LabeledGraph
 
 main :: IO ()
 --main = mapM_ (checkOne 4) unknownAt9
---main = niceLifting (conciseGraphI slowFourSize) slowFourConcise
---main = niceLifting dbgI (dbg 1)
---main = niceLifting mapGraphI celtic
---main = easyReport lMapGraphI force3d
 --main = easyPathReport dbgI (dbg 2)
---main = niceLifting mapGraphI slowSquare
---main = easyReport mapGraphI slowFour
---main = easyReport (conciseGraphI 4) 3937948
---main = easyReport (conciseGraphI 4) 4040284
---main = easyReport (conciseGraphI 4) 65967450
---main = easyReport dbgI (dbg 3)
 --main = checkHomo mapGraphI slowSquare
 --main = checkHomo mapGraphI slowFour
 --main = print $ searchLifting 7 mapGraphI force3d
 --main = niceLifting mapGraphI totalIrreflexive
 --main = mainRange
 --main = checkOne 4 3937948
---main = niceLifting (conciseGraphI diverger3Size) diverger3
---main = niceLifting lMapGraphI force3d
-main = easyLiftingReport 4 dbgI (dbg 2)
---main = niceLifting (conciseGraphI 4) 3946697
+--main = easyLiftingReport 4 dbgI (dbg 2)
+main = easyLiftingPathReport 4 lMapGraphI force3d
 --main = checkHomo (conciseGraphI 4) 3946697
---main = niceLifting (conciseGraphI 4) 3941826
 --main = checkHomo (conciseGraphI 4) 3941826
 
 
