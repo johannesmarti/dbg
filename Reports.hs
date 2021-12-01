@@ -81,7 +81,7 @@ liftingPathReport bound gi graph =
   let
       lI = liftedGraphIWithNodePrinter (LabeledGraph.prettyNode gi graph)
       baseLiftedGraph = toLiftedGraph gi graph
-      lifts = take bound $ takeTill (hasDoubleRefl lI) $ untilNothing lift baseLiftedGraph
+      lifts = take bound $ takeTill (hasDoubleRefl lI) $ untilNothing (liftWithFilter dominationFilter) baseLiftedGraph
       fctGraph l bg = let wg = WG.WrappedGraph bg c undefined
                       in fctGraphFromDomain (LabeledGraph.domain liftedGraphINotPretty l) (liftedRelation (\x y -> Graph.hasArc (WG.wrappedGraphI (bitGraphI s)) wg (x,y)))
       printSuper l r = Graph.prettyGraph (fctGraphIWithNodePrinter (LabeledGraph.prettyNode lI l)) (fctGraph l r)

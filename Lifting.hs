@@ -8,6 +8,8 @@ module Lifting (
   liftedGraphIWithNodePrinter,
   toLiftedGraph,
   lift,
+  liftWithFilter,
+  dominationFilter,
 ) where
 
 import Control.Exception.Base
@@ -96,51 +98,62 @@ strictPairs list = worker list [] where
   innerWorker elem [] rest accum = worker rest accum
   innerWorker elem (p:ps) rest accum = innerWorker elem ps rest ((elem, p):accum)
 
-type LiftingCandidate x = ((x,x), (Set.Set x, Set.Set x))
+type LiftingCandidate x = ((Set.Set x, Set.Set x), (x,x), (Set.Set x, Set.Set x))
 
-liftedPairsWithPred :: Ord x => LabeledGraphI g x -> g -> [LiftingCandidate x]
-liftedPairsWithPred gi g = let
+extractPair :: LiftingCandidate x -> (x,x)
+extractPair (pre,pair,suc) = pair
+
+extractPreds :: Label -> LiftingCandidate x -> Set.Set x
+extractPreds Zero (pre,_,_) = fst pre
+extractPreds One  (pre,_,_) = snd pre
+
+extractSuccs :: Label -> LiftingCandidate x -> Set.Set x
+extractSuccs Zero (_,_,suc) = fst suc
+extractSuccs One  (_,_,suc) = snd suc 
+
+liftedPairsWithPS :: Ord x => LabeledGraphI g x -> g -> [LiftingCandidate x]
+liftedPairsWithPS gi g = let
     domList = Set.toList $ domain gi g
+    succ = successors gi g
     pred = predecessors gi g
     alldoubles = strictPairs domList
-    intersecter (a,b) = (pred Zero a `Set.intersection` pred Zero b,
-                         pred One a `Set.intersection` pred One b)
-    graph f list = map (\x -> (x,f(x))) list
-    candidates = filter (dointersect . snd) (graph intersecter alldoubles)
-    dointersect (sa,sb) = not (Set.null sa) && not (Set.null sb)
+    improver (a,b) = ((pred Zero a `Set.intersection` pred Zero b,
+                       pred One a `Set.intersection` pred One b),
+                      (a,b),
+                      (succ Zero a `Set.union` succ Zero b,
+                       succ One a `Set.union` succ One b))
+    candidates = filter (dointersect) (map improver alldoubles)
+    dointersect can = not (Set.null $ extractPreds Zero can) && not (Set.null $ extractPreds One can)
   in candidates
 
 liftedPairs :: Ord x => LabeledGraphI g x -> g -> [(x,x)]
-liftedPairs gi g = map fst $ liftedPairsWithPred gi g
+liftedPairs gi g = map extractPair $ liftedPairsWithPS gi g
 
 liftWithFilter :: Ord x => (LiftedGraph x -> LiftingCandidate (Lifted x) -> Bool)
                            -> (LiftedGraph x) -> Maybe (LiftedGraph x)
 liftWithFilter newNodeFilter graph = assert (balanced graph) $ let
-    liftedPairs = liftedPairsWithPred liftedGraphINotPretty graph
-    candidatesWithPred = filter (newNodeFilter graph) liftedPairs
-    candidates = map fst candidatesWithPred
+    liftedPairs = liftedPairsWithPS liftedGraphINotPretty graph
+    candidatesWithPS = filter (newNodeFilter graph) liftedPairs
+    candidates = map extractPair candidatesWithPS
     newNodes = map doubler candidates
     doubler (x,y) = Doubleton x y
-    fromOldEdges l = concatMap (fromOldForNode l) candidatesWithPred
-    fromOldForNode l ((x,y), (pz,po)) = let
-        preds = Set.toList $ case l of
-                               Zero -> pz
-                               One  -> po
+    fromOldEdges l = concatMap (fromOldForNode l) candidatesWithPS
+    fromOldForNode l can = let
+        (x,y) = extractPair can
+        preds = Set.toList $ extractPreds l can
         arcs = map (\p -> (Singleton p, Doubleton x y)) preds
       in arcs
-    toOldEdges l = concatMap (toOldForNode l) candidates
-    toOldForNode l (x,y) = let
-        succ = successors liftedGraphINotPretty graph l
-        plainXsucc = succ x
-        plainYsucc = succ y
-        plainSuccs = Set.toList $ (plainXsucc `Set.union` plainYsucc)
-        arcs = map (\p -> (Doubleton x y, Singleton p)) plainSuccs
+    toOldEdges l = concatMap (toOldForNode l) candidatesWithPS
+    toOldForNode l can = let
+        (x,y) = extractPair can
+        succs = Set.toList $ extractSuccs l can
+        arcs = map (\p -> (Doubleton x y, Singleton p)) succs
       in arcs
     -- this between could maybe be added to fromOld!
-    betweenNewEdges l = concatMap (fromNewForNode l) candidatesWithPred
-    fromNewForNode l ((x,y), (pz,po)) = let
-        preds = case l of Zero -> pz
-                          One  -> po
+    betweenNewEdges l = concatMap (fromNewForNode l) candidatesWithPS
+    fromNewForNode l can = let
+        (x,y) = extractPair can
+        preds = extractPreds l can
         plainDPreds = filter oneIsPred candidates
         oneIsPred (u,v) = u `Set.member` preds ||
                           v `Set.member` preds
@@ -155,6 +168,15 @@ liftWithFilter newNodeFilter graph = assert (balanced graph) $ let
        then Nothing
        else Just $ newGraph
 
+dominationFilter :: Ord x => LiftedGraph x -> LiftingCandidate (Lifted x) -> Bool
+dominationFilter lg can = not $ any dominatesCan (domain liftedGraphINotPretty lg) where
+  pred = predecessors liftedGraphINotPretty lg
+  succ = successors liftedGraphINotPretty lg
+  dominatesCan oldNode =
+    extractSuccs Zero can `Set.isSubsetOf` succ Zero oldNode &&
+    extractSuccs One  can `Set.isSubsetOf` succ One  oldNode &&
+    extractPreds Zero can `Set.isSubsetOf` pred Zero oldNode &&
+    extractPreds One  can `Set.isSubsetOf` pred One  oldNode
 
 lift :: Ord x => LiftedGraph x -> Maybe (LiftedGraph x)
 lift = liftWithFilter (\_ _ -> True)

@@ -37,7 +37,8 @@ main :: IO ()
 --main = mainRange
 --main = checkOne 4 3937948
 --main = easyLiftingReport 4 dbgI (dbg 2)
-main = easyLiftingPathReport 4 lMapGraphI force3d
+--main = easyLiftingPathReport 4 lMapGraphI force3d
+main = easyLiftingPathReport 4 dbgI (dbg 2)
 --main = checkHomo (conciseGraphI 4) 3946697
 --main = checkHomo (conciseGraphI 4) 3941826
 
