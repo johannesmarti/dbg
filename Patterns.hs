@@ -110,13 +110,14 @@ cel One = [('a','b'),('b','c'),('c','a')]
 celtic :: LMapGraph Char
 celtic = mapFromFunction cel
 
+-- 3569496551
 slowSquare' Zero = [('a', 'a'), ('a', 'b'), ('a', 'c'), ('b', 'b'), ('b', 'c'), ('b', 'd'), ('c', 'a'), ('d', 'a'), ('d', 'b')]
 slowSquare' One = [('a', 'b'), ('b', 'c'), ('b', 'd'), ('c', 'c'), ('d', 'a'), ('d', 'c'), ('d', 'd')]
 slowSquare :: LMapGraph Char
 slowSquare = mapFromFunction slowSquare'
 
 coolPattern :: Word
-coolPattern = 4072605
+coolPattern = 4072604
 coolPatternI :: LabeledGraphI Word Node
 coolPatternI = (conciseGraphI 4)
 
@@ -124,3 +125,10 @@ coolSubPattern :: LMapGraph Node
 coolSubPattern = lMapSubgraphFromLGraph coolPatternI coolPattern (Set.fromList [0,1,3])
 coolSubPatternI :: LabeledGraphI (LMapGraph Node) Node
 coolSubPatternI = lMapGraphI
+
+{- Here the lifting converges quite slowly -}
+slowLifting :: Word
+slowLifting = 4966674
+slowLiftingI :: LabeledGraphI Word Node
+slowLiftingI = (conciseGraphI 4)
+

@@ -34,16 +34,28 @@ main :: IO ()
 --main = checkHomo mapGraphI slowFour
 --main = print $ searchLifting 7 mapGraphI force3d
 --main = niceLifting mapGraphI totalIrreflexive
-main = mainRange
---main = print $ searchLifting 7 (conciseGraphI 4) 4072605
+--main = mainRange
+
+main = print $ searchLifting 23 (conciseGraphI 4) 4966674
+--main = print $ SS.searchUpTo 12 (conciseGraphI 4) 4966674
+main = easyLiftingReport 7 (conciseGraphI 4) 4966674
+
 --main = print $ SS.searchUpTo 11 (conciseGraphI 4) 4072605
---main = easyLiftingReport 4 (conciseGraphI 4) 4072605
+--main = print $ SS.searchUpTo 11 (conciseGraphI 4) 4082329
+--main = print $ searchLifting 6 (conciseGraphI 4) 4082329
+--main = easyLiftingReport 4 (conciseGraphI 4) 4966674
 --main = easyPathReport (conciseGraphI 4) 4072605
+
+--main = print $ SS.searchUpTo 10 lMapGraphI slowSquare
+--main = print $ searchLifting 6 lMapGraphI slowSquare
 
 --main = print $ SS.searchUpTo 11 coolSubPatternI coolSubPattern
 --main = easyPathReport coolSubPatternI coolSubPattern
 --main = easyLiftingReport 4 coolSubPatternI coolSubPattern
 
+--main = print $ SS.searchUpTo 11 (conciseGraphI 4) 3569496551
+--main = print $ searchLifting 4 (conciseGraphI 4) 3569496551
+--main = easyPathReport coolPatternI coolPattern
 --main = easyLiftingReport 4 coolPatternI coolPattern
 
 
@@ -105,22 +117,32 @@ mainRange :: IO ()
 mainRange = do
   --args <- getArgs
   --let n = read (head args) :: Int
-  let start = 4003000
-  let step = (ConciseGraph.totalGraph 4) `div` (1024 ) 
-  let bitmaps = Prelude.filter (notTrivial 4) [start .. start + step]
+  --let start = 4960000
+  --let start = 0
+  let factor = 1024 * 4
+  let step = (ConciseGraph.totalGraph 4) `div`  factor
+  let start = 5 * (ConciseGraph.totalGraph 4) `div` 8
+  let end = min (start + step) (ConciseGraph.totalGraph 4)
+
+  let bitmaps = Prelude.filter (notTrivial 4) [start .. end]
   --let bitmaps = Prelude.filter (notTrivial 3) (ConciseGraph.allGraphsOfSize 3)
   --let list = Prelude.filter (\g -> SS.searchUpTo 3 9 g == HomoAt 3) bitmaps
   --let list = Prelude.filter (\g -> SS.searchUpTo (conciseGraphI 3) 6 g == HomoAt 3) bitmaps
   --let list = Prelude.filter (\g -> SS.searchUpTo 4 6 g == HomoAt 6) bitmaps
-  let filtered = Prelude.filter (\g -> SS.searchUpTo 9 (conciseGraphI 4) g == UnknownAt 9) bitmaps
-  let hehe = Prelude.filter (\g -> searchLifting 4 (conciseGraphI 4) g == UnknownAt 4) filtered
+  let filtered = Prelude.filter (\g -> SS.searchUpTo 4 (conciseGraphI 4) g == UnknownAt 4) bitmaps
+  let moreFiltered = Prelude.filter (\g -> searchLifting 3 (conciseGraphI 4) g == UnknownAt 3) filtered
+  let evenMoreFiltered = Prelude.filter (\g -> SS.searchUpTo 9 (conciseGraphI 4) g == UnknownAt 9) moreFiltered
+  let hehe = Prelude.map (\g -> (g,searchLifting 5 (conciseGraphI 4) g)) evenMoreFiltered
   --let list = Prelude.filter (\g -> searchLifting 6 (conciseGraphI 3) g == HomoAt 3) bitmaps
   --let bad = Prelude.filter (\g -> searchLifting 9 (conciseGraphI 3) g == NoHomo) list
   --let bad = Prelude.filter (\g -> searchLifting 6 (conciseGraphI 4) g /= HomoAt 6) list
   --let hehe = Prelude.filter (\g -> SS.searchUpTo (conciseGraphI 4) 8 g == UnknownAt 8) list
   --putStrLn (show $ length $ list)
-  putStrLn (show $ take 1 $ filtered)
-  putStrLn (show $ take 1 $ hehe)
-  --putStrLn (show $ length bad)
+  --putStrLn (show $ take 4 $ filtered)
+  let postFilter = Prelude.filter (\g -> SS.searchUpTo 11 (conciseGraphI 4) g == UnknownAt 11) (map fst (filter (\(_,r) -> r /= NoHomo) hehe))
+  let reallyBad = Prelude.filter (\g -> searchLifting 6 (conciseGraphI 4) g /= NoHomo) postFilter
+  mapM_ (putStrLn . show) (hehe)
+  putStrLn "In post filtering stage..."
+  putStrLn (show $ take 1 $ reallyBad)
   --putStrLn (show $ head $ bad)
   --mapM_ (checkOne 3) list

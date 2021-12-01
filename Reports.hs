@@ -71,7 +71,7 @@ liftingReport bound gi graph =
   in  prettyLabeledGraph gi graph ++
       ["=============="] ++
       ["Size of the liftings: " ++ show (map graphToSize lifts)] ++
-      intercalate [""] (map printer lifts)
+      intercalate [""] (map printer (take 2 $ lifts))
 
 easyLiftingReport :: Ord x => Int -> LabeledGraphI g x -> g -> IO ()
 easyLiftingReport b gi g = putStr . unlines $ (liftingReport b gi g)
