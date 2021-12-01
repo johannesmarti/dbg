@@ -71,8 +71,8 @@ searchLevels candidates cutoff level =
               then HomoAt level
               else searchLevels candidates cutoff (level + 1)
 
-searchUpTo :: (Ord x, Pretty x) => LabeledGraphI g x -> Int -> g -> Result
-searchUpTo gi cutoff graph = let
+searchUpTo :: (Ord x, Pretty x) => Int -> LabeledGraphI g x -> g -> Result
+searchUpTo cutoff gi graph = let
     dom = domain gi graph
     subsets = Set.toList $ Set.filter (\s -> Set.size s >= 2) $ Set.powerSet dom
     subgraphs = map (lMapSubgraphFromLGraph gi graph) subsets

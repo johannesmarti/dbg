@@ -14,16 +14,17 @@ module Patterns (
   slowFour,
   celtic,
   slowSquare,
-  diverger3,
-  diverger3Size,
-  totalIrreflexive
+  coolPattern, coolPatternI,
+  coolSubPattern, coolSubPatternI,
 ) where
 
-import CommonLGraphTypes
-import Pretty
+import qualified Data.Set as Set
 
-type ConciseGraph = Word
-type Size = Int
+import CommonLGraphTypes
+import LabeledGraph
+import Pretty
+import BitGraph
+import ConciseGraph
 
 trap Zero = [('a','a'),('a','c'),('c','b'),('c','a')]
 trap One = [('b','b'),('b','c'),('c','a'),('a','c')]
@@ -114,13 +115,12 @@ slowSquare' One = [('a', 'b'), ('b', 'c'), ('b', 'd'), ('c', 'c'), ('d', 'a'), (
 slowSquare :: LMapGraph Char
 slowSquare = mapFromFunction slowSquare'
 
-diverger3 :: ConciseGraph
-diverger3 = 44199
-diverger3Size :: Size
-diverger3Size = 3
+coolPattern :: Word
+coolPattern = 4072605
+coolPatternI :: LabeledGraphI Word Node
+coolPatternI = (conciseGraphI 4)
 
-ti Zero = [(0,1),(0,2),(1,0),(1,2),(2,0),(2,1)]
-ti One = [(0,1),(0,2),(1,0),(1,2),(2,0),(2,1)]
-totalIrreflexive :: LMapGraph Int
-totalIrreflexive = mapFromFunction ti
-
+coolSubPattern :: LMapGraph Node
+coolSubPattern = lMapSubgraphFromLGraph coolPatternI coolPattern (Set.fromList [0,1,3])
+coolSubPatternI :: LabeledGraphI (LMapGraph Node) Node
+coolSubPatternI = lMapGraphI
