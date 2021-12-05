@@ -35,31 +35,95 @@ spec = do
     let pt = (identify p2 3 5)
     it "trivial after identifying everything" $
       pt `shouldSatisfy` isTrivial
-  describe "does have strong determinism property" $ do
+  describe "does have strict determinism property" $ do
     it "strongDet" $
-      strongDet `shouldSatisfy` (isConstructionDeterministic lMapGraphI)
+      strongDet `shouldSatisfy` (isStrictlyConstructionDeterministic lMapGraphI)
+  describe "does not have strict determinism property" $ do
+    it "dbg 3" $
+      (dbg 3) `shouldSatisfy` (not . isStrictlyConstructionDeterministic dbgI)
+    it "force3d" $
+      force3d `shouldSatisfy` (not . isStrictlyConstructionDeterministic lMapGraphI)
+    it "hamburger" $
+      hamburger `shouldSatisfy` (not . isStrictlyConstructionDeterministic lMapGraphI)
+    it "strange3" $
+      strange3 `shouldSatisfy` (not . isStrictlyConstructionDeterministic lMapGraphI)
+    it "4003476 of size 4" $
+      4003476 `shouldSatisfy` (not . isStrictlyConstructionDeterministic (conciseGraphI 4))
+  describe "does have strong determinism property" $ do
+    it "hamburger" $
+      hamburger `shouldSatisfy` (isStronglyConstructionDeterministic lMapGraphI)
+    it "strange3" $
+      strange3 `shouldSatisfy` (isStronglyConstructionDeterministic lMapGraphI)
   describe "does not have strong determinism property" $ do
+    it "dbg 1" $
+      (dbg 1) `shouldSatisfy` (not . isStronglyConstructionDeterministic dbgI)
+    it "dbg 3" $
+      (dbg 3) `shouldSatisfy` (not . isStronglyConstructionDeterministic dbgI)
+    it "force3d" $
+      force3d `shouldSatisfy` (not . isStronglyConstructionDeterministic lMapGraphI)
+    it "4003476 of size 4" $
+      4003476 `shouldSatisfy` (not . isStronglyConstructionDeterministic (conciseGraphI 4))
+  describe "antichain is working" $ do
+    let dom = fromList [1,2,3,4]
+    let sA = singletonChain dom
+    describe "singleton chain ..." $ do 
+      it "... is not total" $
+        sA `shouldSatisfy` (not . (isTotal dom))
+      it "... covers [2]" $
+        sA `shouldSatisfy` (`covers` (singleton 2))
+      it "... does not cover [1,2]" $
+        sA `shouldSatisfy` (\ac -> not (ac `covers` (fromList [1,2])))
+    let bA = addProposition (fromList [1,2,3]) sA
+    describe "singleton with added [1,2,3] ..." $ do 
+      it "... is not total" $
+        bA `shouldSatisfy` (not . (isTotal dom))
+      it "... covers [1,2]" $
+        bA `shouldSatisfy` (`covers` (fromList [1,2]))
+      it "... covers [4]" $
+        bA `shouldSatisfy` (`covers` (singleton 4))
+      it "... does not cover [2,3,4]" $
+        bA `shouldSatisfy` (\ac -> not (ac `covers` (fromList [2,3,4])))
+    let cA = addProposition (fromList [3,4]) bA
+    describe "singleton with added [1,2,3] and [3,4] ..." $ do 
+      it "... is not total" $
+        cA `shouldSatisfy` (not . (isTotal dom))
+      it "... covers [1,2]" $
+        cA `shouldSatisfy` (`covers` (fromList [1,2]))
+      it "... covers [3,4]" $
+        cA `shouldSatisfy` (`covers` (fromList [3,4]))
+      it "... does not cover [2,3,4]" $
+        cA `shouldSatisfy` (\ac -> not (ac `covers` (fromList [2,3,4])))
+    let dA = addProposition (fromList [2,3]) cA
+    describe "singleton with added [1,2,3], [3,4] and [2,3] ..." $ do 
+      it "... is not total" $
+        dA `shouldSatisfy` (not . (isTotal dom))
+      it "... covers [2,3]" $
+        dA `shouldSatisfy` (`covers` (fromList [2,3]))
+      it "... covers [1,2]" $
+        cA `shouldSatisfy` (`covers` (fromList [1,2]))
+      it "... does not cover [2,3,4]" $
+        cA `shouldSatisfy` (\ac -> not (ac `covers` (fromList [2,3,4])))
+    let top = addProposition (fromList [1,2,3,4]) dA
+    describe "singleton with added [1,2,3], [3,4], [1,3] and [1,2,3,4] ..." $ do 
+      it "... covers [1,3,4]" $
+        top `shouldSatisfy` (`covers` (fromList [1,3,4]))
+      it "... is total" $
+        top `shouldSatisfy` (isTotal dom)
+  describe "does have determinism property" $ do
+    it "hamburger" $
+      hamburger `shouldSatisfy` (isConstructionDeterministic lMapGraphI)
+    it "strange3" $
+      strange3 `shouldSatisfy` (isConstructionDeterministic lMapGraphI)
+    it "slowLifting" $
+      slowLifting `shouldSatisfy` (isConstructionDeterministic slowLiftingI)
+    it "half celtic" $
+      halfCeltic `shouldSatisfy` (isConstructionDeterministic lMapGraphI)
+  describe "does not have determinism property" $ do
+    it "dbg 1" $
+      (dbg 1) `shouldSatisfy` (not . isConstructionDeterministic dbgI)
     it "dbg 3" $
       (dbg 3) `shouldSatisfy` (not . isConstructionDeterministic dbgI)
     it "force3d" $
       force3d `shouldSatisfy` (not . isConstructionDeterministic lMapGraphI)
-    it "hamburger" $
-      hamburger `shouldSatisfy` (not . isConstructionDeterministic lMapGraphI)
-    it "strange3" $
-      strange3 `shouldSatisfy` (not . isConstructionDeterministic lMapGraphI)
-    it "4003476 of size 4" $
-      4003476 `shouldSatisfy` (not . isConstructionDeterministic (conciseGraphI 4))
-  describe "does have weak determinism property" $ do
-    it "hamburger" $
-      hamburger `shouldSatisfy` (isWeaklyConstructionDeterministic lMapGraphI)
-    it "strange3" $
-      strange3 `shouldSatisfy` (isWeaklyConstructionDeterministic lMapGraphI)
-  describe "does not have weak determinism property" $ do
-    it "dbg 1" $
-      (dbg 1) `shouldSatisfy` (not . isWeaklyConstructionDeterministic dbgI)
-    it "dbg 3" $
-      (dbg 3) `shouldSatisfy` (not . isWeaklyConstructionDeterministic dbgI)
-    it "force3d" $
-      force3d `shouldSatisfy` (not . isWeaklyConstructionDeterministic lMapGraphI)
-    it "4003476 of size 4" $
-      4003476 `shouldSatisfy` (not . isWeaklyConstructionDeterministic (conciseGraphI 4))
+    it "celtic" $
+      celtic `shouldSatisfy` (not . isConstructionDeterministic lMapGraphI)

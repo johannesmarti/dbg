@@ -38,8 +38,8 @@ main :: IO ()
 
 --main = print $ searchLifting 23 (conciseGraphI 4) 4966674
 --main = print $ SS.searchUpTo 12 (conciseGraphI 4) 4966674
-main = easyLiftingPathReport 3 (conciseGraphI 4) 4966674
---main = easyLiftingReport 10 (conciseGraphI 4) 4966674
+--main = easyLiftingPathReport 3 (conciseGraphI 4) 4966674
+main = easyLiftingReport 4 (conciseGraphI 4) 4966674
 
 
 --main = print $ SS.searchUpTo 10 lMapGraphI slowSquare

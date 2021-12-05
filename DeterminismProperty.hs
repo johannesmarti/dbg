@@ -5,9 +5,15 @@ module DeterminismProperty (
   representative,
   eqClass,
   identify,
-  isConstructionDeterministic,
-  isWeaklyConstructionDeterministic,
+  isStrictlyConstructionDeterministic,
+  isStronglyConstructionDeterministic,
   deterministicPartition,
+  isConstructionDeterministic,
+  Antichain,
+  singletonChain,
+  isTotal,
+  covers,
+  addProposition,
 ) where
 
 import Control.Exception
@@ -53,11 +59,11 @@ overlappingPairs gi g f = let
     overlapOnLabel x y l = not . Set.null $ Set.map f (predecessors gi g l x) `Set.intersection` Set.map f (predecessors gi g l y)
   in Prelude.filter (uncurry overlappingConstruction) pairs
 
-isConstructionDeterministic :: Ord x => LabeledGraphI g x -> g -> Bool
-isConstructionDeterministic gi g = Prelude.null $ overlappingPairs gi g id
+isStrictlyConstructionDeterministic :: Ord x => LabeledGraphI g x -> g -> Bool
+isStrictlyConstructionDeterministic gi g = Prelude.null $ overlappingPairs gi g id
 
-isWeaklyConstructionDeterministic :: Ord x => LabeledGraphI g x -> g -> Bool
-isWeaklyConstructionDeterministic gi g = not . isTrivial $
+isStronglyConstructionDeterministic :: Ord x => LabeledGraphI g x -> g -> Bool
+isStronglyConstructionDeterministic gi g = not . isTrivial $
   deterministicPartition gi g
 
 deterministicPartition :: Ord x => LabeledGraphI g x -> g -> Partition x
@@ -68,3 +74,59 @@ deterministicPartition gi g = inner (discrete (domain gi g)) where
       in if Prelude.null overlappings
            then partition
            else inner coarserPartition
+
+type Antichain x = Set.Set (Set.Set x)
+
+singletonChain :: Ord x => Set.Set x -> Antichain x
+singletonChain dom = assert (isRealAntichain res) $
+                     assert (coversAll dom res) $ res where
+  res = Set.map (Set.singleton) dom
+
+isRealAntichain :: Ord x => Antichain x -> Bool
+isRealAntichain fam = all (\(x,y) -> not (x `Set.isProperSubsetOf` y))
+                          (Set.cartesianProduct fam fam)
+
+coversAll :: Ord x => Set.Set x -> Antichain x -> Bool
+coversAll dom antichain =
+  all (\elem -> any (\set -> elem `Set.member` set) antichain) dom
+
+isTotal :: Ord x => Set.Set x -> Antichain x -> Bool
+isTotal dom ac = assert (isRealAntichain ac) $
+                 assert (coversAll dom ac) $ dom `Set.member` ac
+
+covers :: Ord x => Antichain x -> Set.Set x -> Bool
+covers antichain prop = assert (isRealAntichain antichain) $
+  any (\elem -> prop `Set.isSubsetOf` elem) antichain
+
+addProposition :: Ord x => Set.Set x -> Antichain x -> Antichain x
+addProposition prop antichain = assert (isRealAntichain antichain) $
+                                assert (isRealAntichain res) $ res where
+  filtered = Set.filter (\elem -> not (elem `Set.isSubsetOf` prop)) antichain
+  res = if antichain `covers` prop
+          then antichain
+          else Set.insert prop filtered
+
+isConstructionDeterministic :: Ord x => LabeledGraphI g x -> g -> Bool
+isConstructionDeterministic gi g = not . (isTotal  (domain gi g)) $
+  deterministicAntichain gi g
+
+image :: Ord x => Set.Set x -> (x -> Set.Set x) -> Set.Set x
+image set rel = foldl Set.union Set.empty listOfSets where
+  list = Set.toList set
+  listOfSets = map rel list
+
+deterministicAntichain :: Ord x => LabeledGraphI g x -> g -> Antichain x
+deterministicAntichain gi g = inner (singletonChain (domain gi g)) where
+  {- This code is somehow not perfect. We first filter out all the propositions that are covered in order to be able to detect later whether anything has added. But then if we add the propositions that are not covered the addProposition function still check again whether they are covered (by the somewhat bigger antichain where we now have all the previous new propostions already added. -}
+  inner ac = let
+    asList = Set.toList ac
+    allPairs = [(x,y) | x <- asList, y <- asList]
+    newProps = map forward allPairs
+    forward (pzero,pone) = zImage `Set.intersection` oImage where
+        zImage = image pzero (successors gi g Zero)
+        oImage = image pone (successors gi g One)
+    propsToAdd = filter (\prop -> not (ac `covers` prop)) newProps
+    betterChain = foldl (flip addProposition) ac propsToAdd
+      in if Prelude.null propsToAdd
+           then ac
+           else inner betterChain

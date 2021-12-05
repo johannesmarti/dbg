@@ -13,6 +13,7 @@ module Patterns (
   slowFourSize,
   slowFour,
   celtic,
+  halfCeltic,
   slowSquare,
   deadEnd, deadEndI,
   deadEndWithoutEnd, deadEndWithoutEndI,
@@ -107,9 +108,18 @@ slowFour = mapFromFunction s4
 cel Zero = [('a','a'),('a','b'),
             ('b','b'),('b','c'),
             ('c','a'),('c','c')]
-cel One = [('a','b'),('b','c'),('c','a')]
+cel One  =  [('a','a'),('a','b'),
+            ('b','b'),('b','c'),
+            ('c','a'),('c','c')]
 celtic :: LMapGraph Char
 celtic = mapFromFunction cel
+
+hcel Zero = [('a','a'),('a','b'),
+            ('b','b'),('b','c'),
+            ('c','a'),('c','c')]
+hcel One = [('a','b'),('b','c'),('c','a')]
+halfCeltic :: LMapGraph Char
+halfCeltic = mapFromFunction hcel
 
 -- 3569496551
 slowSquare' Zero = [('a', 'a'), ('a', 'b'), ('a', 'c'), ('b', 'b'), ('b', 'c'), ('b', 'd'), ('c', 'a'), ('d', 'a'), ('d', 'b')]

@@ -76,7 +76,7 @@ searchUpTo cutoff gi graph = let
     dom = domain gi graph
     subsets = Set.toList $ Set.filter (\s -> Set.size s >= 2) $ Set.powerSet dom
     subgraphs = map (lMapSubgraphFromLGraph gi graph) subsets
-    candidates = filter (\s -> not (isWeaklyConstructionDeterministic lMapGraphI s)) subgraphs
+    candidates = filter (\s -> not (isConstructionDeterministic lMapGraphI s)) subgraphs
     bityCandidates = map (\c -> (c, labeledBitify lMapGraphI c)) candidates
     candidatesWithCaley = map (\(g,(wg,s)) -> (g, wg, s, caleyGraphOfLBitGraph s(innerGraph wg))) bityCandidates
     isGoodCandi (g, wg, s, cg) = isGood s cg
