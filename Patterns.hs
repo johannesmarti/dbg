@@ -141,4 +141,11 @@ deadEndWithoutEndI = lMapGraphI
 slowLifting :: Word
 slowLifting = 4966674
 slowLiftingI :: LabeledGraphI Word Node
-slowLiftingI = (conciseGraphI 4)
+slowLiftingI = conciseGraphI 4
+
+{- Here it seems where hard to find a homo -}
+difficult :: Word
+difficult = 2063974806
+difficultI :: LabeledGraphI Word Node
+difficultI = conciseGraphI 4
+
