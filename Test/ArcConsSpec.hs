@@ -49,3 +49,5 @@ interface = do
       length (arcConsHomos dbgI lMapGraphI (dbg 2) force2d) `shouldBe` 1
     it "from db3 to force2d" $
       length (arcConsHomos dbgI lMapGraphI (dbg 3) force2d) `shouldBe` 1
+    it "from db3 to force3d" $
+      length (arcConsHomos dbgI lMapGraphI (dbg 3) force2d) `shouldBe` 1
