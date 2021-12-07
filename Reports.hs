@@ -87,7 +87,7 @@ liftingPathReport bound gi graph =
       printSuper l r = Graph.prettyGraph (fctGraphIWithNodePrinter (LabeledGraph.prettyNode lI l)) (fctGraph l r)
       printSuperRel l r = (printNodeWithSuccs cg r ++ ":") : (printSuper l r)
       cgRels = CaleyGraph.domain cg
-      printLifting lg = intercalate [""] $ map (printSuperRel lg) (Set.toList cgRels)
+      printLifting lg = intercalate [""] $ (map (printSuperRel lg) (Set.toList wfs) ++ map (printSuperRel lg) (Set.toList nwfs))
       graphToSize g = Set.size $ LabeledGraph.domain lI g
       (wg,s) = labeledBitify gi graph
       inner = innerGraph wg
@@ -114,8 +114,8 @@ liftingPathReport bound gi graph =
       ["", "The complete list of its infinite elements is:"] ++
       concatMap printRelWithCode (Set.toList nwfs) ++
       ["=============="] ++
-      ["Size of the liftings: " ++ show (map graphToSize lifts)] ++
-      intercalate ["", ""] (map printLifting lifts)
+      ["Size of the liftings: " ++ show (map graphToSize lifts)] ++ [""] ++
+      intercalate ["", "==========", ""] (map printLifting lifts)
 
 easyLiftingPathReport :: Ord x => Int -> LabeledGraphI g x -> g -> IO ()
 easyLiftingPathReport b gi g = putStr . unlines $ (liftingPathReport b gi g)
