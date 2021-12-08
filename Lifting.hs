@@ -1,5 +1,7 @@
 module Lifting (
   Lifted,
+  bn, si, du,
+  deepen,
   prettyLifted,
   liftedRelation,
   LiftedGraph,
@@ -37,10 +39,21 @@ instance Show x => Show (Lifted x) where
 instance Pretty x => Pretty (Lifted x) where
   pretty lifted = prettyLifted pretty lifted
 
-instance Functor Lifted where
-  fmap f (BaseNode a) = BaseNode (f a)
-  fmap f (Singleton x) = Singleton (fmap f x)
-  fmap f (Doubleton x y) = Doubleton (fmap f x) (fmap f y)
+bn :: x -> Lifted x
+bn = BaseNode
+
+si :: Lifted x -> Lifted x
+si = Singleton
+
+du :: Ord x => Lifted x -> Lifted x -> Lifted x
+du u v = assert (u < v) $
+         assert (depth u == depth v) $ Doubleton u v
+
+deepen :: Ord x => Lifted x -> Lifted x
+deepen (BaseNode a) = si $ bn a
+deepen (Singleton x) = si (deepen x)
+deepen (Doubleton x y) = du (deepen x) (deepen y)
+
 
 depth :: Ord x => Lifted x -> Int
 depth (BaseNode _) = 0
@@ -136,18 +149,18 @@ liftWithFilter newNodeFilter graph = assert (balanced graph) $ let
     candidatesWithPS = filter (newNodeFilter graph) liftedPairs
     candidates = map extractPair candidatesWithPS
     newNodes = map doubler candidates
-    doubler (x,y) = Doubleton x y
+    doubler (x,y) = du x y
     fromOldEdges l = concatMap (fromOldForNode l) candidatesWithPS
     fromOldForNode l can = let
         (x,y) = extractPair can
         preds = Set.toList $ extractPreds l can
-        arcs = map (\p -> (Singleton p, Doubleton x y)) preds
+        arcs = map (\p -> (si p, du x y)) preds
       in arcs
     toOldEdges l = concatMap (toOldForNode l) candidatesWithPS
     toOldForNode l can = let
         (x,y) = extractPair can
         succs = Set.toList $ extractSuccs l can
-        arcs = map (\p -> (Doubleton x y, Singleton p)) succs
+        arcs = map (\p -> (du x y, si p)) succs
       in arcs
     -- this between could maybe be added to fromOld!
     betweenNewEdges l = concatMap (fromNewForNode l) candidatesWithPS
@@ -157,7 +170,7 @@ liftWithFilter newNodeFilter graph = assert (balanced graph) $ let
         plainDPreds = filter oneIsPred candidates
         oneIsPred (u,v) = u `Set.member` preds ||
                           v `Set.member` preds
-        arcs = map (\(u,v) -> (Doubleton u v, Doubleton x y)) plainDPreds
+        arcs = map (\(u,v) -> (du u v, du x y)) plainDPreds
       in arcs
     newArcsForLabel l = fromOldEdges l ++ toOldEdges l ++ betweenNewEdges l
     liftedOld = lMapApplyBijection liftedGraphINotPretty graph Singleton
