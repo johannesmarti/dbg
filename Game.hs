@@ -5,6 +5,7 @@ module Game (
 import qualified Data.Set as Set
 import Data.List (maximumBy,intercalate)
 
+import ConciseGraph
 import FctGraph
 import Bitify
 import LWrappedGraph
