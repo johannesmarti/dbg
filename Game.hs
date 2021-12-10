@@ -47,19 +47,42 @@ sds13 = si ds13
 dsss2sds13 = du sss2 sds13
 ss0 = si s0
 ss2 = si s2
+ss3 = si s3
 dss02 = du ss0 ss2
 dsss3dss02 = du sss3 dss02
 ssd03 = si . si $ d03
 dssd03dss02 = du ssd03 dss02
 list4 = [dddd12,dsss01,dsss02,dsss2ssb03,dsss2sds13,dsss3dss02,dssd03dss02]
-list5 = [] ++ map deepen list4
-game = easyGame 5 (conciseGraphI 4) 2063974806 [[d12],
-  [dd12],
-  [ddd12],
-  list4,
-  list5]
+ssss2 = si . si $ ss2
+ssss3 = si . si $ ss3
+dssss23 = du ssss2 ssss3
+list5 = [dssss23] ++ map deepen list4
+list6 = map deepen list5
+list7 = map deepen list6
+list8 = map deepen list7
+list9 = map deepen list8
+game = easyGame 9 (conciseGraphI 4) 2063974806 [remove [d12],
+  remove [dd12],
+  remove [ddd12],
+  remove list4,
+  remove list5 `nd` newReflIn 4 49558,
+  remove list6 `nd` newReflIn 4 49558,
+  remove list7 `nd` newReflIn 4 49558,
+  remove list8 `nd` newReflIn 4 49558,
+  remove list9 `nd` newReflIn 4 49558 ]
 
-gameReport :: Ord x => Int -> LabeledGraphI g x -> g -> [[Lifted x]] -> [String]
+nd :: (x -> Bool) -> (x -> Bool) -> x -> Bool
+nd f g a = f a && g a
+
+newReflIn :: Size -> BitGraph -> Lifted Node -> Bool
+newReflIn size bg v = case v of
+  Doubleton _ _ -> liftedRelation (\x y -> Graph.hasArc (bitGraphI size) bg (x,y)) v v
+  otherwise     -> True
+
+remove :: Eq x => [Lifted x] -> Lifted x -> Bool
+remove remList v = not (v `elem` remList)
+
+gameReport :: Ord x => Int -> LabeledGraphI g x -> g -> [Lifted x -> Bool] -> [String]
 gameReport bound gi graph filterList =
   let
       lI = liftedGraphIWithNodePrinter (LabeledGraph.prettyNode gi graph)
@@ -70,7 +93,7 @@ gameReport bound gi graph filterList =
         Nothing -> Nothing
         Just lifted -> let flifted = lMapSubgraphFromLGraph lI lifted dom
                            oldDom = LabeledGraph.domain lI lifted
-                           dom = oldDom Set.\\ (Set.fromList hf)
+                           dom = Set.filter hf oldDom
                          in Just (flifted,fs)
       fctGraph l bg = let wg = WG.WrappedGraph bg c undefined
                       in fctGraphFromDomain (LabeledGraph.domain liftedGraphINotPretty l) (liftedRelation (\x y -> Graph.hasArc (WG.wrappedGraphI (bitGraphI s)) wg (x,y)))
@@ -107,5 +130,5 @@ gameReport bound gi graph filterList =
       ["Size of the liftings: " ++ show (map graphToSize lifts)] ++ [""] ++
       intercalate ["", "==========", ""] (map printLifting lifts)
 
-easyGame :: Ord x => Int -> LabeledGraphI g x -> g -> [[Lifted x]] -> IO ()
-easyGame b gi g filterList = putStr . unlines $ (gameReport b gi g (filterList ++ cycle [[]]))
+easyGame :: Ord x => Int -> LabeledGraphI g x -> g -> [Lifted x -> Bool] -> IO ()
+easyGame b gi g filterList = putStr . unlines $ (gameReport b gi g (filterList ++ cycle [\_ -> True]))

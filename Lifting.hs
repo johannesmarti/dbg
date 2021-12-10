@@ -1,5 +1,5 @@
 module Lifting (
-  Lifted,
+  Lifted(..),
   bn, si, du,
   deepen,
   prettyLifted,
