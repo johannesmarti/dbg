@@ -6,7 +6,7 @@ module Patterns (
   allPaths,
   testPattern,
   strange3,
-  strongDet,
+  strictDet,
   caleySchreck,
   caleySchreckSize,
   slowFourConcise,
@@ -59,6 +59,7 @@ noPat1 One = [('a','c'),('a','b'),('c','a'),('b','a'),('b','b')]
 noPattern1 :: LMapGraph Char
 noPattern1 = mapFromFunction noPat1
 
+{- This pattern does not in fact have all paths. -}
 u = 'u'
 v = 'v'
 w = 'w'
@@ -88,8 +89,8 @@ strange3 = mapFromFunction s3
 
 sd Zero = [('a','a'),('a','c'),('b','a'),('b','c'),('c','b')]
 sd One = [('a','c'),('a','b'),('b','a'),('b','b'),('c','a'),('c','b')]
-strongDet :: LMapGraph Char
-strongDet = mapFromFunction sd
+strictDet :: LMapGraph Char
+strictDet = mapFromFunction sd
 
 caleySchreck :: ConciseGraph
 caleySchreck = 3942849

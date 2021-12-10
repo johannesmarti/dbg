@@ -35,10 +35,10 @@ spec = do
     let pt = (identify p2 3 5)
     it "trivial after identifying everything" $
       pt `shouldSatisfy` isTrivial
-  describe "does have strict determinism property" $ do
-    it "strongDet" $
-      strongDet `shouldSatisfy` (isStrictlyConstructionDeterministic lMapGraphI)
-  describe "does not have strict determinism property" $ do
+  describe "is strictly construction deterministic" $ do
+    it "strictDet" $
+      strictDet `shouldSatisfy` (isStrictlyConstructionDeterministic lMapGraphI)
+  describe "is not strictly construction deterministic" $ do
     it "dbg 3" $
       (dbg 3) `shouldSatisfy` (not . isStrictlyConstructionDeterministic dbgI)
     it "force3d" $
@@ -49,12 +49,12 @@ spec = do
       strange3 `shouldSatisfy` (not . isStrictlyConstructionDeterministic lMapGraphI)
     it "4003476 of size 4" $
       4003476 `shouldSatisfy` (not . isStrictlyConstructionDeterministic (conciseGraphI 4))
-  describe "does have strong determinism property" $ do
+  describe "is strongly construction determinism" $ do
     it "hamburger" $
       hamburger `shouldSatisfy` (isStronglyConstructionDeterministic lMapGraphI)
     it "strange3" $
       strange3 `shouldSatisfy` (isStronglyConstructionDeterministic lMapGraphI)
-  describe "does not have strong determinism property" $ do
+  describe "is not strongly construction deterministic" $ do
     it "dbg 1" $
       (dbg 1) `shouldSatisfy` (not . isStronglyConstructionDeterministic dbgI)
     it "dbg 3" $
@@ -109,7 +109,7 @@ spec = do
         top `shouldSatisfy` (`covers` (fromList [1,3,4]))
       it "... is total" $
         top `shouldSatisfy` (isTotal dom)
-  describe "does have determinism property" $ do
+  describe "is construction deterministic" $ do
     it "hamburger" $
       hamburger `shouldSatisfy` (isConstructionDeterministic lMapGraphI)
     it "strange3" $
@@ -118,7 +118,9 @@ spec = do
       slowLifting `shouldSatisfy` (isConstructionDeterministic slowLiftingI)
     it "half celtic" $
       halfCeltic `shouldSatisfy` (isConstructionDeterministic lMapGraphI)
-  describe "does not have determinism property" $ do
+    it "allPaths" $
+      allPaths`shouldSatisfy` (isConstructionDeterministic lMapGraphI)
+  describe "is not construction deterministic" $ do
     it "dbg 1" $
       (dbg 1) `shouldSatisfy` (not . isConstructionDeterministic dbgI)
     it "dbg 3" $
