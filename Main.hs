@@ -31,7 +31,7 @@ import LabeledGraph
 
 main :: IO ()
 --main = game
-main = check
+--main = check
 --main = mainRange
 --main = range3
 --main = mapM_ (checkOne 4) unknownAt9
@@ -42,7 +42,7 @@ main = check
 --main = niceLifting mapGraphI totalIrreflexive
 
 --main = print $ SS.searchUpTo 7 (conciseGraphI 4) 2063974806
---main = easyPathReport (conciseGraphI 4) 2063974806
+main = easyPathReport (conciseGraphI 4) 988302
 --main = easyLiftingPathReport 4 (conciseGraphI 4) 2063974806
 --main = print $ searchLifting 6 (conciseGraphI 4) 2063974806
 
@@ -136,7 +136,7 @@ check = do
   let start = 123 * 8 * 4 * step
   let end = min (start + step) (ConciseGraph.totalGraph 4)
   --let bitmaps = Prelude.filter (notTrivial 4) [start .. 2063974805]
-  let size = 3
+  let size = 4
   let gi = conciseGraphI size
   let pathCond conG = let
           bg = toLBitGraph size conG
@@ -144,10 +144,17 @@ check = do
         in isGood size cg
   let bitmaps = Prelude.filter (notTrivial size) [0 .. ConciseGraph.totalGraph size]
   let notDet = Prelude.filter (not . isConstructionDeterministic gi) bitmaps
-  let bad = Prelude.filter (not . pathCond) notDet
-  putStrLn $ LabeledGraph.showLG gi (head bad) 
-  print (length notDet)
-  print (length bad)
+  let hasNoHomo upTo cg = case SS.searchUpTo upTo gi cg of
+                            NoHomo   -> True
+                            HomoAt _ -> False
+                            UnknownAt _ -> True
+  let maybeBad = Prelude.filter (hasNoHomo 6) notDet
+  let badPairs = Prelude.map (\g -> (g,SS.searchUpTo 11 gi g)) maybeBad
+  --putStrLn $ LabeledGraph.showLG gi firstExample
+  --easyLiftingPathReport 5 gi firstExample
+  let printer (g,r) = (putStrLn ((show g) ++ ":")) >> (putStrLn (show r))
+  mapM_ printer badPairs
+  putStrLn (show (Prelude.filter (\p -> snd p == UnknownAt 11) badPairs))
 
 mainRange :: IO ()
 mainRange = do
