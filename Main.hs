@@ -7,6 +7,7 @@ import System.Environment
 
 import qualified Data.Set as Set
 
+import CaleyGraph
 import Game
 import Reports
 import AssocGraph
@@ -29,7 +30,8 @@ import Pretty
 import LabeledGraph
 
 main :: IO ()
-main = game
+--main = game
+main = check
 --main = mainRange
 --main = range3
 --main = mapM_ (checkOne 4) unknownAt9
@@ -125,6 +127,27 @@ range3 = do
   let list = Prelude.filter (\g -> SS.searchUpTo 6 (conciseGraphI 3) g == HomoAt 3) bitmaps
   --let list = Prelude.filter (\g -> searchLifting 6 (conciseGraphI 3) g == HomoAt 3) bitmaps
   putStrLn (show $ length list)
+
+check :: IO ()
+check = do
+  let factor = 256 * 8 * 4 
+  let step = (ConciseGraph.totalGraph 4) `div`  factor
+  --let start = 5 * (ConciseGraph.totalGraph 4) `div` 8
+  let start = 123 * 8 * 4 * step
+  let end = min (start + step) (ConciseGraph.totalGraph 4)
+  --let bitmaps = Prelude.filter (notTrivial 4) [start .. 2063974805]
+  let size = 3
+  let gi = conciseGraphI size
+  let pathCond conG = let
+          bg = toLBitGraph size conG
+          cg = caleyGraphOfLBitGraph size bg
+        in isGood size cg
+  let bitmaps = Prelude.filter (notTrivial size) [0 .. ConciseGraph.totalGraph size]
+  let notDet = Prelude.filter (not . isConstructionDeterministic gi) bitmaps
+  let bad = Prelude.filter (not . pathCond) notDet
+  putStrLn $ LabeledGraph.showLG gi (head bad) 
+  print (length notDet)
+  print (length bad)
 
 mainRange :: IO ()
 mainRange = do
