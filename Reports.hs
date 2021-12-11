@@ -57,7 +57,8 @@ liftingReport bound gi graph =
   let g = toLiftedGraph gi graph
       lI = liftedGraphIWithNodePrinter (LabeledGraph.prettyNode gi graph)
       lifts = take bound $ takeTill (hasDoubleRefl lI) $ untilNothing (liftWithFilter dominationFilter) g
-      printer gr = prettyPredLabeledGraph lI gr
+      --printer gr = prettyPredLabeledGraph lI gr
+      printer gr = prettyLabeledGraph lI gr
       graphToSize g = Set.size $ LabeledGraph.domain lI g
   in  prettyLabeledGraph gi graph ++
       ["=============="] ++

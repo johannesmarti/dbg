@@ -18,6 +18,7 @@ module Patterns (
   deadEnd, deadEndI,
   deadEndWithoutEnd, deadEndWithoutEndI,
   slowLifting, slowLiftingI,
+  goesWrong, goesWrongI,
 ) where
 
 import qualified Data.Set as Set
@@ -150,3 +151,10 @@ difficult = 2063974806
 difficultI :: LabeledGraphI Word Node
 difficultI = conciseGraphI 4
 
+{- does not have path condition but is not construction deterministic -}
+goesWrong :: Word
+goesWrong = 1612382568
+goesWrongI :: LabeledGraphI Word Node
+goesWrongI = conciseGraphI 4
+(conciseGraphI 4) 1612382568
+(conciseGraphI 4) 1612382568

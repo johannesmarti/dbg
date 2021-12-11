@@ -16,6 +16,7 @@ module CommonLGraphTypes (
   lMapApplyBijection, 
   lMapAddNodes,
   lMapAddArcs,
+  weakPathCondition,
   caleyGraphOfLBitGraph,
 ) where
 
@@ -80,6 +81,10 @@ lMapAddArcs lmg label arcs = PairGraph.fromFunction f where
   f l = if l == label
           then MapGraph.addArcs (PairGraph.graphOfLabel lmg l) arcs
           else PairGraph.graphOfLabel lmg l
+
+weakPathCondition :: Size -> LBitGraph -> Bool
+weakPathCondition size bg = all labelIsGood labels where
+  labelIsGood l = hasReflAndUnivInMultiple size (graphOfLabel bg l)
 
 caleyGraphOfLBitGraph :: Size -> LBitGraph -> CaleyGraph
 caleyGraphOfLBitGraph size bg = rightCaleyGraph size

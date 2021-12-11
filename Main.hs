@@ -42,7 +42,8 @@ main :: IO ()
 --main = niceLifting mapGraphI totalIrreflexive
 
 --main = print $ SS.searchUpTo 7 (conciseGraphI 4) 2063974806
-main = easyPathReport (conciseGraphI 4) 988302
+--main = easyPathReport (conciseGraphI 4) 1612382568
+main = easyLiftingReport 5 (conciseGraphI 4) 1612382568
 --main = easyLiftingPathReport 4 (conciseGraphI 4) 2063974806
 --main = print $ searchLifting 6 (conciseGraphI 4) 2063974806
 
@@ -130,25 +131,26 @@ range3 = do
 
 check :: IO ()
 check = do
-  let factor = 256 * 8 * 4 
-  let step = (ConciseGraph.totalGraph 4) `div`  factor
-  --let start = 5 * (ConciseGraph.totalGraph 4) `div` 8
-  let start = 123 * 8 * 4 * step
-  let end = min (start + step) (ConciseGraph.totalGraph 4)
-  --let bitmaps = Prelude.filter (notTrivial 4) [start .. 2063974805]
   let size = 4
+  let factor = 256 * 4
+  let step = (ConciseGraph.totalGraph size) `div`  factor
+  let start = 3 * (ConciseGraph.totalGraph 4) `div` 8
+  --let start = 0
+  let end = min (start + step) (ConciseGraph.totalGraph size)
+  --let bitmaps = Prelude.filter (notTrivial 4) [start .. 2063974805]
   let gi = conciseGraphI size
   let pathCond conG = let
           bg = toLBitGraph size conG
           cg = caleyGraphOfLBitGraph size bg
         in isGood size cg
-  let bitmaps = Prelude.filter (notTrivial size) [0 .. ConciseGraph.totalGraph size]
-  let notDet = Prelude.filter (not . isConstructionDeterministic gi) bitmaps
+  let bitmaps = Prelude.filter (notTrivial size) [start .. end]
+  let weakBm = Prelude.filter (weakPathCondition size . ConciseGraph.toLBitGraph size) bitmaps
+  let notDet = Prelude.filter (not . isConstructionDeterministic gi) weakBm
   let hasNoHomo upTo cg = case SS.searchUpTo upTo gi cg of
                             NoHomo   -> True
                             HomoAt _ -> False
                             UnknownAt _ -> True
-  let maybeBad = Prelude.filter (hasNoHomo 6) notDet
+  let maybeBad = Prelude.filter (hasNoHomo 8) notDet
   let badPairs = Prelude.map (\g -> (g,SS.searchUpTo 11 gi g)) maybeBad
   --putStrLn $ LabeledGraph.showLG gi firstExample
   --easyLiftingPathReport 5 gi firstExample
