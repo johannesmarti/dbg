@@ -47,7 +47,7 @@ main :: IO ()
 --main = easyLiftingPathReport 4 (conciseGraphI 4) 2063974806
 --main = print $ searchLifting 6 (conciseGraphI 4) 2063974806
 
-main = easyPathReport lMapGraphI slowSquare
+--main = easyPathReport lMapGraphI slowSquare
 
 --main = easyPathReport lMapGraphI complicatedNePos
 --main = print $ SS.searchUpTo 8 lMapGraphI complicatedPos
@@ -57,6 +57,8 @@ main = easyPathReport lMapGraphI slowSquare
 --main = print $ SS.searchUpTo 11 (conciseGraphI 4) 2685212300
 --main = easyLiftingPathReport 3 (conciseGraphI 4) 4966674
 --main = easyLiftingReport 4 (conciseGraphI 4) 4966674
+--main = easyPathReport (conciseGraphI 4) slowFourConcise
+main = easyPathReport (conciseGraphI 4) 4966674
 
 --main = easyLiftingPathReport 3 lMapGraphI force3d
 

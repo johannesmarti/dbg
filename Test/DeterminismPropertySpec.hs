@@ -61,8 +61,10 @@ spec = do
       (dbg 3) `shouldSatisfy` (not . isStronglyConstructionDeterministic dbgI)
     it "force3d" $
       force3d `shouldSatisfy` (not . isStronglyConstructionDeterministic lMapGraphI)
-    it "4003476 of size 4" $
-      4003476 `shouldSatisfy` (not . isStronglyConstructionDeterministic (conciseGraphI 4))
+    it "slowFourConcise" $
+      slowFourConcise `shouldSatisfy` (not . isStronglyConstructionDeterministic (conciseGraphI 4))
+    it "slowLifting" $
+      slowLifting `shouldSatisfy` (not . isStronglyConstructionDeterministic slowLiftingI)
   describe "antichain is working" $ do
     let dom = fromList [1,2,3,4]
     let sA = singletonChain dom
@@ -122,6 +124,10 @@ spec = do
       allPaths`shouldSatisfy` (isConstructionDeterministic lMapGraphI)
     it "complicatedNeg" $
       complicatedNeg `shouldSatisfy` (isConstructionDeterministic lMapGraphI)
+    it "slowFourConcise" $
+      slowFourConcise `shouldSatisfy` (isConstructionDeterministic (conciseGraphI 4))
+    it "slowLifting" $
+      slowLifting `shouldSatisfy` (isConstructionDeterministic slowLiftingI)
   describe "is not construction deterministic" $ do
     it "dbg 1" $
       (dbg 1) `shouldSatisfy` (not . isConstructionDeterministic dbgI)
