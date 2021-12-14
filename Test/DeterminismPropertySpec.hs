@@ -120,6 +120,8 @@ spec = do
       halfCeltic `shouldSatisfy` (isConstructionDeterministic lMapGraphI)
     it "allPaths" $
       allPaths`shouldSatisfy` (isConstructionDeterministic lMapGraphI)
+    it "complicatedNeg" $
+      complicatedNeg `shouldSatisfy` (isConstructionDeterministic lMapGraphI)
   describe "is not construction deterministic" $ do
     it "dbg 1" $
       (dbg 1) `shouldSatisfy` (not . isConstructionDeterministic dbgI)
@@ -129,3 +131,5 @@ spec = do
       force3d `shouldSatisfy` (not . isConstructionDeterministic lMapGraphI)
     it "celtic" $
       celtic `shouldSatisfy` (not . isConstructionDeterministic lMapGraphI)
+    it "complicatedPos" $
+      complicatedPos `shouldSatisfy` (not . isConstructionDeterministic lMapGraphI)

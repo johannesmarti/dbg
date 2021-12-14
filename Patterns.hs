@@ -19,6 +19,8 @@ module Patterns (
   deadEndWithoutEnd, deadEndWithoutEndI,
   slowLifting, slowLiftingI,
   goesWrong, goesWrongI,
+  complicatedPos,
+  complicatedNeg,
 ) where
 
 import qualified Data.Set as Set
@@ -156,5 +158,16 @@ goesWrong :: Word
 goesWrong = 1612382568
 goesWrongI :: LabeledGraphI Word Node
 goesWrongI = conciseGraphI 4
-(conciseGraphI 4) 1612382568
-(conciseGraphI 4) 1612382568
+
+-- complicated
+complicatedPos' Zero = [('a', 'a'), ('a', 'c'), ('c', 'a'), ('c', 'b'), ('b', 'a'), ('b', 'c')]
+complicatedPos' One = [('a', 'c'), ('a', 'b'), ('c', 'a'), ('c', 'b'), ('b', 'a'), ('b', 'b')]
+complicatedPos :: LMapGraph Char
+complicatedPos = mapFromFunction complicatedPos'
+
+-- complicated
+complicatedNeg' Zero = [('a', 'a'), ('a', 'c'), ('c', 'a'), ('c', 'b'), ('b', 'a'), ('b', 'c')]
+complicatedNeg' One = [('a', 'c'), ('a', 'b'), ('c', 'a'), ('c', 'b'), ('b', 'c'), ('b', 'b')]
+complicatedNeg :: LMapGraph Char
+complicatedNeg = mapFromFunction complicatedNeg'
+

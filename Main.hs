@@ -43,9 +43,14 @@ main :: IO ()
 
 --main = print $ SS.searchUpTo 7 (conciseGraphI 4) 2063974806
 --main = easyPathReport (conciseGraphI 4) 1612382568
-main = easyLiftingReport 5 (conciseGraphI 4) 1612382568
+--main = easyLiftingReport 6 goesWrongI goesWrong
 --main = easyLiftingPathReport 4 (conciseGraphI 4) 2063974806
 --main = print $ searchLifting 6 (conciseGraphI 4) 2063974806
+
+main = easyPathReport lMapGraphI slowSquare
+
+--main = easyPathReport lMapGraphI complicatedNePos
+--main = print $ SS.searchUpTo 8 lMapGraphI complicatedPos
 
 --main = print $ SS.searchUpTo 11 (conciseGraphI 4) 2685212300
 --main = print $ searchLifting 23 (conciseGraphI 4) 4966674

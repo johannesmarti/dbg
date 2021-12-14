@@ -19,6 +19,7 @@ import Coding
 import Pretty
 import Graph as Graph
 import Lifting
+import DeterminismProperty
 
 import Tools
 
@@ -36,10 +37,11 @@ pathReport gi g = let
     nwfs = nonWellfoundedElements cg
     finWords = finiteWords s cg
     (longestFinWord,relOfLongest) = maximumBy (\(a,_) (b,_) -> compare (length a) (length b)) finWords
-  in ["About the Caley-graph of the pattern:"] ++
+  in ["About the pattern:"] ++
       LabeledGraph.prettyLabeledGraph gi g ++
      ["It has " ++ show (Set.size wfs) ++ " finite and " ++
                    show (Set.size nwfs) ++ " infinite elements.", "",
+      "It " ++ (if isConstructionDeterministic gi g then "is" else "is not") ++ " construction deterministic.", "",
       "It " ++ (if isGood s cg then "satisfies" else "does not satisfy") ++ " the path condition.", "",
       "It's finite words are:", show (map fst finWords),
       "Of which one with maximal length is " ++ show longestFinWord ++ ".", ""] ++
