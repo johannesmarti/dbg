@@ -7,8 +7,9 @@ import System.Environment
 
 import qualified Data.Set as Set
 
+import LWrappedGraph
 import CaleyGraph
-import Game
+import HomoFor2063974806
 import Reports
 import AssocGraph
 import ArcCons
@@ -30,7 +31,7 @@ import Pretty
 import LabeledGraph
 
 main :: IO ()
---main = game
+main = game
 --main = check
 --main = mainRange
 --main = range3
@@ -42,10 +43,23 @@ main :: IO ()
 --main = niceLifting mapGraphI totalIrreflexive
 
 --main = print $ SS.searchUpTo 7 (conciseGraphI 4) 2063974806
+--main = print $ SS.searchUpTo 11 (conciseGraphI 4) 23767755
+--main = print $ SS.searchUpTo 11 (conciseGraphI 4) 43343050
+--main = print $ SS.searchUpTo 12 (conciseGraphI 4) 106801820
+--main = checkOne 3 14533
+--main = print $ fromLBitGraph 3 $ LWrappedGraph.innerGraph $ fst $ labeledBitify lMapGraphI force3d
+--main = print $ SS.searchUpTo 9 (conciseGraphI 4) 23731294
+--main = print $ SS.searchUpTo 9 (conciseGraphI 4) 23731294
+--main = print $ SS.searchUpTo 9 (conciseGraphI 4) 23731294
 --main = easyPathReport (conciseGraphI 4) 1612382568
 --main = easyLiftingReport 6 goesWrongI goesWrong
 --main = easyLiftingPathReport 4 (conciseGraphI 4) 2063974806
 --main = print $ searchLifting 6 (conciseGraphI 4) 2063974806
+
+--main = easyPathReport (conciseGraphI 5) 616005754167427
+
+--main = easyPathReport (conciseGraphI 5) 619373008528515
+--main = print $ SS.searchUpTo 13 (conciseGraphI 5) 619373008528515
 
 --main = easyPathReport lMapGraphI slowSquare
 
@@ -58,7 +72,8 @@ main :: IO ()
 --main = easyLiftingPathReport 3 (conciseGraphI 4) 4966674
 --main = easyLiftingReport 4 (conciseGraphI 4) 4966674
 --main = easyPathReport (conciseGraphI 4) slowFourConcise
-main = easyPathReport (conciseGraphI 4) 4966674
+--main = easyPathReport (conciseGraphI 4) 4966674
+--main = putStrLn $ showLG (conciseGraphI 4) slowFourConcise
 
 --main = easyLiftingPathReport 3 lMapGraphI force3d
 
@@ -118,16 +133,14 @@ checkHomo gi graph = let
         checkOne size cg
 -}
 
-{-
 checkOne :: Size -> ConciseGraph -> IO ()
 checkOne size graph = do
   putStrLn (show graph)
   putStrLn "=============="
   putStr (showem size graph)
-  --putStrLn (show (searchDbgHomo (conciseGraphI size) 10 graph))
-  putStrLn (show (SS.searchUpTo size 10 graph))
+  putStrLn (show (searchDbgHomo (conciseGraphI size) 11 graph))
+  --putStrLn (show (SS.searchUpTo size 10 graph))
   putStrLn "\n"
--}
 
 range3 :: IO ()
 range3 = do
