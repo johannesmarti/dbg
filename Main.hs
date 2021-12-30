@@ -33,7 +33,8 @@ import LabeledGraph
 main :: IO ()
 --main = game
 --main = easyLiftingPathReport 2 lMapGraphI force2d
-main = easyLiftingPathReport 2 (conciseGraphI caleySchreckSize) caleySchreck
+main = easyLiftingPathReport 3 lMapGraphI slowSquare
+--main = easyLiftingPathReport 2 (conciseGraphI caleySchreckSize) caleySchreck
 --main = easyLiftingPathReport 2 lMapGraphI force3d
 --main = check
 --main = mainRange
