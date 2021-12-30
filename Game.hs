@@ -3,6 +3,7 @@ module Game (
   nd,
   newReflIn,
   remove,
+  noop,
 ) where
 
 import qualified Data.Set as Set
@@ -34,6 +35,9 @@ newReflIn size bg v = case v of
 
 remove :: Eq x => [Lifted x] -> Lifted x -> Bool
 remove remList v = not (v `elem` remList)
+
+noop :: Lifted x -> Bool
+noop x = True
 
 gameReport :: Ord x => Int -> LabeledGraphI g x -> g -> [Lifted x -> Bool] -> [String]
 gameReport bound gi graph filterList =
