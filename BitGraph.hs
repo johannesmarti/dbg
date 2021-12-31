@@ -31,7 +31,7 @@ import qualified Data.Set as Set
 
 import Graph
 
-type BitGraph = Word
+type BitGraph = Integer
 type Node = Int
 type Size = Int
 
@@ -51,7 +51,8 @@ fromArcs size arcs = bm where
   bm = foldl (setArc size) nullWord arcs
 
 nullWord :: BitGraph
-nullWord = zeroBits
+--nullWord = zeroBits
+nullWord = 0
 
 numBits :: Size -> Int
 numBits size = size * size
@@ -65,7 +66,8 @@ allGraphsOfSize :: Size -> [BitGraph]
 allGraphsOfSize n = [nullWord .. totalGraph n]
 
 enoughBits :: Size -> Bool
-enoughBits size = 0 <= size && numBits size <= finiteBitSize nullWord
+enoughBits size = True
+--enoughBits size = 0 <= size && numBits size <= finiteBitSize nullWord
 
 isValidBitset :: Size -> BitGraph -> Bool
 isValidBitset size bitset = bitset <= totalGraph size

@@ -28,7 +28,7 @@ import CommonLGraphTypes
 import LabeledGraph
 import Pretty
 
-type ConciseGraph = Word
+type ConciseGraph = Integer
 
 conciseGraphI :: Size -> LabeledGraphI ConciseGraph Node
 conciseGraphI size = LabeledGraph.interfaceFromSuccPredPretty
@@ -50,7 +50,9 @@ preds size bitset label node = assert (isNode size node) $
 fromLBitGraph :: Size -> LBitGraph -> ConciseGraph
 fromLBitGraph s bg =
   let
-    cg = (zeroGraph bg) .|. shiftL (oneGraph bg) (s * s)
+    zeroWord = fromInteger (zeroGraph bg)
+    oneWord = fromInteger (oneGraph bg)
+    cg = zeroWord .|. shiftL oneWord (s * s)
   in assert (ConciseGraph.enoughBits s) $ cg
 
 toLBitGraph :: Size -> ConciseGraph -> LBitGraph
@@ -71,7 +73,8 @@ allGraphsOfSize :: Size -> [ConciseGraph]
 allGraphsOfSize n = [nullConciseGraph .. totalGraph n]
 
 enoughBits :: Size -> Bool
-enoughBits size = 0 <= size && numBits size <= finiteBitSize nullConciseGraph
+enoughBits size = True
+--enoughBits size = 0 <= size && numBits size <= finiteBitSize nullConciseGraph
 
 isValidBitset :: Size -> ConciseGraph -> Bool
 isValidBitset size bitset = bitset <= totalGraph size
@@ -95,9 +98,10 @@ relationOfLabel size bitset label = assert (enoughBits size) $
                                     assert (isValidBitset size bitset) $ let
   offset = size * size
   bitmask = (shiftL 1 offset) - 1
-    in if label == Zero
-         then bitset .&. bitmask
-         else shiftR bitset offset
+    in toInteger $
+         if label == Zero
+           then bitset .&. bitmask
+           else shiftR bitset offset
 
 diagonal :: Size -> Label -> ConciseGraph
 diagonal size label = assert (enoughBits size) $

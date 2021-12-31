@@ -131,9 +131,9 @@ slowSquare' One = [('a', 'b'), ('b', 'c'), ('b', 'd'), ('c', 'c'), ('d', 'a'), (
 slowSquare :: LMapGraph Char
 slowSquare = mapFromFunction slowSquare'
 
-deadEnd :: Word
+deadEnd :: ConciseGraph
 deadEnd = 4072604
-deadEndI :: LabeledGraphI Word Node
+deadEndI :: LabeledGraphI ConciseGraph Node
 deadEndI = (conciseGraphI 4)
 
 deadEndWithoutEnd :: LMapGraph Node
@@ -142,21 +142,21 @@ deadEndWithoutEndI :: LabeledGraphI (LMapGraph Node) Node
 deadEndWithoutEndI = lMapGraphI
 
 {- Here the lifting converges quite slowly -}
-slowLifting :: Word
+slowLifting :: ConciseGraph 
 slowLifting = 4966674
-slowLiftingI :: LabeledGraphI Word Node
+slowLiftingI :: LabeledGraphI ConciseGraph Node
 slowLiftingI = conciseGraphI 4
 
 {- Here it seems where hard to find a homo -}
-difficult :: Word
+difficult :: ConciseGraph
 difficult = 2063974806
-difficultI :: LabeledGraphI Word Node
+difficultI :: LabeledGraphI ConciseGraph Node
 difficultI = conciseGraphI 4
 
 {- does not have path condition but is not construction deterministic -}
-goesWrong :: Word
+goesWrong :: ConciseGraph
 goesWrong = 1612382568
-goesWrongI :: LabeledGraphI Word Node
+goesWrongI :: LabeledGraphI ConciseGraph Node
 goesWrongI = conciseGraphI 4
 
 -- complicated
