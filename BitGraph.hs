@@ -59,15 +59,10 @@ numBits size = size * size
 
 totalGraph :: Size -> BitGraph
 totalGraph size =
-  assert (enoughBits size) $
   (shiftL 1 (numBits size)) - 1
 
 allGraphsOfSize :: Size -> [BitGraph]
 allGraphsOfSize n = [nullWord .. totalGraph n]
-
-enoughBits :: Size -> Bool
-enoughBits size = True
---enoughBits size = 0 <= size && numBits size <= finiteBitSize nullWord
 
 isValidBitset :: Size -> BitGraph -> Bool
 isValidBitset size bitset = bitset <= totalGraph size
@@ -79,16 +74,14 @@ maskForSuccs :: Size -> BitGraph
 maskForSuccs size = (shiftL 1 size) - 1
 
 hasBitForArc :: Size -> BitGraph -> (Node,Node) -> Bool
-hasBitForArc size bitset (from, to) = assert (enoughBits size) $
-                                assert (isValidBitset size bitset) $
-                                assert (isNode size from) $
-                                assert (isNode size to) $ let
+hasBitForArc size bitset (from, to) = assert (isValidBitset size bitset) $
+                                      assert (isNode size from) $
+                                      assert (isNode size to) $ let
   index = from * size + to
     in testBit bitset index
 
 setArc :: Size -> BitGraph -> (Node,Node) -> BitGraph
-setArc size bitset (from, to) = assert (enoughBits size) $
-                                assert (isValidBitset size bitset) $
+setArc size bitset (from, to) = assert (isValidBitset size bitset) $
                                 assert (isNode size from) $
                                 assert (isNode size to) $ let
   index = from * size + to
@@ -107,8 +100,7 @@ succsAsBits size bitset node = assert (isNode size node) $
   (shiftR bitset (node * size)) .&. maskForSuccs size
 
 compose :: Size -> BitGraph -> BitGraph -> BitGraph
-compose size a b = assert (enoughBits size) $
-                   assert (isValidBitset size a) $
+compose size a b = assert (isValidBitset size a) $
                    assert (isValidBitset size b) $ let
   succsOf node = foldl (.|.) 0 (map (succsAsBits size b) (succsAsList size a node))
   succsOfInPos node = shiftL (succsOf node) (node * size)
@@ -122,8 +114,7 @@ listToBitmask :: [Node] -> BitGraph
 listToBitmask list = foldl setBit 0 list
 
 diagonal :: Size -> BitGraph
-diagonal size = assert (enoughBits size) $
-                nTimes (size - 1) shifter 1 where
+diagonal size = nTimes (size - 1) shifter 1 where
   shifter pattern = shiftL pattern (size + 1) .|. 1
   nTimes n op start = if n == 0 then start else nTimes (n - 1) op (op start)
 

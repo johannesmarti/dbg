@@ -11,7 +11,6 @@ module ConciseGraph (
   allGraphsOfSize,
   totalGraph,
   relationOfLabel,
-  enoughBits,
   hasBothFp,
   noDoubleRefl,
   notTrivial,
@@ -36,8 +35,7 @@ conciseGraphI size = LabeledGraph.interfaceFromSuccPredPretty
                        (\_ n -> pretty n)
 
 dom :: Size -> ConciseGraph -> Set.Set Node
-dom size bitset = assert (enoughBits size) $
-                  assert (isValidBitset size bitset) $ Set.fromList (nodes size)
+dom size bitset = assert (isValidBitset size bitset) $ Set.fromList (nodes size)
 
 succs :: Size -> ConciseGraph -> MapFunction Node
 succs size bitset label node = assert (isNode size node) $
@@ -50,10 +48,10 @@ preds size bitset label node = assert (isNode size node) $
 fromLBitGraph :: Size -> LBitGraph -> ConciseGraph
 fromLBitGraph s bg =
   let
-    zeroWord = fromInteger (zeroGraph bg)
-    oneWord = fromInteger (oneGraph bg)
+    zeroWord = zeroGraph bg
+    oneWord = oneGraph bg
     cg = zeroWord .|. shiftL oneWord (s * s)
-  in assert (ConciseGraph.enoughBits s) $ cg
+  in cg
 
 toLBitGraph :: Size -> ConciseGraph -> LBitGraph
 toLBitGraph size cg = PairGraph.fromFunction (relationOfLabel size cg)
@@ -66,15 +64,10 @@ numBits size = 2 * size * size
 
 totalGraph :: Size -> ConciseGraph
 totalGraph size =
-  assert (enoughBits size) $
   (shiftL 1 (numBits size)) - 1
 
 allGraphsOfSize :: Size -> [ConciseGraph]
 allGraphsOfSize n = [nullConciseGraph .. totalGraph n]
-
-enoughBits :: Size -> Bool
-enoughBits size = True
---enoughBits size = 0 <= size && numBits size <= finiteBitSize nullConciseGraph
 
 isValidBitset :: Size -> ConciseGraph -> Bool
 isValidBitset size bitset = bitset <= totalGraph size
@@ -84,28 +77,24 @@ isNode size node = 0 <= node && node <= size
 
 -- Maybe we should get rid of all these asserts here!
 hasBitForArc :: Size -> ConciseGraph -> Arc Node -> Bool
-hasBitForArc size bitset (from,label,to) = assert (enoughBits size) $
-                                     assert (isValidBitset size bitset) $
-                                     assert (isNode size from) $
-                                     assert (isNode size to) $ let
+hasBitForArc size bitset (from,label,to) = assert (isValidBitset size bitset) $
+                                           assert (isNode size from) $
+                                           assert (isNode size to) $ let
   offset = if label == Zero then 0 else size * size
   position = from * size + to
   index = offset + position
     in testBit bitset index
 
 relationOfLabel :: Size -> ConciseGraph -> Label -> BitGraph
-relationOfLabel size bitset label = assert (enoughBits size) $
-                                    assert (isValidBitset size bitset) $ let
+relationOfLabel size bitset label = assert (isValidBitset size bitset) $ let
   offset = size * size
   bitmask = (shiftL 1 offset) - 1
-    in toInteger $
-         if label == Zero
-           then bitset .&. bitmask
-           else shiftR bitset offset
+    in if label == Zero
+         then bitset .&. bitmask
+         else shiftR bitset offset
 
 diagonal :: Size -> Label -> ConciseGraph
-diagonal size label = assert (enoughBits size) $
-                      shiftL baseDiagonal offset where
+diagonal size label = shiftL baseDiagonal offset where
   offset = if label == Zero then 0 else size * size
   shifter pattern = shiftL pattern (size + 1) .|. 1
   nTimes n op start = if n == 0 then start else nTimes (n - 1) op (op start)
@@ -118,7 +107,7 @@ hasBothFp :: Size -> ConciseGraph -> Bool
 hasBothFp size word = not (hasNoFp size Zero word) && not (hasNoFp size One word)
 
 doubleRefl :: Size -> Node -> ConciseGraph
-doubleRefl size node = assert (enoughBits size && isNode size node) $
+doubleRefl size node = assert (isNode size node) $
                        pattern where
   offset = size * size
   position = node * size + node
