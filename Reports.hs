@@ -1,5 +1,6 @@
 module Reports (
   pathReport, easyPathReport,
+  wordReport, easyWordReport,
   liftingReport, easyLiftingReport,
   liftingPathReport, easyLiftingPathReport,
 ) where
@@ -96,6 +97,9 @@ wordReport numWords gi g = let
       "Of which one with maximal length is " ++ show longestFinWord ++ ".", ""] ++
      ["The relations of the first " ++ show numWords ++ " words are:"] ++
       intercalate [""] (map printWordWithRel wordRels)
+
+easyWordReport :: Ord x => Int -> LabeledGraphI g x -> g -> IO ()
+easyWordReport numWords gi g = putStr . unlines $ (wordReport numWords gi g)
 
 liftingPathReport :: Ord x => Int -> LabeledGraphI g x -> g -> [String]
 liftingPathReport bound gi graph =
