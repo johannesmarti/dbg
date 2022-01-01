@@ -3,6 +3,7 @@ module CaleyGraph (
   domain,
   relationOfWord,
   rightCaleyGraph,
+  allWords,
   finiteWords,
   isGood,
   isPossibleValue,  
@@ -66,6 +67,15 @@ rightCaleyGraph size (zeroRel,oneRel) =
 
 relationOfWord :: Size -> CaleyGraph -> [Label] -> BitGraph
 relationOfWord size cg word = Prelude.foldl (successor cg) (diagonal size) word
+
+allWords :: Size -> CaleyGraph -> [([Label],BitGraph)]
+allWords size cg = generateAllWords [([], diagonal size)] where
+  generateAllWords [] = []
+  generateAllWords ((nextWord, nextRel):rest) =
+    let (zeroSucc,oneSucc) = successorMap cg Map.! nextRel
+    in (reverse nextWord,nextRel) :
+                 (generateAllWords (rest ++ [(Zero:nextWord,zeroSucc),
+                                             (One:nextWord,oneSucc)]))
 
 finiteWords :: Size -> CaleyGraph -> [([Label],BitGraph)]
 finiteWords size cg = generateFiniteWords [([], diagonal size)] where

@@ -70,15 +70,42 @@ liftingReport bound gi graph =
 easyLiftingReport :: Ord x => Int -> LabeledGraphI g x -> g -> IO ()
 easyLiftingReport b gi g = putStr . unlines $ (liftingReport b gi g)
 
+wordReport :: Ord x => Int -> LabeledGraphI g x -> g -> [String]
+wordReport numWords gi g = let
+    (wg,s) = labeledBitify gi g
+    inner = innerGraph wg
+    cg = caleyGraphOfLBitGraph s inner
+    c = coding wg
+    enc = encode c
+    dec = decode c
+    printRel r = Graph.prettyGraph (WG.wrappedGraphI (bitGraphI s)) (WG.WrappedGraph r c (LabeledGraph.prettyNode gi g))
+    printRelWithCode r = (printNodeWithSuccs cg r ++ ":") : (printRel r)
+    printWordWithRel (w,r) = [show w ++ ":"] ++ printRelWithCode r
+    wfs = wellfoundedElements cg
+    nwfs = nonWellfoundedElements cg
+    finWords = map fst $ finiteWords s cg
+    longestFinWord = maximumBy (\a b -> compare (length a) (length b)) finWords
+    wordRels = take numWords $ allWords s cg
+  in ["About the Caley graph of the pattern:"] ++
+      LabeledGraph.prettyLabeledGraph gi g ++
+     ["It has " ++ show (Set.size wfs) ++ " finite and " ++
+                   show (Set.size nwfs) ++ " infinite elements.", "",
+      "It " ++ (if isConstructionDeterministic gi g then "is" else "is not") ++ " construction deterministic.", "",
+      "It " ++ (if isGood s cg then "satisfies" else "does not satisfy") ++ " the path condition.", "",
+      "It's finite words are:", show finWords,
+      "Of which one with maximal length is " ++ show longestFinWord ++ ".", ""] ++
+     ["The relations of the first " ++ show numWords ++ " words are:"] ++
+      intercalate [""] (map printWordWithRel wordRels)
+
 liftingPathReport :: Ord x => Int -> LabeledGraphI g x -> g -> [String]
 liftingPathReport bound gi graph =
   let g = toLiftedGraph gi graph
       lI = liftedGraphIWithNodePrinter (LabeledGraph.prettyNode gi graph)
       lifts = take bound $ takeTill (hasDoubleRefl lI) $ untilNothing (liftWithFilter dominationFilter) g
-      --printer gr = prettyPredLabeledGraph lI gr
-      printer gr = pathReport lI gr
+      lReport iface gra = wordReport 7 iface gra
+      printer g = lReport lI g
       graphToSize g = Set.size $ LabeledGraph.domain lI g
-  in  pathReport gi graph ++
+  in  lReport gi graph ++
       ["=============="] ++
       ["Size of the liftings: " ++ show (map graphToSize lifts)] ++
       intercalate ["", "+++++++++++++", ""] (map printer lifts)
