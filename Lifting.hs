@@ -1,4 +1,3 @@
-module Lifting (
   Lifted(..),
   bn, si, du,
   deepen,
@@ -105,13 +104,6 @@ balanced liftedGraph = let
 toLiftedGraph :: Ord x => LabeledGraphI g x -> g -> LiftedGraph x
 toLiftedGraph gi g = assert (not (any (noPredecessor gi g) (domain gi g))) $
   lMapApplyBijection gi g BaseNode 
-
-strictPairs :: [x] -> [(x,x)]
-strictPairs list = worker list [] where
-  worker [] accum = accum
-  worker (next:rest) accum = innerWorker next rest rest accum
-  innerWorker elem [] rest accum = worker rest accum
-  innerWorker elem (p:ps) rest accum = innerWorker elem ps rest ((elem, p):accum)
 
 type LiftingCandidate x = ((Set.Set x, Set.Set x), (x,x), (Set.Set x, Set.Set x))
 

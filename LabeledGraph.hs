@@ -20,6 +20,7 @@ import Data.Set as Set
 
 import Label
 import Pretty
+import Tools
 
 
 type MapFunction x = Label -> x -> Set x
@@ -69,6 +70,12 @@ hasDoubleRefl gi g = let
     hasBothLoops n = all (\l -> n `Set.member` predecessors gi g l n) labels
   in any hasBothLoops (domain gi g)
 
+hasT1 :: Ord x => LabeledGraphI g x -> g -> Bool
+hasT1 gi g = let
+    dom = Set.toList domain gi g
+    pairs = pairs dom
+    isT1 x y = all (\l -> n `Set.member` predecessors gi g l n) labels
+  in any isT1 pairs
 
 prettyLabeledGraph :: Ord x => LabeledGraphI g x -> g -> [String]
 prettyLabeledGraph gi g = basePrinter gi printNode (stdPrintSet printNode) g where
