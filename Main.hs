@@ -6,7 +6,7 @@ import System.Environment
 
 import qualified Data.Set as Set
 
-import HomoForForce3d
+import HomoForSlowSquare
 import LWrappedGraph
 import CaleyGraph
 import Reports

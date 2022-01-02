@@ -14,7 +14,7 @@ module Patterns (
   slowFour,
   celtic,
   halfCeltic,
-  slowSquare,
+  slowSquare, slowSquareI,
   deadEnd, deadEndI,
   deadEndWithoutEnd, deadEndWithoutEndI,
   slowLifting, slowLiftingI,
@@ -132,6 +132,8 @@ slowSquare' Zero = [('a', 'a'), ('a', 'b'), ('a', 'c'), ('b', 'b'), ('b', 'c'), 
 slowSquare' One = [('a', 'b'), ('b', 'c'), ('b', 'd'), ('c', 'c'), ('d', 'a'), ('d', 'c'), ('d', 'd')]
 slowSquare :: LMapGraph Char
 slowSquare = mapFromFunction slowSquare'
+slowSquareI :: LabeledGraphI (LMapGraph Char) Char
+slowSquareI = lMapGraphI
 
 deadEnd :: ConciseGraph
 deadEnd = 4072604
