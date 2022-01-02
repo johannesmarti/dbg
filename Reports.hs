@@ -106,7 +106,7 @@ liftingPathReport bound gi graph =
   let g = toLiftedGraph gi graph
       lI = liftedGraphIWithNodePrinter (LabeledGraph.prettyNode gi graph)
       lifts = take bound $ takeTill (hasDoubleRefl lI) $ untilNothing (liftWithFilter dominationFilter) g
-      lReport iface gra = wordReport 7 iface gra
+      lReport iface gra = wordReport 3 iface gra
       printer g = lReport lI g
       graphToSize g = Set.size $ LabeledGraph.domain lI g
   in  lReport gi graph ++

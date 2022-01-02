@@ -30,7 +30,7 @@ import Pretty
 import LabeledGraph
 
 main :: IO ()
-main = game
+--main = game
 --main = easyLiftingPathReport 4 lMapGraphI force3d
 --main = easyLiftingPathReport 3 lMapGraphI slowSquare
 --main = easyLiftingPathReport 2 (conciseGraphI caleySchreckSize) caleySchreck
@@ -42,7 +42,8 @@ main = game
 --main = easyLiftingPathReport 3 dbgI (dbg 2)
 --main = checkHomo mapGraphI slowSquare
 --main = checkHomo mapGraphI slowFour
---main = print $ searchLifting 7 mapGraphI force3d
+--main = print $ searchLifting 7 (conciseGraphI 4) 2063925436
+main = easyLiftingReport 7 (conciseGraphI 4) 2063925436
 --main = niceLifting mapGraphI totalIrreflexive
 
 --main = print $ SS.searchUpTo 7 (conciseGraphI 4) 2063974806
@@ -152,35 +153,6 @@ range3 = do
   --let list = Prelude.filter (\g -> searchLifting 6 (conciseGraphI 3) g == HomoAt 3) bitmaps
   putStrLn (show $ length list)
 
-check :: IO ()
-check = do
-  let size = 4
-  let factor = 256 * 4
-  let step = (ConciseGraph.totalGraph size) `div`  factor
-  let start = 3 * (ConciseGraph.totalGraph 4) `div` 8
-  --let start = 0
-  let end = min (start + step) (ConciseGraph.totalGraph size)
-  --let bitmaps = Prelude.filter (notTrivial 4) [start .. 2063974805]
-  let gi = conciseGraphI size
-  let pathCond conG = let
-          bg = toLBitGraph size conG
-          cg = caleyGraphOfLBitGraph size bg
-        in isGood size cg
-  let bitmaps = Prelude.filter (notTrivial size) [start .. end]
-  let weakBm = Prelude.filter (weakPathCondition size . ConciseGraph.toLBitGraph size) bitmaps
-  let notDet = Prelude.filter (not . isConstructionDeterministic gi) weakBm
-  let hasNoHomo upTo cg = case SS.searchUpTo upTo gi cg of
-                            NoHomo   -> True
-                            HomoAt _ -> False
-                            UnknownAt _ -> True
-  let maybeBad = Prelude.filter (hasNoHomo 8) notDet
-  let badPairs = Prelude.map (\g -> (g,SS.searchUpTo 11 gi g)) maybeBad
-  --putStrLn $ LabeledGraph.showLG gi firstExample
-  --easyLiftingPathReport 5 gi firstExample
-  let printer (g,r) = (putStrLn ((show g) ++ ":")) >> (putStrLn (show r))
-  mapM_ printer badPairs
-  putStrLn (show (Prelude.filter (\p -> snd p == UnknownAt 11) badPairs))
-
 mainRange :: IO ()
 mainRange = do
   let factor = 256 * 8 * 4 
@@ -194,7 +166,8 @@ mainRange = do
   --let list = Prelude.filter (\g -> SS.searchUpTo 4 6 g == HomoAt 6) bitmaps
   --let filtered = Prelude.filter (\g -> SS.searchUpTo 4 (conciseGraphI 4) g == UnknownAt 4) bitmaps
   --let moreFiltered = Prelude.filter (\g -> searchLifting 3 (conciseGraphI 4) g == UnknownAt 3) filtered
-  let evenMoreFiltered = Prelude.filter (\g -> SS.searchUpTo 7 (conciseGraphI 4) g == UnknownAt 7) bitmaps
+  let filtered = Prelude.filter (\g -> SS.searchUpTo 2 (conciseGraphI 4) g == UnknownAt 2) bitmaps
+  let evenMoreFiltered = Prelude.filter (\g -> searchLifting 7 (conciseGraphI 4) g == UnknownAt 7) filtered
   let postFilter = Prelude.map (\g -> (g,SS.searchUpTo 11 (conciseGraphI 4) g)) evenMoreFiltered
   let printer (g,r) = (putStrLn ((show g) ++ ":")) >> (putStrLn (show r))
   mapM_ printer postFilter
