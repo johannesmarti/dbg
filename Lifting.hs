@@ -1,3 +1,4 @@
+module Lifting (
   Lifted(..),
   bn, si, du,
   deepen,

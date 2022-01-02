@@ -43,7 +43,9 @@ main :: IO ()
 --main = checkHomo mapGraphI slowSquare
 --main = checkHomo mapGraphI slowFour
 --main = print $ searchLifting 7 (conciseGraphI 4) 2063925436
-main = easyLiftingReport 7 (conciseGraphI 4) 2063925436
+--main = easyLiftingReport 7 (conciseGraphI 4) 2063925436
+--main = easyLiftingReport 5 (conciseGraphI 4) 2063931814
+main = print $ SS.searchUpTo 7 (conciseGraphI 4) 2063931814
 --main = niceLifting mapGraphI totalIrreflexive
 
 --main = print $ SS.searchUpTo 7 (conciseGraphI 4) 2063974806
@@ -108,10 +110,10 @@ searchLifting :: (Pretty x, Ord x) => Int -> LabeledGraphI g x -> g -> Result
 searchLifting cutoff gi graph = worker g 0 where
   g = toLiftedGraph gi graph
   worker lifted level =
-    if hasDoubleRefl liftedGraphI lifted
+    if hasT1 liftedGraphI lifted
       then HomoAt level
     else if level >= cutoff then UnknownAt cutoff
-    else case liftWithFilter dominationFilter lifted of
+    else case liftWithFilter unsoundDominationFilter lifted of
            Nothing -> NoHomo
            Just ll -> worker ll (level + 1)
 
@@ -167,7 +169,7 @@ mainRange = do
   --let filtered = Prelude.filter (\g -> SS.searchUpTo 4 (conciseGraphI 4) g == UnknownAt 4) bitmaps
   --let moreFiltered = Prelude.filter (\g -> searchLifting 3 (conciseGraphI 4) g == UnknownAt 3) filtered
   let filtered = Prelude.filter (\g -> SS.searchUpTo 2 (conciseGraphI 4) g == UnknownAt 2) bitmaps
-  let evenMoreFiltered = Prelude.filter (\g -> searchLifting 7 (conciseGraphI 4) g == UnknownAt 7) filtered
+  let evenMoreFiltered = Prelude.filter (\g -> searchLifting 6 (conciseGraphI 4) g == UnknownAt 6) filtered
   let postFilter = Prelude.map (\g -> (g,SS.searchUpTo 11 (conciseGraphI 4) g)) evenMoreFiltered
   let printer (g,r) = (putStrLn ((show g) ++ ":")) >> (putStrLn (show r))
   mapM_ printer postFilter
