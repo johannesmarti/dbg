@@ -38,7 +38,7 @@ gameReport numWords bound gi graph filterList =
       lI = liftedGraphIWithNodePrinter (LabeledGraph.prettyNode gi graph)
       baseLiftedGraph = toLiftedGraph gi graph
       lifts = take bound $ takeTill (hasDoubleRefl lI) $ map fst $ untilNothing iterator (baseLiftedGraph,filterList)
-      lifter = liftWithFilter dominationFilter
+      lifter = liftWithFilter weakDominationFilter
       iterator (g,(hf:fs)) = case lifter g of
         Nothing -> Nothing
         Just lifted -> let flifted = lMapSubgraphFromLGraph lI lifted dom

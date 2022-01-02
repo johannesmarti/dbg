@@ -14,25 +14,21 @@ ssa =  si . si $ ba
 ssb =  si . si $ bb
 ssc =  si . si $ bc
 ssd =  si . si $ bd
-{- remove dssac because it is dominated in one by la la and in zero by blabla.
-   It is possible to be dominated by different existing nodes in different
-   colors. -}
+{- It is a bit unclear weather dssac should be removed. It is dominated in successors but not in predecessors. -}
 dssac = du ssa ssc
 list3 = [dssac]
 sssa =  si ba
 sssb =  si bb
 sssc =  si bc
 sssd =  si bd
-dsssbc = du sssb sssc
-dsssbd = du sssb sssd
-list4 = [dsssbc,dsssbd] ++ map deepen list3
-list5 = [] ++ map deepen list4
+list5 = []
+--list6 = [] ++ map deepen list5
 
-game = easyGame 7 4 slowSquareI slowSquare
+game = easyGame 7 5 slowSquareI slowSquare
  [noop,
   noop,
-  remove list3,
-  remove list4,
+  noop,
+  noop,
   remove list5,
 {-  remove list4,
   remove list5 `nd` newReflIn 4 11422,
