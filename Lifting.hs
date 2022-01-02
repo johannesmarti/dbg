@@ -118,6 +118,13 @@ extractSuccs :: Label -> LiftingCandidate x -> Set.Set x
 extractSuccs Zero (_,_,suc) = fst suc
 extractSuccs One  (_,_,suc) = snd suc 
 
+strictPairs :: [x] -> [(x,x)]
+strictPairs list = worker list [] where
+  worker [] accum = accum
+  worker (next:rest) accum = innerWorker next rest rest accum
+  innerWorker elem [] rest accum = worker rest accum
+  innerWorker elem (p:ps) rest accum = innerWorker elem ps rest ((elem, p):accum)
+
 liftedPairsWithPS :: Ord x => LabeledGraphI g x -> g -> [LiftingCandidate x]
 liftedPairsWithPS gi g = let
     domList = Set.toList $ domain gi g

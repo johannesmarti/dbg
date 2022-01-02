@@ -8,6 +8,7 @@ module LabeledGraph (
   interfaceFromAll,
   interfaceFromSuccPredPretty,
   noPredecessor,
+  hasT1,
   hasDoubleRefl,
   showLG,
   prettyLabeledGraph,
@@ -72,10 +73,13 @@ hasDoubleRefl gi g = let
 
 hasT1 :: Ord x => LabeledGraphI g x -> g -> Bool
 hasT1 gi g = let
-    dom = Set.toList domain gi g
-    pairs = pairs dom
-    isT1 x y = all (\l -> n `Set.member` predecessors gi g l n) labels
-  in any isT1 pairs
+    dom = domain gi g
+    isRefl l v = hasArc gi g l (v,v)
+    zeroRefl = Set.filter (isRefl Zero) dom
+    oneRefl  = Set.filter (isRefl One)  dom
+    pairs = Set.cartesianProduct zeroRefl oneRefl
+    isConnected (z,o) = hasArc gi g Zero (z,o) && hasArc gi g One (o,z)
+  in any isConnected pairs
 
 prettyLabeledGraph :: Ord x => LabeledGraphI g x -> g -> [String]
 prettyLabeledGraph gi g = basePrinter gi printNode (stdPrintSet printNode) g where
