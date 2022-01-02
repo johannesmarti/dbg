@@ -2,7 +2,7 @@ module Patterns (
   triple,
   hamburger,
   force2d,
-  force3d,
+  force3d, force3dI,
   allPaths,
   testPattern,
   strange3,
@@ -56,6 +56,8 @@ f3d Zero = [('a','a'),('a','c'),('c','a'),('c','b')]
 f3d One = [('a','c'),('b','a'),('b','b')]
 force3d :: LMapGraph Char
 force3d = mapFromFunction f3d
+force3dI :: LabeledGraphI (LMapGraph Char) Char
+force3dI = lMapGraphI
 
 noPat1 Zero = [('a','a'),('a','c'),('c','b'),('b','a'),('b','c')]
 noPat1 One = [('a','c'),('a','b'),('c','a'),('b','a'),('b','b')]

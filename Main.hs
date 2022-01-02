@@ -1,5 +1,4 @@
 module Main (
-  showem,
   main
 ) where
 
@@ -7,9 +6,9 @@ import System.Environment
 
 import qualified Data.Set as Set
 
+import HomoForForce3d
 import LWrappedGraph
 import CaleyGraph
-import HomoFor41430174
 import Reports
 import AssocGraph
 import ArcCons
@@ -31,8 +30,8 @@ import Pretty
 import LabeledGraph
 
 main :: IO ()
---main = game
-main = easyLiftingPathReport 4 lMapGraphI force3d
+main = game
+--main = easyLiftingPathReport 4 lMapGraphI force3d
 --main = easyLiftingPathReport 3 lMapGraphI slowSquare
 --main = easyLiftingPathReport 2 (conciseGraphI caleySchreckSize) caleySchreck
 --main = easyLiftingPathReport 2 lMapGraphI force3d
