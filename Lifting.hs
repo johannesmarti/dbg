@@ -13,6 +13,7 @@ module Lifting (
   liftWithFilter,
   dominationFilter,
   weakDominationFilter,
+  unsoundDominationFilter,
 ) where
 
 import Control.Exception.Base
@@ -201,6 +202,15 @@ weakDominationFilter lg can = not $ (any (dominatesCan Zero) dom &&
   dominatesCan label oldNode =
     extractPreds Zero can `Set.isSubsetOf` pred Zero oldNode &&
     extractPreds One  can `Set.isSubsetOf` pred One  oldNode &&
+    extractSuccs label can `Set.isSubsetOf` succ label oldNode 
+
+unsoundDominationFilter :: Ord x => LiftedGraph x -> LiftingCandidate (Lifted x) -> Bool
+unsoundDominationFilter lg can = not $ (any (dominatesCan Zero) dom &&
+                                     any (dominatesCan One) dom) where
+  pred = predecessors liftedGraphINotPretty lg
+  succ = successors liftedGraphINotPretty lg
+  dom = domain liftedGraphINotPretty lg
+  dominatesCan label oldNode =
     extractSuccs label can `Set.isSubsetOf` succ label oldNode 
 
 lift :: Ord x => LiftedGraph x -> Maybe (LiftedGraph x)

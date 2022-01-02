@@ -6,7 +6,7 @@ import System.Environment
 
 import qualified Data.Set as Set
 
-import HomoForSlowSquare
+import HomoFor2063931020
 import LWrappedGraph
 import CaleyGraph
 import Reports
