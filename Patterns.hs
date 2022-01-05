@@ -21,6 +21,7 @@ module Patterns (
   goesWrong, goesWrongI,
   complicatedPos,
   complicatedNeg,
+  unsound, unsoundI,
 ) where
 
 import qualified Data.Set as Set
@@ -174,4 +175,10 @@ complicatedNeg' Zero = [('a', 'a'), ('a', 'c'), ('c', 'a'), ('c', 'b'), ('b', 'a
 complicatedNeg' One = [('a', 'c'), ('a', 'b'), ('c', 'a'), ('c', 'b'), ('b', 'c'), ('b', 'b')]
 complicatedNeg :: LMapGraph Char
 complicatedNeg = mapFromFunction complicatedNeg'
+
+{- This shows that the unsound filter for the lifting is indeed unsound. -}
+unsound :: ConciseGraph
+unsound = 2063931814
+unsoundI :: LabeledGraphI ConciseGraph Node
+unsoundI = conciseGraphI 4
 

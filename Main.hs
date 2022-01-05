@@ -44,8 +44,9 @@ main :: IO ()
 --main = checkHomo mapGraphI slowFour
 --main = print $ searchLifting 7 (conciseGraphI 4) 2063925436
 --main = easyLiftingReport 7 (conciseGraphI 4) 2063925436
---main = easyLiftingReport 5 (conciseGraphI 4) 2063931814
-main = print $ SS.searchUpTo 7 (conciseGraphI 4) 2063931814
+main = easyLiftingPathReport 5 unsoundI unsound
+--main = easyLiftingPathReport 5 (conciseGraphI 4) 2063974806
+--main = print $ SS.searchUpTo 7 (conciseGraphI 4) 2063931814
 --main = niceLifting mapGraphI totalIrreflexive
 
 --main = print $ SS.searchUpTo 7 (conciseGraphI 4) 2063974806

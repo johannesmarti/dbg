@@ -11,6 +11,7 @@ module Lifting (
   toLiftedGraph,
   lift,
   liftWithFilter,
+  noFilter,
   dominationFilter,
   weakDominationFilter,
   unsoundDominationFilter,
@@ -182,6 +183,9 @@ liftWithFilter newNodeFilter graph = assert (balanced graph) $ let
   in if null newNodes
        then Nothing
        else Just $ newGraph
+
+noFilter :: Ord x => LiftedGraph x -> LiftingCandidate (Lifted x) -> Bool
+noFilter lg can = True
 
 dominationFilter :: Ord x => LiftedGraph x -> LiftingCandidate (Lifted x) -> Bool
 dominationFilter lg can = not $ any dominatesCan (domain liftedGraphINotPretty lg) where
