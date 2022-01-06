@@ -10,9 +10,6 @@ import CommonLGraphTypes
 import LabeledGraph
 import Patterns
 
-caleyGraphOfConcise :: Size -> ConciseGraph -> CaleyGraph
-caleyGraphOfConcise size = (caleyGraphOfLBitGraph size) . (toLBitGraph size)
-
 spec :: Spec
 spec = do
   describe "caleyCondition" $ do

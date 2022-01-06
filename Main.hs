@@ -21,6 +21,7 @@ import Homo
 import Lifting
 import MapGraph
 import WrappedGraph
+import Range
 import Search
 import SmartSearch as SS
 import Bitify
@@ -30,6 +31,7 @@ import Pretty
 import LabeledGraph
 
 main :: IO ()
+main = rangeCD
 --main = game
 --main = easyLiftingPathReport 4 lMapGraphI force3d
 --main = easyLiftingPathReport 3 lMapGraphI slowSquare
@@ -44,7 +46,7 @@ main :: IO ()
 --main = checkHomo mapGraphI slowFour
 --main = print $ searchLifting 7 (conciseGraphI 4) 2063925436
 --main = easyLiftingReport 7 (conciseGraphI 4) 2063925436
-main = easyLiftingPathReport 5 unsoundI unsound
+--main = easyLiftingPathReport 5 unsoundI unsound
 --main = easyLiftingPathReport 5 (conciseGraphI 4) 2063974806
 --main = print $ SS.searchUpTo 7 (conciseGraphI 4) 2063931814
 --main = niceLifting mapGraphI totalIrreflexive
@@ -106,40 +108,6 @@ main = easyLiftingPathReport 5 unsoundI unsound
 --main = checkHomo (conciseGraphI 4) 3946697
 --main = checkHomo (conciseGraphI 4) 3941826
 
-
-searchLifting :: (Pretty x, Ord x) => Int -> LabeledGraphI g x -> g -> Result
-searchLifting cutoff gi graph = worker g 0 where
-  g = toLiftedGraph gi graph
-  worker lifted level =
-    if hasT1 liftedGraphI lifted
-      then HomoAt level
-    else if level >= cutoff then UnknownAt cutoff
-    else case liftWithFilter unsoundDominationFilter lifted of
-           Nothing -> NoHomo
-           Just ll -> worker ll (level + 1)
-
-{-
-main :: IO ()
-main = let res = arcConsHomos dbgI mapGraphI (dbg 8) strange3
-           allNodes = domain mapGraphI strange3
-           subsets = Set.powerSet allNodes
-           (detSubsets,ndetSubsets) = partition (hasDeterminismProperty mapGraphI strange3) subsets
- in do
-      putStrLn ("homos from (dbg 8): " ++ show res)
-      putStrLn ("subsets: " ++ show subsets)
-      putStrLn ("detSubsets: " ++ show detSubsets)
-      putStrLn ("ndetSubsets: " ++ show ndetSubsets)
--}
-
-{-
-checkHomo :: (Show x, Ord x) => GraphI g x -> g -> IO ()
-checkHomo gi graph = let
-    wg = bitify gi graph
-    (cg,size) = BitGraph.toConciseGraph (innerGraph wg)
-  in do putStrLn . unlines $ prettyGraph gi show graph
-        checkOne size cg
--}
-
 checkOne :: Size -> ConciseGraph -> IO ()
 checkOne size graph = do
   putStrLn (show graph)
@@ -149,29 +117,3 @@ checkOne size graph = do
   --putStrLn (show (SS.searchUpTo size 10 graph))
   putStrLn "\n"
 
-range3 :: IO ()
-range3 = do
-  let bitmaps = Prelude.filter (notTrivial 3) (ConciseGraph.allGraphsOfSize 3)
-  let list = Prelude.filter (\g -> SS.searchUpTo 6 (conciseGraphI 3) g == HomoAt 3) bitmaps
-  --let list = Prelude.filter (\g -> searchLifting 6 (conciseGraphI 3) g == HomoAt 3) bitmaps
-  putStrLn (show $ length list)
-
-mainRange :: IO ()
-mainRange = do
-  let factor = 256 * 8 * 4 
-  let step = (ConciseGraph.totalGraph 4) `div`  factor
-  --let start = 5 * (ConciseGraph.totalGraph 4) `div` 8
-  let start = 123 * 8 * 4 * step
-  let end = min (start + step) (ConciseGraph.totalGraph 4)
-  let bitmaps = Prelude.filter (notTrivial 4) [start .. 2063974805]
-  --let list = Prelude.filter (\g -> SS.searchUpTo 3 9 g == HomoAt 3) bitmaps
-  --let list = Prelude.filter (\g -> SS.searchUpTo (conciseGraphI 3) 6 g == HomoAt 3) bitmaps
-  --let list = Prelude.filter (\g -> SS.searchUpTo 4 6 g == HomoAt 6) bitmaps
-  --let filtered = Prelude.filter (\g -> SS.searchUpTo 4 (conciseGraphI 4) g == UnknownAt 4) bitmaps
-  --let moreFiltered = Prelude.filter (\g -> searchLifting 3 (conciseGraphI 4) g == UnknownAt 3) filtered
-  let filtered = Prelude.filter (\g -> SS.searchUpTo 2 (conciseGraphI 4) g == UnknownAt 2) bitmaps
-  let evenMoreFiltered = Prelude.filter (\g -> searchLifting 6 (conciseGraphI 4) g == UnknownAt 6) filtered
-  let postFilter = Prelude.map (\g -> (g,SS.searchUpTo 11 (conciseGraphI 4) g)) evenMoreFiltered
-  let printer (g,r) = (putStrLn ((show g) ++ ":")) >> (putStrLn (show r))
-  mapM_ printer postFilter
-  putStrLn (show (Prelude.filter (\p -> snd p == UnknownAt 11) postFilter))
