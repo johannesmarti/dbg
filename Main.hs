@@ -32,8 +32,10 @@ import LabeledGraph
 
 main :: IO ()
 main = rangeCD
+--main = easyLiftingReport 3 noPathI noPath
+
 --main = game
---main = easyLiftingPathReport 4 lMapGraphI force3d
+
 --main = easyLiftingPathReport 3 lMapGraphI slowSquare
 --main = easyLiftingPathReport 2 (conciseGraphI caleySchreckSize) caleySchreck
 --main = easyLiftingPathReport 2 lMapGraphI force3d

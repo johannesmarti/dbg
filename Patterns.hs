@@ -22,6 +22,7 @@ module Patterns (
   complicatedPos,
   complicatedNeg,
   unsound, unsoundI,
+  noPath, noPathI,
 ) where
 
 import qualified Data.Set as Set
@@ -182,3 +183,8 @@ unsound = 2063931814
 unsoundI :: LabeledGraphI ConciseGraph Node
 unsoundI = conciseGraphI 4
 
+{- The following pattern is not construction deterministic but also does not satisfy the path condition -}
+noPath :: ConciseGraph
+noPath = 988302
+noPathI :: LabeledGraphI ConciseGraph Node
+noPathI = conciseGraphI 4
