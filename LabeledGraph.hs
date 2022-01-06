@@ -13,6 +13,7 @@ module LabeledGraph (
   showLG,
   prettyLabeledGraph,
   prettyPredLabeledGraph,
+  prettyBigLabeledGraph,
 ) where
 
 import Control.Exception.Base
@@ -103,6 +104,18 @@ basePredPrinter gi printNode printSuccessors g = let
     lineForNode v = predsForLabel v Zero "0"
                     ++ predsForLabel v One "1" ++ (printNode v)
   in fmap lineForNode (Set.toList . (domain gi) $ g)
+
+prettyBigLabeledGraph :: Ord x => LabeledGraphI g x -> g -> [String]
+prettyBigLabeledGraph gi g = baseBigPrinter gi printNode (stdPrintSet printNode) g where
+  printNode = prettyNode gi g
+
+baseBigPrinter :: Ord x => LabeledGraphI g x -> (x -> String) -> ([x] -> String) -> g -> [String]
+baseBigPrinter gi printNode printSuccessors g = let
+    succsForLabel v l lrep = " <" ++ lrep ++ " " ++
+                   (printSuccessors (Set.toList (successors gi g l v)))
+    linesForNode v = [printNode v ++ succsForLabel v Zero "0",
+                      printNode v ++ succsForLabel v One "1"]
+  in concatMap linesForNode (Set.toList . (domain gi) $ g)
 
 showLG :: Ord x => LabeledGraphI g x -> g -> String
 showLG gi = unlines . (prettyLabeledGraph gi)
