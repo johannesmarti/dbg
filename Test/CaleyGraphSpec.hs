@@ -4,6 +4,7 @@ module Test.CaleyGraphSpec (
 
 import Test.Hspec
 
+import Bitify
 import CaleyGraph
 import ConciseGraph
 import CommonLGraphTypes
@@ -13,7 +14,9 @@ import Patterns
 spec :: Spec
 spec = do
   describe "caleyCondition" $ do
-    it "caleySchreck is not good" $
+    it "caleySchreck is does not have path condition" $
       (caleyGraphOfConcise caleySchreckSize caleySchreck) `shouldSatisfy` (not . (isGood caleySchreckSize))
-    it "4003476 of size 4 is good" $
+    it "4003476 of size 4 has path condition" $
       (caleyGraphOfConcise 4 4003476) `shouldSatisfy` (isGood 4)
+    it "noPath of size 4 does not have path condition" $
+      noPath `shouldSatisfy` (not . (hasPathCondition noPathI))

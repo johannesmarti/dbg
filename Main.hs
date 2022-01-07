@@ -32,7 +32,8 @@ import LabeledGraph
 
 main :: IO ()
 --main = rangeCD
-main = easyLiftingReport 3 noPathI noPath
+main = easyLiftingReport 3 unsoundI unsound
+--main = easyLiftingReport 3 noPathI noPath
 
 --main = game
 

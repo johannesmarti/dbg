@@ -28,12 +28,8 @@ spec = do
       predecessors iface bitburger One 'a' `shouldBe` Set.fromList ['c']
     it "1-pred of b match [a,c,b]" $
       predecessors iface bitburger One 'b' `shouldBe` Set.fromList ['a','c','b']
-    it "bitburger satisfies caley condition" $
-      bitburger `shouldSatisfy` (pathCondition bsize)
   describe "bitify allPaths" $ do
     let (bitpaths, psize) = labeledBitify lMapGraphI allPaths
     let pface = lWrappedGraphI (lBitGraphI psize)
     it "bitpaths has 8 elements" $
       Set.size (domain pface bitpaths) `shouldBe` 8
-    it "bitpaths does not saitisfy caley condition" $
-      bitpaths `shouldSatisfy` (not . (pathCondition psize))

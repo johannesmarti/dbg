@@ -1,7 +1,7 @@
 module Bitify (
   bitify,
   labeledBitify,
-  pathCondition,
+  hasPathCondition,
 ) where
 
 import Control.Exception.Base
@@ -45,8 +45,8 @@ labeledBitify gi g = (wrappedGraph, size) where
   newArcs l = map enc (LabeledGraph.arcsOfLabel gi g l)
   enc (u,v) = (encode c u, encode c v)
 
-pathCondition :: Size -> LWrappedGraph LBitGraph Node x -> Bool
-pathCondition size wg = isGood size cg where
+hasPathCondition :: Ord x => LabeledGraphI g x -> g -> Bool
+hasPathCondition gi g = isGood size cg where
+  (wg, size) = labeledBitify gi g
   inner = LWrappedGraph.innerGraph wg
   cg = caleyGraphOfLBitGraph size inner
-

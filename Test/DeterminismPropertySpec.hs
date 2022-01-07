@@ -139,3 +139,5 @@ spec = do
       celtic `shouldSatisfy` (not . isConstructionDeterministic lMapGraphI)
     it "complicatedPos" $
       complicatedPos `shouldSatisfy` (not . isConstructionDeterministic lMapGraphI)
+    it "noPath" $
+      noPath `shouldSatisfy` (not . isConstructionDeterministic noPathI)
