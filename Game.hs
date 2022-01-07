@@ -9,7 +9,7 @@ module Game (
 import qualified Data.Set as Set
 import Data.List (maximumBy,intercalate)
 
-import Reports
+import Report
 import LabeledGraph
 import CommonLGraphTypes
 import Graph

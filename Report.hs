@@ -1,4 +1,4 @@
-module Reports (
+module Report (
   pathReport, easyPathReport,
   wordReport, easyWordReport,
   liftingReport, easyLiftingReport,
@@ -64,9 +64,8 @@ liftingReport bound gi graph =
       printer gr = prettyBigLabeledGraph lI gr
       graphToSize g = Set.size $ LabeledGraph.domain lI g
   in  prettyLabeledGraph gi graph ++
-      ["=============="] ++
-      ["Size of the liftings: " ++ show (map graphToSize lifts)] ++
-      intercalate [""] (map printer lifts)
+      ["Size of the liftings: " ++ show (map graphToSize lifts), "", "==========", ""] ++
+      intercalate ["", "+++++++++++++", ""] (map printer lifts)
 
 easyLiftingReport :: Ord x => Int -> LabeledGraphI g x -> g -> IO ()
 easyLiftingReport b gi g = putStr . unlines $ (liftingReport b gi g)

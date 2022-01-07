@@ -113,9 +113,10 @@ baseBigPrinter :: Ord x => LabeledGraphI g x -> (x -> String) -> ([x] -> String)
 baseBigPrinter gi printNode printSuccessors g = let
     succsForLabel v l lrep = " <" ++ lrep ++ " " ++
                    (printSuccessors (Set.toList (successors gi g l v)))
-    linesForNode v = [printNode v ++ succsForLabel v Zero "0",
-                      printNode v ++ succsForLabel v One "1"]
-  in concatMap linesForNode (Set.toList . (domain gi) $ g)
+    lineForZero v = printNode v ++ succsForLabel v Zero "0"
+    lineForOne  v = printNode v ++ succsForLabel v One "1"
+    d = Set.toList (domain gi g)
+  in Prelude.map lineForZero d ++ [""] ++ Prelude.map lineForOne d
 
 showLG :: Ord x => LabeledGraphI g x -> g -> String
 showLG gi = unlines . (prettyLabeledGraph gi)

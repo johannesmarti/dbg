@@ -9,7 +9,7 @@ import qualified Data.Set as Set
 import HomoFor2063931020
 import LWrappedGraph
 import CaleyGraph
-import Reports
+import Report
 import AssocGraph
 import ArcCons
 import BitGraph
