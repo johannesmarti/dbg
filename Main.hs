@@ -6,7 +6,6 @@ import System.Environment
 
 import qualified Data.Set as Set
 
-import HomoFor2063931020
 import LWrappedGraph
 import CaleyGraph
 import Report
@@ -32,7 +31,11 @@ import LabeledGraph
 
 main :: IO ()
 --main = rangeCD
-main = easyLiftingReport 3 unsoundI unsound
+
+
+--main = easyLiftingReport 5 force3dI force3d
+
+main = easyLiftingReport 5 unsoundI unsound
 --main = easyLiftingReport 3 noPathI noPath
 
 --main = game
