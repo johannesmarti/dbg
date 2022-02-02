@@ -33,10 +33,13 @@ main :: IO ()
 --main = rangeCD
 
 
+main = easyLiftingReport 2 lMapGraphI hamburger
+--main = easyWordReport 31 slowSquareI slowSquare
+
 --main = easyLiftingReport 5 force3dI force3d
 
-main = easyLiftingReport 5 unsoundI unsound
---main = easyLiftingReport 3 noPathI noPath
+--main = easyLiftingReport 5 slowSquareI slowSquare
+--main = easyWordReport 31 slowSquareI slowSquare
 
 --main = game
 
