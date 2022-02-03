@@ -5,7 +5,9 @@ module CaleyGraph (
   rightCaleyGraph,
   allWords,
   finiteWords,
-  isGood,
+  weakPathCondition,
+  pathCondition,
+  limitedPathCondition,
   isPossibleValue,  
   printNodeWithSuccs,
   prettyCaleyGraph,
@@ -90,10 +92,21 @@ finiteWords size cg = generateFiniteWords [([], diagonal size)] where
 
 {- These would probabely be much quicker if we would cache the multiples as
 part of the CaleyGraph -}
-isGood :: Size -> CaleyGraph -> Bool
-isGood size cg = all (hasUniv size) (nonWellfoundedElements cg) &&
+pathCondition :: Size -> CaleyGraph -> Bool
+pathCondition size cg = all (hasUniv size) (nonWellfoundedElements cg) &&
   all (\rel -> rel == diagonal size || hasReflAndUnivInMultiple size rel) (wellfoundedElements cg) &&
   all (\n -> any (\r -> isUniv size r n) (domain cg)) (nodes size)
+
+weakPathCondition :: Size -> CaleyGraph -> Bool
+weakPathCondition size cg = all (hasUniv size) (nonWellfoundedElements cg) &&
+  all (\rel -> rel == diagonal size || hasReflAndUnivInMultiple size rel) (wellfoundedElements cg)
+
+limitedPathCondition :: Size -> Int -> CaleyGraph -> Bool
+limitedPathCondition size cutoff cg = let
+  rels = take cutoff $ map snd $ allWords size cg
+  dia = diagonal size
+  isOk rel = rel == dia || hasReflAndUnivInMultiple size rel
+    in all isOk rels
 
 splits :: [a] -> [([a],[a])]
 splits xx = zipWith splitAt [1..(length xx)] (repeat xx)

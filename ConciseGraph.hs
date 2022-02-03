@@ -128,7 +128,7 @@ caleyGraphOfConcise :: Size -> ConciseGraph -> CaleyGraph
 caleyGraphOfConcise size = (caleyGraphOfLBitGraph size) . (toLBitGraph size)
 
 pathConditionConcise :: Size -> ConciseGraph -> Bool
-pathConditionConcise size = (isGood size) . (caleyGraphOfConcise size)
+pathConditionConcise size = (pathCondition size) . (caleyGraphOfConcise size)
 
 showem :: Size -> ConciseGraph -> String
 showem size graph = unlines $ prettyLabeledGraph (conciseGraphI size) graph

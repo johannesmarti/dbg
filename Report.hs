@@ -43,7 +43,7 @@ pathReport gi g = let
      ["It has " ++ show (Set.size wfs) ++ " finite and " ++
                    show (Set.size nwfs) ++ " infinite elements.", "",
       "It " ++ (if isConstructionDeterministic gi g then "is" else "is not") ++ " construction deterministic.", "",
-      "It " ++ (if isGood s cg then "satisfies" else "does not satisfy") ++ " the path condition.", "",
+      "It " ++ (if pathCondition s cg then "satisfies" else "does not satisfy") ++ " the path condition.", "",
       "It's finite words are:", show (map fst finWords),
       "Of which one with maximal length is " ++ show longestFinWord ++ ".", ""] ++
      ["The full CaleyGraph is:"] ++ prettyCaleyGraph cg ++
@@ -94,7 +94,7 @@ wordReport numWords gi g = let
      ["It has " ++ show (Set.size wfs) ++ " finite and " ++
                    show (Set.size nwfs) ++ " infinite elements.", "",
       "It " ++ (if isConstructionDeterministic gi g then "is" else "is not") ++ " construction deterministic.", "",
-      "It " ++ (if isGood s cg then "satisfies" else "does not satisfy") ++ " the path condition.", "",
+      "It " ++ (if pathCondition s cg then "satisfies" else "does not satisfy") ++ " the path condition.", "",
       "It's finite words are:", show finWords,
       "Of which one with maximal length is " ++ show longestFinWord ++ ".", ""] ++
      ["The relations of the first " ++ show numWords ++ " words are:"] ++

@@ -1,6 +1,7 @@
 module Range (
   rangeCD,
   mainRange,
+  pathRange,
 ) where
 
 import LWrappedGraph
@@ -36,6 +37,19 @@ rangeCD = do
   let list = Prelude.filter (not . (SS.subPathCondition (conciseGraphI size))) cd
   print (head list)
   putStrLn (showLG (conciseGraphI size) (head list))
+  putStrLn (show $ length list)
+
+pathRange :: IO ()
+pathRange = do
+  let size = 6
+  let bitmaps = Prelude.filter (notTrivial size) (ConciseGraph.allGraphsOfSize size)
+  let cd = Prelude.filter (not . (isConstructionDeterministic (conciseGraphI size))) bitmaps
+  let withCg = [(g, caleyGraphOfConcise size g) | g <- cd]
+  let quiteGood = Prelude.filter ((limitedPathCondition size 7) . snd) withCg
+  let list = Prelude.filter (not . weakPathCondition size . snd) quiteGood
+  let first = fst $ head list
+  print first
+  putStrLn (showLG (conciseGraphI size) first)
   putStrLn (show $ length list)
 
 mainRange :: IO ()

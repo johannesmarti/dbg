@@ -77,7 +77,7 @@ searchUpTo cutoff gi graph = let
     candidates = filter (\s -> not (isConstructionDeterministic lMapGraphINotPretty s)) subgraphs
     bityCandidates = map (\c -> (c, labeledBitify lMapGraphINotPretty c)) candidates
     candidatesWithCaley = map (\(g,(wg,s)) -> (g, wg, s, caleyGraphOfLBitGraph s(innerGraph wg))) bityCandidates
-    isGoodCandi (g, wg, s, cg) = isGood s cg
+    isGoodCandi (g, wg, s, cg) = pathCondition s cg
     goodCandidates = filter isGoodCandi candidatesWithCaley
   in if null goodCandidates
        then NoHomo
@@ -90,4 +90,4 @@ subPathCondition gi graph = hasT1 gi graph || let
     subgraphs = map (lMapSubgraphFromLGraph gi graph) subsets
     bityCandidates = map (\c -> labeledBitify lMapGraphINotPretty c) subgraphs
     caleys = map (\(wg,s) -> (caleyGraphOfLBitGraph s (innerGraph wg), s)) bityCandidates
-   in any (\(cg, s) -> isGood s cg) caleys
+   in any (\(cg, s) -> pathCondition s cg) caleys
