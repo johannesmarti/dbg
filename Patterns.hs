@@ -23,6 +23,7 @@ module Patterns (
   complicatedNeg,
   unsound, unsoundI,
   noPath, noPathI,
+  notQuitePath, notQuitePathI,
 ) where
 
 import qualified Data.Set as Set
@@ -188,3 +189,9 @@ noPath :: ConciseGraph
 noPath = 988302
 noPathI :: LabeledGraphI ConciseGraph Node
 noPathI = conciseGraphI 4
+
+{- This pattern satisfies the path condition up to words of length 2, but not for longer words -}
+notQuitePath :: ConciseGraph
+notQuitePath = 57450828
+notQuitePathI :: LabeledGraphI ConciseGraph Node
+notQuitePathI = conciseGraphI 4

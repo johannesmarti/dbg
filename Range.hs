@@ -41,9 +41,10 @@ rangeCD = do
 
 pathRange :: IO ()
 pathRange = do
-  let size = 6
+  let size = 4
   let bitmaps = Prelude.filter (notTrivial size) (ConciseGraph.allGraphsOfSize size)
-  let cd = Prelude.filter (not . (isConstructionDeterministic (conciseGraphI size))) bitmaps
+  --let cd = Prelude.filter (not . (isConstructionDeterministic (conciseGraphI size))) bitmaps
+  let cd = bitmaps
   let withCg = [(g, caleyGraphOfConcise size g) | g <- cd]
   let quiteGood = Prelude.filter ((limitedPathCondition size 7) . snd) withCg
   let list = Prelude.filter (not . weakPathCondition size . snd) quiteGood
