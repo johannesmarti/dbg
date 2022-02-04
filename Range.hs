@@ -30,28 +30,29 @@ searchLifting cutoff gi graph = worker g 0 where
 
 rangeCD :: IO ()
 rangeCD = do
-  let size = 4
+  let size = 3
   let bitmaps = Prelude.filter (notTrivial size) (ConciseGraph.allGraphsOfSize size)
   let lessTrivial = filter (not . hasT1 (conciseGraphI size)) bitmaps
   let cd = Prelude.filter (not . (isConstructionDeterministic (conciseGraphI size))) lessTrivial
   let list = Prelude.filter (not . (SS.subPathCondition (conciseGraphI size))) cd
   print (head list)
   putStrLn (showLG (conciseGraphI size) (head list))
-  putStrLn (show $ length list)
+  --putStrLn (show $ length list)
 
 pathRange :: IO ()
 pathRange = do
   let size = 4
   let bitmaps = Prelude.filter (notTrivial size) (ConciseGraph.allGraphsOfSize size)
-  --let cd = Prelude.filter (not . (isConstructionDeterministic (conciseGraphI size))) bitmaps
-  let cd = bitmaps
+  let cd = Prelude.filter (not . (isConstructionDeterministic (conciseGraphI size))) bitmaps
+  --let cd = bitmaps
   let withCg = [(g, caleyGraphOfConcise size g) | g <- cd]
-  let quiteGood = Prelude.filter ((limitedPathCondition size 7) . snd) withCg
+  --let quiteGood = Prelude.filter ((limitedPathCondition size 7) . snd) withCg
+  let quiteGood = Prelude.filter ((limitedPathCondition size 3) . snd) withCg
   let list = Prelude.filter (not . weakPathCondition size . snd) quiteGood
   let first = fst $ head list
   print first
   putStrLn (showLG (conciseGraphI size) first)
-  putStrLn (show $ length list)
+  --putStrLn (show $ length list)
 
 mainRange :: IO ()
 mainRange = do

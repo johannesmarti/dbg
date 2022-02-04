@@ -24,6 +24,7 @@ module Patterns (
   unsound, unsoundI,
   noPath, noPathI,
   notQuitePath, notQuitePathI,
+  zoComp, zoCompI,
 ) where
 
 import qualified Data.Set as Set
@@ -190,8 +191,14 @@ noPath = 988302
 noPathI :: LabeledGraphI ConciseGraph Node
 noPathI = conciseGraphI 4
 
-{- This pattern satisfies the path condition up to words of length 2, but not for longer words -}
+{- This pattern satisfies the path condition up to words of length 2, but not for longer words. It is construction deterministic. -}
 notQuitePath :: ConciseGraph
 notQuitePath = 57450828
 notQuitePathI :: LabeledGraphI ConciseGraph Node
 notQuitePathI = conciseGraphI 4
+
+{- In this pattern there is a 0-loop that reaches all other nodes over a 0-path and similarly for 1. But it does not satify the path condition. It is construction deterministic. -}
+zoComp :: ConciseGraph
+zoComp = 23617563
+zoCompI :: LabeledGraphI ConciseGraph Node
+zoCompI = conciseGraphI 4
