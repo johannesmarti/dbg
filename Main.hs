@@ -33,8 +33,10 @@ main :: IO ()
 --main = rangeCD
 --main = pathRange
 
+main = easyLiftingPathReport 3 force3dI force3d
+
 --main = easyLiftingReport 5 notQuitePathI notQuitePath
-main = easyLiftingReport 5 zoCompI zoComp
+--main = easyLiftingReport 5 zoCompI zoComp
 
 --main = easyLiftingReport 2 lMapGraphI hamburger
 --main = easyWordReport 31 slowSquareI slowSquare

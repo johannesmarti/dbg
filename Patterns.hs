@@ -25,6 +25,7 @@ module Patterns (
   noPath, noPathI,
   notQuitePath, notQuitePathI,
   zoComp, zoCompI,
+  ex1, ex1I,
 ) where
 
 import qualified Data.Set as Set
@@ -202,3 +203,11 @@ zoComp :: ConciseGraph
 zoComp = 23617563
 zoCompI :: LabeledGraphI ConciseGraph Node
 zoCompI = conciseGraphI 4
+
+{- just a random example -}
+e1 Zero = [('a','a'),('a','x'),('x','u'),('u','v'),('v','x'),('a','y'),('y','b')]
+e1 One = [('b','b'),('b','a'),('b','x'),('b','u'),('b','v'),('x','y')]
+ex1 :: LMapGraph Char
+ex1 = mapFromFunction e1
+ex1I :: LabeledGraphI (LMapGraph Char) Char
+ex1I = lMapGraphI
