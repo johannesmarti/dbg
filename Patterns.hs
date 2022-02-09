@@ -26,6 +26,8 @@ module Patterns (
   notQuitePath, notQuitePathI,
   zoComp, zoCompI,
   ex1, ex1I,
+  force4d, force4dI,
+  force5d, force5dI,
 ) where
 
 import qualified Data.Set as Set
@@ -211,3 +213,15 @@ ex1 :: LMapGraph Char
 ex1 = mapFromFunction e1
 ex1I :: LabeledGraphI (LMapGraph Char) Char
 ex1I = lMapGraphI
+
+{- Just some pattern with a homo at 4. -}
+force4d :: ConciseGraph
+force4d = 201822290
+force4dI :: LabeledGraphI ConciseGraph Node
+force4dI = conciseGraphI 4
+
+{- Just some pattern with a homo at 5. -}
+force5d :: ConciseGraph
+force5d = 201822534
+force5dI :: LabeledGraphI ConciseGraph Node
+force5dI = conciseGraphI 4

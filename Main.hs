@@ -31,9 +31,10 @@ import LabeledGraph
 
 main :: IO ()
 --main = rangeCD
---main = pathRange
+--main = findDRange 4
 
-main = easyLiftingPathReport 3 force3dI force3d
+main = easyLiftingPathReport 4 force4dI force5d
+--main = easyLiftingPathReport 3 force3dI force3d
 
 --main = easyLiftingReport 5 notQuitePathI notQuitePath
 --main = easyLiftingReport 5 zoCompI zoComp
