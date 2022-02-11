@@ -33,7 +33,9 @@ main :: IO ()
 --main = rangeCD
 --main = findDRange 4
 
-main = easyLiftingPathReport 4 force4dI force5d
+main = print $ toConcise dbgI (dbg 2)
+
+--main = easyLiftingPathReport 4 force4dI force5d
 --main = easyLiftingPathReport 3 force3dI force3d
 
 --main = easyLiftingReport 5 notQuitePathI notQuitePath

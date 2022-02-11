@@ -1,6 +1,7 @@
 module Bitify (
   bitify,
   labeledBitify,
+  toConcise,
   hasPathCondition,
 ) where
 
@@ -11,6 +12,7 @@ import qualified Data.Set as Set
 import CommonLGraphTypes
 import BitGraph
 import Coding
+import ConciseGraph
 import Graph
 import LabeledGraph
 import WrappedGraph
@@ -44,6 +46,11 @@ labeledBitify gi g = (wrappedGraph, size) where
   size = Set.size oldDom
   newArcs l = map enc (LabeledGraph.arcsOfLabel gi g l)
   enc (u,v) = (encode c u, encode c v)
+
+toConcise :: Ord x => LabeledGraphI g x -> g -> (Size, ConciseGraph)
+toConcise gi g = (s,cg) where
+  (wg,s) = labeledBitify gi g
+  cg = fromLBitGraph s (LWrappedGraph.innerGraph wg)
 
 hasPathCondition :: Ord x => LabeledGraphI g x -> g -> Bool
 hasPathCondition gi g = pathCondition size cg where

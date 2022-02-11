@@ -1,6 +1,6 @@
 module Patterns (
   triple,
-  hamburger,
+  hamburger, hamburgerI,
   force2d,
   force3d, force3dI,
   allPaths,
@@ -47,6 +47,8 @@ hb Zero = [('a','a'),('a','c'),('c','b'),('b','c'),('b','a'),('c','a')]
 hb One = [('b','b'),('b','c'),('c','a'),('a','c'),('a','b'),('c','b')]
 hamburger :: LMapGraph Char
 hamburger = mapFromFunction hb
+hamburgerI :: LabeledGraphI (LMapGraph Char) Char
+hamburgerI = lMapGraphI
 
 data N = Co | OZ | OO
   deriving (Eq,Ord,Show)
