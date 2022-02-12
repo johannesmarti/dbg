@@ -1,6 +1,6 @@
 module Patterns (
   triple,
-  hamburger,
+  hamburger, hamburgerI,
   force2d,
   force3d, force3dI,
   allPaths,
@@ -24,6 +24,10 @@ module Patterns (
   unsound, unsoundI,
   noPath, noPathI,
   notQuitePath, notQuitePathI,
+  zoComp, zoCompI,
+  ex1, ex1I,
+  force4d, force4dI,
+  force5d, force5dI,
 ) where
 
 import qualified Data.Set as Set
@@ -43,6 +47,8 @@ hb Zero = [('a','a'),('a','c'),('c','b'),('b','c'),('b','a'),('c','a')]
 hb One = [('b','b'),('b','c'),('c','a'),('a','c'),('a','b'),('c','b')]
 hamburger :: LMapGraph Char
 hamburger = mapFromFunction hb
+hamburgerI :: LabeledGraphI (LMapGraph Char) Char
+hamburgerI = lMapGraphI
 
 data N = Co | OZ | OO
   deriving (Eq,Ord,Show)
@@ -190,8 +196,34 @@ noPath = 988302
 noPathI :: LabeledGraphI ConciseGraph Node
 noPathI = conciseGraphI 4
 
-{- This pattern satisfies the path condition up to words of length 2, but not for longer words -}
+{- This pattern satisfies the path condition up to words of length 2, but not for longer words. It is construction deterministic. -}
 notQuitePath :: ConciseGraph
 notQuitePath = 57450828
 notQuitePathI :: LabeledGraphI ConciseGraph Node
 notQuitePathI = conciseGraphI 4
+
+{- In this pattern there is a 0-loop that reaches all other nodes over a 0-path and similarly for 1. But it does not satify the path condition. It is construction deterministic. -}
+zoComp :: ConciseGraph
+zoComp = 23617563
+zoCompI :: LabeledGraphI ConciseGraph Node
+zoCompI = conciseGraphI 4
+
+{- just a random example -}
+e1 Zero = [('a','a'),('a','x'),('x','u'),('u','v'),('v','x'),('a','y'),('y','b')]
+e1 One = [('b','b'),('b','a'),('b','x'),('b','u'),('b','v'),('x','y')]
+ex1 :: LMapGraph Char
+ex1 = mapFromFunction e1
+ex1I :: LabeledGraphI (LMapGraph Char) Char
+ex1I = lMapGraphI
+
+{- Just some pattern with a homo at 4. -}
+force4d :: ConciseGraph
+force4d = 201822290
+force4dI :: LabeledGraphI ConciseGraph Node
+force4dI = conciseGraphI 4
+
+{- Just some pattern with a homo at 5. -}
+force5d :: ConciseGraph
+force5d = 201822534
+force5dI :: LabeledGraphI ConciseGraph Node
+force5dI = conciseGraphI 4

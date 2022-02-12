@@ -1,5 +1,6 @@
 module Range (
   rangeCD,
+  findDRange,
   mainRange,
   cdRange,
   pathRange,
@@ -31,28 +32,14 @@ searchLifting cutoff gi graph = worker g 0 where
 
 rangeCD :: IO ()
 rangeCD = do
-  let size = 4
+  let size = 3
   let bitmaps = Prelude.filter (notTrivial size) (ConciseGraph.allGraphsOfSize size)
   let lessTrivial = filter (not . hasT1 (conciseGraphI size)) bitmaps
   let cd = Prelude.filter (not . (isConstructionDeterministic (conciseGraphI size))) lessTrivial
   let list = Prelude.filter (not . (SS.subPathCondition (conciseGraphI size))) cd
   print (head list)
   putStrLn (showLG (conciseGraphI size) (head list))
-  putStrLn (show $ length list)
-
-pathRange :: IO ()
-pathRange = do
-  let size = 4
-  let bitmaps = Prelude.filter (notTrivial size) (ConciseGraph.allGraphsOfSize size)
-  --let cd = Prelude.filter (not . (isConstructionDeterministic (conciseGraphI size))) bitmaps
-  let cd = bitmaps
-  let withCg = [(g, caleyGraphOfConcise size g) | g <- cd]
-  let quiteGood = Prelude.filter ((limitedPathCondition size 7) . snd) withCg
-  let list = Prelude.filter (not . weakPathCondition size . snd) quiteGood
-  let first = fst $ head list
-  print first
-  putStrLn (showLG (conciseGraphI size) first)
-  putStrLn (show $ length list)
+  --putStrLn (show $ length list)
 
 cdRange :: Int -> Integer -> IO ()
 cdRange size factor = do
@@ -80,3 +67,28 @@ mainRange = do
   let printer (g,r) = (putStrLn ((show g) ++ ":")) >> (putStrLn (show r))
   mapM_ printer postFilter
   putStrLn (show (Prelude.filter (\p -> snd p == UnknownAt 11) postFilter))
+
+pathRange :: IO ()
+pathRange = do
+  let size = 4
+  let bitmaps = Prelude.filter (notTrivial size) (ConciseGraph.allGraphsOfSize size)
+  let cd = Prelude.filter (not . (isConstructionDeterministic (conciseGraphI size))) bitmaps
+  --let cd = bitmaps
+  let withCg = [(g, caleyGraphOfConcise size g) | g <- cd]
+  --let quiteGood = Prelude.filter ((limitedPathCondition size 7) . snd) withCg
+  let quiteGood = Prelude.filter ((limitedPathCondition size 3) . snd) withCg
+  let list = Prelude.filter (not . weakPathCondition size . snd) quiteGood
+  let first = fst $ head list
+  print first
+  putStrLn (showLG (conciseGraphI size) first)
+  --putStrLn (show $ length list)
+
+findDRange :: Int -> IO ()
+findDRange n = do
+  let factor = 256 * 8 * 4 
+  let step = (ConciseGraph.totalGraph 4) `div`  factor
+  let start = 12 * 8 * 4 * step
+  let end = min (start + step) (ConciseGraph.totalGraph 4)
+  let bitmaps = Prelude.filter (notTrivial 4) [start .. end]
+  let filtered = Prelude.filter (\g -> SS.searchUpTo n (conciseGraphI 4) g == HomoAt n) bitmaps
+  print $ take 4 $ filtered

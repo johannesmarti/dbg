@@ -35,7 +35,7 @@ main = cdRange 4 (1024 * 4)
 --main = cdRange 3 1
 --main = pathRange
 
---main = easyLiftingReport 5 notQuitePathI notQuitePath
+--main = print $ toConcise dbgI (dbg 2)
 
 --main = easyLiftingReport 2 lMapGraphI hamburger
 --main = easyWordReport 31 slowSquareI slowSquare
