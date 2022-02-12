@@ -31,7 +31,8 @@ import LabeledGraph
 
 main :: IO ()
 --main = rangeCD
-main = cdRange 3
+main = cdRange 4 (1024 * 4)
+--main = cdRange 3 1
 --main = pathRange
 
 --main = easyLiftingReport 5 notQuitePathI notQuitePath

@@ -54,11 +54,12 @@ pathRange = do
   putStrLn (showLG (conciseGraphI size) first)
   putStrLn (show $ length list)
 
-cdRange :: Int -> IO ()
-cdRange size = do
-  let bitmaps = ConciseGraph.allGraphsOfSize size
-  let cd = Prelude.filter (isConstructionDeterministic (conciseGraphI size)) bitmaps
-  putStrLn (show $ length cd)
+cdRange :: Int -> Integer -> IO ()
+cdRange size factor = do
+  let b = (ConciseGraph.totalGraph size + 1) `div` factor
+  let bitmaps = [0 .. b]
+  let cd = Prelude.filter (not . (isConstructionDeterministic (conciseGraphI size))) bitmaps
+  putStrLn ((show $ length cd) ++ " of " ++ show b)
 
 mainRange :: IO ()
 mainRange = do
