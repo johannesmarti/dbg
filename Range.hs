@@ -1,6 +1,7 @@
 module Range (
   rangeCD,
   mainRange,
+  cdRange,
   pathRange,
 ) where
 
@@ -52,6 +53,12 @@ pathRange = do
   print first
   putStrLn (showLG (conciseGraphI size) first)
   putStrLn (show $ length list)
+
+cdRange :: Int -> IO ()
+cdRange size = do
+  let bitmaps = ConciseGraph.allGraphsOfSize size
+  let cd = Prelude.filter (isConstructionDeterministic (conciseGraphI size)) bitmaps
+  putStrLn (show $ length cd)
 
 mainRange :: IO ()
 mainRange = do

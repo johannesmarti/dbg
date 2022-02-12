@@ -31,9 +31,10 @@ import LabeledGraph
 
 main :: IO ()
 --main = rangeCD
+main = cdRange 3
 --main = pathRange
 
-main = easyLiftingReport 5 notQuitePathI notQuitePath
+--main = easyLiftingReport 5 notQuitePathI notQuitePath
 
 --main = easyLiftingReport 2 lMapGraphI hamburger
 --main = easyWordReport 31 slowSquareI slowSquare
