@@ -9,6 +9,7 @@ module DeterminismProperty (
   isStronglyConstructionDeterministic,
   deterministicPartition,
   isConstructionDeterministic,
+  deterministicAntichain,
   Antichain,
   singletonChain,
   isTotal,

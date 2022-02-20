@@ -28,6 +28,7 @@ module Patterns (
   ex1, ex1I,
   force4d, force4dI,
   force5d, force5dI,
+  ex2, ex2I,
 ) where
 
 import qualified Data.Set as Set
@@ -227,3 +228,12 @@ force5d :: ConciseGraph
 force5d = 201822534
 force5dI :: LabeledGraphI ConciseGraph Node
 force5dI = conciseGraphI 4
+
+{- another renadom example -}
+e2 Zero = [('a','a'),('a','o'),('a','x'),('a','z'),('o','u'),('x','v'),('x','i'),('z','b'),('u','y'),('u','v')]
+e2 One = [('b','b'),('b','i'),('b','y'),('b','a'),('i','v'),('y','z'),('y','o'),('y','u'),('y','x'),('v','u')]
+ex2 :: LMapGraph Char
+ex2 = mapFromFunction e2
+ex2I :: LabeledGraphI (LMapGraph Char) Char
+ex2I = lMapGraphI
+

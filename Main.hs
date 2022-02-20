@@ -30,12 +30,14 @@ import Pretty
 import LabeledGraph
 
 main :: IO ()
---main = rangeCD
-main = cdRange 4 (1024 * 4)
+--main = cdRange 4 (1024 * 4)
 --main = cdRange 3 1
 --main = pathRange
 
 --main = print $ toConcise dbgI (dbg 2)
+
+--main = easyPathReport ex2I ex2
+main = print $ deterministicAntichain ex2I ex2
 
 --main = easyLiftingReport 2 lMapGraphI hamburger
 --main = easyWordReport 31 slowSquareI slowSquare
