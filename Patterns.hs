@@ -203,9 +203,9 @@ notQuitePath = 57450828
 notQuitePathI :: LabeledGraphI ConciseGraph Node
 notQuitePathI = conciseGraphI 4
 
-{- In this pattern there is a 0-loop that reaches all other nodes over a 0-path and similarly for 1. But it does not satify the path condition. It is construction deterministic. -}
+{- In this pattern there is a 0-loop that reaches all other nodes over a 0-path and similarly for 1. But it does not satify the path condition. It is not construction deterministic. -}
 zoComp :: ConciseGraph
-zoComp = 23617563
+zoComp = 23617753
 zoCompI :: LabeledGraphI ConciseGraph Node
 zoCompI = conciseGraphI 4
 
@@ -229,7 +229,7 @@ force5d = 201822534
 force5dI :: LabeledGraphI ConciseGraph Node
 force5dI = conciseGraphI 4
 
-{- another renadom example -}
+{- another random example -}
 e2 Zero = [('a','a'),('a','o'),('a','x'),('a','z'),('o','u'),('x','v'),('x','i'),('z','b'),('u','y'),('u','v')]
 e2 One = [('b','b'),('b','i'),('b','y'),('b','a'),('i','v'),('y','z'),('y','o'),('y','u'),('y','x'),('v','u')]
 ex2 :: LMapGraph Char

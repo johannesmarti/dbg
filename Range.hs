@@ -78,9 +78,10 @@ pathRange = do
   --let quiteGood = Prelude.filter ((limitedPathCondition size 7) . snd) withCg
   let quiteGood = Prelude.filter ((limitedPathCondition size 3) . snd) withCg
   let list = Prelude.filter (not . weakPathCondition size . snd) quiteGood
-  let first = fst $ head list
-  print first
+  let f10 = map fst $ take 40 $ list
+  let first = head f10
   putStrLn (showLG (conciseGraphI size) first)
+  print f10
   --putStrLn (show $ length list)
 
 findDRange :: Int -> IO ()

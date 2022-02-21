@@ -36,10 +36,10 @@ main :: IO ()
 
 --main = print $ toConcise dbgI (dbg 2)
 
---main = easyPathReport ex2I ex2
-main = print $ deterministicAntichain ex2I ex2
+--main = easyPathReport zoCompI zoComp
+--main = print $ deterministicAntichain zoCompI zoComp
 
---main = easyLiftingReport 2 lMapGraphI hamburger
+main = easyLiftingReport 5 zoCompI zoComp
 --main = easyWordReport 31 slowSquareI slowSquare
 
 --main = easyLiftingReport 5 force3dI force3d
