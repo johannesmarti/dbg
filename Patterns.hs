@@ -29,6 +29,8 @@ module Patterns (
   force4d, force4dI,
   force5d, force5dI,
   ex2, ex2I,
+  ex3, ex3I,
+  ex4, ex4I,
 ) where
 
 import qualified Data.Set as Set
@@ -236,4 +238,20 @@ ex2 :: LMapGraph Char
 ex2 = mapFromFunction e2
 ex2I :: LabeledGraphI (LMapGraph Char) Char
 ex2I = lMapGraphI
+
+{- An example in which initially all nodes are 1 00-step away from a but then in the first lifting [y b] is only reachable via a 000-path. -}
+e3 Zero = [('a','a'),('a','x'),('a','y'),('x','u'),('x','b'),('u','y'),('u','b')]
+e3 One = [('b','b'),('b','y'),('b','u'),('b','a'),('y','x')]
+ex3 :: LMapGraph Char
+ex3 = mapFromFunction e3
+ex3I :: LabeledGraphI (LMapGraph Char) Char
+ex3I = lMapGraphI
+
+{- One more example to play around with -}
+e4 Zero = [('a','a'),('a','x'),('a','u'),('x','b'),('x','y'),('u','v')]
+e4 One = [('b','b'),('b','y'),('b','v'),('y','a'),('v','x'),('v','u')]
+ex4 :: LMapGraph Char
+ex4 = mapFromFunction e4
+ex4I :: LabeledGraphI (LMapGraph Char) Char
+ex4I = lMapGraphI
 

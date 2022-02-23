@@ -39,7 +39,12 @@ main :: IO ()
 --main = easyPathReport zoCompI zoComp
 --main = print $ deterministicAntichain zoCompI zoComp
 
-main = easyLiftingReport 5 zoCompI zoComp
+--main = easyWordReport 7 ex3I ex3
+--main = easyLiftingPathReport 5 ex3I ex3
+main = easyLiftingReport 5 ex4I ex4
+--main = easyPathReport ex4I ex4
+--main = easyLiftingReport 5 zoCompI zoComp
+
 --main = easyWordReport 31 slowSquareI slowSquare
 
 --main = easyLiftingReport 5 force3dI force3d
