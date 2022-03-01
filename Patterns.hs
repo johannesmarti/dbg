@@ -31,6 +31,8 @@ module Patterns (
   ex2, ex2I,
   ex3, ex3I,
   ex4, ex4I,
+  ex5, ex5I,
+  ex6, ex6I,
 ) where
 
 import qualified Data.Set as Set
@@ -254,4 +256,41 @@ ex4 :: LMapGraph Char
 ex4 = mapFromFunction e4
 ex4I :: LabeledGraphI (LMapGraph Char) Char
 ex4I = lMapGraphI
+
+{- It satisfies the path condition but is very much not construction
+deterministic. -}
+e5 Zero =
+  [("a","a"),("a","a'"),("a","b'"),("a","x"),
+   ("a'","b"),("a'","u"),("a'","y"),("a'","y'"),("a'","v"),("a'","x'"),
+   ("u","v"),("u","y"),("u","y'"),("u","a"),("u","a'"),
+   ("x","x'"), ("x","b"),
+   ("x'","x"), ("x'","b'")]
+e5 One =
+  [("b","b"),("b","b'"),("b","a"),("b","y"),
+   ("b'","a'"),("b'","v"),("b'","x"),("b'","x'"),("b'","u"),("b'","y'"),
+   ("v","u"),("v","x"),("v","x'"),("v","b"),("v","b'"),
+   ("y","y'"), ("y","a"),
+   ("y'","y"), ("y'","a'")]
+ex5 :: LMapGraph String
+ex5 = mapFromFunction e5
+ex5I :: LabeledGraphI (LMapGraph String) String
+ex5I = lMapGraphI
+
+{- A minor change from the previous example that is construction deterministic. -}
+e6 Zero =
+  [("a","a"),("a","a'"),("a","b'"),("a","x"),
+   ("a'","b"),("a'","u"),("a'","y"),("a'","y'"),("a'","v"),("a'","x'"),
+   ("u","v"),("u","y"),("u","y'"),("u","a"),("u","a'"),
+   ("x","x'"),("x","x"), ("x","b"),
+   {-("x'","x"),-} ("x'","b'")]
+e6 One =
+  [("b","b"),("b","b'"),("b","a"),("b","y"),
+   ("b'","a'"),("b'","v"),("b'","x"),("b'","x'"),("b'","u"),("b'","y'"),
+   ("v","u"),("v","x"),("v","x'"),("v","b"),("v","b'"),
+   ("y","y'"), ("y","a"),
+   ("y'","y"), ("y'","a'")]
+ex6 :: LMapGraph String
+ex6 = mapFromFunction e6
+ex6I :: LabeledGraphI (LMapGraph String) String
+ex6I = lMapGraphI
 

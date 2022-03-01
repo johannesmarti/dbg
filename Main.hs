@@ -37,11 +37,15 @@ main :: IO ()
 --main = print $ toConcise dbgI (dbg 2)
 
 --main = easyPathReport zoCompI zoComp
---main = print $ deterministicAntichain zoCompI zoComp
+--main = easyPathReport ex5I ex5
+--main = easyWordReport 7 ex6I ex6
+main = print $ searchUpTo 7 ex6I ex6
+--main = print $ deterministicAntichain ex5I ex5
+--main = print $ deterministicAntichain ex6I ex6
 
---main = easyWordReport 7 ex3I ex3
---main = easyLiftingPathReport 5 ex3I ex3
-main = easyLiftingReport 5 ex4I ex4
+--main = easyWordReport 7 ex5I ex5
+--main = easyLiftingReport 5 ex6I ex6
+--main = easyLiftingReport 5 ex4I ex4
 --main = easyPathReport ex4I ex4
 --main = easyLiftingReport 5 zoCompI zoComp
 

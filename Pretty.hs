@@ -1,3 +1,6 @@
+-- These are needed to make String an instance of Pretty
+{-# LANGUAGE TypeSynonymInstances #-}
+{-# LANGUAGE FlexibleInstances #-}
 module Pretty (
   Pretty,
   pretty,
@@ -20,6 +23,8 @@ instance Pretty Int where
 instance Pretty Word where
   pretty i = show i
 
+instance Pretty String where
+  pretty i = i
 
 stdPrintSet :: (a -> String) -> [a] -> String
 stdPrintSet printSuccessor successors =
