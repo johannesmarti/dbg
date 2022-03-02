@@ -39,8 +39,15 @@ main :: IO ()
 --main = easyPathReport zoCompI zoComp
 --main = easyPathReport ex5I ex5
 --main = easyWordReport 7 ex6I ex6
-main = print $ searchUpTo 7 ex6I ex6
+--main = print $ searchUpTo 7 ex6I ex6
+--main = easyLiftingReport 7 ex6I ex6
 --main = print $ deterministicAntichain ex5I ex5
+main = do
+  print $ deterministicAntichain ex5I ex5
+  print $ deterministicAntichain ex6I ex6
+--main = do
+--  print $ searchUpTo 7 ex5I ex5
+--  print $ searchUpTo 7 ex6I ex6
 --main = print $ deterministicAntichain ex6I ex6
 
 --main = easyWordReport 7 ex5I ex5
