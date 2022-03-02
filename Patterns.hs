@@ -32,6 +32,7 @@ module Patterns (
   ex3, ex3I,
   ex4, ex4I,
   ex5, ex5I,
+  uh, uhI,
 ) where
 
 import qualified Data.Set as Set
@@ -256,8 +257,7 @@ ex4 = mapFromFunction e4
 ex4I :: LabeledGraphI (LMapGraph Char) Char
 ex4I = lMapGraphI
 
-{- It satisfies the path condition but is very much not construction
-deterministic. -}
+{- It satisfies the path condition and is construction deterministic. -}
 e5 Zero =
   [("a","a"),("a","a'"),("a","b'"),("a","x"),
    ("a'","b"),("a'","u"),("a'","y"),("a'","y'"),("a'","v"),("a'","x'"),
@@ -274,3 +274,17 @@ ex5 :: LMapGraph String
 ex5 = mapFromFunction e5
 ex5I :: LabeledGraphI (LMapGraph String) String
 ex5I = lMapGraphI
+
+{- It satisfies the path condition and is construction deterministic. -}
+uhf Zero =
+  [("a","a"),("a","c'"),("a","a'"),("a","c''"),("a","c'''"),
+   ("c'","b"),
+   ("a'","c'''")]
+uhf One =
+  [("b","b"),("b","c''"),("b","c'"),("b","c'''"),
+   ("c''","a"),("c''","a'"),
+   ("c'''","a'")]
+uh :: LMapGraph String
+uh = mapFromFunction uhf
+uhI :: LabeledGraphI (LMapGraph String) String
+uhI = lMapGraphI
