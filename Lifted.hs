@@ -1,6 +1,7 @@
 module Lifted (
-  Lifted(..),
+  Lifted,
   bn, si, du,
+  fastDu,
   depth,
   deepen,
   prettyLifted,
@@ -36,9 +37,16 @@ bn = BaseNode
 si :: Lifted x -> Lifted x
 si = Singleton
 
+-- fastDu is a version of du that assumes that the arguments are already in order.
+fastDu :: Ord x => Lifted x -> Lifted x -> Lifted x
+fastDu u v = assert (u < v) $
+             assert (depth u == depth v) $ Doubleton u v
+
 du :: Ord x => Lifted x -> Lifted x -> Lifted x
-du u v = assert (u < v) $
-         assert (depth u == depth v) $ Doubleton u v
+du u v = assert (depth u == depth v) $
+  if u < v
+    then fastDu u v
+    else fastDu v u
 
 deepen :: Ord x => Lifted x -> Lifted x
 deepen (BaseNode a) = si $ bn a
