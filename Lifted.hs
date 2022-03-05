@@ -71,12 +71,3 @@ liftedRelation baseRel (Doubleton x x') (Doubleton y y') =
   (liftedRelation baseRel x y && liftedRelation baseRel x y') ||
   (liftedRelation baseRel x' y && liftedRelation baseRel x' y')
 liftedRelation baseRel _ _ = error "comparing unbalanced lifted nodes"
-
-isCovered :: Eq a => (Lifted a) -> (Lifted a) -> Bool
-isCovered (BaseNode a) (BaseNode b) = a == b
-isCovered (Singleton x) (Singleton y) = isCovered x y
-isCovered (Singleton x) (Doubleton y y') = isCovered x y || isCovered x y'
-isCovered (Doubleton x x') (Singleton y) = isCovered x y && isCovered x' y
-isCovered (Doubleton x x') (Doubleton y y') =
-  (isCovered x y || isCovered x y') && (isCovered x' y || isCovered x' y')
-isCovered _ _ = error "comparing unbalanced lifted nodes"
