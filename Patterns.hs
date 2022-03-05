@@ -33,6 +33,7 @@ module Patterns (
   ex4, ex4I,
   ex5, ex5I,
   uh, uhI,
+  study, studyI,
 ) where
 
 import qualified Data.Set as Set
@@ -288,3 +289,10 @@ uh :: LMapGraph String
 uh = mapFromFunction uhf
 uhI :: LabeledGraphI (LMapGraph String) String
 uhI = lMapGraphI
+
+stud Zero = [('b','a'),('c','a'),('c','b'),('c','c')]
+stud One = [('a','a'),('a','b'),('b','c')]
+study :: LMapGraph Char
+study = mapFromFunction stud
+studyI :: LabeledGraphI (LMapGraph Char) Char
+studyI = lMapGraphI
