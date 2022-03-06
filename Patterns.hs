@@ -9,8 +9,7 @@ module Patterns (
   strictDet,
   caleySchreck,
   caleySchreckSize,
-  slowFourConcise,
-  slowFourSize,
+  slowFourConcise, slowFourConciseI,
   slowFour,
   celtic,
   halfCeltic,
@@ -34,6 +33,7 @@ module Patterns (
   ex5, ex5I,
   uh, uhI,
   study, studyI,
+  growingLifting, growingLiftingI,
 ) where
 
 import qualified Data.Set as Set
@@ -119,8 +119,9 @@ caleySchreckSize = 4
 
 slowFourConcise :: ConciseGraph
 slowFourConcise = 4003476
-slowFourSize :: Size
-slowFourSize = 4
+slowFourConciseI :: LabeledGraphI ConciseGraph Node
+slowFourConciseI = conciseGraphI 4
+
 s4 Zero = [('a','a'),('a','b'),('b','c'),('b','d'),('c','a'),('d','c')]
 s4 One = [('b','b'),('b','c'),('c','a'),('c','c'),('c','d')]
 slowFour :: LMapGraph Char
@@ -296,3 +297,11 @@ study :: LMapGraph Char
 study = mapFromFunction stud
 studyI :: LabeledGraphI (LMapGraph Char) Char
 studyI = lMapGraphI
+
+sld = ['a', 'b', 'c']
+sl Zero = [('a','a'),('a','b'),('b','c'),('c','b'),('c','c')]
+sl One = [(x,y) | x <- sld, y <- sld] 
+growingLifting :: LMapGraph Char
+growingLifting = mapFromFunction sl
+growingLiftingI :: LabeledGraphI (LMapGraph Char) Char
+growingLiftingI = lMapGraphI

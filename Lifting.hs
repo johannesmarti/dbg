@@ -41,7 +41,7 @@ balanced liftedGraph = let
 
 toLiftedGraph :: Ord x => LabeledGraphI g x -> g -> LiftedGraph x
 toLiftedGraph gi g = assert (not (any (noPredecessor gi g) (domain gi g))) $
-  lMapApplyBijection gi g BaseNode 
+  lMapApplyBijection gi g bn
 
 type LiftingCandidate x = ((Set.Set x, Set.Set x), (x,x), (Set.Set x, Set.Set x))
 
@@ -112,7 +112,7 @@ liftWithFilter newNodeFilter graph = assert (balanced graph) $ let
         arcs = map (\(u,v) -> (du u v, du x y)) plainDPreds
       in arcs
     newArcsForLabel l = fromOldEdges l ++ toOldEdges l ++ betweenNewEdges l
-    liftedOld = lMapApplyBijection liftedGraphINotPretty graph Singleton
+    liftedOld = lMapApplyBijection liftedGraphINotPretty graph si
     withNewNodes = lMapAddNodes liftedOld newNodes
     withZeroArcs = lMapAddArcs withNewNodes Zero (newArcsForLabel Zero)
     newGraph = lMapAddArcs withZeroArcs One (newArcsForLabel One)

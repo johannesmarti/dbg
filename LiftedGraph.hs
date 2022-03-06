@@ -41,9 +41,9 @@ nextNode :: LiftedGraph x -> Int
 nextNode lg = topNode lg + 1
 
 combine :: Int -> Int -> State (LiftedGraph x) Int
-combine x y = state (\lg -> let
+combine x y = state $ \lg -> let
     newInt = nextNode lg 
     ng = undefined
-  in (newInt,ng))
+  in (newInt,ng)
   
 
