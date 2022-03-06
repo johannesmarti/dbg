@@ -41,7 +41,7 @@ main :: IO ()
 --main = easyWordReport 7 ex6I ex6
 --main = print $ searchUpTo 7 ex6I ex6
 --main = easyLiftingReport 7 uhI uh
-main = easyLiftingReport 2 ex5I ex5
+main = easyLiftingPathReport 2 studyI study
 --main = print $ deterministicAntichain ex5I ex5
 --main = do
 --  print $ deterministicAntichain ex5I ex5

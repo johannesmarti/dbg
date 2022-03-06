@@ -1,7 +1,8 @@
 module Lifted (
   Lifted,
-  depth,
   bn, si, du,
+  du',
+  depth,
   deepen,
   prettyLifted,
   liftedRelation,
@@ -34,9 +35,16 @@ bn = BaseNode
 si :: Lifted x -> Lifted x
 si = Singleton
 
+-- du' is a version of du that assumes that the arguments are already in order.
+du' :: Ord x => Lifted x -> Lifted x -> Lifted x
+du' u v = assert (u < v) $
+             assert (depth u == depth v) $ Doubleton u v
+
 du :: Ord x => Lifted x -> Lifted x -> Lifted x
-du u v = assert (u < v) $
-         assert (depth u == depth v) $ Doubleton u v
+du u v = assert (depth u == depth v) $
+  if u < v
+    then du' u v
+    else du' v u
 
 deepen :: Ord x => Lifted x -> Lifted x
 deepen (BaseNode a) = si $ bn a
@@ -61,13 +69,3 @@ liftedRelation baseRel (Doubleton x x') (Doubleton y y') =
   (liftedRelation baseRel x y && liftedRelation baseRel x y') ||
   (liftedRelation baseRel x' y && liftedRelation baseRel x' y')
 liftedRelation baseRel _ _ = error "comparing unbalanced lifted nodes"
-
-isCovered :: Eq a => (Lifted a) -> (Lifted a) -> Bool
-isCovered (BaseNode a) (BaseNode b) = a == b
-isCovered (Singleton x) (Singleton y) = isCovered x y
-isCovered (Singleton x) (Doubleton y y') = isCovered x y || isCovered x y'
-isCovered (Doubleton x x') (Singleton y) = isCovered x y && isCovered x' y
-isCovered (Doubleton x x') (Doubleton y y') =
-  (isCovered x y || isCovered x y') && (isCovered x' y || isCovered x' y')
-isCovered _ _ = error "comparing unbalanced lifted nodes"
-

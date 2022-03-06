@@ -12,6 +12,7 @@ import qualified Test.BitGraphSpec
 import qualified Test.DeterminismPropertySpec
 import qualified Test.CaleyGraphSpec
 import qualified Test.BitifySpec
+import qualified Test.LiftedSpec
 
 main :: IO ()
 main = hspec spec
@@ -26,4 +27,5 @@ spec = do
   describe "DeterminismProperty" Test.DeterminismPropertySpec.spec
   describe "CaleyGraph" Test.CaleyGraphSpec.spec
   describe "Bitify" Test.BitifySpec.spec
+  describe "Lifted" Test.LiftedSpec.spec
 
