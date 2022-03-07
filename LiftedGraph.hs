@@ -14,6 +14,18 @@ import Tools (strictPairs)
 
 data Justification x = Base x | Doubleton Int Int
 
+base :: x -> Justification x
+base a = Base a
+
+doubleton' :: Int -> Int -> Justification x
+doubleton' a b = assert (a < b) $ Doubleton a b
+
+doubleton :: Int -> Int -> Justification x
+doubleton a b = case compare a b of
+  LT -> doubleton' a b
+  EQ -> error "Can not create doubleton justification of two equal numbers"
+  GT -> doubleton' b a
+
 type IntGraph = LMapGraph Int
 
 intGraphI :: LabeledGraphI IntGraph Int
@@ -83,9 +95,22 @@ liftCandidate can = state $ \lg ->
   assert (can == computeCandidate intGraphI (graph lg) (extractPair can)) $
   assert (isVisible can) $
   let
-    newInt = nextNode lg 
-    ng = undefined
-  in (newInt,ng)
+    next = nextNode lg
+    (u,v) = extractPair can
+    addForLabel l g = let
+        preds = extractPreds l can
+        succs = extractSuccs l can
+        reflexive = [(next,next) | u `Set.member` preds && v `Set.member` preds]
+        ingoing = [(u,next) | u <- Set.toList preds]
+        outgoing = [(next,u) | u <- Set.toList succs]
+        withReflexive = lMapAddArcs g l reflexive
+        withIngoing = lMapAddArcs withReflexive l ingoing
+        withAll = lMapAddArcs withIngoing l outgoing
+      in withAll
+    withNode = lMapAddNodes (graph lg) [next]
+    newGraph = addForLabel One (addForLabel Zero withNode)
+    newJustification = insert next (doubleton' u v) (justification lg)
+  in (next,LiftedGraph newGraph newJustification)
   
 combine :: Int -> Int -> State (LiftedGraph x) Int
 combine x y = do
