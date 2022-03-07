@@ -7,6 +7,7 @@ import Control.Monad.State.Lazy
 import Data.Map.Strict as Map hiding (filter, map)
 import qualified Data.Set as Set
 
+import Coding hiding (domain)
 import CommonLGraphTypes
 import LabeledGraph
 import Lifted
@@ -33,14 +34,15 @@ intGraphI = lMapGraphI
 
 data LiftedGraph x = LiftedGraph {
   graph         :: IntGraph,
-  justification :: Map Int (Justification x)
+  justification :: Map Int (Justification x),
+  printBase     :: x -> String
 }
 
 allJustified :: LiftedGraph x -> Bool
 allJustified lg = keysSet (justification lg) == domain intGraphI (graph lg)
 
 justify :: LiftedGraph x -> Int -> Justification x
-justify lg node =
+justify lg node = assert (allJustified lg) $
   case Map.lookup node (justification lg) of
     Just j  -> j
     Nothing -> error "node is not in LiftedGraph"
@@ -52,6 +54,14 @@ topNode lg = case Set.lookupMax (domain intGraphI (graph lg)) of
 
 nextNode :: LiftedGraph x -> Int
 nextNode lg = topNode lg + 1
+
+fromLGraph :: Ord x => LabeledGraphI g x -> g -> LiftedGraph x
+fromLGraph gi g = LiftedGraph intGraph just pb where
+  coding = codeSet (domain gi g)
+  intGraph = lMapApplyBijection gi g (encode coding)
+  just = fromSet justifyBase (domain intGraphI intGraph)
+  justifyBase i = base (decode coding i)
+  pb = prettyNode gi g
 
 type LiftingCandidate x = ((Set.Set x, Set.Set x), (x,x), (Set.Set x, Set.Set x))
 
@@ -110,7 +120,7 @@ liftCandidate can = state $ \lg ->
     withNode = lMapAddNodes (graph lg) [next]
     newGraph = addForLabel One (addForLabel Zero withNode)
     newJustification = insert next (doubleton' u v) (justification lg)
-  in (next,LiftedGraph newGraph newJustification)
+  in (next,LiftedGraph newGraph newJustification (printBase lg))
   
 combine :: Int -> Int -> State (LiftedGraph x) Int
 combine x y = do
@@ -118,3 +128,10 @@ combine x y = do
   let can = computeCandidate intGraphI (graph lg) (x,y)
   liftCandidate can
 
+prettyLiftedGraph :: LiftedGraph x -> [String]
+prettyLiftedGraph lg = let
+    justifiedNodePrinter i = (show i) ++ " " ++ just (justify lg i) where
+      just (Base x) = "! " ++ printBase lg x
+      just (Doubleton m n) = "[" ++ show m ++ " " ++ show n ++ "]"
+    setPrinter i = show i
+  in prettierBigLabeledGraph intGraphI (graph lg) justifiedNodePrinter setPrinter

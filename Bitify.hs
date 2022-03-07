@@ -20,16 +20,12 @@ import LWrappedGraph
 import PairGraph
 import CaleyGraph
 
-setToCoding :: Ord x => Set.Set x -> Coding x Int
-setToCoding set = fromAssoc assoc where
-  assoc = zip (Set.toList set) [0 .. ]
-
 bitify :: Ord x => GraphI g x -> g -> (WrappedGraph BitGraph Node x, Size)
 bitify gi g = (wrappedGraph,size) where
   wrappedGraph = WrappedGraph bg c printer
   bg = BitGraph.fromArcs size newArcs
   oldDom = Graph.domain gi g
-  c = setToCoding oldDom
+  c = codeSet oldDom
   printer = Graph.prettyNode gi g
   size = Set.size oldDom
   newArcs = map enc (Graph.arcs gi g)
@@ -41,7 +37,7 @@ labeledBitify gi g = (wrappedGraph, size) where
   bitGraphPerLabel l = BitGraph.fromArcs size (newArcs l)
   lbg = PairGraph.fromFunction bitGraphPerLabel
   oldDom = LabeledGraph.domain gi g
-  c = setToCoding oldDom
+  c = codeSet oldDom
   printer = LabeledGraph.prettyNode gi g
   size = Set.size oldDom
   newArcs l = map enc (LabeledGraph.arcsOfLabel gi g l)

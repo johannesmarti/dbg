@@ -14,6 +14,7 @@ module LabeledGraph (
   prettyLabeledGraph,
   prettyPredLabeledGraph,
   prettyBigLabeledGraph,
+  prettierBigLabeledGraph,
 ) where
 
 import Control.Exception.Base
@@ -108,6 +109,10 @@ basePredPrinter gi printNode printSuccessors g = let
 prettyBigLabeledGraph :: Ord x => LabeledGraphI g x -> g -> [String]
 prettyBigLabeledGraph gi g = baseBigPrinter gi printNode (stdPrintSet printNode) g where
   printNode = prettyNode gi g
+
+prettierBigLabeledGraph :: Ord x => LabeledGraphI g x -> g -> (x -> String) -> (x -> String) -> [String]
+prettierBigLabeledGraph gi g printNode printNodeInSet =
+  baseBigPrinter gi printNode (stdPrintSet printNodeInSet) g
 
 baseBigPrinter :: Ord x => LabeledGraphI g x -> (x -> String) -> ([x] -> String) -> g -> [String]
 baseBigPrinter gi printNode printSuccessors g = let

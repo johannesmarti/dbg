@@ -1,6 +1,7 @@
 module Coding (
   Coding,
   fromAssoc,
+  codeSet,
   encode,
   decode,
   domain,
@@ -20,6 +21,10 @@ fromAssoc :: (Ord x, Ord y) => [(x,y)] -> Coding x y
 fromAssoc assoc = Coding enMap deMap where -- should check injectivity
   enMap = Map.fromList assoc
   deMap = Map.fromList (map swap assoc)
+
+codeSet :: Ord x => Set.Set x -> Coding x Int
+codeSet set = fromAssoc assoc where
+  assoc = zip (Set.toList set) [0 .. ]
 
 cautiousEncode :: Ord x => Coding x y -> x -> Maybe y
 cautiousEncode coding node = Map.lookup node (encoder coding)
