@@ -1,6 +1,15 @@
 module LiftedGraph (
-
+  LiftedGraph,
+  intGraphI,
+  graph,
+  fromLGraph,
+  combine,
+  prettyLiftedGraph,
+  LiftingCandidate,
+  liftableCandidates,
 ) where
+
+import Debug.Trace
 
 import Control.Exception.Base (assert)
 import Control.Monad.State.Lazy
@@ -88,7 +97,7 @@ computeCandidate gi g (a,b) =
       pred = predecessors gi g
 
 isVisible :: LiftingCandidate x -> Bool
-isVisible can = (Set.null $ extractPreds Zero can) && not (Set.null $ extractPreds One can)
+isVisible can = not (Set.null $ extractPreds Zero can) && not (Set.null $ extractPreds One can)
 
 liftableCandidates :: Ord x => LabeledGraphI g x -> g -> [LiftingCandidate x]
 liftableCandidates gi g = let

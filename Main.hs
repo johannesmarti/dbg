@@ -28,8 +28,11 @@ import CommonLGraphTypes
 import Patterns
 import Pretty
 import LabeledGraph
+import NewGame
 
 main :: IO ()
+main = NewGame.game
+
 --main = cdRange 4 (1024 * 4)
 --main = cdRange 3 1
 --main = pathRange
@@ -41,7 +44,7 @@ main :: IO ()
 --main = easyWordReport 7 ex6I ex6
 --main = print $ searchUpTo 7 ex6I ex6
 --main = easyLiftingReport 7 uhI uh
-main = easyLiftingPathReport 1 growingLiftingI growingLifting
+--main = easyLiftingPathReport 1 growingLiftingI growingLifting
 --main = easyLiftingPathReport 2 slowSquareI slowSquare
 --main = print $ deterministicAntichain ex5I ex5
 --main = do
