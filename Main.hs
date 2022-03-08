@@ -31,7 +31,12 @@ import LabeledGraph
 import NewGame
 
 main :: IO ()
-main = NewGame.game
+--main = NewGame.game
+--main = NewGame.gameForce5d
+main = NewGame.gameSlowSquare
+
+--main = print $ searchUpTo 17 slowLiftingI slowLifting
+--main = easyPathReport slowLiftingI slowLifting
 
 --main = cdRange 4 (1024 * 4)
 --main = cdRange 3 1

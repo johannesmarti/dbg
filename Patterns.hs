@@ -161,7 +161,7 @@ deadEndWithoutEnd = lMapSubgraphFromLGraph deadEndI deadEnd (Set.fromList [0,1,3
 deadEndWithoutEndI :: LabeledGraphI (LMapGraph Node) Node
 deadEndWithoutEndI = lMapGraphI
 
-{- Here the lifting converges quite slowly -}
+{- is not construction deterministic. -}
 slowLifting :: ConciseGraph 
 slowLifting = 4966674
 slowLiftingI :: LabeledGraphI ConciseGraph Node
