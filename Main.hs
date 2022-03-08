@@ -28,14 +28,14 @@ import CommonLGraphTypes
 import Patterns
 import Pretty
 import LabeledGraph
-import NewGame
+import Game
 
 main :: IO ()
---main = NewGame.game
---main = NewGame.gameForce5d
-main = NewGame.gameSlowSquare
+--main = gameEx5
+--main = gameForce5d
+main = gameSlowSquare
 
---main = print $ searchUpTo 17 slowLiftingI slowLifting
+--main = print $ searchUpTo 14 slowSquareI slowSquare
 --main = easyPathReport slowLiftingI slowLifting
 
 --main = cdRange 4 (1024 * 4)
