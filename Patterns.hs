@@ -14,6 +14,7 @@ module Patterns (
   celtic,
   halfCeltic,
   slowSquare, slowSquareI,
+  difficult, difficultI,
   deadEnd, deadEndI,
   deadEndWithoutEnd, deadEndWithoutEndI,
   slowLifting, slowLiftingI,
@@ -34,6 +35,7 @@ module Patterns (
   uh, uhI,
   study, studyI,
   growingLifting, growingLiftingI,
+  biggest, biggestI
 ) where
 
 import qualified Data.Set as Set
@@ -305,3 +307,9 @@ growingLifting :: LMapGraph Char
 growingLifting = mapFromFunction sl
 growingLiftingI :: LabeledGraphI (LMapGraph Char) Char
 growingLiftingI = lMapGraphI
+
+{- Here it seems where hard to find a homo -}
+biggest :: ConciseGraph
+biggest = 2458141589
+biggestI :: LabeledGraphI ConciseGraph Node
+biggestI = conciseGraphI 4

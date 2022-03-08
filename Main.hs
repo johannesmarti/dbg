@@ -33,7 +33,8 @@ import Game
 main :: IO ()
 --main = gameEx5
 --main = gameForce5d
-main = gameSlowSquare
+--main = gameSlowSquare
+main = game
 
 --main = print $ searchUpTo 14 slowSquareI slowSquare
 --main = easyPathReport slowLiftingI slowLifting

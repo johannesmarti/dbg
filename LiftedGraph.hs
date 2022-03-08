@@ -8,6 +8,7 @@ module LiftedGraph (
   LiftingCandidate,
   prettyCandidate,
   liftableCandidates,
+  liftablePairs,
   weakDominationFilter,
 ) where
 
