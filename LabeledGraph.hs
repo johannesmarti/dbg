@@ -87,24 +87,24 @@ prettyLabeledGraph :: Ord x => LabeledGraphI g x -> g -> [String]
 prettyLabeledGraph gi g = basePrinter gi printNode (stdPrintSet printNode) g where
   printNode = prettyNode gi g
 
-basePrinter :: Ord x => LabeledGraphI g x -> (x -> String) -> ([x] -> String) -> g -> [String]
+basePrinter :: Ord x => LabeledGraphI g x -> (x -> String) -> (Set x -> String) -> g -> [String]
 basePrinter gi printNode printSuccessors g = let
     succsForLabel v l lrep = " <" ++ lrep ++ " " ++
-                             (printSuccessors (Set.toList (successors gi g l v)))
+                             (printSuccessors (successors gi g l v))
     lineForNode v = (printNode v) ++ succsForLabel v Zero "0"
                                   ++ succsForLabel v One "1"
-  in fmap lineForNode (Set.toList . (domain gi) $ g)
+  in Prelude.map lineForNode (Set.toList (domain gi g))
 
 prettyPredLabeledGraph :: Ord x => LabeledGraphI g x -> g -> [String]
 prettyPredLabeledGraph gi g = basePredPrinter gi printNode (stdPrintSet printNode) g where
   printNode = prettyNode gi g
 
-basePredPrinter :: Ord x => LabeledGraphI g x -> (x -> String) -> ([x] -> String) -> g -> [String]
+basePredPrinter :: Ord x => LabeledGraphI g x -> (x -> String) -> (Set x -> String) -> g -> [String]
 basePredPrinter gi printNode printSuccessors g = let
-    predsForLabel v l lrep = (printSuccessors (Set.toList (predecessors gi g l v))) ++ " <" ++ lrep ++ " "
+    predsForLabel v l lrep = (printSuccessors (predecessors gi g l v)) ++ " <" ++ lrep ++ " "
     lineForNode v = predsForLabel v Zero "0"
                     ++ predsForLabel v One "1" ++ (printNode v)
-  in fmap lineForNode (Set.toList . (domain gi) $ g)
+  in Prelude.map lineForNode (Set.toList (domain gi g))
 
 prettyBigLabeledGraph :: Ord x => LabeledGraphI g x -> g -> [String]
 prettyBigLabeledGraph gi g = baseBigPrinter gi printNode (stdPrintSet printNode) g where
@@ -114,13 +114,13 @@ prettierBigLabeledGraph :: Ord x => LabeledGraphI g x -> g -> (x -> String) -> (
 prettierBigLabeledGraph gi g printNode printNodeInSet =
   baseBigPrinter gi printNode (stdPrintSet printNodeInSet) g
 
-baseBigPrinter :: Ord x => LabeledGraphI g x -> (x -> String) -> ([x] -> String) -> g -> [String]
+baseBigPrinter :: Ord x => LabeledGraphI g x -> (x -> String) -> (Set x -> String) -> g -> [String]
 baseBigPrinter gi printNode printSuccessors g = let
     succsForLabel v l lrep = " <" ++ lrep ++ " " ++
-                   (printSuccessors (Set.toList (successors gi g l v)))
+                   (printSuccessors (successors gi g l v))
     lineForZero v = printNode v ++ succsForLabel v Zero "0"
     lineForOne  v = printNode v ++ succsForLabel v One "1"
-    d = Set.toList (domain gi g)
+    d = Set.toList $ domain gi g
   in Prelude.map lineForZero d ++ [""] ++ Prelude.map lineForOne d
 
 showLG :: Ord x => LabeledGraphI g x -> g -> String

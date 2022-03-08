@@ -6,7 +6,9 @@ module LiftedGraph (
   combine,
   prettyLiftedGraph,
   LiftingCandidate,
+  prettyCandidate,
   liftableCandidates,
+  weakDominationFilter,
 ) where
 
 import Debug.Trace
@@ -21,6 +23,7 @@ import CommonLGraphTypes
 import LabeledGraph
 import Lifted
 import Tools (strictPairs)
+import Pretty (stdPrintSet)
 
 data Justification x = Base x | Doubleton Int Int
 
@@ -72,46 +75,51 @@ fromLGraph gi g = LiftedGraph intGraph just pb where
   justifyBase i = base (decode coding i)
   pb = prettyNode gi g
 
-type LiftingCandidate x = ((Set.Set x, Set.Set x), (x,x), (Set.Set x, Set.Set x))
+type LiftingCandidate = ((Set.Set Int, Set.Set Int), (Int,Int), (Set.Set Int, Set.Set Int))
 
-extractPair :: LiftingCandidate x -> (x,x)
+prettyCandidate :: LiftingCandidate -> String
+prettyCandidate ((zp,op),(u,v),(zs,os)) =
+    stdPrintSet show zp ++ " 0> " ++ pair ++ "  0> " ++ stdPrintSet show zs ++ "\n"
+      ++ stdPrintSet show op ++ " 1> " ++ pair ++ "  1> " ++ stdPrintSet show os ++ "\n" where
+        pair = "[" ++ show u ++ " " ++ show v ++ "]"
+
+extractPair :: LiftingCandidate -> (Int,Int)
 extractPair (pre,pair,suc) = pair
 
-extractPreds :: Label -> LiftingCandidate x -> Set.Set x
+extractPreds :: Label -> LiftingCandidate -> Set.Set Int
 extractPreds Zero (pre,_,_) = fst pre
 extractPreds One  (pre,_,_) = snd pre
 
-extractSuccs :: Label -> LiftingCandidate x -> Set.Set x
+extractSuccs :: Label -> LiftingCandidate -> Set.Set Int
 extractSuccs Zero (_,_,suc) = fst suc
 extractSuccs One  (_,_,suc) = snd suc 
 
-computeCandidate :: Ord x => LabeledGraphI g x -> g -> (x,x)
-                             -> LiftingCandidate x
-computeCandidate gi g (a,b) =
+computeCandidate :: IntGraph -> (Int,Int) -> LiftingCandidate
+computeCandidate g (a,b) =
   ((pred Zero a `Set.intersection` pred Zero b,
     pred One a `Set.intersection` pred One b),
    (a,b),
    (succ Zero a `Set.union` succ Zero b,
     succ One a `Set.union` succ One b)) where
-      succ = successors gi g
-      pred = predecessors gi g
+      succ = successors intGraphI g
+      pred = predecessors intGraphI g
 
-isVisible :: LiftingCandidate x -> Bool
+isVisible :: LiftingCandidate -> Bool
 isVisible can = not (Set.null $ extractPreds Zero can) && not (Set.null $ extractPreds One can)
 
-liftableCandidates :: Ord x => LabeledGraphI g x -> g -> [LiftingCandidate x]
-liftableCandidates gi g = let
-    domList = Set.toList $ domain gi g
+liftableCandidates :: IntGraph -> [LiftingCandidate]
+liftableCandidates g = let
+    domList = Set.toList $ domain intGraphI g
     alldoubles = strictPairs domList
-    candidates = filter isVisible (map (computeCandidate gi g) alldoubles)
+    candidates = filter isVisible (map (computeCandidate g) alldoubles)
   in candidates
 
-liftablePairs :: Ord x => LabeledGraphI g x -> g -> [(x,x)]
-liftablePairs gi g = map extractPair $ liftableCandidates gi g
+liftablePairs :: IntGraph -> [(Int,Int)]
+liftablePairs g = map extractPair $ liftableCandidates g
 
-liftCandidate :: LiftingCandidate Int -> State (LiftedGraph x) Int
+liftCandidate :: LiftingCandidate -> State (LiftedGraph x) Int
 liftCandidate can = state $ \lg ->
-  assert (can == computeCandidate intGraphI (graph lg) (extractPair can)) $
+  assert (can == computeCandidate (graph lg) (extractPair can)) $
   assert (isVisible can) $
   let
     next = nextNode lg
@@ -119,7 +127,7 @@ liftCandidate can = state $ \lg ->
     addForLabel l g = let
         preds = extractPreds l can
         succs = extractSuccs l can
-        reflexive = [(next,next) | u `Set.member` preds && v `Set.member` preds]
+        reflexive = [(next,next) | u `Set.member` preds || v `Set.member` preds]
         ingoing = [(u,next) | u <- Set.toList preds]
         outgoing = [(next,u) | u <- Set.toList succs]
         withReflexive = lMapAddArcs g l reflexive
@@ -134,7 +142,7 @@ liftCandidate can = state $ \lg ->
 combine :: Int -> Int -> State (LiftedGraph x) Int
 combine x y = do
   lg <- get
-  let can = computeCandidate intGraphI (graph lg) (x,y)
+  let can = computeCandidate (graph lg) (x,y)
   liftCandidate can
 
 prettyLiftedGraph :: LiftedGraph x -> [String]
@@ -144,3 +152,27 @@ prettyLiftedGraph lg = let
       just (Doubleton m n) = "[" ++ show m ++ " " ++ show n ++ "]"
     setPrinter i = show i
   in prettierBigLabeledGraph intGraphI (graph lg) justifiedNodePrinter setPrinter
+
+noFilter :: IntGraph -> LiftingCandidate -> Bool
+noFilter lg can = True
+
+dominationFilter :: IntGraph -> LiftingCandidate -> Bool
+dominationFilter ig can = not $ any dominatesCan (domain intGraphI ig) where
+  pred = predecessors intGraphI ig
+  succ = successors intGraphI ig
+  dominatesCan oldNode =
+    extractSuccs Zero can `Set.isSubsetOf` succ Zero oldNode &&
+    extractSuccs One  can `Set.isSubsetOf` succ One  oldNode &&
+    extractPreds Zero can `Set.isSubsetOf` pred Zero oldNode &&
+    extractPreds One  can `Set.isSubsetOf` pred One  oldNode
+
+weakDominationFilter :: IntGraph -> LiftingCandidate -> Bool
+weakDominationFilter ig can = not $ (any (dominatesCan Zero) dom &&
+                                     any (dominatesCan One) dom) where
+  pred = predecessors intGraphI ig
+  succ = successors intGraphI ig
+  dom = domain intGraphI ig
+  dominatesCan label oldNode =
+    extractPreds Zero can `Set.isSubsetOf` pred Zero oldNode &&
+    extractPreds One  can `Set.isSubsetOf` pred One  oldNode &&
+    extractSuccs label can `Set.isSubsetOf` succ label oldNode 

@@ -8,6 +8,7 @@ module Pretty (
 ) where
 
 import Data.List (intercalate)
+import Data.Set as Set
 
 {- The Pretty class determines how datatypes are pretty printed as parts of graphs. -}
 
@@ -26,7 +27,7 @@ instance Pretty Word where
 instance Pretty String where
   pretty i = i
 
-stdPrintSet :: (a -> String) -> [a] -> String
+stdPrintSet :: (a -> String) -> Set a -> String
 stdPrintSet printSuccessor successors =
   --"{" ++ (intercalate "," (fmap printSuccessor successors)) ++ "}"
-  "{" ++ (intercalate ", " (fmap printSuccessor successors)) ++ "}"
+  "{" ++ (intercalate ", " (fmap printSuccessor (Set.toList successors))) ++ "}"
