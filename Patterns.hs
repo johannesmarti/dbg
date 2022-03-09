@@ -10,7 +10,6 @@ module Patterns (
   caleySchreck,
   caleySchreckSize,
   slowFourConcise, slowFourConciseI,
-  slowFour,
   celtic,
   halfCeltic,
   slowSquare, slowSquareI,
@@ -119,15 +118,11 @@ caleySchreck = 3942849
 caleySchreckSize :: Size
 caleySchreckSize = 4
 
+{- This pattern is construction deterministic -}
 slowFourConcise :: ConciseGraph
 slowFourConcise = 4003476
 slowFourConciseI :: LabeledGraphI ConciseGraph Node
 slowFourConciseI = conciseGraphI 4
-
-s4 Zero = [('a','a'),('a','b'),('b','c'),('b','d'),('c','a'),('d','c')]
-s4 One = [('b','b'),('b','c'),('c','a'),('c','c'),('c','d')]
-slowFour :: LMapGraph Char
-slowFour = mapFromFunction s4
 
 cel Zero = [('a','a'),('a','b'),
             ('b','b'),('b','c'),

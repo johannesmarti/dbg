@@ -3,6 +3,7 @@ module LiftedGraph (
   intGraphI,
   graph,
   fromLGraph,
+  liftCandidate,
   combine,
   prettyLiftedGraph,
   LiftingCandidate,
@@ -10,6 +11,8 @@ module LiftedGraph (
   extractPair,
   liftableCandidates,
   liftablePairs,
+  noFilter,
+  dominationFilter,
   weakDominationFilter,
 ) where
 
@@ -156,6 +159,9 @@ prettyLiftedGraph lg = let
       just (Doubleton m n) = "[" ++ show m ++ " " ++ show n ++ "]"
     setPrinter i = show i
   in prettierBigLabeledGraph intGraphI (graph lg) justifiedNodePrinter setPrinter
+
+instance Show (LiftedGraph x) where
+  show lg = unlines $ prettyLiftedGraph lg
 
 noFilter :: IntGraph -> LiftingCandidate -> Bool
 noFilter lg can = True

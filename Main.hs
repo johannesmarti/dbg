@@ -6,6 +6,7 @@ import System.Environment
 
 import qualified Data.Set as Set
 
+import LiftingSearch
 import LWrappedGraph
 import CaleyGraph
 import Report
@@ -34,9 +35,10 @@ main :: IO ()
 --main = gameEx5
 --main = gameForce5d
 --main = gameSlowSquare
-main = game
+main =  print $ searchLifting slowSquareI slowSquare 11
 
---main = print $ searchUpTo 14 slowSquareI slowSquare
+--main = easyPathReport slowLiftingI slowLifting
+--main = print $ searchUpTo 11 slowSquareI slowSquare
 --main = easyPathReport slowLiftingI slowLifting
 
 --main = cdRange 4 (1024 * 4)

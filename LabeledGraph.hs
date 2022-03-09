@@ -9,6 +9,7 @@ module LabeledGraph (
   interfaceFromSuccPredPretty,
   noPredecessor,
   hasT1,
+  hasBothLoops,
   hasDoubleRefl,
   showLG,
   prettyLabeledGraph,
@@ -68,10 +69,11 @@ noPredecessor gi g node = any (\l -> Prelude.null $ predecessors gi g l node) la
 hasBothPredecessorDom :: Ord x => LabeledGraphI g x -> g -> Set x
 hasBothPredecessorDom gi g = Set.filter (\n -> not (noPredecessor gi g n)) (domain gi g)
 
+hasBothLoops :: Ord x => LabeledGraphI g x -> g -> x -> Bool
+hasBothLoops gi g n = all (\l -> hasArc gi g l (n, n)) labels
+
 hasDoubleRefl :: Ord x => LabeledGraphI g x -> g -> Bool
-hasDoubleRefl gi g = let
-    hasBothLoops n = all (\l -> n `Set.member` predecessors gi g l n) labels
-  in any hasBothLoops (domain gi g)
+hasDoubleRefl gi g = any (hasBothLoops gi g) (domain gi g)
 
 hasT1 :: Ord x => LabeledGraphI g x -> g -> Bool
 hasT1 gi g = let
