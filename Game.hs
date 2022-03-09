@@ -13,7 +13,7 @@ import LiftedGraph
 import Report
 import Patterns
 
-game = gameBiggest
+game = gameEx3
 
 gameEx5 :: IO ()
 gameEx5 = let
@@ -127,6 +127,47 @@ gameBiggest = let
       combine 26 29 -- gives the double self loop!!!!
       return ()
     lifting = execState combiner (fromLGraph biggestI biggest)
+    ig = graph lifting
+    cans = filter (weakDominationFilter ig) (liftableCandidates ig)
+    pairs = map extractPair cans
+  in do
+    putStrLn $ unlines $ prettyLiftedGraph lifting
+    easyWordReport 15 intGraphI ig
+    --mapM_ (putStrLn . prettyCandidate) cans
+    putChar '\n'
+    print pairs
+
+gameUnsound :: IO ()
+gameUnsound = let
+    combiner = do
+      combine 0 3 -- gives 4 for 01
+      combine 1 3 -- gives 5 for 0
+      combine 0 2 -- gives 6 for 1
+      combine 0 5 -- gives 7 for 0
+      combine 2 7 -- gives 8 for 0
+      combine 4 8 -- gives 9 for 0
+      combine 6 9 -- gives double self-loop
+      return ()
+    lifting = execState combiner (fromLGraph unsoundI unsound)
+    ig = graph lifting
+    cans = filter (weakDominationFilter ig) (liftableCandidates ig)
+    pairs = map extractPair cans
+  in do
+    putStrLn $ unlines $ prettyLiftedGraph lifting
+    easyWordReport 15 intGraphI ig
+    --mapM_ (putStrLn . prettyCandidate) cans
+    putChar '\n'
+    print pairs
+
+gameEx3 :: IO ()
+gameEx3 = let
+    combiner = do
+      combine 1 4
+      combine 0 3
+      combine 2 6
+      combine 5 7
+      return ()
+    lifting = execState combiner (fromLGraph ex3I ex3)
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
