@@ -7,6 +7,7 @@ module LiftedGraph (
   prettyLiftedGraph,
   LiftingCandidate,
   prettyCandidate,
+  extractPair,
   liftableCandidates,
   liftablePairs,
   weakDominationFilter,
@@ -144,7 +145,9 @@ combine :: Int -> Int -> State (LiftedGraph x) Int
 combine x y = do
   lg <- get
   let can = computeCandidate (graph lg) (x,y)
-  liftCandidate can
+  if isVisible can
+    then liftCandidate can
+    else error ("Trying to lift invisible candidate " ++ show (extractPair can))
 
 prettyLiftedGraph :: LiftedGraph x -> [String]
 prettyLiftedGraph lg = let

@@ -99,25 +99,37 @@ gameBiggest = let
       combine 0 2
       combine 1 2
       combine 1 3
-      combine 2 4
-      combine 0 1    -- is  9
-      combine 2 3    -- is 10
-      combine 2 9    -- is 11
-      combine 1 10   -- is 12
-      combine 4 11   -- is 13
-      combine 10 12  -- is 14
-      combine 4 14   -- is 15
-      combine 5 13   -- is 16
-      combine 6 15   -- is 17
-      combine 4 6
-      combine 5 7
-      combine 6 8
-      combine 7 16
+
+      combine 2 4 -- gives 8 for 101
+      combine 1 5 -- gives 9 for 011
+      combine 4 9 -- gives 10 for 110
+      combine 1 4 -- gives 11 for 010
+      combine 4 5 -- gives 12 for 100
+      combine 6 12 -- gives 13 for 001
+
+      combine 0 1 -- gives 14 for 10
+      combine 2 3 -- gives 15 for 01
+      combine 2 14 -- gives 16 for 10
+      combine 1 15 -- gives 17 for 01
+      combine 4 16 -- gives 18 for 10
+      combine 5 17 -- gives 19 for 01
+      combine 6 18 -- gives 20 for 10
+      combine 7 19 -- gives 21 for 01
+      combine 5 20 -- gives 22 for 10
+      combine 6 21 -- gives 23 for 01
+      combine 8 22 -- gives 24 for 10
+      combine 9 23 -- gives 25 for 01
+      combine 13 24 -- gives 26 for 10 and 1
+    
+      combine 10 13 -- gives 27 for 0
+      combine 13 27 -- gives 28 for 0
+      combine 25 28 -- gives 29 for 0
+      combine 26 29 -- gives the double self loop!!!!
       return ()
     lifting = execState combiner (fromLGraph biggestI biggest)
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
-    pairs = liftablePairs ig
+    pairs = map extractPair cans
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
     easyWordReport 15 intGraphI ig
