@@ -27,7 +27,7 @@ import LabeledGraph
 import PairGraph
 import AssocGraph
 import MapGraph
-import CaleyGraph hiding (domain)
+import CayleyGraph hiding (domain)
 import Pretty
 
 type LAssocGraph x = PairGraph (AssocGraph x)
@@ -81,8 +81,8 @@ lMapAddArcs lmg label arcs = PairGraph.fromFunction f where
           then MapGraph.addArcs (PairGraph.graphOfLabel lmg l) arcs
           else PairGraph.graphOfLabel lmg l
 
-caleyGraphOfLBitGraph :: Size -> LBitGraph -> CaleyGraph
-caleyGraphOfLBitGraph size bg = rightCaleyGraph size
+caleyGraphOfLBitGraph :: Size -> LBitGraph -> CayleyGraph
+caleyGraphOfLBitGraph size bg = rightCayleyGraph size
                                   (graphOfLabel bg Zero, graphOfLabel bg One)
 
 instance (Ord x, Pretty x) => Show (PairGraph (AssocGraph x)) where

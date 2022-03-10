@@ -25,7 +25,7 @@ import qualified Data.Set as Set
 
 import BitGraph (BitGraph,Node,Size,nodes)
 import PairGraph
-import CaleyGraph
+import CayleyGraph
 import CommonLGraphTypes
 import LabeledGraph
 import Pretty
@@ -124,7 +124,7 @@ noDoubleRefl size word = all notDoubleReflAt [0 .. size-1] where
 notTrivial :: Size -> ConciseGraph -> Bool
 notTrivial size word = hasBothFp size word && noDoubleRefl size word
 
-caleyGraphOfConcise :: Size -> ConciseGraph -> CaleyGraph
+caleyGraphOfConcise :: Size -> ConciseGraph -> CayleyGraph
 caleyGraphOfConcise size = (caleyGraphOfLBitGraph size) . (toLBitGraph size)
 
 pathConditionConcise :: Size -> ConciseGraph -> Bool

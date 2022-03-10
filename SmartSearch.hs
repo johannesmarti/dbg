@@ -12,7 +12,7 @@ import Bitify
 import CommonLGraphTypes
 import BitGraph (Node,Size)
 import LWrappedGraph
-import CaleyGraph hiding (domain)
+import CayleyGraph hiding (domain)
 import DeBruijnGraph
 import LabeledGraph
 import Homo
@@ -36,7 +36,7 @@ instance Monoid Result where
   mempty = NoHomo
 -}
 
-homoAtLevel :: Ord x => Int -> (LMapGraph x,LWrappedGraph LBitGraph Node x,Size,CaleyGraph) -> Bool
+homoAtLevel :: Ord x => Int -> (LMapGraph x,LWrappedGraph LBitGraph Node x,Size,CayleyGraph) -> Bool
 homoAtLevel level (g,wg,s,cg) = let
     dim = level
     deBruijnGraph = dbg dim
@@ -48,7 +48,7 @@ homoAtLevel level (g,wg,s,cg) = let
   in isPossible approx && (not (noHomo (arcConsHomosFromApprox dbgI lMapGraphINotPretty approx) deBruijnGraph g))
 
 {-
-homoAtLevel :: (Ord x, Pretty x) => Int -> (LMapGraph x,LWrappedGraph LBitGraph Node x,Size,CaleyGraph) -> Bool
+homoAtLevel :: (Ord x, Pretty x) => Int -> (LMapGraph x,LWrappedGraph LBitGraph Node x,Size,CayleyGraph) -> Bool
 homoAtLevel level (g,wg,s,cg) = let
     dim = level
     deBruijnGraph = dbg dim
@@ -60,7 +60,7 @@ homoAtLevel level (g,wg,s,cg) = let
   in isPossible approx && (not (noHomo (arcConsHomosFromApprox dbgI bgI approx) deBruijnGraph bg))
 -}
 
-searchLevels :: Ord x => [(LMapGraph x,LWrappedGraph LBitGraph Node x,Size,CaleyGraph)] -> Int -> Int -> Result
+searchLevels :: Ord x => [(LMapGraph x,LWrappedGraph LBitGraph Node x,Size,CayleyGraph)] -> Int -> Int -> Result
 searchLevels candidates cutoff level =
   if level > cutoff
     then UnknownAt cutoff
@@ -76,9 +76,9 @@ searchUpTo cutoff gi graph = let
     subgraphs = map (lMapSubgraphFromLGraph gi graph) subsets
     candidates = filter (\s -> not (isConstructionDeterministic lMapGraphINotPretty s)) subgraphs
     bityCandidates = map (\c -> (c, labeledBitify lMapGraphINotPretty c)) candidates
-    candidatesWithCaley = map (\(g,(wg,s)) -> (g, wg, s, caleyGraphOfLBitGraph s(innerGraph wg))) bityCandidates
+    candidatesWithCayley = map (\(g,(wg,s)) -> (g, wg, s, caleyGraphOfLBitGraph s(innerGraph wg))) bityCandidates
     isGoodCandi (g, wg, s, cg) = pathCondition s cg
-    goodCandidates = filter isGoodCandi candidatesWithCaley
+    goodCandidates = filter isGoodCandi candidatesWithCayley
   in if null goodCandidates
        then NoHomo
        else searchLevels goodCandidates cutoff 1

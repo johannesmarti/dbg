@@ -1,11 +1,11 @@
-module Test.CaleyGraphSpec (
+module Test.CayleyGraphSpec (
    spec
 ) where
 
 import Test.Hspec
 
 import Bitify
-import CaleyGraph
+import CayleyGraph
 import ConciseGraph
 import CommonLGraphTypes
 import LabeledGraph

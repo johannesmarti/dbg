@@ -1,8 +1,8 @@
-module CaleyGraph (
-  CaleyGraph(..),
+module CayleyGraph (
+  CayleyGraph(..),
   domain,
   relationOfWord,
-  rightCaleyGraph,
+  rightCayleyGraph,
   allWords,
   finiteWords,
   weakPathCondition,
@@ -10,7 +10,7 @@ module CaleyGraph (
   limitedPathCondition,
   isPossibleValue,  
   printNodeWithSuccs,
-  prettyCaleyGraph,
+  prettyCayleyGraph,
 ) where
 
 import Control.Exception.Base
@@ -23,25 +23,25 @@ import Debug.Trace
 import Label
 import BitGraph
 
-data CaleyGraph = CaleyGraph {
+data CayleyGraph = CayleyGraph {
   successorMap :: Map.Map BitGraph (BitGraph,BitGraph),
   -- nonWellfoundedElements is the subset of the domain that is hit by infinitely many words over {Zero, One}.
   wellfoundedElements :: Set.Set BitGraph,
   nonWellfoundedElements :: Set.Set BitGraph
 } deriving Show
 
-domain :: CaleyGraph -> Set.Set BitGraph
+domain :: CayleyGraph -> Set.Set BitGraph
 domain = Map.keysSet . successorMap
 
-successor :: CaleyGraph -> BitGraph -> Label -> BitGraph
+successor :: CayleyGraph -> BitGraph -> Label -> BitGraph
 successor cg node label = assert (node `elem` domain cg) $
   case label of
     Zero -> fst $ (successorMap cg Map.! node)
     One  -> snd $ (successorMap cg Map.! node)
 
-rightCaleyGraph :: Size -> (BitGraph,BitGraph) -> CaleyGraph
-rightCaleyGraph size (zeroRel,oneRel) =
-  CaleyGraph succMap wellfounded nonWellfounded where
+rightCayleyGraph :: Size -> (BitGraph,BitGraph) -> CayleyGraph
+rightCayleyGraph size (zeroRel,oneRel) =
+  CayleyGraph succMap wellfounded nonWellfounded where
     keepAdding [] m p = (m,p)
     keepAdding (next:rest) m p = let
       zeroSucc = compose size next zeroRel
@@ -67,10 +67,10 @@ rightCaleyGraph size (zeroRel,oneRel) =
     wellfounded = computeWellfounded [diagonal size] Set.empty
     nonWellfounded = (Map.keysSet succMap) Set.\\ wellfounded
 
-relationOfWord :: Size -> CaleyGraph -> [Label] -> BitGraph
+relationOfWord :: Size -> CayleyGraph -> [Label] -> BitGraph
 relationOfWord size cg word = Prelude.foldl (successor cg) (diagonal size) word
 
-allWords :: Size -> CaleyGraph -> [([Label],BitGraph)]
+allWords :: Size -> CayleyGraph -> [([Label],BitGraph)]
 allWords size cg = generateAllWords [([], diagonal size)] where
   generateAllWords [] = []
   generateAllWords ((nextWord, nextRel):rest) =
@@ -79,7 +79,7 @@ allWords size cg = generateAllWords [([], diagonal size)] where
                  (generateAllWords (rest ++ [(Zero:nextWord,zeroSucc),
                                              (One:nextWord,oneSucc)]))
 
-finiteWords :: Size -> CaleyGraph -> [([Label],BitGraph)]
+finiteWords :: Size -> CayleyGraph -> [([Label],BitGraph)]
 finiteWords size cg = generateFiniteWords [([], diagonal size)] where
   generateFiniteWords [] = []
   generateFiniteWords ((nextWord, nextRel):rest) =
@@ -91,17 +91,17 @@ finiteWords size cg = generateFiniteWords [([], diagonal size)] where
          else generateFiniteWords rest
 
 {- These would probabely be much quicker if we would cache the multiples as
-part of the CaleyGraph -}
-pathCondition :: Size -> CaleyGraph -> Bool
+part of the CayleyGraph -}
+pathCondition :: Size -> CayleyGraph -> Bool
 pathCondition size cg = all (hasUniv size) (nonWellfoundedElements cg) &&
   all (\rel -> rel == diagonal size || hasReflAndUnivInMultiple size rel) (wellfoundedElements cg) &&
   all (\n -> any (\r -> isUniv size r n) (domain cg)) (nodes size)
 
-weakPathCondition :: Size -> CaleyGraph -> Bool
+weakPathCondition :: Size -> CayleyGraph -> Bool
 weakPathCondition size cg = all (hasUniv size) (nonWellfoundedElements cg) &&
   all (\rel -> rel == diagonal size || hasReflAndUnivInMultiple size rel) (wellfoundedElements cg)
 
-limitedPathCondition :: Size -> Int -> CaleyGraph -> Bool
+limitedPathCondition :: Size -> Int -> CayleyGraph -> Bool
 limitedPathCondition size cutoff cg = let
   rels = take cutoff $ map snd $ allWords size cg
   dia = diagonal size
@@ -120,15 +120,15 @@ repeatingInits = map fst . filter isRepeat . splits where
       if i == r then eatThroughRest is rs
                 else False
 
-isPossibleValue :: Size -> CaleyGraph -> [Label] -> Node -> Bool
+isPossibleValue :: Size -> CayleyGraph -> [Label] -> Node -> Bool
 isPossibleValue size cg word node =
   all (\v -> hasBitForArc size (relationOfWord size cg word) (node,v)) (nodes size) &&
   all (\i -> hasBitForArc size (relationOfWord size cg i) (node,node)) (repeatingInits word)
 
-printNodeWithSuccs :: CaleyGraph -> BitGraph -> String
+printNodeWithSuccs :: CayleyGraph -> BitGraph -> String
 printNodeWithSuccs cg node = show node ++ " -> " ++ show succs where
   succs = (successorMap cg) Map.! node
 
-prettyCaleyGraph :: CaleyGraph -> [String]
-prettyCaleyGraph cg = map printNode (Map.toList (successorMap cg)) where
+prettyCayleyGraph :: CayleyGraph -> [String]
+prettyCayleyGraph cg = map printNode (Map.toList (successorMap cg)) where
   printNode (node,succs) = show node ++ " -> " ++ show succs

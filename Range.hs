@@ -7,7 +7,7 @@ module Range (
 ) where
 
 import LWrappedGraph
-import CaleyGraph
+import CayleyGraph
 import ArcCons
 import BitGraph
 import ConciseGraph

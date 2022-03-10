@@ -18,7 +18,7 @@ import LabeledGraph
 import WrappedGraph
 import LWrappedGraph
 import PairGraph
-import CaleyGraph
+import CayleyGraph
 
 bitify :: Ord x => GraphI g x -> g -> (WrappedGraph BitGraph Node x, Size)
 bitify gi g = (wrappedGraph,size) where

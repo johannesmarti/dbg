@@ -14,7 +14,7 @@ import LWrappedGraph
 import qualified WrappedGraph as WG
 import LabeledGraph
 import CommonLGraphTypes
-import CaleyGraph
+import CayleyGraph
 import BitGraph
 import Coding
 import Pretty
@@ -38,7 +38,7 @@ pathReport gi g = let
     nwfs = nonWellfoundedElements cg
     finWords = finiteWords s cg
     (longestFinWord,relOfLongest) = maximumBy (\(a,_) (b,_) -> compare (length a) (length b)) finWords
-  in ["About the Caley graph of the pattern:"] ++
+  in ["About the Cayley graph of the pattern:"] ++
       LabeledGraph.prettyLabeledGraph gi g ++
      ["It has " ++ show (Set.size wfs) ++ " finite and " ++
                    show (Set.size nwfs) ++ " infinite elements.", "",
@@ -46,7 +46,7 @@ pathReport gi g = let
       "It " ++ (if pathCondition s cg then "satisfies" else "does not satisfy") ++ " the path condition.", "",
       --"It's finite words are:", show (map fst finWords),
       "Of which one with maximal length is " ++ show longestFinWord ++ ".", ""] ++
-     ["The full CaleyGraph is:"] ++ prettyCaleyGraph cg ++
+     ["The full CayleyGraph is:"] ++ prettyCayleyGraph cg ++
      ["", "The complete list of its finite elements is:"] ++
       concatMap printRelWithCode (Set.toList wfs) ++
      ["", "The complete list of its infinite elements is:"] ++
@@ -88,7 +88,7 @@ wordReport numWords gi g = let
     finWords = map fst $ finiteWords s cg
     longestFinWord = maximumBy (\a b -> compare (length a) (length b)) finWords
     wordRels = take numWords $ allWords s cg
-  in ["About the Caley graph of the pattern:"] ++
+  in ["About the Cayley graph of the pattern:"] ++
       LabeledGraph.prettyLabeledGraph gi g ++
      ["It has " ++ show (Set.size wfs) ++ " finite and " ++
                    show (Set.size nwfs) ++ " infinite elements.", "",

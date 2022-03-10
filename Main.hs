@@ -8,7 +8,7 @@ import qualified Data.Set as Set
 
 import LiftingSearch
 import LWrappedGraph
-import CaleyGraph
+import CayleyGraph
 import Report
 import AssocGraph
 import ArcCons
@@ -35,7 +35,9 @@ main :: IO ()
 --main = gameEx5
 --main = gameForce5d
 --main = gameSlowSquare
-main =  print $ searchLifting slowSquareI slowSquare 11
+--main =  print $ searchLifting slowSquareI slowSquare 11
+main =  print $ searchUpTo 11 ex5I ex5
+--main =  print $ searchLifting 4 ex5I ex5
 
 --main = easyPathReport slowLiftingI slowLifting
 --main = print $ searchUpTo 11 slowSquareI slowSquare
