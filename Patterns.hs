@@ -7,8 +7,8 @@ module Patterns (
   testPattern,
   strange3,
   strictDet,
-  caleySchreck,
-  caleySchreckSize,
+  cayleySchreck,
+  cayleySchreckSize,
   slowFourConcise, slowFourConciseI,
   celtic,
   halfCeltic,
@@ -113,10 +113,10 @@ sd One = [('a','c'),('a','b'),('b','a'),('b','b'),('c','a'),('c','b')]
 strictDet :: LMapGraph Char
 strictDet = mapFromFunction sd
 
-caleySchreck :: ConciseGraph
-caleySchreck = 3942849
-caleySchreckSize :: Size
-caleySchreckSize = 4
+cayleySchreck :: ConciseGraph
+cayleySchreck = 3942849
+cayleySchreckSize :: Size
+cayleySchreckSize = 4
 
 {- This pattern is construction deterministic -}
 slowFourConcise :: ConciseGraph

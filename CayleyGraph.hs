@@ -18,8 +18,6 @@ import Data.List.Ordered
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 
-import Debug.Trace
-
 import Label
 import BitGraph
 

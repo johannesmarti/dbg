@@ -13,11 +13,11 @@ import Patterns
 
 spec :: Spec
 spec = do
-  describe "caleyCondition" $ do
-    it "caleySchreck is does not have path condition" $
-      (caleyGraphOfConcise caleySchreckSize caleySchreck) `shouldSatisfy` (not . (pathCondition caleySchreckSize))
+  describe "cayleyCondition" $ do
+    it "cayleySchreck is does not have path condition" $
+      (cayleyGraphOfConcise cayleySchreckSize cayleySchreck) `shouldSatisfy` (not . (pathCondition cayleySchreckSize))
     it "4003476 of size 4 has path condition" $
-      (caleyGraphOfConcise 4 4003476) `shouldSatisfy` (pathCondition 4)
+      (cayleyGraphOfConcise 4 4003476) `shouldSatisfy` (pathCondition 4)
     it "noPath of size 4 does not have path condition" $
       noPath `shouldSatisfy` (not . (hasPathCondition noPathI))
     it "notQuitePath of size 4 does not have path condition" $

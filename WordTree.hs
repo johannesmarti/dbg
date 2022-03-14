@@ -1,16 +1,11 @@
 module WordTree (
   WordTree,
   wordTree,
+  allWordsUntil,
+  allWordsWithout,
 ) where
 
-import Control.Exception.Base
-import qualified Data.Map.Strict as Map
-import qualified Data.Set as Set
-
-import Debug.Trace
-
 import Label
-import BitGraph
 
 data WordTreeGenerator d = WordTreeGenerator {
   start :: d,

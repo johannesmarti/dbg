@@ -52,4 +52,4 @@ hasPathCondition :: Ord x => LabeledGraphI g x -> g -> Bool
 hasPathCondition gi g = pathCondition size cg where
   (wg, size) = labeledBitify gi g
   inner = LWrappedGraph.innerGraph wg
-  cg = caleyGraphOfLBitGraph size inner
+  cg = cayleyGraphOfLBitGraph size inner

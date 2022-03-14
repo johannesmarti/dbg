@@ -14,7 +14,7 @@ module ConciseGraph (
   hasBothFp,
   noDoubleRefl,
   notTrivial,
-  caleyGraphOfConcise,
+  cayleyGraphOfConcise,
   pathConditionConcise,
   showem,
 ) where
@@ -124,11 +124,11 @@ noDoubleRefl size word = all notDoubleReflAt [0 .. size-1] where
 notTrivial :: Size -> ConciseGraph -> Bool
 notTrivial size word = hasBothFp size word && noDoubleRefl size word
 
-caleyGraphOfConcise :: Size -> ConciseGraph -> CayleyGraph
-caleyGraphOfConcise size = (caleyGraphOfLBitGraph size) . (toLBitGraph size)
+cayleyGraphOfConcise :: Size -> ConciseGraph -> CayleyGraph
+cayleyGraphOfConcise size = (cayleyGraphOfLBitGraph size) . (toLBitGraph size)
 
 pathConditionConcise :: Size -> ConciseGraph -> Bool
-pathConditionConcise size = (pathCondition size) . (caleyGraphOfConcise size)
+pathConditionConcise size = (pathCondition size) . (cayleyGraphOfConcise size)
 
 showem :: Size -> ConciseGraph -> String
 showem size graph = unlines $ prettyLabeledGraph (conciseGraphI size) graph

@@ -16,7 +16,7 @@ module CommonLGraphTypes (
   lMapApplyBijection, 
   lMapAddNodes,
   lMapAddArcs,
-  caleyGraphOfLBitGraph,
+  cayleyGraphOfLBitGraph,
 ) where
 
 import Data.Set
@@ -81,8 +81,8 @@ lMapAddArcs lmg label arcs = PairGraph.fromFunction f where
           then MapGraph.addArcs (PairGraph.graphOfLabel lmg l) arcs
           else PairGraph.graphOfLabel lmg l
 
-caleyGraphOfLBitGraph :: Size -> LBitGraph -> CayleyGraph
-caleyGraphOfLBitGraph size bg = rightCayleyGraph size
+cayleyGraphOfLBitGraph :: Size -> LBitGraph -> CayleyGraph
+cayleyGraphOfLBitGraph size bg = rightCayleyGraph size
                                   (graphOfLabel bg Zero, graphOfLabel bg One)
 
 instance (Ord x, Pretty x) => Show (PairGraph (AssocGraph x)) where
