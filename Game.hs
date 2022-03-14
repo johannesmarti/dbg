@@ -184,6 +184,9 @@ gameEx3 = let
 gameAlsoBig :: IO ()
 gameAlsoBig = let
     combiner = do
+      combine 1 2
+      combine 2 3
+      combine 1 3
       return ()
     lifting = execState combiner (fromLGraph alsoBigI alsoBig)
     ig = graph lifting
