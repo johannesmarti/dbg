@@ -34,7 +34,8 @@ module Patterns (
   uh, uhI,
   study, studyI,
   growingLifting, growingLiftingI,
-  biggest, biggestI
+  biggest, biggestI,
+  alsoBig, alsoBigI,
 ) where
 
 import qualified Data.Set as Set
@@ -256,7 +257,7 @@ ex4 = mapFromFunction e4
 ex4I :: LabeledGraphI (LMapGraph Char) Char
 ex4I = lMapGraphI
 
-{- It satisfies the path condition and is construction deterministic. -}
+{- It satisfies the path condition and is not construction deterministic. -}
 e5 Zero =
   [("a","a"),("a","a'"),("a","b'"),("a","x"),
    ("a'","b"),("a'","u"),("a'","y"),("a'","y'"),("a'","v"),("a'","x'"),
@@ -274,7 +275,7 @@ ex5 = mapFromFunction e5
 ex5I :: LabeledGraphI (LMapGraph String) String
 ex5I = lMapGraphI
 
-{- It satisfies the path condition and is construction deterministic. -}
+{- It satisfies the path condition and is not construction deterministic. -}
 uhf Zero =
   [("a","a"),("a","c'"),("a","a'"),("a","c''"),("a","c'''"),
    ("c'","b"),
@@ -303,8 +304,13 @@ growingLifting = mapFromFunction sl
 growingLiftingI :: LabeledGraphI (LMapGraph Char) Char
 growingLiftingI = lMapGraphI
 
-{- Here it seems where hard to find a homo -}
+{- This pattern is the pattern such that it has a homo for a maximal dimension among all the patterns of size 4 -}
 biggest :: ConciseGraph
 biggest = 2458141589
 biggestI :: LabeledGraphI ConciseGraph Node
 biggestI = conciseGraphI 4
+
+alsoBig :: ConciseGraph
+alsoBig = 675781230
+alsoBigI :: LabeledGraphI ConciseGraph Node
+alsoBigI = conciseGraphI 4

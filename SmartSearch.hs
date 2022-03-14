@@ -76,7 +76,7 @@ searchUpTo cutoff gi graph = let
     subgraphs = map (lMapSubgraphFromLGraph gi graph) subsets
     candidates = filter (\s -> not (isConstructionDeterministic lMapGraphINotPretty s)) subgraphs
     bityCandidates = map (\c -> (c, labeledBitify lMapGraphINotPretty c)) candidates
-    candidatesWithCayley = map (\(g,(wg,s)) -> (g, wg, s, caleyGraphOfLBitGraph s(innerGraph wg))) bityCandidates
+    candidatesWithCayley = map (\(g,(wg,s)) -> (g, wg, s, cayleyGraphOfLBitGraph s(innerGraph wg))) bityCandidates
     isGoodCandi (g, wg, s, cg) = pathCondition s cg
     goodCandidates = filter isGoodCandi candidatesWithCayley
   in if null goodCandidates
@@ -89,5 +89,5 @@ subPathCondition gi graph = hasT1 gi graph || let
     subsets = Set.toList $ Set.filter (\s -> Set.size s >= 3) $ Set.powerSet dom
     subgraphs = map (lMapSubgraphFromLGraph gi graph) subsets
     bityCandidates = map (\c -> labeledBitify lMapGraphINotPretty c) subgraphs
-    caleys = map (\(wg,s) -> (caleyGraphOfLBitGraph s (innerGraph wg), s)) bityCandidates
-   in any (\(cg, s) -> pathCondition s cg) caleys
+    cayleys = map (\(wg,s) -> (cayleyGraphOfLBitGraph s (innerGraph wg), s)) bityCandidates
+   in any (\(cg, s) -> pathCondition s cg) cayleys

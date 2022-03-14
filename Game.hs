@@ -5,11 +5,14 @@ module Game (
   gameSlowSquare,
   gameDifficult,
   gameBiggest,
+  gameUnsound,
+  gameAlsoBig,
 ) where
 
 import Control.Monad.State.Lazy
 
 import LiftedGraph
+import LiftedGraphReport
 import Report
 import Patterns
 
@@ -174,6 +177,22 @@ gameEx3 = let
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
     easyWordReport 15 intGraphI ig
+    --mapM_ (putStrLn . prettyCandidate) cans
+    putChar '\n'
+    print pairs
+
+gameAlsoBig :: IO ()
+gameAlsoBig = let
+    combiner = do
+      return ()
+    lifting = execState combiner (fromLGraph alsoBigI alsoBig)
+    ig = graph lifting
+    cans = filter (weakDominationFilter ig) (liftableCandidates ig)
+    pairs = map extractPair cans
+  in do
+    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putChar '\n'
+    easyLiftedGraphReport lifting
     --mapM_ (putStrLn . prettyCandidate) cans
     putChar '\n'
     print pairs

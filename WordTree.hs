@@ -1,5 +1,6 @@
 module WordTree (
-  WordTree,
+  WordTreeGenerator(..),
+  WordTree(..),
   wordTree,
   allWordsUntil,
   allWordsWithout,

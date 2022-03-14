@@ -3,6 +3,7 @@ module LiftedGraph (
   intGraphI,
   graph,
   fromLGraph,
+  toLBitGraph,
   liftCandidate,
   combine,
   prettyLiftedGraph,
@@ -23,12 +24,14 @@ import Control.Monad.State.Lazy
 import Data.Map.Strict as Map hiding (filter, map)
 import qualified Data.Set as Set
 
+import BitGraph (Size,fromArcs)
 import Coding hiding (domain)
 import CommonLGraphTypes
 import LabeledGraph
 import Lifted
 import Tools (strictPairs)
 import Pretty (stdPrintSet)
+import PairGraph (fromFunction)
 
 data Justification x = Base x | Doubleton Int Int
 
@@ -69,6 +72,9 @@ topNode lg = case Set.lookupMax (domain intGraphI (graph lg)) of
                Just m  ->  m
                Nothing -> -1
 
+size :: LiftedGraph x -> Int
+size = nextNode
+
 nextNode :: LiftedGraph x -> Int
 nextNode lg = topNode lg + 1
 
@@ -79,6 +85,13 @@ fromLGraph gi g = LiftedGraph intGraph just pb where
   just = fromSet justifyBase (domain intGraphI intGraph)
   justifyBase i = base (decode coding i)
   pb = prettyNode gi g
+
+toLBitGraph :: LiftedGraph x -> (LBitGraph,Size)
+toLBitGraph lg = let
+    s = LiftedGraph.size lg
+    g = graph lg
+  in (PairGraph.fromFunction (\l ->
+       BitGraph.fromArcs s (arcsOfLabel intGraphI g l)), s)
 
 type LiftingCandidate = ((Set.Set Int, Set.Set Int), (Int,Int), (Set.Set Int, Set.Set Int))
 
