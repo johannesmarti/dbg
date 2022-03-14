@@ -196,6 +196,7 @@ gameAlsoBig = let
     putStrLn $ unlines $ prettyLiftedGraph lifting
     putChar '\n'
     easyLiftedGraphReport lifting
-    --mapM_ (putStrLn . prettyCandidate) cans
     putChar '\n'
-    print pairs
+    mapM_ (putStrLn . prettyCanWithArcs) cans
+    --putChar '\n'
+    --print pairs

@@ -2,6 +2,7 @@ module LiftedGraph (
   LiftedGraph,
   intGraphI,
   graph,
+  LiftedGraph.size,
   fromLGraph,
   toLBitGraph,
   liftCandidate,
@@ -9,6 +10,7 @@ module LiftedGraph (
   prettyLiftedGraph,
   LiftingCandidate,
   prettyCandidate,
+  prettyCanWithArcs,
   extractPair,
   liftableCandidates,
   liftablePairs,
@@ -101,6 +103,10 @@ prettyCandidate ((zp,op),(u,v),(zs,os)) =
       ++ stdPrintSet show op ++ " 1> " ++ pair ++ "  1> " ++ stdPrintSet show os ++ "\n" where
         pair = "[" ++ show u ++ " " ++ show v ++ "]"
 
+prettyCanWithArcs :: LiftingCandidate -> String
+prettyCanWithArcs can =
+  show (extractPair can) ++ " " ++ show (labeledArcsOfCandidate can)
+
 extractPair :: LiftingCandidate -> (Int,Int)
 extractPair (pre,pair,suc) = pair
 
@@ -111,6 +117,16 @@ extractPreds One  (pre,_,_) = snd pre
 extractSuccs :: Label -> LiftingCandidate -> Set.Set Int
 extractSuccs Zero (_,_,suc) = fst suc
 extractSuccs One  (_,_,suc) = snd suc 
+
+arcsOfCandidate :: Label -> LiftingCandidate -> [(Int,Int)]
+arcsOfCandidate l can = let
+    preds = Set.toList $ extractPreds l can
+    (u,v) = extractPair can
+  in [(p,u) | p <- preds] ++ [(p,v) | p <- preds]
+
+labeledArcsOfCandidate :: LiftingCandidate -> [(Int,Label,Int)]
+labeledArcsOfCandidate can = concatMap larcs labels where
+  larcs l = [(u,l,v) | (u,v) <- arcsOfCandidate l can]
 
 computeCandidate :: IntGraph -> (Int,Int) -> LiftingCandidate
 computeCandidate g (a,b) =

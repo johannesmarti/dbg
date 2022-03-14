@@ -2,6 +2,7 @@ module WordTree (
   WordTreeGenerator(..),
   WordTree(..),
   wordTree,
+  labelOfWord,
   allWordsUntil,
   allWordsWithout,
 ) where
@@ -25,6 +26,14 @@ wordTree di = worker (start di) where
   worker d = WordTreeNode d
                (worker (appendZero di d))
                (worker (appendOne  di d))
+
+subtreeOfWord :: WordTree d -> [Label] -> WordTree d
+subtreeOfWord wt [] = wt
+subtreeOfWord wt (Zero:rest) = subtreeOfWord (zeroSucc wt) rest
+subtreeOfWord wt (One:rest)  = subtreeOfWord ( oneSucc wt) rest
+
+labelOfWord :: WordTree d -> [Label] -> d
+labelOfWord wt = label . subtreeOfWord wt
 
 -- This function could maybe be made quicker by using Sequence.
 allWordsUntil :: WordTree d -> (d -> Bool) -> [([Label],WordTree d)]
