@@ -8,6 +8,8 @@ module Graph (
   arcs,
   succPredInDom,
   succPredMatch,
+  isReflexive,
+  reflexives,
   showG,
   prettyGraph,
   prettyGraphWithNP,
@@ -92,6 +94,12 @@ succPredMatch gi graph =
  (sameOnDom dom (predecessors gi graph) pred') where
     dom = domain gi graph
     pred' = foldConverse dom (successors gi graph)
+
+isReflexive :: Ord x => GraphI g x -> g -> x -> Bool
+isReflexive gi g node = hasArc gi g (node,node)
+
+reflexives :: Ord x => GraphI g x -> g -> Set x
+reflexives gi g = Set.filter (isReflexive gi g) (domain gi g)
 
 prettyGraph :: Ord x => GraphI g x -> g -> [String]
 prettyGraph gi g = prettyGraphWithNP (prettyNode gi g) gi g

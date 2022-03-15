@@ -13,7 +13,7 @@ module BitGraph (
   totalGraph,
   setArc,
   diagonal,
-  isRefl,
+  --BitGraph.isRefl,
   isUniv,
   isUnivInDom,
   hasUniv,
@@ -154,7 +154,7 @@ multiples size rel = generateMultiples rel (Set.singleton rel) where
          else generateMultiples next (Set.insert next accum)
 
 isReflAndUnivInMultiple :: Size -> BitGraph -> Node -> Bool
-isReflAndUnivInMultiple size graph node = isRefl size graph node &&
+isReflAndUnivInMultiple size graph node = BitGraph.isRefl size graph node &&
   any (\m -> isUniv size m node) (multiples size graph)
 
 hasReflAndUnivInMultiple :: Size -> BitGraph -> Bool
@@ -162,7 +162,7 @@ hasReflAndUnivInMultiple size graph =
   any (isReflAndUnivInMultiple size graph) (nodes size)
 
 isReflAndUnivInMultipleDom :: Size -> [Node] -> BitGraph -> Node -> Bool
-isReflAndUnivInMultipleDom size dom graph node = isRefl size graph node &&
+isReflAndUnivInMultipleDom size dom graph node = BitGraph.isRefl size graph node &&
   any (\m -> isUnivInDom size dom m node) (multiples size graph)
 
 hasReflAndUnivInMultipleDom :: Size -> [Node] -> BitGraph -> Bool
