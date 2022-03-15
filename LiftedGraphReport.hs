@@ -23,7 +23,8 @@ liftedGraphReport lg = let
     --onCycles = firstArcsOnCycles (lbg, s) wt
     onCycles w = Set.fromList $ arcsOnCycles (lbg, s) wt w
 
-    cans = liftableCandidates (graph lg)
+    ig = graph lg
+    cans = filter (weakDominationFilter ig) (liftableCandidates ig)
 
     printRel r = prettyGraph (bitGraphI s) r
     printWordWithRel (w,r) = let
@@ -33,7 +34,8 @@ liftedGraphReport lg = let
         intersectsCycles can = (Set.fromList $ labeledArcsOfCandidate can)
                                  `intersects` arcsOnCycles
       in [show w ++ ":"] ++ printRel (label r) ++
-              [show (Set.toList arcsOnCycles), show (intersectingCans)]
+              [show (pathTreesOfCycles (lbg,s) wt w),
+               show (Set.toList arcsOnCycles), show (intersectingCans)]
   in intercalate [""] (map printWordWithRel wordRelList)
 
 easyLiftedGraphReport :: LiftedGraph x -> IO ()

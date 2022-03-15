@@ -187,10 +187,36 @@ gameAlsoBig = let
       combine 1 2
       combine 2 3
       combine 1 3
+
       combine 0 4
       combine 4 5
       combine 5 6
       combine 3 7
+      combine 0 8
+      combine 4 9
+      combine 8 10
+      combine 6 11
+      combine 7 12
+      combine 6 13
+      combine 10 14
+
+      combine 1 2
+      combine 2 6
+      combine 3 18
+      combine 0 19
+      combine 4 20
+      combine 8 21
+      combine 9 22
+      combine 10 23
+      combine 11 24
+      combine 14 25
+      combine 15 26
+      combine 16 27
+      combine 17 28
+
+      combine 16 29
+      combine 30 31
+
       return ()
     lifting = execState combiner (fromLGraph alsoBigI alsoBig)
     ig = graph lifting
@@ -201,6 +227,7 @@ gameAlsoBig = let
     putChar '\n'
     easyLiftedGraphReport lifting
     putChar '\n'
-    mapM_ (putStrLn . prettyCanWithArcs) cans
+    --mapM_ (\c -> putStrLn (prettyCanWithArcs c) >> putChar '\n') cans
+    --mapM_ (putStrLn . prettyCandidate) cans
     --putChar '\n'
     --print pairs

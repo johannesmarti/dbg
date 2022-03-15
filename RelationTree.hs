@@ -1,6 +1,7 @@
 module RelationTree (
   RelationTree,
   relationTree,
+  pathTreesOfCycles,
   firstArcsOnCycles,
   arcsOnCycles,
 ) where
