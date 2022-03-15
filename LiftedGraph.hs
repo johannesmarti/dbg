@@ -12,6 +12,7 @@ module LiftedGraph (
   prettyCandidate,
   prettyCanWithArcs,
   extractPair,
+  labeledArcsOfCandidate,
   liftableCandidates,
   liftablePairs,
   noFilter,

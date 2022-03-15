@@ -187,6 +187,10 @@ gameAlsoBig = let
       combine 1 2
       combine 2 3
       combine 1 3
+      combine 0 4
+      combine 4 5
+      combine 5 6
+      combine 3 7
       return ()
     lifting = execState combiner (fromLGraph alsoBigI alsoBig)
     ig = graph lifting

@@ -13,14 +13,12 @@ import PairGraph
 import Graph
 import Label
 import CommonLGraphTypes
-import LiftedGraph
 import WordTree
 
 type RelationTree = WordTree BitGraph
 
-relationTree :: LiftedGraph x -> RelationTree
-relationTree lg = wordTree generator where
-  (lbg,s) = toLBitGraph lg
+relationTree :: (LBitGraph, Size) -> RelationTree
+relationTree (lbg, s) = wordTree generator where
   zeroRel = graphOfLabel lbg Zero
   oneRel  = graphOfLabel lbg One
   generator = WordTreeGenerator (diagonal s)
@@ -52,7 +50,7 @@ extractNode (There n) = n
 extractNode (Step n _ _) = n
 
 firstArcs :: PathTree -> [(Int,Label,Int)]
-firstArcs (There _) = error "can not get first arcs of 0 path tree"
+firstArcs (There _) = []
 firstArcs (Step s l succs) = [(s,l,extractNode t) | t <- succs]
 
 allArcs :: PathTree -> [(Int,Label,Int)]
