@@ -36,6 +36,7 @@ module Patterns (
   growingLifting, growingLiftingI,
   biggest, biggestI,
   alsoBig, alsoBigI,
+  big5, big5I,
 ) where
 
 import qualified Data.Set as Set
@@ -314,3 +315,8 @@ alsoBig :: ConciseGraph
 alsoBig = 675781230
 alsoBigI :: LabeledGraphI ConciseGraph Node
 alsoBigI = conciseGraphI 4
+
+big5 :: ConciseGraph
+big5 = 846900323733667
+big5I :: LabeledGraphI ConciseGraph Node
+big5I = conciseGraphI 5
