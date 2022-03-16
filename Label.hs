@@ -16,5 +16,5 @@ labels :: Set Label
 labels = fromList [Zero, One]
 
 labelToSymbol :: Label -> String
-labelToSymbol Zero = "Z"
-labelToSymbol One  = "O"
+labelToSymbol Zero = "0"
+labelToSymbol One  = "1"
