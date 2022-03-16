@@ -231,3 +231,22 @@ gameAlsoBig = let
     --mapM_ (putStrLn . prettyCandidate) cans
     --putChar '\n'
     --print pairs
+
+gameAlsoBig :: IO ()
+gameAlsoBig = let
+    combiner = do
+
+      return ()
+    lifting = execState combiner (fromLGraph alsoBigI alsoBig)
+    ig = graph lifting
+    cans = filter (weakDominationFilter ig) (liftableCandidates ig)
+    pairs = map extractPair cans
+  in do
+    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putChar '\n'
+    easyLiftedGraphReport lifting
+    putChar '\n'
+    --mapM_ (\c -> putStrLn (prettyCanWithArcs c) >> putChar '\n') cans
+    --mapM_ (putStrLn . prettyCandidate) cans
+    --putChar '\n'
+    --print pairs

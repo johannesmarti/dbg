@@ -2,6 +2,7 @@ module Label (
   Label(..),
   Arc(..),
   labels,
+  labelToSymbol,
 ) where
 
 import Data.Set
@@ -14,3 +15,6 @@ type Arc x = (x,Label,x)
 labels :: Set Label
 labels = fromList [Zero, One]
 
+labelToSymbol :: Label -> String
+labelToSymbol Zero = "Z"
+labelToSymbol One  = "O"

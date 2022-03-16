@@ -1,9 +1,11 @@
 module RelationTree (
   RelationTree,
   relationTree,
-  pathTreesOfCycles,
-  firstArcsOnCycles,
-  arcsOnCycles,
+  PathTree(..),
+  extractNode,
+  pathTreesOfMCycles,
+  firstArcsOnMCycles,
+  arcsOnMCycles,
 ) where
 
 import Control.Exception.Base
@@ -26,21 +28,21 @@ relationTree (lbg, s) = wordTree generator where
                 (\g -> compose s g zeroRel)
                 (\g -> compose s g oneRel)
 
-pathTreesOfCycles :: (LBitGraph, Size) -> RelationTree -> [Label] -> [PathTree]
-pathTreesOfCycles pair wt word = wts where
+pathTreesOfMCycles :: (LBitGraph, Size) -> RelationTree -> [Label] -> [PathTree]
+pathTreesOfMCycles pair wt word = wts where
   s = snd pair
   wordRel = labelOfWord wt word
-  refls = Set.toList $ reflexives (bitGraphI s) wordRel
+  refls = Set.toList $ reflexivesUnivInMultiple s wordRel
   cycleTreeOfRefl r = pathTree pair wt word r r
   wts = map cycleTreeOfRefl refls
 
-firstArcsOnCycles :: (LBitGraph, Size) -> RelationTree -> [Label] -> [(Int,Label,Int)]
-firstArcsOnCycles pair wt word =
-  concatMap firstArcs (pathTreesOfCycles pair wt word)
+firstArcsOnMCycles :: (LBitGraph, Size) -> RelationTree -> [Label] -> [(Int,Label,Int)]
+firstArcsOnMCycles pair wt word =
+  concatMap firstArcs (pathTreesOfMCycles pair wt word)
 
-arcsOnCycles :: (LBitGraph, Size) -> RelationTree -> [Label] -> [(Int,Label,Int)]
-arcsOnCycles pair wt word =
-  concatMap allArcs (pathTreesOfCycles pair wt word)
+arcsOnMCycles :: (LBitGraph, Size) -> RelationTree -> [Label] -> [(Int,Label,Int)]
+arcsOnMCycles pair wt word =
+  concatMap allArcs (pathTreesOfMCycles pair wt word)
 
 -- Doing all of this with sets might be better!
 data PathTree = There Int | Step Int Label [PathTree]

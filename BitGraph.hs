@@ -20,6 +20,7 @@ module BitGraph (
   hasUnivInDom,
   hasNoRefl,
   hasNoReflInDom,
+  reflexivesUnivInMultiple,
   hasReflAndUnivInMultiple,
   hasReflAndUnivInMultipleDom,
   compose,
@@ -156,6 +157,12 @@ multiples size rel = generateMultiples rel (Set.singleton rel) where
 isReflAndUnivInMultiple :: Size -> BitGraph -> Node -> Bool
 isReflAndUnivInMultiple size graph node = BitGraph.isRefl size graph node &&
   any (\m -> isUniv size m node) (multiples size graph)
+
+reflexivesUnivInMultiple :: Size -> BitGraph -> Set.Set Node
+reflexivesUnivInMultiple size graph = let
+    mults = multiples size graph
+    isGood node = BitGraph.isRefl size graph node && any (\m -> isUniv size m node) mults
+  in Set.filter isGood (dom size graph)
 
 hasReflAndUnivInMultiple :: Size -> BitGraph -> Bool
 hasReflAndUnivInMultiple size graph = 
