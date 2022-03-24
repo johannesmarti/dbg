@@ -8,18 +8,19 @@ module Game (
   gameUnsound,
   gameAlsoBig,
   gameBig5,
-  gameAlsoBigAgain,
+  gameTentje,
 ) where
 
 import Control.Monad.State.Lazy
 
+import ConciseGraph
 import LiftedGraph
 import LiftedGraphReport
 import Report
 import Patterns
 
 --game = gameBig5
-game = gameAlsoBigAgain
+game = gameTentje
 
 gameEx5 :: IO ()
 gameEx5 = let
@@ -261,52 +262,48 @@ gameBig5 = let
     --putChar '\n'
     print pairs
 
-gameAlsoBigAgain :: IO ()
-gameAlsoBigAgain = let
+gameTentje :: IO ()
+gameTentje = let
     combiner = do
-      combine 1 2
-      combine 2 3
+      combine 0 3
       combine 1 3
-      -- forced until here
+      combine 1 2 -- is forced
 
-      combine 0 4
+      combine 2 3
+      combine 0 7
+      combine 0 1
+      combine 2 4
       combine 4 5
-      combine 1 5
-      combine 2 6
-      combine 0 9
-      combine 6 7
-      combine 7 10
-      combine 8 11
-      combine 9 12
-      combine 0 8
-      combine 4 10
-      combine 10 12
-      combine 7 16
-      combine 16 17
-      combine 5 18
-      combine 9 21
-      combine 6 14
-      combine 17 18
-      combine 7 23
+      combine 3 6
+      combine 4 9
+      combine 1 8
+      combine 5 12
+      combine 6 11
+      combine 2 13
+      combine 4 15
+      combine 13 14
+      combine 5 19
+      combine 15 17
+      combine 8 21
 
-      combine 1 2
-      combine 4 6
-      combine 5 26
-      combine 0 27
-      combine 7 28
-      combine 28 29
-      combine 6 30
-      combine 7 31
-      combine 19 32
-      combine 23 33
-      combine 33 34
-      combine 24 36
-      combine 35 36
-      combine 37 38
-      combine 13 39
+      combine 0 2
+      combine 1 4
+      combine 3 23
+      combine 4 25
+      combine 5 24
+      combine 6 27
+      combine 7 26
+      combine 12 28
+      combine 8 29
+      combine 9 30
+      combine 10 31
+      combine 11 32
+      combine 16 34
+      combine 18 35
+      combine 33 36
 
       return ()
-    lifting = execState combiner (fromLGraph alsoBigI alsoBig)
+    lifting = execState combiner (fromLGraph (conciseGraphI 4) 3372361817)
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans

@@ -37,10 +37,10 @@ main :: IO ()
 --main = gameSlowSquare
 --main =  print $ searchLifting slowSquareI slowSquare 11
 --main =  print $ searchUpTo 11 unsoundI unsound
-main = game
 --main =  print $ searchLifting 4 ex5I ex5
+main = game
 
---main = easyPathReport big5I big5
+--main = easyWordReport 15 force3dI force3d
 --main = easyPathReport unsoundI unsound
 --main = print $ searchUpTo 11 slowSquareI slowSquare
 --main = easyPathReport slowLiftingI slowLifting
