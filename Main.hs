@@ -35,11 +35,14 @@ main :: IO ()
 --main = gameEx5
 --main = gameForce5d
 --main = gameSlowSquare
+--main = gameBiggestAgain
 --main =  print $ searchLifting slowSquareI slowSquare 11
 --main =  print $ searchUpTo 11 unsoundI unsound
-main = game
+--main = putStrLn . unlines $ prettyBigLabeledGraph force3dI force3d
+--main = putStrLn . unlines $ prettyBigLabeledGraph biggestI biggest
 --main =  print $ searchLifting 4 ex5I ex5
 
+main = easyPathReport notQuitePathI notQuitePath
 --main = easyPathReport big5I big5
 --main = easyPathReport unsoundI unsound
 --main = print $ searchUpTo 11 slowSquareI slowSquare
