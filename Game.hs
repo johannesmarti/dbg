@@ -269,7 +269,7 @@ gameTentje = let
       combine 1 3
       combine 1 2 -- is forced
 
-      combine 2 3
+      combine 2 3 -- is 7
       combine 0 7
       combine 0 1
       combine 2 4
@@ -282,7 +282,7 @@ gameTentje = let
       combine 2 13
       combine 4 15
       combine 13 14
-      combine 5 19
+      combine 5 19 -- is 20
       combine 15 17
       combine 8 21
 
@@ -293,14 +293,14 @@ gameTentje = let
       combine 5 24
       combine 6 27
       combine 7 26
-      combine 12 28
+      combine 12 28 -- is 30
       combine 8 29
       combine 9 30
       combine 10 31
       combine 11 32
       combine 16 34
       combine 18 35
-      combine 33 36
+      combine 33 36 -- is 37
 
       return ()
     lifting = execState combiner (fromLGraph (conciseGraphI 4) 3372361817)
