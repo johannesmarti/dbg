@@ -8,17 +8,19 @@ module Game (
   gameUnsound,
   gameAlsoBig,
   gameBig5,
-  gameBiggestAgain,
+  gameTentje,
+  gameNotQuitePath,
 ) where
 
 import Control.Monad.State.Lazy
 
+import ConciseGraph
 import LiftedGraph
 import LiftedGraphReport
 import Report
 import Patterns
 
-game = gameBiggestAgain
+game = gameNotQuitePath
 
 gameEx5 :: IO ()
 gameEx5 = let
@@ -260,38 +262,48 @@ gameBig5 = let
     --putChar '\n'
     print pairs
 
-gameBiggestAgain :: IO ()
-gameBiggestAgain = let
+gameTentje :: IO ()
+gameTentje = let
     combiner = do
       combine 0 3
-      combine 0 2
-      combine 1 2
       combine 1 3
-      combine 2 3
+      combine 1 2 -- is forced
+
+      combine 2 3 -- is 7
+      combine 0 7
       combine 0 1
-
-      combine 4 8
+      combine 2 4
       combine 4 5
-      combine 5 9
-      combine 5 6
-      combine 6 7
-      combine 4 6
-      combine 8 9
-      combine 7 8
-      combine 5 7
-      combine 4 7
-      combine 5 8
-      combine 6 8
-      combine 6 9
-      combine 7 9
+      combine 3 6
+      combine 4 9
+      combine 1 8
+      combine 5 12
+      combine 6 11
+      combine 2 13
+      combine 4 15
+      combine 13 14
+      combine 5 19 -- is 20
+      combine 15 17
+      combine 8 21
 
-
-      --combine 4 9
-
-    
+      combine 0 2
+      combine 1 4
+      combine 3 23
+      combine 4 25
+      combine 5 24
+      combine 6 27
+      combine 7 26
+      combine 12 28 -- is 30
+      combine 8 29
+      combine 9 30
+      combine 10 31
+      combine 11 32
+      combine 16 34
+      combine 18 35
+      combine 33 36 -- is 37
 
       return ()
-    lifting = execState combiner (fromLGraph biggestI biggest)
+    lifting = execState combiner (fromLGraph (conciseGraphI 4) 3372361817)
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
@@ -303,4 +315,76 @@ gameBiggestAgain = let
     --mapM_ (\c -> putStrLn (prettyCanWithArcs c) >> putChar '\n') cans
     --mapM_ (putStrLn . prettyCandidate) cans
     --putChar '\n'
+    print pairs
+
+gameNotQuitePath :: IO ()
+gameNotQuitePath = let
+    combiner = do
+      combine 2 3 -- 4
+      combine 0 1
+      combine 1 3
+      combine 1 2
+      combine 0 2
+      combine 0 3 -- 9
+
+      combine 0 4 -- 10
+      combine 0 5
+      combine 1 4
+      combine 2 5
+      combine 2 6
+      combine 2 9
+      combine 0 6
+      combine 0 7
+      combine 3 5
+      combine 3 7
+      combine 3 8
+      combine 0 6
+      combine 1 8
+      combine 1 9
+      combine 4 5
+      combine 4 6
+      combine 4 7
+      combine 4 8
+      combine 4 9
+      combine 5 6
+      combine 5 7
+      combine 5 8
+      combine 5 9
+      combine 6 7
+      combine 6 8
+      combine 6 9
+      combine 7 8
+      combine 7 9
+      combine 8 9 -- 38
+
+      combine 34 36 -- 39
+      combine 0 14
+      combine 0 19
+      combine 0 25
+      combine 2 21
+      combine 0 26
+      combine 0 33
+      combine 4 14
+      combine 4 19
+      combine 4 20
+      combine 4 21
+      combine 4 17
+      combine 28 33
+
+      return ()
+    lifting = execState combiner (fromLGraph notQuitePathI notQuitePath)
+    ig = graph lifting
+    allCans = liftableCandidates ig
+    cans = filter (weakDominationFilter ig) allCans
+    pairs = map extractPair cans
+  in do
+    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putChar '\n'
+    --easyLiftedGraphReport lifting
+    --putChar '\n'
+    --mapM_ (\c -> putStrLn (prettyCanWithArcs c) >> putChar '\n') cans
+    --mapM_ (putStrLn . prettyCandidate) cans
+    --putChar '\n'
+    print (map extractPair allCans)
+    putChar '\n'
     print pairs
