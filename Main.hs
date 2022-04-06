@@ -46,6 +46,7 @@ main :: IO ()
 main = game
 --main = rangeCD
 --main = easyPathReport notQuitePathI notQuitePath
+--main = easyWordReport 3 force5dI force5d
 --main = easyPathReport big5I big5
 --main = easyWordReport 15 force3dI force3d
 --main = easyPathReport unsoundI unsound

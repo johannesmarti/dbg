@@ -12,6 +12,7 @@ module BitGraph (
   nullWord,
   totalGraph,
   setArc,
+  delArc,
   diagonal,
   --BitGraph.isRefl,
   isUniv,
@@ -87,6 +88,13 @@ setArc size bitset (from, to) = assert (isValidBitset size bitset) $
                                 assert (isNode size to) $ let
   index = from * size + to
     in setBit bitset index
+
+delArc :: Size -> BitGraph -> (Node,Node) -> BitGraph
+delArc size bitset (from, to) = assert (isValidBitset size bitset) $
+                                assert (isNode size from) $
+                                assert (isNode size to) $ let
+  index = from * size + to
+    in clearBit bitset index
 
 succsAsList :: Size -> BitGraph -> Node -> [Node]
 succsAsList size bitset node = assert (isNode size node) $

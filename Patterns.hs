@@ -26,7 +26,9 @@ module Patterns (
   zoComp, zoCompI,
   ex1, ex1I,
   force4d, force4dI,
+  force4d',
   force5d, force5dI,
+  force5d',
   ex2, ex2I,
   ex3, ex3I,
   ex4, ex4I,
@@ -46,6 +48,7 @@ import LabeledGraph
 import Pretty
 import BitGraph
 import ConciseGraph
+import qualified PairGraph
 
 trap Zero = [('a','a'),('a','c'),('c','b'),('c','a')]
 trap One = [('b','b'),('b','c'),('c','a'),('a','c')]
@@ -228,11 +231,23 @@ force4d = 201822290
 force4dI :: LabeledGraphI ConciseGraph Node
 force4dI = conciseGraphI 4
 
+force4d' :: ConciseGraph
+force4d' = ConciseGraph.fromLBitGraph 4 (PairGraph.fromFunction fct) where
+  fct Zero = PairGraph.graphOfLabel pairGraph Zero
+  fct One  = BitGraph.delArc 4 (PairGraph.graphOfLabel pairGraph One) (2,2)
+  pairGraph = ConciseGraph.toLBitGraph 4 force4d
+
 {- Just some pattern with a homo at 5. -}
 force5d :: ConciseGraph
 force5d = 201822534
 force5dI :: LabeledGraphI ConciseGraph Node
 force5dI = conciseGraphI 4
+
+force5d' :: ConciseGraph
+force5d' = ConciseGraph.fromLBitGraph 4 (PairGraph.fromFunction fct) where
+  fct Zero = PairGraph.graphOfLabel pairGraph Zero
+  fct One  = BitGraph.delArc 4 (BitGraph.delArc 4 (PairGraph.graphOfLabel pairGraph One) (2,2)) (2,2)
+  pairGraph = ConciseGraph.toLBitGraph 4 force5d
 
 {- another random example -}
 e2 Zero = [('a','a'),('a','o'),('a','x'),('a','z'),('o','u'),('x','v'),('x','i'),('z','b'),('u','y'),('u','v')]

@@ -2,6 +2,7 @@ module Game (
   game,
   gameEx5,
   gameForce5d,
+  gameForce4d,
   gameSlowSquare,
   gameDifficult,
   gameBiggest,
@@ -20,7 +21,7 @@ import LiftedGraphReport
 import Report
 import Patterns
 
-game = gameNotQuitePath
+game = gameForce5d
 
 gameEx5 :: IO ()
 gameEx5 = let
@@ -47,12 +48,42 @@ gameForce5d = let
       combine 0 3
       combine 4 6
       combine 5 7
-    lifting = execState combiner (fromLGraph force5dI force5d)
+    lifting = execState combiner (fromLGraph force5dI force5d')
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
-    mapM_ (putStrLn . prettyCandidate) cans
+    --mapM_ (putStrLn . prettyCandidate) cans
+
+gameForce4d :: IO ()
+gameForce4d = let
+    combiner = do
+      combine 0 2
+      combine 0 3
+      --combine 0 1
+      --combine 1 3
+      --combine 2 3
+
+      combine 1 5
+      combine 4 6
+
+      return ()
+    lifting = execState combiner (fromLGraph force4dI force4d')
+    ig = graph lifting
+    allCans = liftableCandidates ig
+    cans = filter (weakDominationFilter ig) allCans
+    pairs = map extractPair cans
+  in do
+    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putChar '\n'
+    easyLiftedGraphReport lifting
+    putChar '\n'
+    --mapM_ (\c -> putStrLn (prettyCanWithArcs c) >> putChar '\n') cans
+    --mapM_ (putStrLn . prettyCandidate) cans
+    --putChar '\n'
+    print (map extractPair allCans)
+    putChar '\n'
+    print pairs
 
 gameSlowSquare :: IO ()
 gameSlowSquare = let
