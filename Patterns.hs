@@ -39,6 +39,10 @@ module Patterns (
   biggest, biggestI,
   alsoBig, alsoBigI,
   big5, big5I,
+  force6d, force6dI,
+  force7d, force7dI,
+  force8d, force8dI,
+  force9d, force9dI,
 ) where
 
 import qualified Data.Set as Set
@@ -335,3 +339,24 @@ big5 :: ConciseGraph
 big5 = 846900323733667
 big5I :: LabeledGraphI ConciseGraph Node
 big5I = conciseGraphI 5
+
+force6d :: ConciseGraph
+force6d = 3936965
+force6dI :: LabeledGraphI ConciseGraph Node
+force6dI = conciseGraphI 4
+
+force7d :: ConciseGraph
+force7d = 3937932
+force7dI :: LabeledGraphI ConciseGraph Node
+force7dI = conciseGraphI 4
+
+force8d :: ConciseGraph
+force8d = 201822534
+force8dI :: LabeledGraphI ConciseGraph Node
+force8dI = conciseGraphI 4
+
+force9d :: ConciseGraph
+force9d = 201822534
+force9dI :: LabeledGraphI ConciseGraph Node
+force9dI = conciseGraphI 4
+

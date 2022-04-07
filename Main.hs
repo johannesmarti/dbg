@@ -43,7 +43,8 @@ main :: IO ()
 --main =  print $ searchLifting 4 ex5I ex5
 --main = game
 
-main = game
+--main = game
+main = forceN
 --main = rangeCD
 --main = easyPathReport notQuitePathI notQuitePath
 --main = easyWordReport 3 force5dI force5d

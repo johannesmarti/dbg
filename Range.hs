@@ -3,8 +3,11 @@ module Range (
   findDRange,
   mainRange,
   cdRange,
+  forceN,
   pathRange,
 ) where
+
+import System.Environment 
 
 import LWrappedGraph
 import CayleyGraph
@@ -48,25 +51,42 @@ cdRange size factor = do
   let cd = Prelude.filter (not . (isConstructionDeterministic (conciseGraphI size))) bitmaps
   putStrLn ((show $ length cd) ++ " of " ++ show b)
 
+forceN :: IO ()
+forceN = do
+  args <- getArgs
+  let n = read (head args)
+  let start = 0
+  let end = (ConciseGraph.totalGraph 4)
+  let bitmaps = Prelude.filter (notTrivial 4) [start .. end]
+  let filtered = Prelude.filter (\g -> SS.searchUpTo (n - 1) (conciseGraphI 4) g == UnknownAt (n - 1)) bitmaps
+  let mapped = Prelude.map (\g -> (g, SS.searchUpTo n (conciseGraphI 4) g)) filtered
+  let moreFiltered = Prelude.filter (\(g,r) -> r == HomoAt n) mapped
+  let printer (g,r) = (putStrLn ((show g) ++ ":")) >> (putStrLn (show r))
+  mapM_ printer (take 5 moreFiltered)
+
 mainRange :: IO ()
 mainRange = do
-  let factor = 256 * 8 * 4 
+  --let factor = 256 * 8 * 4 
+  let factor = 256
   let step = (ConciseGraph.totalGraph 4) `div`  factor
   --let start = 5 * (ConciseGraph.totalGraph 4) `div` 8
-  let start = 123 * 8 * 4 * step
+  --let start = 123 * 8 * 4 * step
+  let start = 0
   let end = min (start + step) (ConciseGraph.totalGraph 4)
-  let bitmaps = Prelude.filter (notTrivial 4) [start .. 2063974805]
+  let bitmaps = Prelude.filter (notTrivial 4) [start .. start + step]
   --let list = Prelude.filter (\g -> SS.searchUpTo 3 9 g == HomoAt 3) bitmaps
   --let list = Prelude.filter (\g -> SS.searchUpTo (conciseGraphI 3) 6 g == HomoAt 3) bitmaps
   --let list = Prelude.filter (\g -> SS.searchUpTo 4 6 g == HomoAt 6) bitmaps
-  --let filtered = Prelude.filter (\g -> SS.searchUpTo 4 (conciseGraphI 4) g == UnknownAt 4) bitmaps
+  let filtered = Prelude.filter (\g -> SS.searchUpTo 5 (conciseGraphI 4) g == UnknownAt 5) bitmaps
   --let moreFiltered = Prelude.filter (\g -> searchLifting 3 (conciseGraphI 4) g == UnknownAt 3) filtered
-  let filtered = Prelude.filter (\g -> SS.searchUpTo 2 (conciseGraphI 4) g == UnknownAt 2) bitmaps
-  let evenMoreFiltered = Prelude.filter (\g -> searchLifting 6 (conciseGraphI 4) g == UnknownAt 6) filtered
-  let postFilter = Prelude.map (\g -> (g,SS.searchUpTo 11 (conciseGraphI 4) g)) evenMoreFiltered
+  let mapped = Prelude.map (\g -> (g, SS.searchUpTo 6 (conciseGraphI 4) g)) filtered
+  let moreFiltered = Prelude.filter (\(g,r) -> r == HomoAt 6) mapped
+  --let moreFiltered = mapped
+  --let evenMoreFiltered = Prelude.filter (\g -> searchLifting 6 (conciseGraphI 4) g == UnknownAt 6) filtered
+  --let postFilter = Prelude.map (\g -> (g,SS.searchUpTo 11 (conciseGraphI 4) g)) evenMoreFiltered
   let printer (g,r) = (putStrLn ((show g) ++ ":")) >> (putStrLn (show r))
-  mapM_ printer postFilter
-  putStrLn (show (Prelude.filter (\p -> snd p == UnknownAt 11) postFilter))
+  mapM_ printer (take 10 moreFiltered)
+  --putStrLn (show (Prelude.filter (\p -> snd p == UnknownAt 11) postFilter))
 
 pathRange :: IO ()
 pathRange = do
