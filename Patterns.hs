@@ -351,12 +351,11 @@ force7dI :: LabeledGraphI ConciseGraph Node
 force7dI = conciseGraphI 4
 
 force8d :: ConciseGraph
-force8d = 201822534
+force8d = 4019848
 force8dI :: LabeledGraphI ConciseGraph Node
 force8dI = conciseGraphI 4
 
 force9d :: ConciseGraph
-force9d = 201822534
+force9d = 4019736
 force9dI :: LabeledGraphI ConciseGraph Node
 force9dI = conciseGraphI 4
-
