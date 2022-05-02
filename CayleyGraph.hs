@@ -20,6 +20,7 @@ import qualified Data.Set as Set
 
 import Label
 import BitGraph
+import Word
 
 data CayleyGraph = CayleyGraph {
   successorMap :: Map.Map BitGraph (BitGraph,BitGraph),
@@ -105,18 +106,6 @@ limitedPathCondition size cutoff cg = let
   dia = diagonal size
   isOk rel = rel == dia || hasReflAndUnivInMultiple size rel
     in all isOk rels
-
-splits :: [a] -> [([a],[a])]
-splits xx = zipWith splitAt [1..(length xx)] (repeat xx)
-
-repeatingInits :: Eq a => [a] -> [[a]]
-repeatingInits = map fst . filter isRepeat . splits where
-  isRepeat (initial, rest) = eatThroughRest initial rest where
-    eatThroughRest [] r = eatThroughRest initial r
-    eatThroughRest i [] = True
-    eatThroughRest (i:is) (r:rs) =
-      if i == r then eatThroughRest is rs
-                else False
 
 isPossibleValue :: Size -> CayleyGraph -> [Label] -> Node -> Bool
 isPossibleValue size cg word node =

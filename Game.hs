@@ -3,6 +3,8 @@ module Game (
   gameEx5,
   gameForce5d,
   gameForce4d,
+  gameForce6d,
+  gameForce7d,
   gameSlowSquare,
   gameDifficult,
   gameBiggest,
@@ -21,7 +23,7 @@ import LiftedGraphReport
 import Report
 import Patterns
 
-game = gameForce5d
+game = gameForce7d
 
 gameEx5 :: IO ()
 gameEx5 = let
@@ -413,6 +415,62 @@ gameNotQuitePath = let
     putChar '\n'
     --easyLiftedGraphReport lifting
     --putChar '\n'
+    --mapM_ (\c -> putStrLn (prettyCanWithArcs c) >> putChar '\n') cans
+    --mapM_ (putStrLn . prettyCandidate) cans
+    --putChar '\n'
+    print (map extractPair allCans)
+    putChar '\n'
+    print pairs
+
+gameForce6d :: IO ()
+gameForce6d = let
+    combiner = do
+      combine 2 3
+      combine 0 1
+      combine 0 2
+
+      return ()
+    lifting = execState combiner (fromLGraph force6dI force6d)
+    ig = graph lifting
+    allCans = liftableCandidates ig
+    cans = filter (weakDominationFilter ig) allCans
+    pairs = map extractPair cans
+  in do
+    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putChar '\n'
+    easyLiftedGraphReport lifting
+    putChar '\n'
+    --easyLiftedGraphReport lifting
+    --mapM_ (\c -> putStrLn (prettyCanWithArcs c) >> putChar '\n') cans
+    --mapM_ (putStrLn . prettyCandidate) cans
+    --putChar '\n'
+    print (map extractPair allCans)
+    putChar '\n'
+    print pairs
+
+gameForce7d :: IO ()
+gameForce7d = let
+    combiner = do
+      combine 2 3
+      combine 0 1
+      combine 1 2
+      combine 3 6
+      combine 0 7
+      combine 4 8
+      combine 5 9
+
+      return ()
+    lifting = execState combiner (fromLGraph force7dI force7d)
+    ig = graph lifting
+    allCans = liftableCandidates ig
+    cans = filter (weakDominationFilter ig) allCans
+    pairs = map extractPair cans
+  in do
+    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putChar '\n'
+    easyLiftedGraphReport lifting
+    putChar '\n'
+    --easyLiftedGraphReport lifting
     --mapM_ (\c -> putStrLn (prettyCanWithArcs c) >> putChar '\n') cans
     --mapM_ (putStrLn . prettyCandidate) cans
     --putChar '\n'
