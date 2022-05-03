@@ -47,7 +47,7 @@ doubleton' a b = assert (a < b) $ Doubleton a b
 doubleton :: Int -> Int -> Justification x
 doubleton a b = case compare a b of
   LT -> doubleton' a b
-  EQ -> error "Can not create doubleton justification of two equal numbers"
+  EQ -> error "Refuse to create doubleton justification of two equal numbers."
   GT -> doubleton' b a
 
 type IntGraph = LMapGraph Int

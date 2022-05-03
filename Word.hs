@@ -1,6 +1,7 @@
 module Word (
   turns,
   normalForm,
+  isInNormalForm,
   repeatingInits,
   minimalRepeat,
 ) where
@@ -14,6 +15,9 @@ turns l =  map reassemble (splits l) where
 
 normalForm :: Ord a => [a] -> [a]
 normalForm = minimum . turns
+
+isInNormalForm :: Ord a => [a] -> Bool
+isInNormalForm list = list == normalForm list
 
 repeatingInits :: Eq a => [a] -> [[a]]
 repeatingInits = map fst . filter isRepeat . splits where
