@@ -1,5 +1,6 @@
 module Word (
   turns,
+  normalForm,
   repeatingInits,
   minimalRepeat,
 ) where
@@ -10,6 +11,9 @@ splits xx = zipWith splitAt [1..(length xx)] (repeat xx)
 turns :: [a] -> [[a]]
 turns l =  map reassemble (splits l) where
   reassemble (x,y) = y ++ x
+
+normalForm :: Ord a => [a] -> [a]
+normalForm = minimum . turns
 
 repeatingInits :: Eq a => [a] -> [[a]]
 repeatingInits = map fst . filter isRepeat . splits where
