@@ -11,10 +11,10 @@ import LabeledGraph
 
 data Spiral a = Spiral {
   word :: [Label],
-  rays :: Vec.Vector (Ray a)
+  spokes :: Vec.Vector (Spoke a)
 } deriving Eq
 
-data Ray a = Ray {
+data Spoke a = Spoke {
   base :: a,
   distances :: Map.Map a Int
 } deriving Eq
@@ -24,10 +24,10 @@ isCoherent (Spiral w ds) =
   length w == Vec.length ds &&
   all (\r -> (distances r) Map.! (base r) == 0) ds
 
-coreIsConnected :: Ord a => LabeledGraphI g a -> g
+hubIsConnected :: Ord a => LabeledGraphI g a -> g
                             -> [Label] -> [a] -> Bool
-coreIsConnected gi g word core = worker word core where
-  next [] = head core
+hubIsConnected gi g word hub = worker word hub where
+  next [] = head hub
   next (c:_) = c
   worker [] [] = True
   worker (l:ls) (c:cs) = hasArc gi g l (c, next cs) && worker ls cs
@@ -35,6 +35,6 @@ coreIsConnected gi g word core = worker word core where
 
 fromCore :: Ord a => Ord a => LabeledGraphI g a -> g
                               -> [Label] -> [a] -> Spiral a
-fromCore gi g word core = assert (length word == length core) $ 
-                          assert (coreIsConnected gi g word core) $ undefined
+fromCore gi g word hub = assert (length word == length hub) $ 
+                         assert (hubIsConnected gi g word hub) $ undefined
 
