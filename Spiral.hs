@@ -10,19 +10,22 @@ import Label
 import LabeledGraph
 
 data Spiral a = Spiral {
-  word   :: Vec.Vector Label
-  hub    :: Vec.Vector a
+  word   :: Vec.Vector Label,
+  hub    :: Vec.Vector a,
   spokes :: Vec.Vector (Map.Map a Int)
 } deriving Eq
+
+allIndices :: Vec.Vector a -> [Int]
+allIndices v = [0 .. Vec.length v - 1]
 
 isCoherent :: Ord a => Spiral a -> Bool
 isCoherent (Spiral w h s) =
   Vec.length w == Vec.length h &&
   Vec.length w == Vec.length s &&
-  all (\n -> (distances r) Map.! n == 0) hub
+  all (\i -> (s Vec.! i)  Map.! (h Vec.! i) == 0) (allIndices h)
 
 hubIsConnected :: Ord a => LabeledGraphI g a -> g
-                            -> [Label] -> [a] -> Bool
+                           -> [Label] -> [a] -> Bool
 hubIsConnected gi g word hub = worker word hub where
   next [] = head hub
   next (c:_) = c
@@ -32,9 +35,12 @@ hubIsConnected gi g word hub = worker word hub where
 
 fromHub :: Ord a => Ord a => LabeledGraphI g a -> g
                              -> [Label] -> [a] -> Spiral a
-fromHub gi g word hub = assert (length word == length hub) $ 
-                        assert (hubIsConnected gi g word hub) $ undefined
-                        atDistance 1 (spiralOnHub word hub) where
-  spiralOnHub
-  atDistance depth Spiral = undefined
+fromHub gi g w hubList = assert (length w == length hubList) $ 
+                         assert (hubIsConnected gi g w hubList) $
+                         Spiral rword rhub
+                             (atDistance 1 (spiralOnHub word hub)) where
+  rword = Vec.fromList w
+  rhub = Vec.fromList hubList
+  spiralOnHub = undefined
+  atDistance depth h = undefined
 
