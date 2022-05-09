@@ -20,7 +20,8 @@ liftedGraphReport :: LiftedGraph x -> [String]
 liftedGraphReport lg = let
     (lbg,s) = LiftedGraph.toLBitGraph lg
     rt = relationTree (lbg,s)
-    wordRelList = tail $ allWordsWithout rt (hasUniv s)
+    --wordRelList = tail $ allWordsWithout rt (hasUniv s)
+    wordRelList = tail $ take 31 $ allWordsWithout rt (\_ -> False)
 
     --onCycles = firstArcsOnCycles (lbg, s) wt
     onCycles w = Set.fromList $ arcsOnMCycles (lbg, s) rt w

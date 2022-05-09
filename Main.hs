@@ -41,15 +41,17 @@ main :: IO ()
 --main = putStrLn . unlines $ prettyBigLabeledGraph force3dI force3d
 --main = putStrLn . unlines $ prettyBigLabeledGraph biggestI biggest
 --main =  print $ searchLifting 4 ex5I ex5
---main = game
 
 main = game
+--main = easyPathReport force3dI force3d
+--main = easyWordReport 15 force3dI force3d
+
 --main = forceN
 --main = rangeCD
 --main = easyPathReport notQuitePathI notQuitePath
 --main = easyWordReport 3 force6dI force6d
 --main = easyWordReport 3 force7dI force7d
---main = easyPathReport big5I big5
+--main = easyPathReport force3dI force3d
 --main = easyWordReport 15 force3dI force3d
 --main = easyPathReport unsoundI unsound
 --main = print $ searchUpTo 11 slowSquareI slowSquare
