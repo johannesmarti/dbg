@@ -13,6 +13,7 @@ import LiftedGraph
 import PairGraph
 import BitGraph
 import RelationTree
+import PathTree
 import WordTree
 import qualified LabeledGraph
 
@@ -20,11 +21,13 @@ liftedGraphReport :: LiftedGraph x -> [String]
 liftedGraphReport lg = let
     (lbg,s) = LiftedGraph.toLBitGraph lg
     rt = relationTree (lbg,s)
+    relOfWord = labelOfWord rt
+
     --wordRelList = tail $ allWordsWithout rt (hasUniv s)
     wordRelList = tail $ take 31 $ allWordsWithout rt (\_ -> False)
 
     --onCycles = firstArcsOnCycles (lbg, s) wt
-    onCycles w = Set.fromList $ arcsOnMCycles (lbg, s) rt w
+    onCycles w = Set.fromList $ arcsOnMCycles (lbg, s) relOfWord w
 
     ig = graph lg
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
@@ -37,7 +40,7 @@ liftedGraphReport lg = let
         intersectsCycles can = (Set.fromList $ labeledArcsOfCandidate can)
                                  `intersects` arcsOnCycles
         pts :: [PathTree]
-        pts = pathTreesOfMCycles (lbg,s) rt w
+        pts = pathTreesOfMCycles (lbg,s) relOfWord w
         cycleWithGoodCansPrinter :: [LiftingCandidate] -> PathTree -> String -> [String]
         cycleWithGoodCansPrinter goodCans (There t) s = [((show t ++) . (" " ++) . (show (map extractPair goodCans) ++)) s]
         cycleWithGoodCansPrinter cansSoFar (Step n l succs) str = let
