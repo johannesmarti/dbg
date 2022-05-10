@@ -15,6 +15,12 @@ type Arc x = (x,Label,x)
 labels :: Set Label
 labels = fromList [Zero, One]
 
+{-
 labelToSymbol :: Label -> String
 labelToSymbol Zero = "0"
 labelToSymbol One  = "1"
+-}
+
+labelToSymbol :: Label -> String
+labelToSymbol Zero = "z"
+labelToSymbol One  = "o"

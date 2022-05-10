@@ -12,6 +12,7 @@ import FctGraph
 import Bitify
 import LWrappedGraph
 import qualified WrappedGraph as WG
+import qualified Path
 import LabeledGraph
 import CommonLGraphTypes
 import CayleyGraph
@@ -21,6 +22,7 @@ import Pretty
 import Graph as Graph
 import Lifting
 import DeterminismProperty
+import PathTree
 
 import Tools
 
@@ -80,9 +82,16 @@ wordReport numWords gi g = let
     c = coding wg
     enc = encode c
     dec = decode c
-    printRel r = Graph.prettyGraph (WG.wrappedGraphI (bitGraphI s)) (WG.WrappedGraph r c (LabeledGraph.prettyNode gi g))
+    wordToRel = relationOfWord s cg
+    printNode = (LabeledGraph.prettyNode gi g) . dec
+    wrapI = WG.wrappedGraphI (bitGraphI s)
+    printRel r = Graph.prettyGraph wrapI (WG.WrappedGraph r c (LabeledGraph.prettyNode gi g))
     printRelWithCode r = (printNodeWithSuccs cg r ++ ":") : (printRel r)
     printWordWithRel (w,r) = [show w ++ ":"] ++ printRelWithCode r
+    printWordWithRelAndPathes (w,r) = let
+        cycles = concatMap pathesOnPathTree $
+                   pathTreesOfMCycles (inner,s) wordToRel w
+      in printWordWithRel (w,r) ++ map (Path.prettyPath printNode) cycles
     wfs = wellfoundedElements cg
     nwfs = nonWellfoundedElements cg
     finWords = map fst $ finiteWords s cg
@@ -97,7 +106,8 @@ wordReport numWords gi g = let
 --      "It's finite words are:", show finWords,
 --      "Of which one with maximal length is " ++ show longestFinWord ++ ".", ""] ++
      ["The relations of the first " ++ show numWords ++ " words are:"] ++
-      intercalate [""] (map printWordWithRel wordRels)
+      --intercalate [""] (map printWordWithRel wordRels)
+      intercalate [""] (map printWordWithRelAndPathes wordRels)
 
 easyWordReport :: Ord x => Int -> LabeledGraphI g x -> g -> IO ()
 easyWordReport numWords gi g = putStr . unlines $ (wordReport numWords gi g)

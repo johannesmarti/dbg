@@ -42,9 +42,9 @@ main :: IO ()
 --main = putStrLn . unlines $ prettyBigLabeledGraph biggestI biggest
 --main =  print $ searchLifting 4 ex5I ex5
 
-main = game
+--main = game
 --main = easyPathReport force3dI force3d
---main = easyWordReport 15 force3dI force3d
+main = easyWordReport 15 force3dI force3d
 
 --main = forceN
 --main = rangeCD
