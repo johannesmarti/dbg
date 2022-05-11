@@ -8,7 +8,6 @@ module CayleyGraph (
   weakPathCondition,
   pathCondition,
   limitedPathCondition,
-  isPossibleValue,  
   printNodeWithSuccs,
   prettyCayleyGraph,
 ) where
@@ -106,11 +105,6 @@ limitedPathCondition size cutoff cg = let
   dia = diagonal size
   isOk rel = rel == dia || hasReflAndUnivInMultiple size rel
     in all isOk rels
-
-isPossibleValue :: Size -> CayleyGraph -> [Label] -> Node -> Bool
-isPossibleValue size cg word node =
-  all (\v -> hasBitForArc size (relationOfWord size cg word) (node,v)) (nodes size) &&
-  all (\i -> hasBitForArc size (relationOfWord size cg i) (node,node)) (repeatingInits word)
 
 printNodeWithSuccs :: CayleyGraph -> BitGraph -> String
 printNodeWithSuccs cg node = show node ++ " -> " ++ show succs where

@@ -1,6 +1,7 @@
 module Label (
   Label(..),
   Arc(..),
+  labelsList,
   labels,
   labelToSymbol,
 ) where
@@ -12,8 +13,11 @@ data Label = Zero | One
 
 type Arc x = (x,Label,x)
 
+labelsList :: [Label]
+labelsList = [Zero, One]
+
 labels :: Set Label
-labels = fromList [Zero, One]
+labels = fromList labelsList
 
 {-
 labelToSymbol :: Label -> String

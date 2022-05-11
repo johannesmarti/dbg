@@ -7,6 +7,7 @@ module SmartSearch (
 import qualified Data.Set as Set
 import qualified Data.Map.Strict as Map
 
+import AllocateWords
 import ArcCons
 import Bitify
 import CommonLGraphTypes
@@ -44,7 +45,8 @@ homoAtLevel level (g,wg,s,cg) = let
     dom = domain lMapGraphINotPretty g
     approx = Map.fromSet f (domain dbgI deBruijnGraph)
     f dbgnode = Set.filter (isPossVal (nodeToList dim dbgnode)) dom
-    isPossVal word node = isPossibleValue s cg word (encode c node)
+    relOfWord = relationOfWord s cg
+    isPossVal word node = isPossibleValue s relOfWord word (encode c node)
   in isPossible approx && (not (noHomo (arcConsHomosFromApprox dbgI lMapGraphINotPretty approx) deBruijnGraph g))
 
 {-

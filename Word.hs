@@ -1,10 +1,20 @@
 module Word (
+  allWordsOfLength,
   turns,
   normalForm,
   isInNormalForm,
   repeatingInits,
   minimalRepeat,
 ) where
+
+allWordsOfLength :: [a] -> Int -> [[a]]
+allWordsOfLength list 0 = [[]]
+{-
+allWordsOfLength list n = concatMap f (allWordsOfLength list (n - 1)) where
+  f shorterWord = map ( : shorterWord) list
+-}
+allWordsOfLength list n = concatMap f list where
+  f letter = map (letter :) (allWordsOfLength list (n - 1))
 
 splits :: [a] -> [([a],[a])]
 splits xx = zipWith splitAt [1..(length xx)] (repeat xx)
