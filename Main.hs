@@ -2,33 +2,9 @@ module Main (
   main
 ) where
 
-import System.Environment
-
-import qualified Data.Set as Set
-
-import LiftingSearch
-import LWrappedGraph
-import CayleyGraph
 import Report
-import AssocGraph
-import ArcCons
-import BitGraph
-import ConciseGraph
-import DeBruijnGraph
-import DeterminismProperty
-import qualified Graph
-import Homo
-import Lifting
-import MapGraph
-import WrappedGraph
 import Range
-import Search
-import SmartSearch as SS
-import Bitify
-import CommonLGraphTypes
 import Patterns
-import Pretty
-import LabeledGraph
 import Game
 
 main :: IO ()
@@ -157,8 +133,6 @@ main = easyWordReport 15 force3dI force3d
 --main = print $ searchLifting 4 (conciseGraphI 4) 3569496551
 --main = easyPathReport coolPatternI coolPattern
 --main = easyLiftingReport 4 coolPatternI coolPattern
-
-
 --main = print $ searchLifting 7 (conciseGraphI 4) 8281106
 --main = print $ SS.searchUpTo 11 (conciseGraphI 4) 8281106
 --main = easyLiftingReport 5 (conciseGraphI 4) 8281106
@@ -167,13 +141,4 @@ main = easyWordReport 15 force3dI force3d
 --main = easyLiftingPathReport 4 dbgI (dbg 3)
 --main = checkHomo (conciseGraphI 4) 3946697
 --main = checkHomo (conciseGraphI 4) 3941826
-
-checkOne :: Size -> ConciseGraph -> IO ()
-checkOne size graph = do
-  putStrLn (show graph)
-  putStrLn "=============="
-  putStr (showem size graph)
-  putStrLn (show (searchDbgHomo (conciseGraphI size) 11 graph))
-  --putStrLn (show (SS.searchUpTo size 10 graph))
-  putStrLn "\n"
 

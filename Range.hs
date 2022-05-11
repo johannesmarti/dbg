@@ -5,6 +5,7 @@ module Range (
   cdRange,
   forceN,
   pathRange,
+  checkOne,
 ) where
 
 import System.Environment 
@@ -113,3 +114,13 @@ findDRange n = do
   let bitmaps = Prelude.filter (notTrivial 4) [start .. end]
   let filtered = Prelude.filter (\g -> SS.searchUpTo n (conciseGraphI 4) g == HomoAt n) bitmaps
   print $ take 4 $ filtered
+
+checkOne :: Size -> ConciseGraph -> IO ()
+checkOne size graph = do
+  putStrLn (show graph)
+  putStrLn "=============="
+  putStr (showem size graph)
+  putStrLn (show (searchDbgHomo (conciseGraphI size) 11 graph))
+  --putStrLn (show (SS.searchUpTo size 10 graph))
+  putStrLn "\n"
+
