@@ -43,6 +43,7 @@ module Patterns (
   force7d, force7dI,
   force8d, force8dI,
   force9d, force9dI,
+  alloc, allocI,
 ) where
 
 import qualified Data.Set as Set
@@ -359,3 +360,8 @@ force9d :: ConciseGraph
 force9d = 4019736
 force9dI :: LabeledGraphI ConciseGraph Node
 force9dI = conciseGraphI 4
+
+alloc :: ConciseGraph
+alloc = 15589
+allocI :: LabeledGraphI ConciseGraph Node
+allocI = conciseGraphI 3

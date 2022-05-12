@@ -2,12 +2,21 @@ module Main (
   main
 ) where
 
+import System.Environment 
+
 import Report
 import Range
 import Patterns
 import Game
+import ConciseGraph
 
 main :: IO ()
+
+--main = do
+--  args <- getArgs
+--  let n = read (head args)
+--  findCRange n
+
 --main = gameEx5
 --main = gameForce5d
 --main = gameSlowSquare
@@ -20,7 +29,7 @@ main :: IO ()
 
 --main = game
 --main = easyPathReport force3dI force3d
-main = easyWordReport 15 force3dI force3d
+--main = easyWordReport 15 force3dI force3d
 
 --main = forceN
 --main = rangeCD
@@ -69,6 +78,9 @@ main = easyWordReport 15 force3dI force3d
 --main = easyWordReport 15 (conciseGraphI 4) 3937920
 
 --main = game
+
+--main = easyWordReport 15 allocI alloc
+main = checkOne 3 alloc
 
 --main = easyLiftingPathReport 3 lMapGraphI slowSquare
 --main = easyLiftingPathReport 2 (conciseGraphI caleySchreckSize) caleySchreck
