@@ -24,9 +24,8 @@ liftedGraphReport lg = let
     relOfWord = labelOfWord rt
 
     --wordRelList = tail $ allWordsWithout rt (hasUniv s)
-    wordRelList = tail $ take 31 $ allWordsWithout rt (\_ -> False)
+    wordRelList = tail $ take 15 $ allWordsWithout rt (\_ -> False)
 
-    --onCycles = firstArcsOnCycles (lbg, s) wt
     onCycles w = Set.fromList $ arcsOnMCycles (lbg, s) relOfWord w
 
     ig = graph lg

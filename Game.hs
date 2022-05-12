@@ -11,7 +11,7 @@ module Game (
   gameUnsound,
   gameAlsoBig,
   gameTentje,
-  gameForce3d
+  gameAlloc,
 ) where
 
 import Control.Monad.State.Lazy
@@ -22,7 +22,7 @@ import LiftedGraphReport
 import Report
 import Patterns
 
-game = gameForce3d
+game = gameAlloc
 
 gameEx5 :: IO ()
 gameEx5 = let
@@ -379,19 +379,21 @@ gameForce7d = let
     putChar '\n'
     print pairs
 
-gameForce3d :: IO ()
-gameForce3d = let
+gameAlloc :: IO ()
+gameAlloc = let
     combiner = do
-
+      combine 0 1
+      combine 0 2
+      combine 3 4
       return ()
-    lifting = execState combiner (fromLGraph force3dI force3d)
+    lifting = execState combiner (fromLGraph allocI alloc)
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
     putChar '\n'
-    easyLiftedGraphReport lifting
+    --easyLiftedGraphReport lifting
     putChar '\n'
     --mapM_ (\c -> putStrLn (prettyCanWithArcs c) >> putChar '\n') cans
     --mapM_ (putStrLn . prettyCandidate) cans

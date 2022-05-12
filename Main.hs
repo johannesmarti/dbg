@@ -8,9 +8,17 @@ import Report
 import Range
 import Patterns
 import Game
+
 import ConciseGraph
 
+import AllocateWords
+import WordTree
+import RelationTree
+
+
 main :: IO ()
+
+main = print $ firstLevelToAllocate 5 (labelOfWord (relationTree (toLBitGraph 5 big5, 5)))
 
 --main = do
 --  args <- getArgs
@@ -80,7 +88,7 @@ main :: IO ()
 --main = game
 
 --main = easyWordReport 15 allocI alloc
-main = checkOne 3 alloc
+--main = checkOne 3 alloc
 
 --main = easyLiftingPathReport 3 lMapGraphI slowSquare
 --main = easyLiftingPathReport 2 (conciseGraphI caleySchreckSize) caleySchreck
