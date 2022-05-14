@@ -123,14 +123,15 @@ findCRange size = do
   let step = (ConciseGraph.totalGraph size) `div`  factor
   --let start = 12 * 8 * 4 * step
   let start = 0
+  let impr n = n + 1
   let end = min (start + step) (ConciseGraph.totalGraph size)
   let bitmaps = Prelude.filter (notTrivial size) [start .. end]
   let cd = Prelude.filter (not . (isConstructionDeterministic (conciseGraphI size))) bitmaps
   let withCg = [(g, cayleyGraphOfConcise size g) | g <- cd]
   let withPathCondition = Prelude.filter ((pathCondition size) . snd) withCg
   let withAllocationLevel = [(g,cg,firstLevelToAllocate size (relationOfWord size cg)) | (g, cg) <- withPathCondition]
-  let withBoth = Prelude.map (\(g,cg,n) -> (g,cg,n,SS.searchUpTo n (conciseGraphI size) g)) withAllocationLevel
-  let towering = Prelude.filter (\(g,cg,n,r) -> r == UnknownAt n) withBoth
+  let withBoth = Prelude.map (\(g,cg,n) -> (g,cg,n,SS.searchUpTo (impr n) (conciseGraphI size) g)) withAllocationLevel
+  let towering = Prelude.filter (\(g,cg,n,r) -> r == UnknownAt (impr n)) withBoth
   let prettier = Prelude.map (\(g,cg,n,r) -> (g,n,r)) towering
   --let prettier = Prelude.map (\(g,cg,n,r) -> (g,n,r)) withBoth
   print $ take 3 $ prettier

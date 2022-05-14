@@ -18,12 +18,20 @@ import RelationTree
 
 main :: IO ()
 
-main = print $ firstLevelToAllocate 5 (labelOfWord (relationTree (toLBitGraph 5 big5, 5)))
+--main = print $ firstLevelToAllocate 5 (labelOfWord (relationTree (toLBitGraph 5 big5, 5)))
 
---main = do
---  args <- getArgs
---  let n = read (head args)
---  findCRange n
+{-
+main = do
+  args <- getArgs
+  let n = read (head args)
+  findCRange n
+-}
+
+--main = game
+
+main = easyWordReport 31 alloc2I alloc2
+--main = checkOne 4 alloc2
+
 
 --main = gameEx5
 --main = gameForce5d
@@ -84,11 +92,6 @@ main = print $ firstLevelToAllocate 5 (labelOfWord (relationTree (toLBitGraph 5 
 
 --main = easyLiftingReport 5 slowSquareI slowSquare
 --main = easyWordReport 15 (conciseGraphI 4) 3937920
-
---main = game
-
---main = easyWordReport 15 allocI alloc
---main = checkOne 3 alloc
 
 --main = easyLiftingPathReport 3 lMapGraphI slowSquare
 --main = easyLiftingPathReport 2 (conciseGraphI caleySchreckSize) caleySchreck
