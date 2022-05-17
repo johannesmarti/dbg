@@ -419,19 +419,19 @@ gameAlloc2 = let
     putChar '\n'
     print $ Spiral.fromHub intGraphI ig [Zero] [2]
     putChar '\n'
-    print $ Spiral.fromHub intGraphI ig [One] [5]
+    print $ Spiral.fromHub intGraphI ig [One] [1]
     putChar '\n'
-    print $ Spiral.fromHub intGraphI ig [Zero,One] [5,1]
+    print $ Spiral.fromHub intGraphI ig [Zero,One] [0,1]
     putChar '\n'
-    print $ Spiral.fromHub intGraphI ig [Zero,Zero,One] [5,4,5]
+    print $ Spiral.fromHub intGraphI ig [Zero,Zero,One] [5,2,1]
     putChar '\n'
-    print $ Spiral.fromHub intGraphI ig [Zero,One,One] [5,1,5]
+    print $ Spiral.fromHub intGraphI ig [Zero,One,One] [0,1,5]
     putChar '\n'
-    print $ Spiral.fromHub intGraphI ig [Zero,Zero,Zero,One] [5,0,4,5]
+    print $ Spiral.fromHub intGraphI ig [Zero,Zero,Zero,One] [1,0,4,5]
     putChar '\n'
-    print $ Spiral.fromHub intGraphI ig [Zero,Zero,One,One] [5,4,5,5]
+    print $ Spiral.fromHub intGraphI ig [Zero,Zero,One,One] [5,2,1,1]
     putChar '\n'
-    print $ Spiral.fromHub intGraphI ig [Zero,One,One,One] [5,1,5,5]
+    print $ Spiral.fromHub intGraphI ig [Zero,One,One,One] [0,1,1,5]
     putChar '\n'
     --mapM_ (\c -> putStrLn (prettyCanWithArcs c) >> putChar '\n') cans
     --mapM_ (putStrLn . prettyCandidate) cans
