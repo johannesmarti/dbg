@@ -7,7 +7,9 @@ import System.Environment
 import Report
 import Range
 import Patterns
+import Label
 import Game
+import Spiral
 
 import ConciseGraph
 
@@ -27,9 +29,10 @@ main = do
   findCRange n
 -}
 
---main = game
+main = game
 
-main = easyWordReport 31 alloc2I alloc2
+--main = easyWordReport 31 alloc2I alloc2
+--main = print $ Spiral.fromHub alloc2I alloc2 [Zero,One,One,One] [0,1,1,1]
 --main = checkOne 4 alloc2
 
 

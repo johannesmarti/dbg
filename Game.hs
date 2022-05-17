@@ -12,6 +12,7 @@ module Game (
   gameAlsoBig,
   gameTentje,
   gameAlloc1,
+  gameAlloc2,
 ) where
 
 import Control.Monad.State.Lazy
@@ -22,7 +23,10 @@ import LiftedGraphReport
 import Report
 import Patterns
 
-game = gameAlloc1
+import Label
+import Spiral
+
+game = gameAlloc2
 
 gameEx5 :: IO ()
 gameEx5 = let
@@ -394,6 +398,40 @@ gameAlloc1 = let
     putStrLn $ unlines $ prettyLiftedGraph lifting
     putChar '\n'
     --easyLiftedGraphReport lifting
+    putChar '\n'
+    --mapM_ (\c -> putStrLn (prettyCanWithArcs c) >> putChar '\n') cans
+    --mapM_ (putStrLn . prettyCandidate) cans
+    --putChar '\n'
+    print pairs
+
+gameAlloc2 :: IO ()
+gameAlloc2 = let
+    combiner = do
+      combine 2 3
+      combine 0 1
+      return ()
+    lifting = execState combiner (fromLGraph alloc2I alloc2)
+    ig = graph lifting
+    cans = filter (weakDominationFilter ig) (liftableCandidates ig)
+    pairs = map extractPair cans
+  in do
+    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putChar '\n'
+    print $ Spiral.fromHub intGraphI ig [Zero] [2]
+    putChar '\n'
+    print $ Spiral.fromHub intGraphI ig [One] [5]
+    putChar '\n'
+    print $ Spiral.fromHub intGraphI ig [Zero,One] [5,1]
+    putChar '\n'
+    print $ Spiral.fromHub intGraphI ig [Zero,Zero,One] [5,4,5]
+    putChar '\n'
+    print $ Spiral.fromHub intGraphI ig [Zero,One,One] [5,1,5]
+    putChar '\n'
+    print $ Spiral.fromHub intGraphI ig [Zero,Zero,Zero,One] [5,0,4,5]
+    putChar '\n'
+    print $ Spiral.fromHub intGraphI ig [Zero,Zero,One,One] [5,4,5,5]
+    putChar '\n'
+    print $ Spiral.fromHub intGraphI ig [Zero,One,One,One] [5,1,5,5]
     putChar '\n'
     --mapM_ (\c -> putStrLn (prettyCanWithArcs c) >> putChar '\n') cans
     --mapM_ (putStrLn . prettyCandidate) cans
