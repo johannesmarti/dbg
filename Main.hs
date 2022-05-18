@@ -17,6 +17,10 @@ import AllocateWords
 import WordTree
 import RelationTree
 
+import ConstructionGraph
+import DeBruijnGraph
+import LabeledGraph (showLG)
+
 
 main :: IO ()
 
@@ -29,7 +33,8 @@ main = do
   findCRange n
 -}
 
-main = game
+--main = putStrLn $ showLG (constructionGraphI dbgI) (dbg 3)
+main = print $ immediatelyConstructible dbgI (dbg 3)
 
 --main = easyWordReport 31 alloc2I alloc2
 --main = print $ Spiral.fromHub alloc2I alloc2 [Zero,One,One,One] [0,1,1,1]

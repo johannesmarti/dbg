@@ -7,6 +7,7 @@ module LabeledGraph (
   domain, successors, predecessors, hasArc, arcs, arcsOfLabel, prettyNode,
   interfaceFromAll,
   interfaceFromSuccPredPretty,
+  interfaceFromHasArcPretty,
   noPredecessor,
   hasT1,
   hasBothLoops,
@@ -51,6 +52,18 @@ aOLFromSucc dom succs graph label =
   [(x,y) | x <- d, y <- Set.toList $ succs graph label x] where
     d = Set.toList $ dom graph
 
+
+succFromHasArc :: Ord x => (g -> Set x) -> (g -> Label -> (x,x) -> Bool) -> (g -> Label -> x -> Set x)
+succFromHasArc dom hasAr g l v = Set.filter (\u -> hasAr g l (v,u)) (dom g)
+
+predFromHasArc :: Ord x => (g -> Set x) -> (g -> Label -> (x,x) -> Bool) -> (g -> Label -> x -> Set x)
+predFromHasArc dom hasAr g l v = Set.filter (\u -> hasAr g l (u,v)) (dom g)
+
+arcsFromHasArc :: Ord x => (g -> Set x) -> (g -> Label -> (x,x) -> Bool) -> (g -> Label -> [(x,x)])
+arcsFromHasArc dom hasAr g l = [(x,y) | x <- d, y <- d, hasAr g l (x,y)] where
+  d = Set.toList $ dom g
+
+
 interfaceFromSuccPredPretty :: Ord x => (g -> Set x) -> (g -> MapFunction x)
   -> (g -> MapFunction x) -> (g -> x -> String) -> LabeledGraphI g x
 interfaceFromSuccPredPretty dom succ pred pretty =
@@ -60,7 +73,7 @@ interfaceFromSuccPredPretty dom succ pred pretty =
 interfaceFromHasArcPretty :: Ord x => (g -> Set x)
   -> (g -> Label -> (x,x) -> Bool) -> (g -> x -> String) -> LabeledGraphI g x
 interfaceFromHasArcPretty dom hasAr pretty =
-  GraphI dom (succFromHasArc dom hasAr) (predFromHasArc dom hasAr) hasAr (arcsFromHasArc dom hasAr) pretty
+  LabeledGraphI dom (succFromHasArc dom hasAr) (predFromHasArc dom hasAr) hasAr (arcsFromHasArc dom hasAr) pretty
 
 arcs :: LabeledGraphI g x -> g -> [Arc x]
 arcs gi g = concatMap fromLabel labels where
@@ -130,4 +143,4 @@ baseBigPrinter gi printNode printSuccessors g = let
   in Prelude.map lineForZero d ++ [""] ++ Prelude.map lineForOne d
 
 showLG :: Ord x => LabeledGraphI g x -> g -> String
-showLG gi = unlines . (prettyLabeledGraph gi)
+showLG gi = unlines . (prettyBigLabeledGraph gi)
