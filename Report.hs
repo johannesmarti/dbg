@@ -8,7 +8,6 @@ module Report (
 import qualified Data.Set as Set
 import Data.List (maximumBy,intercalate)
 
-import FctGraph
 import Bitify
 import LWrappedGraph
 import qualified WrappedGraph as WG
