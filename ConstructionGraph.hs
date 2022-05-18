@@ -17,8 +17,10 @@ constructionGraphI gi = let
     hasA g label ((a,b),(x,y)) = let
         ha = hasArc gi g label
       in (ha (a,x) || ha (b,x)) && (ha (a,y) || ha (b,y))
-    pretN g (a,b) = "[" ++ (prettyNode gi g a) ++ " " ++ (prettyNode gi g b) ++ "]"
-  in interfaceFromHasArcPretty dom hasA pretN
+    pret g (a,b) = let
+        pr = prettyNode gi g
+      in "[" ++ pr a ++ " " ++ pr b ++ "]"
+  in interfaceFromHasArcPretty dom hasA pret
 
 visibleInConstructionGraph :: LabeledGraphI g x -> g -> Label -> (x,x) -> Bool
 visibleInConstructionGraph gi g l (a,b) = any sees (domain gi g) where
