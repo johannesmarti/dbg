@@ -2,10 +2,13 @@
 module CommonLGraphTypes (
   Label(..),
   LAssocGraph,
+  LFunctionGraph,
   LMapGraph,
   LBitGraph,
   lAssocGraphI,
+  lFunctionGraphI,
   lMapGraphI,
+  lFunctionGraphIWithNodePrinter,
   lMapGraphIWithNodePrinter,
   lMapGraphINotPretty,
   lBitGraphI,
@@ -24,6 +27,7 @@ import Data.Set
 import qualified Graph
 import BitGraph
 import LabeledGraph
+import qualified FunctionGraph as FG
 import PairGraph
 import AssocGraph
 import MapGraph
@@ -31,6 +35,7 @@ import CayleyGraph hiding (domain)
 import Pretty
 
 type LAssocGraph x = PairGraph (AssocGraph x)
+type LFunctionGraph x = PairGraph (FG.FunctionGraph x)
 type LMapGraph x = PairGraph (MapGraph x)
 type LBitGraph = PairGraph BitGraph
 
@@ -40,8 +45,14 @@ graphOfLabelI lgi l = Graph.interfaceFromAll (domain lgi) (\g -> successors lgi 
 lAssocGraphI :: (Ord x, Pretty x) => LabeledGraphI (LAssocGraph x) x
 lAssocGraphI = pairGraphI assocGraphI
 
+lFunctionGraphI :: (Ord x, Pretty x) => LabeledGraphI (LFunctionGraph x) x
+lFunctionGraphI = pairGraphI FG.functionGraphI
+
 lMapGraphI :: (Ord x, Pretty x) => LabeledGraphI (LMapGraph x) x
 lMapGraphI = pairGraphI mapGraphI
+
+lFunctionGraphIWithNodePrinter :: Ord x => (x -> String) -> LabeledGraphI (LFunctionGraph x) x
+lFunctionGraphIWithNodePrinter printer = pairGraphI (FG.functionGraphIWithNodePrinter printer)
 
 lMapGraphIWithNodePrinter :: Ord x => (x -> String) -> LabeledGraphI (LMapGraph x) x
 lMapGraphIWithNodePrinter printer = pairGraphI (mapGraphIWithNodePrinter printer)

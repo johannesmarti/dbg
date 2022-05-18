@@ -57,6 +57,10 @@ interfaceFromSuccPredPretty dom succ pred pretty =
   LabeledGraphI dom succ pred (hasArcFromSucc succ)
                               (aOLFromSucc dom succ) pretty
 
+interfaceFromHasArcPretty :: Ord x => (g -> Set x)
+  -> (g -> Label -> (x,x) -> Bool) -> (g -> x -> String) -> LabeledGraphI g x
+interfaceFromHasArcPretty dom hasAr pretty =
+  GraphI dom (succFromHasArc dom hasAr) (predFromHasArc dom hasAr) hasAr (arcsFromHasArc dom hasAr) pretty
 
 arcs :: LabeledGraphI g x -> g -> [Arc x]
 arcs gi g = concatMap fromLabel labels where

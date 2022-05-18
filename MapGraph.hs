@@ -107,7 +107,6 @@ addArc (MapGraph map) (v,w) = assert (v `Map.member` map) $
 addArcs :: Ord x => MapGraph x -> [(x,x)] -> MapGraph x
 addArcs g list = Prelude.foldl addArc g list
 
-
 instance (Ord x, Pretty x) => Show (MapGraph x) where
   show = Graph.showG mapGraphI
 
