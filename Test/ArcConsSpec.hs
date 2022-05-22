@@ -35,19 +35,19 @@ interface :: Spec
 interface = do
   describe "no homo" $ do
     it "from db2 to db3" $
-      arcConsHomos dbgI dbgI (dbg 2) (dbg 3) `shouldBe` []
+      arcConsHomomorphisms dbgI dbgI (dbg 2) (dbg 3) `shouldBe` []
     it "from db2 to triple" $
-      arcConsHomos dbgI lMapGraphI (dbg 2) triple `shouldBe` []
+      arcConsHomomorphisms dbgI lMapGraphI (dbg 2) triple `shouldBe` []
     it "from db1 to force2d" $
-      arcConsHomos dbgI lMapGraphI (dbg 1) force2d `shouldBe` []
+      arcConsHomomorphisms dbgI lMapGraphI (dbg 1) force2d `shouldBe` []
   describe "unique homo" $ do
     it "from db2 to db2" $
-      length (arcConsHomos dbgI dbgI (dbg 2) (dbg 2)) `shouldBe` 1
+      length (arcConsHomomorphisms dbgI dbgI (dbg 2) (dbg 2)) `shouldBe` 1
     it "from db3 to db2" $
-      length (arcConsHomos dbgI dbgI (dbg 3) (dbg 2)) `shouldBe` 1
+      length (arcConsHomomorphisms dbgI dbgI (dbg 3) (dbg 2)) `shouldBe` 1
     it "from db2 to force2d" $
-      length (arcConsHomos dbgI lMapGraphI (dbg 2) force2d) `shouldBe` 1
+      length (arcConsHomomorphisms dbgI lMapGraphI (dbg 2) force2d) `shouldBe` 1
     it "from db3 to force2d" $
-      length (arcConsHomos dbgI lMapGraphI (dbg 3) force2d) `shouldBe` 1
+      length (arcConsHomomorphisms dbgI lMapGraphI (dbg 3) force2d) `shouldBe` 1
     it "from db3 to force3d" $
-      length (arcConsHomos dbgI lMapGraphI (dbg 3) force2d) `shouldBe` 1
+      length (arcConsHomomorphisms dbgI lMapGraphI (dbg 3) force2d) `shouldBe` 1

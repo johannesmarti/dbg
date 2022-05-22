@@ -2,8 +2,8 @@ module ArcCons (
   Approx,
   isPossible,
   hasSplit,
-  arcConsHomosFromApprox,
-  arcConsHomos,
+  arcConsHomomorphismsFromApprox,
+  arcConsHomomorphisms,
 ) where
 
 import Data.Map.Strict as Map
@@ -13,7 +13,7 @@ import Data.Maybe (maybeToList)
 
 import Function
 import LabeledGraph
-import Homo
+import Homomorphism
 
 type Approx x y = Map x (Set y)
 
@@ -74,9 +74,9 @@ splittingsAt approx node = let
   in Prelude.map singlified valueList
 
 
-arcConsHomosFromApprox :: (Ord x, Ord y) => LabeledGraphI g1 x -> LabeledGraphI g2 y
-                            -> Approx x y -> HomoSearch g1 g2 x y
-arcConsHomosFromApprox di ci approx d c = let
+arcConsHomomorphismsFromApprox :: (Ord x, Ord y) => LabeledGraphI g1 x -> LabeledGraphI g2 y
+                            -> Approx x y -> HomomorphismSearch g1 g2 x y
+arcConsHomomorphismsFromApprox di ci approx d c = let
     worker worklist apx = do
       clean <- maybeToList (arcConsInner di ci d c worklist apx)
       case hasSplit clean of
@@ -86,7 +86,7 @@ arcConsHomosFromApprox di ci approx d c = let
                     worker (addNodeToWorklist di d splitNode []) split
   in worker (completeWorklist di d) approx
 
-arcConsHomos :: (Ord x, Ord y) => LabeledGraphI g1 x -> LabeledGraphI g2 y -> HomoSearch g1 g2 x y
-arcConsHomos di ci d c = arcConsHomosFromApprox di ci
+arcConsHomomorphisms :: (Ord x, Ord y) => LabeledGraphI g1 x -> LabeledGraphI g2 y -> HomomorphismSearch g1 g2 x y
+arcConsHomomorphisms di ci d c = arcConsHomomorphismsFromApprox di ci
   (fullApprox (LabeledGraph.domain di d) (LabeledGraph.domain ci c)) d c
 

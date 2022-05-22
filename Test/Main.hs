@@ -6,7 +6,7 @@ import Test.Hspec
 
 import qualified Test.AssocGraphSpec
 import qualified Test.MapGraphSpec
-import qualified Test.HomoSpec
+import qualified Test.HomomorphismSpec
 import qualified Test.ArcConsSpec
 import qualified Test.BitGraphSpec
 import qualified Test.DeterminismPropertySpec
@@ -21,7 +21,7 @@ spec :: Spec
 spec = do
   describe "AssocGraph" Test.AssocGraphSpec.spec
   describe "MapGraph" Test.MapGraphSpec.spec
-  describe "Homo" Test.HomoSpec.spec
+  describe "Homomorphism" Test.HomomorphismSpec.spec
   describe "ArcCons" Test.ArcConsSpec.spec
   describe "BitGraph" Test.BitGraphSpec.spec
   describe "DeterminismProperty" Test.DeterminismPropertySpec.spec

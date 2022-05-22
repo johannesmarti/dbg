@@ -30,10 +30,10 @@ searchLifting cutoff gi graph = worker g 0 where
   g = toLiftedGraph gi graph
   worker lifted level =
     if hasT1 liftedGraphI lifted
-      then HomoAt level
+      then HomomorphismAt level
     else if level >= cutoff then UnknownAt cutoff
     else case liftWithFilter unsoundDominationFilter lifted of
-           Nothing -> NoHomo
+           Nothing -> NoHomomorphism
            Just ll -> worker ll (level + 1)
 
 rangeCD :: IO ()
@@ -63,7 +63,7 @@ forceN = do
   let bitmaps = Prelude.filter (notTrivial 4) [start .. end]
   let filtered = Prelude.filter (\g -> SS.searchUpTo (n - 1) (conciseGraphI 4) g == UnknownAt (n - 1)) bitmaps
   let mapped = Prelude.map (\g -> (g, SS.searchUpTo n (conciseGraphI 4) g)) filtered
-  let moreFiltered = Prelude.filter (\(g,r) -> r == HomoAt n) mapped
+  let moreFiltered = Prelude.filter (\(g,r) -> r == HomomorphismAt n) mapped
   let printer (g,r) = (putStrLn ((show g) ++ ":")) >> (putStrLn (show r))
   mapM_ printer (take 5 moreFiltered)
 
@@ -77,13 +77,13 @@ mainRange = do
   let start = 0
   let end = min (start + step) (ConciseGraph.totalGraph 4)
   let bitmaps = Prelude.filter (notTrivial 4) [start .. start + step]
-  --let list = Prelude.filter (\g -> SS.searchUpTo 3 9 g == HomoAt 3) bitmaps
-  --let list = Prelude.filter (\g -> SS.searchUpTo (conciseGraphI 3) 6 g == HomoAt 3) bitmaps
-  --let list = Prelude.filter (\g -> SS.searchUpTo 4 6 g == HomoAt 6) bitmaps
+  --let list = Prelude.filter (\g -> SS.searchUpTo 3 9 g == HomomorphismAt 3) bitmaps
+  --let list = Prelude.filter (\g -> SS.searchUpTo (conciseGraphI 3) 6 g == HomomorphismAt 3) bitmaps
+  --let list = Prelude.filter (\g -> SS.searchUpTo 4 6 g == HomomorphismAt 6) bitmaps
   let filtered = Prelude.filter (\g -> SS.searchUpTo 5 (conciseGraphI 4) g == UnknownAt 5) bitmaps
   --let moreFiltered = Prelude.filter (\g -> searchLifting 3 (conciseGraphI 4) g == UnknownAt 3) filtered
   let mapped = Prelude.map (\g -> (g, SS.searchUpTo 6 (conciseGraphI 4) g)) filtered
-  let moreFiltered = Prelude.filter (\(g,r) -> r == HomoAt 6) mapped
+  let moreFiltered = Prelude.filter (\(g,r) -> r == HomomorphismAt 6) mapped
   --let moreFiltered = mapped
   --let evenMoreFiltered = Prelude.filter (\g -> searchLifting 6 (conciseGraphI 4) g == UnknownAt 6) filtered
   --let postFilter = Prelude.map (\g -> (g,SS.searchUpTo 11 (conciseGraphI 4) g)) evenMoreFiltered
@@ -114,7 +114,7 @@ findDRange n = do
   let start = 12 * 8 * 4 * step
   let end = min (start + step) (ConciseGraph.totalGraph 4)
   let bitmaps = Prelude.filter (notTrivial 4) [start .. end]
-  let filtered = Prelude.filter (\g -> SS.searchUpTo n (conciseGraphI 4) g == HomoAt n) bitmaps
+  let filtered = Prelude.filter (\g -> SS.searchUpTo n (conciseGraphI 4) g == HomomorphismAt n) bitmaps
   print $ take 4 $ filtered
 
 findCRange :: Int -> IO ()
@@ -141,7 +141,7 @@ checkOne size graph = do
   putStrLn (show graph)
   putStrLn "=============="
   putStr (showem size graph)
-  putStrLn (show (searchDbgHomo (conciseGraphI size) 11 graph))
+  putStrLn (show (searchDbgHomomorphism (conciseGraphI size) 11 graph))
   --putStrLn (show (SS.searchUpTo size 10 graph))
   putStrLn "\n"
 
