@@ -3,10 +3,16 @@ module ConciseGraph (
   conciseGraphI,
   Size,
   Node,
+  fromCode,
+  fromCode',
+  estimateSize,
+  fromOldCode,
+  toCode,
   nodes,
   fromLBitGraph,
   toLBitGraph,
   hasBitForArc,
+  setBitForArc,
   isNode,
   allGraphsOfSize,
   totalGraph,
@@ -42,11 +48,39 @@ dom size bitset = assert (isValidBitset size bitset) $ Set.fromList (nodes size)
 
 succs :: Size -> ConciseGraph -> MapFunction Node
 succs size bitset label node = assert (isNode size node) $
-  Set.fromList $ filter (\v -> hasBitForArc size bitset (node,label,v)) (nodes size)
+  Set.fromList $ filter (\v -> hasBitForArc size bitset label (node,v)) (nodes size)
 
 preds :: Size -> ConciseGraph -> MapFunction Node
 preds size bitset label node = assert (isNode size node) $
-  Set.fromList $ filter (\v -> hasBitForArc size bitset (v,label,node)) (nodes size)
+  Set.fromList $ filter (\v -> hasBitForArc size bitset label (v,node)) (nodes size)
+
+converse :: Size -> Integer -> Integer
+converse size cg = let
+    cgi = (converseI (conciseGraphI size))
+    zArcs = arcsOfLabel cgi cg Zero
+    oArcs = arcsOfLabel cgi cg One
+    withZ = foldl (\g a -> setBitForArc size g Zero a) nullConciseGraph zArcs
+    withBoth = foldl (\g a -> setBitForArc size g One a) withZ oArcs
+  in withBoth
+
+fromCode :: Size -> Integer -> ConciseGraph
+fromCode size code = converse size code
+
+estimateSize :: Integer -> Size
+estimateSize code = hack 0 where
+  hack estimate = if isValidBitset estimate code
+                         then estimate
+                         else hack (estimate + 1)
+
+fromCode' :: Integer -> ConciseGraph
+fromCode' code = fromCode size code where
+  size = estimateSize code
+
+fromOldCode :: Integer -> ConciseGraph
+fromOldCode = id
+
+toCode :: Size -> ConciseGraph -> Integer
+toCode size cg = converse size cg
 
 fromLBitGraph :: Size -> LBitGraph -> ConciseGraph
 fromLBitGraph s bg =
@@ -79,14 +113,23 @@ isNode :: Size -> Node -> Bool
 isNode size node = 0 <= node && node <= size
 
 -- Maybe we should get rid of all these asserts here!
-hasBitForArc :: Size -> ConciseGraph -> Arc Node -> Bool
-hasBitForArc size bitset (from,label,to) = assert (isValidBitset size bitset) $
+hasBitForArc :: Size -> ConciseGraph -> Label -> (Node,Node) -> Bool
+hasBitForArc size bitset label (from,to) = assert (isValidBitset size bitset) $
                                            assert (isNode size from) $
                                            assert (isNode size to) $ let
   offset = if label == Zero then 0 else size * size
   position = from * size + to
   index = offset + position
     in testBit bitset index
+
+setBitForArc :: Size -> ConciseGraph -> Label -> (Node,Node) -> ConciseGraph
+setBitForArc size bitset label (from,to) = assert (isValidBitset size bitset) $
+                                           assert (isNode size from) $
+                                           assert (isNode size to) $ let
+  offset = if label == Zero then 0 else size * size
+  position = from * size + to
+  index = offset + position
+    in setBit bitset index
 
 relationOfLabel :: Size -> ConciseGraph -> Label -> BitGraph
 relationOfLabel size bitset label = assert (isValidBitset size bitset) $ let

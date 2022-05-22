@@ -8,6 +8,7 @@ module LabeledGraph (
   interfaceFromAll,
   interfaceFromSuccPredPretty,
   interfaceFromHasArcPretty,
+  converseI,
   noPredecessor,
   hasT1,
   hasBothLoops,
@@ -20,8 +21,8 @@ module LabeledGraph (
 ) where
 
 import Control.Exception.Base
-import Data.List (intercalate)
 import Data.Set as Set
+import Data.Tuple (swap)
 
 import Label
 import Pretty
@@ -74,6 +75,14 @@ interfaceFromHasArcPretty :: Ord x => (g -> Set x)
   -> (g -> Label -> (x,x) -> Bool) -> (g -> x -> String) -> LabeledGraphI g x
 interfaceFromHasArcPretty dom hasAr pretty =
   LabeledGraphI dom (succFromHasArc dom hasAr) (predFromHasArc dom hasAr) hasAr (arcsFromHasArc dom hasAr) pretty
+
+converseI :: LabeledGraphI g x -> LabeledGraphI g x
+converseI gi = let
+    hasAr g l arc = hasArc gi g l (swap arc)
+    ars g l = Prelude.map swap (arcsOfLabel gi g l)
+  in LabeledGraphI (domain gi) (predecessors gi) (successors gi)
+                   hasAr ars (prettyNode gi)
+
 
 arcs :: LabeledGraphI g x -> g -> [Arc x]
 arcs gi g = concatMap fromLabel labels where

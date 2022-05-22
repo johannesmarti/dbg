@@ -9,7 +9,7 @@ module Patterns (
   strictDet,
   cayleySchreck,
   cayleySchreckSize,
-  slowFourConcise, slowFourConciseI,
+  slowFourConcise, slowFourConciseI, slowFourConciseSize,
   celtic,
   halfCeltic,
   slowSquare, slowSquareI,
@@ -78,7 +78,6 @@ f2d One = [(OO,OO),(OO,OZ),(OZ,Co)]
 force2d :: LMapGraph N
 force2d = mapFromFunction f2d
 
-
 f3d Zero = [('a','a'),('a','c'),('c','a'),('c','b')]
 f3d One = [('a','c'),('b','a'),('b','b')]
 force3d :: LMapGraph Char
@@ -125,15 +124,17 @@ strictDet :: LMapGraph Char
 strictDet = mapFromFunction sd
 
 cayleySchreck :: ConciseGraph
-cayleySchreck = 3942849
+cayleySchreck = fromOldCode 3942849
 cayleySchreckSize :: Size
 cayleySchreckSize = 4
 
 {- This pattern is construction deterministic -}
 slowFourConcise :: ConciseGraph
-slowFourConcise = 4003476
+slowFourConcise = fromOldCode 4003476
+slowFourConciseSize :: Size
+slowFourConciseSize = 4
 slowFourConciseI :: LabeledGraphI ConciseGraph Node
-slowFourConciseI = conciseGraphI 4
+slowFourConciseI = conciseGraphI slowFourConciseSize
 
 cel Zero = [('a','a'),('a','b'),
             ('b','b'),('b','c'),
@@ -160,7 +161,7 @@ slowSquareI :: LabeledGraphI (LMapGraph Char) Char
 slowSquareI = lMapGraphI
 
 deadEnd :: ConciseGraph
-deadEnd = 4072604
+deadEnd = fromOldCode 4072604
 deadEndI :: LabeledGraphI ConciseGraph Node
 deadEndI = (conciseGraphI 4)
 
@@ -171,19 +172,19 @@ deadEndWithoutEndI = lMapGraphI
 
 {- is not construction deterministic. -}
 slowLifting :: ConciseGraph 
-slowLifting = 4966674
+slowLifting = fromOldCode 4966674
 slowLiftingI :: LabeledGraphI ConciseGraph Node
 slowLiftingI = conciseGraphI 4
 
 {- Here it seems where hard to find a homo -}
 difficult :: ConciseGraph
-difficult = 2063974806
+difficult = fromOldCode 2063974806
 difficultI :: LabeledGraphI ConciseGraph Node
 difficultI = conciseGraphI 4
 
 {- does not have path condition but is not construction deterministic -}
 goesWrong :: ConciseGraph
-goesWrong = 1612382568
+goesWrong = fromOldCode 1612382568
 goesWrongI :: LabeledGraphI ConciseGraph Node
 goesWrongI = conciseGraphI 4
 
@@ -201,25 +202,25 @@ complicatedNeg = mapFromFunction complicatedNeg'
 
 {- This shows that the unsound filter for the lifting is indeed unsound. -}
 unsound :: ConciseGraph
-unsound = 2063931814
+unsound = fromOldCode 2063931814
 unsoundI :: LabeledGraphI ConciseGraph Node
 unsoundI = conciseGraphI 4
 
 {- The following pattern is not construction deterministic but also does not satisfy the path condition -}
 noPath :: ConciseGraph
-noPath = 988302
+noPath = fromOldCode 988302
 noPathI :: LabeledGraphI ConciseGraph Node
 noPathI = conciseGraphI 4
 
 {- This pattern satisfies the path condition up to words of length 2, but not for longer words. It is construction deterministic. -}
 notQuitePath :: ConciseGraph
-notQuitePath = 57450828
+notQuitePath = fromOldCode 57450828
 notQuitePathI :: LabeledGraphI ConciseGraph Node
 notQuitePathI = conciseGraphI 4
 
 {- In this pattern there is a 0-loop that reaches all other nodes over a 0-path and similarly for 1. But it does not satify the path condition. It is not construction deterministic. -}
 zoComp :: ConciseGraph
-zoComp = 23617753
+zoComp = fromOldCode 23617753
 zoCompI :: LabeledGraphI ConciseGraph Node
 zoCompI = conciseGraphI 4
 
@@ -233,7 +234,7 @@ ex1I = lMapGraphI
 
 {- Just some pattern with a homo at 4. -}
 force4d :: ConciseGraph
-force4d = 201822290
+force4d = fromOldCode 201822290
 force4dI :: LabeledGraphI ConciseGraph Node
 force4dI = conciseGraphI 4
 
@@ -245,7 +246,7 @@ force4d' = ConciseGraph.fromLBitGraph 4 (PairGraph.fromFunction fct) where
 
 {- Just some pattern with a homo at 5. -}
 force5d :: ConciseGraph
-force5d = 201822534
+force5d = fromOldCode 201822534
 force5dI :: LabeledGraphI ConciseGraph Node
 force5dI = conciseGraphI 4
 
@@ -328,46 +329,46 @@ growingLiftingI = lMapGraphI
 
 {- This pattern is the pattern such that it has a homo for a maximal dimension among all the patterns of size 4 -}
 biggest :: ConciseGraph
-biggest = 2458141589
+biggest = fromOldCode 2458141589
 biggestI :: LabeledGraphI ConciseGraph Node
 biggestI = conciseGraphI 4
 
 alsoBig :: ConciseGraph
-alsoBig = 675781230
+alsoBig = fromOldCode 675781230
 alsoBigI :: LabeledGraphI ConciseGraph Node
 alsoBigI = conciseGraphI 4
 
 big5 :: ConciseGraph
-big5 = 846900323733667
+big5 = fromOldCode 846900323733667
 big5I :: LabeledGraphI ConciseGraph Node
 big5I = conciseGraphI 5
 
 force6d :: ConciseGraph
-force6d = 3936965
+force6d = fromOldCode 3936965
 force6dI :: LabeledGraphI ConciseGraph Node
 force6dI = conciseGraphI 4
 
 force7d :: ConciseGraph
-force7d = 3937932
+force7d = fromOldCode 3937932
 force7dI :: LabeledGraphI ConciseGraph Node
 force7dI = conciseGraphI 4
 
 force8d :: ConciseGraph
-force8d = 4019848
+force8d = fromOldCode 4019848
 force8dI :: LabeledGraphI ConciseGraph Node
 force8dI = conciseGraphI 4
 
 force9d :: ConciseGraph
-force9d = 4019736
+force9d = fromOldCode 4019736
 force9dI :: LabeledGraphI ConciseGraph Node
 force9dI = conciseGraphI 4
 
 alloc1 :: ConciseGraph
-alloc1 = 15589
+alloc1 = fromOldCode 15589
 alloc1I :: LabeledGraphI ConciseGraph Node
 alloc1I = conciseGraphI 3
 
 alloc2 :: ConciseGraph
-alloc2 = 3937822
+alloc2 = fromOldCode 3937822
 alloc2I :: LabeledGraphI ConciseGraph Node
 alloc2I = conciseGraphI 4
