@@ -5,6 +5,8 @@ module ImprovedSearch (
 import qualified Data.Set as S
 
 import Label
+import CommonLGraphTypes
+import BitGraph
 
 data HomomorphismTree a = Branch {
     zeroSuccessor :: HomomorphismTree a,
@@ -16,4 +18,13 @@ data HomomorphismTree a = Branch {
   Closed a
     deriving Show
 
-improvedSearch :: Ord a => LabeledGraphI g a -> g -> ([Label] ->) ()
+improvedSearch :: Size -> LBitGraph -> ([Label] -> BitGraph) -> Int -> Maybe (HomomorphismTree Node)
+improvedSearch size wrappedGraph wordToRel cutoff = undefined
+{-
+  expand
+  choose node to fix
+  fix and check arc cons on posLists
+  this induces changes to necLists
+  promote changes to necLists among circles
+  expand
+-}

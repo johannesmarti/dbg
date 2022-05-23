@@ -1,4 +1,6 @@
 module Bitify (
+  BityGraph, bityGraphI,
+  LBityGraph, lBityGraphI,
   bitify,
   labeledBitify,
   toConcise,
@@ -20,7 +22,16 @@ import LWrappedGraph
 import PairGraph
 import CayleyGraph
 
-bitify :: Ord x => GraphI g x -> g -> (WrappedGraph BitGraph Node x, Size)
+type BityGraph x = WrappedGraph BitGraph Node x
+type LBityGraph x = LWrappedGraph LBitGraph Node x
+
+bityGraphI :: Ord x => Size -> GraphI (BityGraph x) x
+bityGraphI s = wrappedGraphI (bitGraphI s)
+
+lBityGraphI :: Ord x => Size -> LabeledGraphI (LBityGraph x) x
+lBityGraphI s = lWrappedGraphI (lBitGraphI s)
+
+bitify :: Ord x => GraphI g x -> g -> (BityGraph x, Size)
 bitify gi g = (wrappedGraph,size) where
   wrappedGraph = WrappedGraph bg c printer
   bg = BitGraph.fromArcs size newArcs
@@ -31,7 +42,7 @@ bitify gi g = (wrappedGraph,size) where
   newArcs = map enc (Graph.arcs gi g)
   enc (u,v) = (encode c u, encode c v)
 
-labeledBitify :: Ord x => LabeledGraphI g x -> g -> (LWrappedGraph LBitGraph Node x, Size)
+labeledBitify :: Ord x => LabeledGraphI g x -> g -> (LBityGraph x, Size)
 labeledBitify gi g = (wrappedGraph, size) where
   wrappedGraph = LWrappedGraph lbg c printer
   bitGraphPerLabel l = BitGraph.fromArcs size (newArcs l)
