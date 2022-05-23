@@ -18,6 +18,8 @@ data HomomorphismTree a = Branch {
   Closed a
     deriving Show
 
+{- Keep in mind that there are more than one cyclicWord that a node might be on! -}
+
 improvedSearch :: Size -> LBitGraph -> ([Label] -> BitGraph) -> Int -> Maybe (HomomorphismTree Node)
 improvedSearch size wrappedGraph wordToRel cutoff = undefined
 {-
