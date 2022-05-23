@@ -28,3 +28,13 @@ improvedSearch size wrappedGraph wordToRel cutoff = undefined
   promote changes to necLists among circles
   expand
 -}
+
+oneArcCons :: Size -> LBitGraph -> M.Map [Label] (S.Set Node) -> HomomorphismTree Node -> Maybe (HomomorphismTree Node, M.Map [Label] (S.Set Node))
+oneArcCons size lbg changedNecLists ht = worker ht 0 let
+
+  worker (Branch zeroT oneT) listOfChanged = undefined {-
+        split list of changed into being seen and seeing
+    -}
+
+
+    in undefined
