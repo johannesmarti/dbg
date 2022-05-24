@@ -3,6 +3,7 @@ module ImprovedSearch (
 ) where
 
 import qualified Data.Set as S
+import qualified Data.Map.Strict as M
 
 import Label
 import CommonLGraphTypes
@@ -12,8 +13,7 @@ data HomomorphismTree a = Branch {
     zeroSuccessor :: HomomorphismTree a,
     oneSuccessor :: HomomorphismTree a } |
   Open {
-    cyclicWord :: [Label],
-    necList :: S.Set a,
+    necMap :: M.Map [Label] (S.Set a),
     posList :: S.Set a} |
   Closed a
     deriving Show
@@ -31,12 +31,9 @@ improvedSearch size wrappedGraph wordToRel cutoff = undefined
   expand
 -}
 
-oneArcCons :: Size -> LBitGraph -> M.Map [Label] (S.Set Node) -> HomomorphismTree Node -> Maybe (HomomorphismTree Node, M.Map [Label] (S.Set Node))
+oneArcCons :: Size -> LBitGraph -> M.Map [Label] (S.Set Node)
+              -> HomomorphismTree Node
+              -> Maybe (HomomorphismTree Node, M.Map [Label] (S.Set Node))
 oneArcCons size lbg changedNecLists ht = worker ht 0 let
-
-  worker (Branch zeroT oneT) listOfChanged = undefined {-
-        split list of changed into being seen and seeing
-    -}
-
-
-    in undefined
+    worker (Branch zeroT oneT) listOfChanged = undefined
+  in undefined
