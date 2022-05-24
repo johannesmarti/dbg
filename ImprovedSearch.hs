@@ -35,6 +35,12 @@ improvedSearch size wrappedGraph wordToRel cutoff = undefined
 
 type ArcConsResult a = Maybe (HomomorphismTree Node, RestrictionMap Node)
 
+snip :: Ord a => RestrictionMap a -> RestrictionMap a
+snip = M.mapKeys tail
+
+zoSplit :: Ord a => RestrictionMap a -> (RestrictionMap a, RestrictionMap a)
+zoSplit = fmap snip . M.partitionWithKey (\k _ -> head k == Zero)
+
 fuse :: ArcConsResult a -> ArcConsResult a -> ArcConsResult a
 fuse (Just (zT, zM)) (Just (oT, oM)) = Just (Branch zT oT, fusedMap) where
   ezM = M.mapKeys (Zero:) zM
@@ -44,19 +50,19 @@ fuse _ _ = Nothing
 
 oneArcCons :: Size -> LBitGraph -> RestrictionMap Node
               -> HomomorphismTree Node -> ArcConsResult Node
-oneArcCons size lbg changedNecList ht =
-  worker ht (changedNecList, changedNecList) changedNecList where
+oneArcCons size lbg changedNecLists (Branch zeroT oneT) = let
     worker (Branch zeroT oneT) (changedOPred, changedZPred)
-                               changedSucc = let
-        (zzPred',ozPred') = M.partitionWithKey (\k _ -> head k == Zero) changedZPred
-        (zoPred',ooPred') = M.partitionWithKey (\k _ -> head k == Zero) changedOPred
-        (zSucc',oSucc') = M.partitionWithKey (\k _ -> head k == Zero) changedSucc
-        snip = M.mapKeys tail
-        (zzPred,ozPred) = (snip zzPred', snip ozPred')
-        (zoPred,ooPred) = (snip zoPred', snip ooPred')
-        (zSucc,oSucc) = (snip zSucc',snip oSucc')
-      in fuse (worker zeroT (zzPred,zoPred) zSucc)
-              (worker  oneT (ozPred,ooPred) oSucc)
+                               (sl,changedSucc) = let
+        (zzPred,ozPred) = zoSplit changedZPred
+        (zoPred,ooPred) = zoSplit changedOPred
+        (zSucc,oSucc) = zoSplit changedSucc
+      in fuse (worker zeroT (zzPred,zoPred) (sl,zSucc))
+              (worker  oneT (ozPred,ooPred) (sl,oSucc))
     worker (Open nMap pList) (changedOPred, changedZPred)
-                             changedSucc = undefined
+                             (sl,changedSucc) = undefined
     worker (Closed a) _ _ = Just (Closed a, M.empty)
+    (epsilonZPred,epsilonOPred) = zoSplit changedNecLists
+    (zzPred,ozPred) = zoSplit epsilonZPred
+    (zoPred,ooPred) = zoSplit epsilonOPred
+  in fuse (worker zeroT (zzPred,zoPred) (Zero,changedNecLists))
+          (worker  oneT (ozPred,ooPred) (One ,changedNecLists))
