@@ -48,21 +48,15 @@ fuse (Just (zT, zM)) (Just (oT, oM)) = Just (Branch zT oT, fusedMap) where
   fusedMap = ezM `M.union` eoM
 fuse _ _ = Nothing
 
-oneArcCons :: Size -> LBitGraph -> RestrictionMap Node
-              -> HomomorphismTree Node -> ArcConsResult Node
-oneArcCons size lbg changedNecLists (Branch zeroT oneT) = let
-    worker (Branch zeroT oneT) (changedOPred, changedZPred)
-                               (sl,changedSucc) = let
+oneArcCons :: Size -> LBitGraph -> HomomorphismTree Node
+              -> RestrictionMap Node -> ArcConsResult Node
+oneArcCons size lbg ht changedNecLists = let
+    worker (Branch zeroT oneT) (changedOPred, changedZPred) = let
         (zzPred,ozPred) = zoSplit changedZPred
         (zoPred,ooPred) = zoSplit changedOPred
-        (zSucc,oSucc) = zoSplit changedSucc
-      in fuse (worker zeroT (zzPred,zoPred) (sl,zSucc))
-              (worker  oneT (ozPred,ooPred) (sl,oSucc))
-    worker (Open nMap pList) (changedOPred, changedZPred)
-                             (sl,changedSucc) = undefined
-    worker (Closed a) _ _ = Just (Closed a, M.empty)
+      in fuse (worker zeroT (zzPred,zoPred))
+              (worker  oneT (ozPred,ooPred))
+    worker (Open nMap pList) (changedOPred, changedZPred) = undefined
+    worker (Closed a) _ = Just (Closed a, M.empty)
     (epsilonZPred,epsilonOPred) = zoSplit changedNecLists
-    (zzPred,ozPred) = zoSplit epsilonZPred
-    (zoPred,ooPred) = zoSplit epsilonOPred
-  in fuse (worker zeroT (zzPred,zoPred) (Zero,changedNecLists))
-          (worker  oneT (ozPred,ooPred) (One ,changedNecLists))
+  in worker ht (epsilonZPred,epsilonOPred)
