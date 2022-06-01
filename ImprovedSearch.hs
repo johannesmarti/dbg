@@ -48,13 +48,15 @@ snipRMap = M.mapKeys tail
 snip :: Ord a => Restrictions a -> Restrictions a
 snip (Restrictions fo ba) = Restrictions (snipRMap fo) (snipRMap ba)
 
-zoSplitRMap :: Ord a => RestrictionMap a -> (RestrictionMap a, RestrictionMap a)
-zoSplitRMap = fmap snipRMap . M.partitionWithKey (\k _ -> head k == Zero)
+zoSplit :: Ord a => RestrictionMap a -> (RestrictionMap a, RestrictionMap a)
+zoSplit = fmap snipRMap . M.partitionWithKey (\k _ -> head k == Zero)
 
+{-
 zoSplit :: Ord a => Restrictions a -> (Restrictions a, Restrictions a)
 zoSplit (Restrictions f b) = (Restrictions fz bz, Restrictions fo bo) where
   (fz,fo) = zoSplitRMap f
   (bz,bo) = zoSplitRMap b
+-}
 
 fuseRMap :: RestrictionMap a -> RestrictionMap a -> RestrictionMap a
 fuseRMap zM oM = ezM `M.union` eoM where
@@ -83,18 +85,22 @@ oneArcCons :: Size -> LBitGraph -> Restrictions Node
               -> HomomorphismTree Node -> ArcConsResult Node
 oneArcCons size lbg changes (Branch zeroT oneT) = let
     worker (Branch zeroT oneT) env = let
+        {- Here we could check whether the environment is empty, in which case
+           we could omit descending into the current subtree -}
         (zzPred,ozPred) = zoSplit (zeroPredecessors env)
         (zoPred,ooPred) = zoSplit ( onePredecessors env)
         (zSucc,oSucc) = zoSplit (successors env)
         l = localLabel env
-      in fuse (worker zeroT (zzPred,zoPred) (l,zSucc))
-              (worker  oneT (ozPred,ooPred) (l,oSucc))
+        zenv = Environment zzPred zoPred l zSucc
+        oenv = Environment ozPred ooPred l oSucc
+      in fuse (worker zeroT zenv) (worker oneT oenv)
 {-
     worker (Open nMap pList) (changedOPred, changedZPred)
                              (sl,changedSucc) = undefined
     worker (Closed a) _ _ = Just (Closed a, M.empty)-}
-    (epsilonZPred,epsilonOPred) = zoSplit changes
+    (epsilonZPred,epsilonOPred) = zoSplit (forwardRestrictions changes)
     (zzPred,ozPred) = zoSplit epsilonZPred
     (zoPred,ooPred) = zoSplit epsilonOPred
-  in undefined {-fuse (worker zeroT (zzPred,zoPred) (Zero,changedNecLists))
-          (worker  oneT (ozPred,ooPred) (One ,changedNecLists))-}
+    bwRestr = backwardRestrictions changes
+  in fuse (worker zeroT (Environment zzPred zoPred Zero bwRestr))
+          (worker  oneT (Environment ozPred ooPred  One bwRestr))
