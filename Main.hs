@@ -26,18 +26,16 @@ main :: IO ()
 
 --main = print $ firstLevelToAllocate 5 (labelOfWord (relationTree (toLBitGraph 5 big5, 5)))
 
-{-
 main = do
   args <- getArgs
   let n = read (head args)
   findCRange n
--}
 
 --main = putStrLn $ showLG (constructionGraphI dbgI) (dbg 3)
 --main = print $ immediatelyConstructible dbgI (dbg 3)
 
 --main = easyWordReport 31 alloc2I alloc2
-main = easyWordReport 31 hamburgerI hamburger
+--main = easyWordReport 31 hamburgerI hamburger
 --main = print $ Spiral.fromHub alloc2I alloc2 [Zero,One,One,One] [0,1,1,1]
 --main = checkOne 4 alloc2
 

@@ -10,12 +10,14 @@ import CommonLGraphTypes
 import BitGraph
 
 type RestrictionMap a = M.Map [Label] (S.Set a)
+type CycleMap a = M.Map [Label] (S.Set a)
 
-data HomomorphismTree a = Branch {
+data HomomorphismTree a =
+  Branch {
     zeroSuccessor :: HomomorphismTree a,
     oneSuccessor :: HomomorphismTree a } |
   Open {
-    necMap :: RestrictionMap a,
+    necMap :: CycleMap a,
     posList :: S.Set a} |
   Closed a
     deriving Show
@@ -33,30 +35,66 @@ improvedSearch size wrappedGraph wordToRel cutoff = undefined
   expand
 -}
 
-type ArcConsResult a = Maybe (HomomorphismTree Node, RestrictionMap Node)
+data Restrictions a = Restrictions {
+  forwardRestrictions :: RestrictionMap a,
+  backwardRestrictions :: RestrictionMap a
+} deriving Show
 
-snip :: Ord a => RestrictionMap a -> RestrictionMap a
-snip = M.mapKeys tail
+type ArcConsResult a = Maybe (HomomorphismTree a, Restrictions a)
 
-zoSplit :: Ord a => RestrictionMap a -> (RestrictionMap a, RestrictionMap a)
-zoSplit = fmap snip . M.partitionWithKey (\k _ -> head k == Zero)
+snipRMap :: Ord a => RestrictionMap a -> RestrictionMap a
+snipRMap = M.mapKeys tail
 
-fuse :: ArcConsResult a -> ArcConsResult a -> ArcConsResult a
-fuse (Just (zT, zM)) (Just (oT, oM)) = Just (Branch zT oT, fusedMap) where
+snip :: Ord a => Restrictions a -> Restrictions a
+snip (Restrictions fo ba) = Restrictions (snipRMap fo) (snipRMap ba)
+
+zoSplitRMap :: Ord a => RestrictionMap a -> (RestrictionMap a, RestrictionMap a)
+zoSplitRMap = fmap snipRMap . M.partitionWithKey (\k _ -> head k == Zero)
+
+zoSplit :: Ord a => Restrictions a -> (Restrictions a, Restrictions a)
+zoSplit (Restrictions f b) = (Restrictions fz bz, Restrictions fo bo) where
+  (fz,fo) = zoSplitRMap f
+  (bz,bo) = zoSplitRMap b
+
+fuseRMap :: RestrictionMap a -> RestrictionMap a -> RestrictionMap a
+fuseRMap zM oM = ezM `M.union` eoM where
   ezM = M.mapKeys (Zero:) zM
   eoM = M.mapKeys ( One:) oM
-  fusedMap = ezM `M.union` eoM
+
+fuseRestrictions :: Restrictions a -> Restrictions a -> Restrictions a
+fuseRestrictions (Restrictions fz bz) (Restrictions fo bo) =
+  Restrictions f b where
+    f = fuseRMap fz fo
+    b = fuseRMap bz bo
+
+fuse :: ArcConsResult a -> ArcConsResult a -> ArcConsResult a
+fuse (Just (zT, zR)) (Just (oT, oR)) = Just (Branch zT oT, fusedRestr) where
+  fusedRestr = fuseRestrictions zR oR
 fuse _ _ = Nothing
 
-oneArcCons :: Size -> LBitGraph -> HomomorphismTree Node
-              -> RestrictionMap Node -> ArcConsResult Node
-oneArcCons size lbg ht changedNecLists = let
-    worker (Branch zeroT oneT) (changedOPred, changedZPred) = let
-        (zzPred,ozPred) = zoSplit changedZPred
-        (zoPred,ooPred) = zoSplit changedOPred
-      in fuse (worker zeroT (zzPred,zoPred))
-              (worker  oneT (ozPred,ooPred))
-    worker (Open nMap pList) (changedOPred, changedZPred) = undefined
-    worker (Closed a) _ = Just (Closed a, M.empty)
-    (epsilonZPred,epsilonOPred) = zoSplit changedNecLists
-  in worker ht (epsilonZPred,epsilonOPred)
+data Environment a = Environment {
+  zeroPredecessors :: a,
+   onePredecessors :: a,
+  localLabel :: Label,
+  successors :: a
+} deriving Show
+
+oneArcCons :: Size -> LBitGraph -> Restrictions Node
+              -> HomomorphismTree Node -> ArcConsResult Node
+oneArcCons size lbg changes (Branch zeroT oneT) = let
+    worker (Branch zeroT oneT) env = let
+        (zzPred,ozPred) = zoSplit (zeroPredecessors env)
+        (zoPred,ooPred) = zoSplit ( onePredecessors env)
+        (zSucc,oSucc) = zoSplit (successors env)
+        l = localLabel env
+      in fuse (worker zeroT (zzPred,zoPred) (l,zSucc))
+              (worker  oneT (ozPred,ooPred) (l,oSucc))
+{-
+    worker (Open nMap pList) (changedOPred, changedZPred)
+                             (sl,changedSucc) = undefined
+    worker (Closed a) _ _ = Just (Closed a, M.empty)-}
+    (epsilonZPred,epsilonOPred) = zoSplit changes
+    (zzPred,ozPred) = zoSplit epsilonZPred
+    (zoPred,ooPred) = zoSplit epsilonOPred
+  in undefined {-fuse (worker zeroT (zzPred,zoPred) (Zero,changedNecLists))
+          (worker  oneT (ozPred,ooPred) (One ,changedNecLists))-}
