@@ -25,7 +25,7 @@ data HomomorphismTree a =
 {- Keep in mind that there are more than one cyclicWord that a node might be on! -}
 
 improvedSearch :: Size -> LBitGraph -> ([Label] -> BitGraph) -> Int -> Maybe (HomomorphismTree Node)
-improvedSearch size wrappedGraph wordToRel cutoff = undefined
+improvedSearch s wrappedGraph wordToRel cutoff = undefined
 {-
   expand
   choose node to fix
@@ -39,6 +39,9 @@ data Restrictions a = Restrictions {
   forwardRestrictions :: RestrictionMap a,
   backwardRestrictions :: RestrictionMap a
 } deriving Show
+
+noRestrictions :: Restrictions a
+noRestrictions = Restrictions M.empty M.empty
 
 type ArcConsResult a = Maybe (HomomorphismTree a, Restrictions a)
 
@@ -81,26 +84,34 @@ data Environment a = Environment {
   successors :: a
 } deriving Show
 
+compatibleWithRestrEnv :: Size -> LBitGraph
+                          -> Environment (RestrictionMap Node) -> Bool
+compatibleWithRestrEnv a env = undefined
+
+subtreeArcCons :: Size -> LBitGraph -> HomomorphismTree Node
+                  -> Environment (RestrictionMap Node) -> ArcConsResult Node
+subtreeArcCons s lbg (Branch zeroT oneT) env = let
+    {- Here we could check whether the environment is empty, in which case
+       we could omit descending into the current subtree -}
+    (zzPred,ozPred) = zoSplit (zeroPredecessors env)
+    (zoPred,ooPred) = zoSplit ( onePredecessors env)
+    (zSucc,oSucc) = zoSplit (successors env)
+    l = localLabel env
+    zenv = Environment zzPred zoPred l zSucc
+    oenv = Environment ozPred ooPred l oSucc
+  in fuse (subtreeArcCons s lbg zeroT zenv)
+          (subtreeArcCons s lbg  oneT oenv)
+subtreeArcCons s lbg (Closed a) env =
+  if compatibleWithRestrEnv s lbg a env
+    then Just (Closed a, noRestrictions)
+    else Nothing
+
 oneArcCons :: Size -> LBitGraph -> Restrictions Node
               -> HomomorphismTree Node -> ArcConsResult Node
-oneArcCons size lbg changes (Branch zeroT oneT) = let
-    worker (Branch zeroT oneT) env = let
-        {- Here we could check whether the environment is empty, in which case
-           we could omit descending into the current subtree -}
-        (zzPred,ozPred) = zoSplit (zeroPredecessors env)
-        (zoPred,ooPred) = zoSplit ( onePredecessors env)
-        (zSucc,oSucc) = zoSplit (successors env)
-        l = localLabel env
-        zenv = Environment zzPred zoPred l zSucc
-        oenv = Environment ozPred ooPred l oSucc
-      in fuse (worker zeroT zenv) (worker oneT oenv)
-{-
-    worker (Open nMap pList) (changedOPred, changedZPred)
-                             (sl,changedSucc) = undefined
-    worker (Closed a) _ _ = Just (Closed a, M.empty)-}
+oneArcCons s lbg changes (Branch zeroT oneT) = let
     (epsilonZPred,epsilonOPred) = zoSplit (forwardRestrictions changes)
     (zzPred,ozPred) = zoSplit epsilonZPred
     (zoPred,ooPred) = zoSplit epsilonOPred
     bwRestr = backwardRestrictions changes
-  in fuse (worker zeroT (Environment zzPred zoPred Zero bwRestr))
-          (worker  oneT (Environment ozPred ooPred  One bwRestr))
+  in fuse (subtreeArcCons s lbg zeroT (Environment zzPred zoPred Zero bwRestr))
+          (subtreeArcCons s lbg  oneT (Environment ozPred ooPred  One bwRestr))
