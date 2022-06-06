@@ -8,6 +8,7 @@ import qualified Data.Map.Strict as M
 import Label
 import CommonLGraphTypes
 import BitGraph
+import LabeledGraph as LG
 
 type RestrictionMap a = M.Map [Label] (S.Set a)
 type CycleMap a = M.Map [Label] (S.Set a)
@@ -17,7 +18,7 @@ data HomomorphismTree a =
     zeroSuccessor :: HomomorphismTree a,
     oneSuccessor :: HomomorphismTree a } |
   Open {
-    necMap :: CycleMap a,
+    cycleMap :: CycleMap a,
     posList :: S.Set a} |
   Closed a
     deriving Show
@@ -81,28 +82,53 @@ data Environment a = Environment {
   zeroPredecessors :: a,
    onePredecessors :: a,
   localLabel :: Label,
-  successors :: a
+  localSuccessors :: a
 } deriving Show
 
-compatibleWithRestrEnv :: Size -> LBitGraph
-                          -> Environment (RestrictionMap Node) -> Bool
-compatibleWithRestrEnv a env = undefined
+type RestrEnv a = Environment (RestrictionMap a)
+
+splitEnv :: Ord a => RestrEnv a -> (RestrEnv a, RestrEnv a)
+splitEnv env = (zenv, oenv) where
+  (zzPred,ozPred) = zoSplit (zeroPredecessors env)
+  (zoPred,ooPred) = zoSplit ( onePredecessors env)
+  (zSucc,oSucc) = zoSplit (localSuccessors env)
+  l = localLabel env
+  zenv = Environment zzPred zoPred l zSucc
+  oenv = Environment ozPred ooPred l oSucc
+
+compatibleWithRestrEnv :: Size -> LBitGraph -> RestrEnv Node -> Node -> Bool
+compatibleWithRestrEnv s lbg env a = res where
+  gi = lBitGraphI s
+  isPredecessor l v = hasArc gi lbg l (v,a)
+  isSuccessor v = hasArc gi lbg (localLabel env) (a,v)
+  zPredComp = any (isPredecessor Zero) (undefined)
+  oPredComp = undefined
+  succComp = undefined
+  res = undefined
+
+
+type LeafData a = (CycleMap a, S.Set a)
+
+updateOpen :: Size -> LBitGraph -> RestrEnv Node -> LeafData a -> Maybe (LeafData a)
+updateOpen s lbg env (cycleM, necL) = res where
+  (necL',out) = S.partition (compatibleWithRestrEnv s lbg env) necL
+  res = undefined
+
 
 subtreeArcCons :: Size -> LBitGraph -> HomomorphismTree Node
-                  -> Environment (RestrictionMap Node) -> ArcConsResult Node
+                  -> RestrEnv Node -> ArcConsResult Node
+subtreeArcCons s lbg (Branch (Open zCMap zPosList)
+                             (Open oCMap oPosList)) env = let
+    (zenv,oenv) = splitEnv env
+  in undefined
 subtreeArcCons s lbg (Branch zeroT oneT) env = let
     {- Here we could check whether the environment is empty, in which case
        we could omit descending into the current subtree -}
-    (zzPred,ozPred) = zoSplit (zeroPredecessors env)
-    (zoPred,ooPred) = zoSplit ( onePredecessors env)
-    (zSucc,oSucc) = zoSplit (successors env)
-    l = localLabel env
-    zenv = Environment zzPred zoPred l zSucc
-    oenv = Environment ozPred ooPred l oSucc
+    (zenv,oenv) = splitEnv env
   in fuse (subtreeArcCons s lbg zeroT zenv)
           (subtreeArcCons s lbg  oneT oenv)
 subtreeArcCons s lbg (Closed a) env =
-  if compatibleWithRestrEnv s lbg a env
+  if compatibleWithRestrEnv s lbg env a
     then Just (Closed a, noRestrictions)
     else Nothing
 
