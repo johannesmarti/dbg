@@ -23,8 +23,8 @@ liftedGraphReport lg = let
     rt = relationTree (lbg,s)
     relOfWord = labelOfWord rt
 
-    --wordRelList = tail $ allWordsWithout rt (hasUniv s)
-    wordRelList = tail $ take 15 $ allWordsWithout rt (\_ -> False)
+    wordRelList = tail $ allWordsWithout rt (hasUniv s)
+    --wordRelList = tail $ take 15 $ allWordsWithout rt (\_ -> False)
 
     onCycles w = Set.fromList $ arcsOnMCycles (lbg, s) relOfWord w
 

@@ -26,10 +26,13 @@ main :: IO ()
 
 --main = print $ firstLevelToAllocate 5 (labelOfWord (relationTree (toLBitGraph 5 big5, 5)))
 
-main = do
-  args <- getArgs
-  let n = read (head args)
-  findCRange n
+--main = do
+--  args <- getArgs
+--  let n = read (head args)
+--  findCRange n
+
+--main = gameAlloc2
+main = gameBig5
 
 --main = putStrLn $ showLG (constructionGraphI dbgI) (dbg 3)
 --main = print $ immediatelyConstructible dbgI (dbg 3)
