@@ -27,7 +27,7 @@ import Patterns
 import Label
 import Spiral
 
-game = gameBig5
+game = gameStudy
 
 gameEx5 :: IO ()
 gameEx5 = let
@@ -476,4 +476,64 @@ gameBig5 = let
     --mapM_ (putStrLn . prettyCandidate) cans
     --putChar '\n'
     print pairs
+
+gameStudy :: IO ()
+gameStudy = let
+    combiner = do
+      combine 0 2
+      combine 1 2
+      -- end of forced
+
+      combine 0 3 -- seems best for 101
+      combine 0 1 -- clearly best
+      combine 1 3 -- what a smart move. Creates someone that is easy to see
+
+      -- wind up 01  with 8,7
+      combine 3 7 -- gives 9 for 10
+      combine 0 8 -- gives 10 for 01
+      combine 4 9 -- gives 11 for 10
+      combine 5 10 -- gives 12 for 01
+      combine 6 11 -- gives 13 for 10
+      combine 12 13
+
+{-
+      combine 1 4 -- best for 010
+      combine 3 7 -- best for 010
+      combine 5 6 -- best for 010
+      combine 4 9 -- best for 010
+      combine 5 8 -- best for 010
+      combine 6 11 -- best for 010
+      combine 8 9 -- best for 010
+      combine 8 10 -- best for 010
+-}
+{-
+      combine 0 3 -- seems best for 101
+      combine 0 1
+      combine 1 3
+      s' <- combine 3 7
+      e' <- combine 4 8
+      s'' <- combine 4 s'
+      e'' <- combine 5 e'
+      s''' <- combine 6 s''
+      combine 7 12
+      combine 13 14
+-}
+      return ()
+    lifting = execState combiner (fromLGraph slowSquareI slowSquare)
+    ig = graph lifting
+    cans = filter (weakDominationFilter ig) (liftableCandidates ig)
+    pairs = map extractPair cans
+  in do
+    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putChar '\n'
+    --easyLiftedGraphReport lifting
+    --putChar '\n'
+    --print $ Spiral.fromHub intGraphI ig [One,Zero,One] [8,9,10]
+    --putChar '\n'
+    --mapM_ (\c -> putStrLn (prettyCanWithArcs c) >> putChar '\n') cans
+    --mapM_ (putStrLn . prettyCandidate) cans
+    --putChar '\n'
+    print pairs
+    --easyWordReport 15 intGraphI ig
+    --mapM_ (putStrLn . prettyCandidate) cans
 

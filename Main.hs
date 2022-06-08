@@ -32,7 +32,8 @@ main :: IO ()
 --  findCRange n
 
 --main = gameAlloc2
-main = gameBig5
+--main = gameBig5
+main = game
 
 --main = putStrLn $ showLG (constructionGraphI dbgI) (dbg 3)
 --main = print $ immediatelyConstructible dbgI (dbg 3)
