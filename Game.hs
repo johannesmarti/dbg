@@ -27,7 +27,7 @@ import Patterns
 import Label
 import Spiral
 
-game = gameStudy
+game = gameBig5
 
 gameEx5 :: IO ()
 gameEx5 = let
@@ -96,24 +96,28 @@ gameSlowSquare = let
     combiner = do
       combine 0 2
       combine 1 2
-      combine 0 3
-      combine 0 1
-      combine 1 3
-      s' <- combine 3 7
-      e' <- combine 4 8
-      s'' <- combine 4 s'
-      e'' <- combine 5 e'
-      s''' <- combine 6 s''
-      combine 7 12
-      combine 13 14
+      -- end of forced
+
+      combine 0 3 -- seems best for 101
+      combine 0 1 -- clearly best (creates 7)
+      combine 1 3 -- what a smart move. Creates someone that is easy to see
+
+      -- wind up 01  with 8,7
+      combine 3 7 -- gives 9 for 10
+      combine 0 8 -- gives 10 for 01
+      combine 4 9 -- gives 11 for 10
+      combine 5 10 -- gives 12 for 01
+      combine 6 11 -- gives 13 for 10
+      combine 12 13
       return ()
     lifting = execState combiner (fromLGraph slowSquareI slowSquare)
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
+    pairs = map extractPair cans
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
-    easyWordReport 15 intGraphI ig
-    mapM_ (putStrLn . prettyCandidate) cans
+    putChar '\n'
+    print pairs
 
 gameDifficult :: IO ()
 gameDifficult = let
@@ -447,19 +451,65 @@ gameBig5 :: IO ()
 gameBig5 = let
     combiner = do
       combine 2 3
+
+      -- to get 0 2
       combine 1 3
       combine 0 1
+      combine 0 2 -- 8 for 10
+
+      combine 3 8 -- 9 for 10
+
+      -- to get 4 9
       combine 3 4
-      combine 0 5
-      combine 5 6
-      combine 6 7
-      combine 1 8
-      combine 7 9
-      combine 9 10
-      combine 10 11
-      combine 0 12
-      combine 11 13
-      combine 13 14
+      combine 1 4
+      combine 0 4
+      combine 2 4
+      combine 4 5
+      combine 4 6
+      combine 4 7
+      combine 4 9 -- 17 for 10
+
+      combine 4 5 -- 18 for 01
+
+      -- to get 13 17
+      combine 5 10
+      combine 6 11
+      combine 7 12
+      combine 9 13
+      combine 5 13
+      combine 10 14
+      combine 11 15
+      combine 12 16
+      combine 13 17 -- 27 for 10
+
+      combine 5 27 -- 28 for 10
+
+      -- to get 6 18
+      combine 3 12
+      combine 1 24
+      combine 0 25
+      combine 5 26
+      combine 6 28 -- 33 for 10
+
+      -- to get 7 33
+      combine 1 29
+      combine 0 30
+      combine 5 31
+      combine 6 32
+      combine 7 33 -- 38 for 10
+
+      combine 10 38 -- 39 for 10
+
+      combine 8 18 -- 40 for 01
+
+      combine 10 37
+      combine 11 39 -- 42 for 10
+
+      combine 4 35
+      combine 10 36
+      combine 11 41
+      combine 12 42 -- 46 for 10
+
       return ()
     lifting = execState combiner (fromLGraph big5I big5)
     ig = graph lifting
@@ -468,9 +518,9 @@ gameBig5 = let
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
     putChar '\n'
-    easyLiftedGraphReport lifting
-    putChar '\n'
-    print $ Spiral.fromHub intGraphI ig [One,One,Zero,One,One,Zero] [16,16,16,18,15,17]
+    --easyLiftedGraphReport lifting
+    --putChar '\n'
+    print $ Spiral.fromHub intGraphI ig [Zero,One] [40,46]
     putChar '\n'
     --mapM_ (\c -> putStrLn (prettyCanWithArcs c) >> putChar '\n') cans
     --mapM_ (putStrLn . prettyCandidate) cans
@@ -486,8 +536,9 @@ gameStudy = let
 
       combine 0 3 -- seems best for 101
       combine 0 1 -- clearly best
-      combine 1 3 -- what a smart move. Creates someone that is easy to see
+ --     combine 1 3 -- what a smart move. Creates someone that is easy to see
 
+{-
       -- wind up 01  with 8,7
       combine 3 7 -- gives 9 for 10
       combine 0 8 -- gives 10 for 01
@@ -495,28 +546,6 @@ gameStudy = let
       combine 5 10 -- gives 12 for 01
       combine 6 11 -- gives 13 for 10
       combine 12 13
-
-{-
-      combine 1 4 -- best for 010
-      combine 3 7 -- best for 010
-      combine 5 6 -- best for 010
-      combine 4 9 -- best for 010
-      combine 5 8 -- best for 010
-      combine 6 11 -- best for 010
-      combine 8 9 -- best for 010
-      combine 8 10 -- best for 010
--}
-{-
-      combine 0 3 -- seems best for 101
-      combine 0 1
-      combine 1 3
-      s' <- combine 3 7
-      e' <- combine 4 8
-      s'' <- combine 4 s'
-      e'' <- combine 5 e'
-      s''' <- combine 6 s''
-      combine 7 12
-      combine 13 14
 -}
       return ()
     lifting = execState combiner (fromLGraph slowSquareI slowSquare)
@@ -526,8 +555,8 @@ gameStudy = let
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
     putChar '\n'
-    --easyLiftedGraphReport lifting
-    --putChar '\n'
+    easyLiftedGraphReport lifting
+    putChar '\n'
     --print $ Spiral.fromHub intGraphI ig [One,Zero,One] [8,9,10]
     --putChar '\n'
     --mapM_ (\c -> putStrLn (prettyCanWithArcs c) >> putChar '\n') cans
