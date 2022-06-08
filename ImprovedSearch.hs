@@ -52,6 +52,15 @@ data Restrictions a = Restrictions {
 noRestrictions :: Restrictions a
 noRestrictions = Restrictions M.empty M.empty
 
+restrictionsAtLeaf :: Ord a => (S.Set a, S.Set a) -> (S.Set a, S.Set a)
+                               -> Restrictions a
+restrictionsAtLeaf (zPos,zout) (oPos,oout) = Restrictions fwd bwd where
+  oFMap = if null zout then M.empty else M.singleton [] zPos
+  zFMap = if null oout then M.empty else M.singleton [] oPos
+  fwd = oFMap `fuseRMap` zFMap
+  bout = (zout S.\\ oPos) `S.union` (oout S.\\ zPos)
+  bwd = if null bout then M.empty else M.singleton [] (zPos `S.union` oPos)
+
 type ArcConsResult a = Maybe (HomomorphismTree a, Restrictions a)
 
 snipRMap :: Ord a => RestrictionMap a -> RestrictionMap a
@@ -127,14 +136,16 @@ updateOpen s lbg env (cycleM, posL) = do
 
 subtreeArcCons :: Size -> LBitGraph -> HomomorphismTree Node
                   -> RestrEnv Node -> ArcConsResult Node
+
 subtreeArcCons s lbg (Branch (Open zCMap zPosList)
                              (Open oCMap oPosList)) env = do
   let (zenv,oenv) = splitEnv env
   ((zCMap', zPosList'), zout) <- updateOpen s lbg zenv (zCMap, zPosList)
   ((oCMap', oPosList'), oout) <- updateOpen s lbg oenv (oCMap, oPosList)
-  restrictions <- undefined
+  let restrictions = restrictionsAtLeaf (zPosList', zout) (oPosList', oout)
   return (Branch (Open zCMap' zPosList')
                  (Open oCMap' oPosList'), restrictions)
+
 subtreeArcCons s lbg (Branch zeroT oneT) env = let
     {- Here we could check whether the environment is empty, in which case
        we could omit descending into the current subtree -}
