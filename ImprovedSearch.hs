@@ -13,6 +13,14 @@ import LabeledGraph as LG
 type RestrictionMap a = M.Map [Label] (S.Set a)
 type CycleMap a = M.Map [Label] (S.Set a)
 
+removeFromCycleMap :: Ord a => S.Set a -> CycleMap a -> Maybe (CycleMap a)
+removeFromCycleMap toRemove cm = let
+    newMap = M.map (S.\\ toRemove) cm
+    nonEmpty set = not (null set)
+  in if all nonEmpty (M.elems cm)
+       then Just newMap
+       else Nothing
+
 data HomomorphismTree a =
   Branch {
     zeroSuccessor :: HomomorphismTree a,
@@ -101,26 +109,32 @@ compatibleWithRestrEnv s lbg env a = res where
   gi = lBitGraphI s
   isPredecessor l v = hasArc gi lbg l (v,a)
   isSuccessor v = hasArc gi lbg (localLabel env) (a,v)
-  zPredComp = any (isPredecessor Zero) (undefined)
-  oPredComp = undefined
-  succComp = undefined
-  res = undefined
-
+  hasPredecessor l set = any (isPredecessor l) set
+  hasSuccessor set = any isSuccessor set
+  zPredComp = all (hasPredecessor Zero) (zeroPredecessors env)
+  oPredComp = all (hasPredecessor  One) ( onePredecessors env)
+  succComp = all hasSuccessor (localSuccessors env)
+  res = zPredComp && oPredComp && succComp
 
 type LeafData a = (CycleMap a, S.Set a)
 
-updateOpen :: Size -> LBitGraph -> RestrEnv Node -> LeafData a -> Maybe (LeafData a)
-updateOpen s lbg env (cycleM, necL) = res where
-  (necL',out) = S.partition (compatibleWithRestrEnv s lbg env) necL
-  res = undefined
-
+updateOpen :: Size -> LBitGraph -> RestrEnv Node -> LeafData Node
+              -> Maybe (LeafData Node, S.Set Node)
+updateOpen s lbg env (cycleM, posL) = do
+  let (posL',out) = S.partition (compatibleWithRestrEnv s lbg env) posL
+  cycleM' <- removeFromCycleMap out cycleM
+  return ((cycleM', posL'), out)
 
 subtreeArcCons :: Size -> LBitGraph -> HomomorphismTree Node
                   -> RestrEnv Node -> ArcConsResult Node
 subtreeArcCons s lbg (Branch (Open zCMap zPosList)
-                             (Open oCMap oPosList)) env = let
-    (zenv,oenv) = splitEnv env
-  in undefined
+                             (Open oCMap oPosList)) env = do
+  let (zenv,oenv) = splitEnv env
+  ((zCMap', zPosList'), zout) <- updateOpen s lbg zenv (zCMap, zPosList)
+  ((oCMap', oPosList'), oout) <- updateOpen s lbg oenv (oCMap, oPosList)
+  restrictions <- undefined
+  return (Branch (Open zCMap' zPosList')
+                 (Open oCMap' oPosList'), restrictions)
 subtreeArcCons s lbg (Branch zeroT oneT) env = let
     {- Here we could check whether the environment is empty, in which case
        we could omit descending into the current subtree -}
