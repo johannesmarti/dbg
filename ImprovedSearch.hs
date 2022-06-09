@@ -134,6 +134,13 @@ updateOpen s lbg env (cycleM, posL) = do
   cycleM' <- removeFromCycleMap out cycleM
   return ((cycleM', posL'), out)
 
+updateClosed :: Size -> LBitGraph -> RestrEnv Node -> Node
+                -> Maybe (S.Set Node, S.Set Node)
+updateClosed s lbg env n =
+  if compatibleWithRestrEnv s lbg env n
+    then Just (S.singleton n, S.empty)
+    else Nothing
+
 subtreeArcCons :: Size -> LBitGraph -> HomomorphismTree Node
                   -> RestrEnv Node -> ArcConsResult Node
 
@@ -146,12 +153,32 @@ subtreeArcCons s lbg (Branch (Open zCMap zPosList)
   return (Branch (Open zCMap' zPosList')
                  (Open oCMap' oPosList'), restrictions)
 
+subtreeArcCons s lbg (Branch (Open zCMap zPosList)
+                             (Closed c)) env = do
+  let (zenv,oenv) = splitEnv env
+  ((zCMap', zPosList'), zout) <- updateOpen s lbg zenv (zCMap, zPosList)
+  (oPosList', oout) <- updateClosed s lbg oenv c
+  let restrictions = restrictionsAtLeaf (zPosList', zout) (oPosList', oout)
+  return (Branch (Open zCMap' zPosList')
+                 (Closed c), restrictions)
+
+subtreeArcCons s lbg (Branch (Closed c)
+                             (Open oCMap oPosList)) env = do
+  let (zenv,oenv) = splitEnv env
+  (zPosList', zout) <- updateClosed s lbg zenv c
+  ((oCMap', oPosList'), oout) <- updateOpen s lbg oenv (oCMap, oPosList)
+  let restrictions = restrictionsAtLeaf (zPosList', zout) (oPosList', oout)
+  return (Branch (Closed c)
+                 (Open oCMap' oPosList'), restrictions)
+
+
 subtreeArcCons s lbg (Branch zeroT oneT) env = let
     {- Here we could check whether the environment is empty, in which case
        we could omit descending into the current subtree -}
     (zenv,oenv) = splitEnv env
   in fuse (subtreeArcCons s lbg zeroT zenv)
           (subtreeArcCons s lbg  oneT oenv)
+
 subtreeArcCons s lbg (Closed a) env =
   if compatibleWithRestrEnv s lbg env a
     then Just (Closed a, noRestrictions)
@@ -159,6 +186,17 @@ subtreeArcCons s lbg (Closed a) env =
 
 oneArcCons :: Size -> LBitGraph -> Restrictions Node
               -> HomomorphismTree Node -> ArcConsResult Node
+{-
+oneArcCons s lbg changes (Branch (Open zCMap zPosList)
+                                 (Open oCMap oPosList)) = let
+    (epsilonZPred,epsilonOPred) = zoSplit (forwardRestrictions changes)
+    (zzPred,ozPred) = zoSplit epsilonZPred
+    (zoPred,ooPred) = zoSplit epsilonOPred
+    bwRestr = backwardRestrictions changes
+  in fuse (subtreeArcCons s lbg zeroT (Environment zzPred zoPred Zero bwRestr))
+          (subtreeArcCons s lbg  oneT (Environment ozPred ooPred  One bwRestr))
+-}
+
 oneArcCons s lbg changes (Branch zeroT oneT) = let
     (epsilonZPred,epsilonOPred) = zoSplit (forwardRestrictions changes)
     (zzPred,ozPred) = zoSplit epsilonZPred
