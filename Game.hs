@@ -27,7 +27,7 @@ import Patterns
 import Label
 import Spiral
 
-game = gameBig5
+game = gameStudy
 
 gameEx5 :: IO ()
 gameEx5 = let
@@ -536,7 +536,7 @@ gameStudy = let
 
       combine 0 3 -- seems best for 101
       combine 0 1 -- clearly best
- --     combine 1 3 -- what a smart move. Creates someone that is easy to see
+--      combine 1 3 -- what a smart move. Creates someone that is easy to see
 
 {-
       -- wind up 01  with 8,7
