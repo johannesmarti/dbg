@@ -27,7 +27,7 @@ import Patterns
 import Label
 import Spiral
 
-game = gameStudy
+game = gameUnsound
 
 gameEx5 :: IO ()
 gameEx5 = let
@@ -202,7 +202,7 @@ gameUnsound = let
     pairs = map extractPair cans
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
-    easyWordReport 15 intGraphI ig
+    --easyWordReport 15 intGraphI ig
     --mapM_ (putStrLn . prettyCandidate) cans
     putChar '\n'
     print pairs
@@ -527,6 +527,27 @@ gameBig5 = let
     --putChar '\n'
     print pairs
 
+gameAlloc3 :: IO ()
+gameAlloc3 = let
+    combiner = do
+      combine 2 3
+      combine 0 1 -- 5 and 1 univ
+      -- end of forced
+      combine 0 3
+      combine 2 6
+      combine 1 7
+      combine 4 8
+      combine 5 9
+      return ()
+    lifting = execState combiner (fromLGraph alloc3I alloc3)
+    ig = graph lifting
+    cans = filter (weakDominationFilter ig) (liftableCandidates ig)
+    pairs = map extractPair cans
+  in do
+    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putChar '\n'
+    print pairs
+
 gameStudy :: IO ()
 gameStudy = let
     combiner = do
@@ -535,7 +556,7 @@ gameStudy = let
       -- end of forced
 
       combine 0 3 -- seems best for 101
-      combine 0 1 -- clearly best
+--      combine 0 1 -- clearly best
 --      combine 1 3 -- what a smart move. Creates someone that is easy to see
 
 {-

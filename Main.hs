@@ -39,6 +39,7 @@ main = game
 --main = print $ immediatelyConstructible dbgI (dbg 3)
 
 --main = easyWordReport 31 alloc2I alloc2
+--main = easyWordReport 7 unsoundI unsound
 --main = easyWordReport 31 hamburgerI hamburger
 --main = print $ Spiral.fromHub alloc2I alloc2 [Zero,One,One,One] [0,1,1,1]
 --main = checkOne 4 alloc2
