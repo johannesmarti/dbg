@@ -27,7 +27,7 @@ import Patterns
 import Label
 import Spiral
 
-game = gameUnsound
+game = gameStudy
 
 gameEx5 :: IO ()
 gameEx5 = let
@@ -551,35 +551,50 @@ gameAlloc3 = let
 gameStudy :: IO ()
 gameStudy = let
     combiner = do
+      combine 0 3
       combine 0 2
       combine 1 2
-      -- end of forced
+      combine 1 3
 
-      combine 0 3 -- seems best for 101
---      combine 0 1 -- clearly best
---      combine 1 3 -- what a smart move. Creates someone that is easy to see
+      combine 2 4 -- gives 8 for 101
+      combine 1 5 -- gives 9 for 011
+      combine 4 9 -- gives 10 for 110
+      combine 1 4 -- gives 11 for 010
+      combine 4 5 -- gives 12 for 100
+      combine 6 12 -- gives 13 for 001
 
+      combine 0 1 -- gives 14 for 10
+      combine 2 3 -- gives 15 for 01
+      combine 2 14 -- gives 16 for 10
+      combine 1 15 -- gives 17 for 01
+      combine 4 16 -- gives 18 for 10
+      combine 5 17 -- gives 19 for 01
+      combine 6 18 -- gives 20 for 10
+      combine 7 19 -- gives 21 for 01
+      combine 5 20 -- gives 22 for 10
+      combine 6 21 -- gives 23 for 01
+      combine 8 22 -- gives 24 for 10
+      combine 9 23 -- gives 25 for 01
+      combine 13 24 -- gives 26 for 10 and 1
 {-
-      -- wind up 01  with 8,7
-      combine 3 7 -- gives 9 for 10
-      combine 0 8 -- gives 10 for 01
-      combine 4 9 -- gives 11 for 10
-      combine 5 10 -- gives 12 for 01
-      combine 6 11 -- gives 13 for 10
-      combine 12 13
+    
+      combine 10 13 -- gives 27 for 0
+      combine 13 27 -- gives 28 for 0
+      combine 25 28 -- gives 29 for 0
+      combine 26 29 -- gives the double self loop!!!!
 -}
       return ()
-    lifting = execState combiner (fromLGraph slowSquareI slowSquare)
+    lifting = execState combiner (fromLGraph biggestI biggest)
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
     putChar '\n'
-    easyLiftedGraphReport lifting
-    putChar '\n'
-    --print $ Spiral.fromHub intGraphI ig [One,Zero,One] [8,9,10]
+    --easyLiftedGraphReport lifting
     --putChar '\n'
+    print $ Spiral.fromHub intGraphI ig [Zero,One] [2,0]
+    putChar '\n'
     --mapM_ (\c -> putStrLn (prettyCanWithArcs c) >> putChar '\n') cans
     --mapM_ (putStrLn . prettyCandidate) cans
     --putChar '\n'
