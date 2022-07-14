@@ -169,7 +169,7 @@ gameBiggest = let
       combine 9 23 -- gives 25 for 01
       combine 13 24 -- gives 26 for 10 and 1
     
-      combine 10 13 -- gives 27 for 0
+      combine 9 13 -- gives 27 for 0 (could also use 10 instead of 9)
       combine 13 27 -- gives 28 for 0
       combine 25 28 -- gives 29 for 0
       combine 26 29 -- gives the double self loop!!!!
@@ -576,13 +576,11 @@ gameStudy = let
       combine 8 22 -- gives 24 for 10
       combine 9 23 -- gives 25 for 01
       combine 13 24 -- gives 26 for 10 and 1
-{-
     
-      combine 10 13 -- gives 27 for 0
+      combine 9 13 -- gives 27 for 0
       combine 13 27 -- gives 28 for 0
       combine 25 28 -- gives 29 for 0
       combine 26 29 -- gives the double self loop!!!!
--}
       return ()
     lifting = execState combiner (fromLGraph biggestI biggest)
     ig = graph lifting
