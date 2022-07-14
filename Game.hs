@@ -164,15 +164,13 @@ gameBiggest = let
       combine 6 18 -- gives 20 for 10
       combine 7 19 -- gives 21 for 01
       combine 5 20 -- gives 22 for 10
-      combine 6 21 -- gives 23 for 01
-      combine 8 22 -- gives 24 for 10
-      combine 9 23 -- gives 25 for 01
-      combine 13 24 -- gives 26 for 10 and 1
+      combine 8 22 -- gives 23 for 10
+      combine 9 21 -- gives 24 for 01
+      combine 13 23 -- gives 25 for 10 and 1
     
-      combine 9 13 -- gives 27 for 0 (could also use 10 instead of 9)
-      combine 13 27 -- gives 28 for 0
-      combine 25 28 -- gives 29 for 0
-      combine 26 29 -- gives the double self loop!!!!
+      combine 9 22 -- gives 26 for 0
+      combine 24 26 -- gives 27 for 0
+      combine 25 27 -- gives double self loop!!
       return ()
     lifting = execState combiner (fromLGraph biggestI biggest)
     ig = graph lifting
@@ -572,15 +570,13 @@ gameStudy = let
       combine 6 18 -- gives 20 for 10
       combine 7 19 -- gives 21 for 01
       combine 5 20 -- gives 22 for 10
-      combine 6 21 -- gives 23 for 01
-      combine 8 22 -- gives 24 for 10
-      combine 9 23 -- gives 25 for 01
-      combine 13 24 -- gives 26 for 10 and 1
+      combine 8 22 -- gives 23 for 10
+      combine 9 21 -- gives 24 for 01
+      combine 13 23 -- gives 25 for 10 and 1
     
-      combine 9 13 -- gives 27 for 0
-      combine 13 27 -- gives 28 for 0
-      combine 25 28 -- gives 29 for 0
-      combine 26 29 -- gives the double self loop!!!!
+      combine 9 22 -- gives 26 for 0
+      combine 24 26 -- gives 27 for 0
+      combine 25 27 -- gives double self loop!!
       return ()
     lifting = execState combiner (fromLGraph biggestI biggest)
     ig = graph lifting
@@ -591,8 +587,8 @@ gameStudy = let
     putChar '\n'
     --easyLiftedGraphReport lifting
     --putChar '\n'
-    print $ Spiral.fromHub intGraphI ig [Zero,One] [2,0]
-    putChar '\n'
+    --print $ Spiral.fromHub intGraphI ig [Zero,One] [2,0]
+    --putChar '\n'
     --mapM_ (\c -> putStrLn (prettyCanWithArcs c) >> putChar '\n') cans
     --mapM_ (putStrLn . prettyCandidate) cans
     --putChar '\n'
