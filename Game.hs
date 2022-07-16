@@ -561,6 +561,7 @@ gameStudy = let
       combine 4 5 -- gives 12 for 100
       combine 6 12 -- gives 13 for 001
 
+{-
       combine 0 1 -- gives 14 for 10
       combine 2 3 -- gives 15 for 01
       combine 2 14 -- gives 16 for 10
@@ -577,6 +578,7 @@ gameStudy = let
       combine 9 13 -- gives 26 for 0
       combine 24 26 -- gives 27 for 0
       combine 25 27 -- gives double self loop!!
+-}
 
       return ()
     lifting = execState combiner (fromLGraph biggestI biggest)
