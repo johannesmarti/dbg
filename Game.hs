@@ -574,9 +574,10 @@ gameStudy = let
       combine 9 21 -- gives 24 for 01
       combine 13 23 -- gives 25 for 10 and 1
     
-      combine 9 22 -- gives 26 for 0
+      combine 9 13 -- gives 26 for 0
       combine 24 26 -- gives 27 for 0
       combine 25 27 -- gives double self loop!!
+
       return ()
     lifting = execState combiner (fromLGraph biggestI biggest)
     ig = graph lifting
