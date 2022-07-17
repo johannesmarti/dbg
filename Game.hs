@@ -588,13 +588,11 @@ gameStudy = let
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
     putChar '\n'
-    easyLiftedGraphRelReport lifting [Zero,Zero,One]
+    easyLiftedGraphRelReport lifting [Zero,One,One]
     putChar '\n'
     --easyLiftedGraphReport lifting
     --putChar '\n'
-    print $ Spiral.fromHub intGraphI ig [Zero,Zero,One] [1,3,2]
-    putChar '\n'
-    print $ Spiral.fromHub intGraphI ig [Zero,Zero,One] [2,1,0]
+    print $ Spiral.fromHub intGraphI ig [Zero,One,One] [1,0,2]
     putChar '\n'
     --mapM_ (\c -> putStrLn (prettyCanWithArcs c) >> putChar '\n') cans
     --mapM_ (putStrLn . prettyCandidate) cans
