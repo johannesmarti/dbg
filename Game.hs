@@ -550,6 +550,10 @@ gameAlloc3 = let
 gameIssues :: IO ()
 gameIssues = let
     combiner = do
+      combine 1 4
+      combine 3 5
+      combine 0 2
+      combine 6 7
       return ()
     lifting = execState combiner (fromLGraph issuesI issues)
     ig = graph lifting
