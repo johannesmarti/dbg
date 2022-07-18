@@ -549,12 +549,12 @@ gameAlloc3 = let
 gameStudy :: IO ()
 gameStudy = let
     combiner = do
-{-
       combine 0 3
       combine 0 2
       combine 1 2
       combine 1 3
 
+{-
       combine 2 4 -- gives 8 for 101
       combine 1 5 -- gives 9 for 011
       combine 4 9 -- gives 10 for 110
@@ -588,11 +588,15 @@ gameStudy = let
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
     putChar '\n'
+    easyLiftedGraphRelReport lifting [Zero,Zero,One]
+    putChar '\n'
     easyLiftedGraphRelReport lifting [Zero,One,One]
     putChar '\n'
     --easyLiftedGraphReport lifting
     --putChar '\n'
-    print $ Spiral.fromHub intGraphI ig [Zero,One,One] [1,0,2]
+    print $ Spiral.fromHub intGraphI ig [Zero,Zero,One] [2,1,4]
+    putChar '\n'
+    print $ Spiral.fromHub intGraphI ig [Zero,One,One] [1,4,2]
     putChar '\n'
     --mapM_ (\c -> putStrLn (prettyCanWithArcs c) >> putChar '\n') cans
     --mapM_ (putStrLn . prettyCandidate) cans
