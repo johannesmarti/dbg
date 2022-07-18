@@ -39,9 +39,9 @@ main = game
 --main = print $ SS.searchUpTo 12 crazyI crazy
 --main = print $ SS.searchUpTo 12 crazierI crazier
 
---main = easyPathReport crazyI crazy
+--main = easyPathReport issuesI issues
 --main = easyPathReport crazierI crazier
---main = easyWordReport 15 crazierI crazier
+--main = easyWordReport 15 issuesI issues
 
 --main = putStrLn $ showLG (constructionGraphI dbgI) (dbg 3)
 --main = print $ immediatelyConstructible dbgI (dbg 3)

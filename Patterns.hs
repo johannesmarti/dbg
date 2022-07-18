@@ -48,6 +48,7 @@ module Patterns (
   alloc3, alloc3I,
   crazy, crazyI,
   crazier, crazierI,
+  issues, issuesI,
 ) where
 
 import qualified Data.Set as Set
@@ -386,6 +387,8 @@ alloc4 = fromOldCode 4019736
 alloc4I :: LabeledGraphI ConciseGraph Node
 alloc4I = conciseGraphI 4
 
+{- crazy and crazier are simple patterns that can be solved by winding up the
+01 spiral. There are elements that see the complete spikes of the spiral. -}
 craz Zero = [(0,0),(0,5),(2,3),(2,4),(5,2),(5,6),(6,1)]
 craz One = [(1,1),(1,3),(1,4),(1,5),(3,2),(4,0),(4,6)]
 crazy :: LMapGraph Int
@@ -399,3 +402,11 @@ crazier :: LMapGraph Int
 crazier = mapFromFunction craz
 crazierI :: LabeledGraphI (LMapGraph Int) Int
 crazierI = lMapGraphI
+
+{- issues can not be solved by winding up the 01 spiral. There is no node that sees the complete spikes -}
+iss Zero = [(0,0),(0,2),(2,1),(2,3),(2,4)]
+iss One = [(1,0),(1,1),(1,4),(3,2),(4,3)]
+issues :: LMapGraph Int
+issues = mapFromFunction iss
+issuesI :: LabeledGraphI (LMapGraph Int) Int
+issuesI = lMapGraphI

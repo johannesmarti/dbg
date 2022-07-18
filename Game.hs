@@ -14,6 +14,7 @@ module Game (
   gameAlloc1,
   gameAlloc2,
   gameBig5,
+  gameIssues,
 ) where
 
 import Control.Monad.State.Lazy
@@ -27,7 +28,7 @@ import Patterns
 import Label
 import Spiral
 
-game = gameStudy
+game = gameIssues
 
 gameEx5 :: IO ()
 gameEx5 = let
@@ -546,6 +547,27 @@ gameAlloc3 = let
     putChar '\n'
     print pairs
 
+gameIssues :: IO ()
+gameIssues = let
+    combiner = do
+      return ()
+    lifting = execState combiner (fromLGraph issuesI issues)
+    ig = graph lifting
+    cans = filter (weakDominationFilter ig) (liftableCandidates ig)
+    pairs = map extractPair cans
+  in do
+    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putChar '\n'
+    easyLiftedGraphRelReport lifting [One]
+    putChar '\n'
+    easyLiftedGraphRelReport lifting [Zero,One]
+    putChar '\n'
+    easyLiftedGraphRelReport lifting [Zero,Zero,One]
+    putChar '\n'
+    easyLiftedGraphRelReport lifting [Zero,One,One]
+    putChar '\n'
+    print pairs
+
 gameStudy :: IO ()
 gameStudy = let
     combiner = do
@@ -592,8 +614,6 @@ gameStudy = let
     putStrLn $ unlines $ prettyLiftedGraph lifting
     putChar '\n'
     --easyLiftedGraphRelReport lifting [Zero,One]
-    --putChar '\n'
-    --easyLiftedGraphRelReport lifting [Zero,One,One]
     --putChar '\n'
     --easyLiftedGraphReport lifting
     --putChar '\n'
