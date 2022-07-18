@@ -46,6 +46,8 @@ module Patterns (
   alloc1, alloc1I,
   alloc2, alloc2I,
   alloc3, alloc3I,
+  crazy, crazyI,
+  crazier, crazierI,
 ) where
 
 import qualified Data.Set as Set
@@ -383,3 +385,17 @@ alloc4 :: ConciseGraph
 alloc4 = fromOldCode 4019736
 alloc4I :: LabeledGraphI ConciseGraph Node
 alloc4I = conciseGraphI 4
+
+craz Zero = [(0,0),(0,5),(2,3),(2,4),(5,2),(5,6),(6,1)]
+craz One = [(1,1),(1,3),(1,4),(1,5),(3,2),(4,0),(4,6)]
+crazy :: LMapGraph Int
+crazy = mapFromFunction craz
+crazyI :: LabeledGraphI (LMapGraph Int) Int
+crazyI = lMapGraphI
+
+crazer Zero = [(0,0),(0,7),(2,3),(2,4),(5,2),(5,6),(6,1),(7,5)]
+crazer One = [(1,1),(1,3),(1,4),(1,5),(3,2),(3,7),(4,0),(4,6)]
+crazier :: LMapGraph Int
+crazier = mapFromFunction craz
+crazierI :: LabeledGraphI (LMapGraph Int) Int
+crazierI = lMapGraphI

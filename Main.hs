@@ -21,6 +21,8 @@ import ConstructionGraph
 import DeBruijnGraph
 import LabeledGraph (showLG)
 
+import qualified SmartSearch as SS
+
 
 main :: IO ()
 
@@ -33,7 +35,13 @@ main :: IO ()
 
 --main = gameAlloc2
 --main = gameBig5
-main = game
+--main = game
+--main = print $ SS.searchUpTo 12 crazyI crazy
+--main = print $ SS.searchUpTo 12 crazierI crazier
+
+--main = easyPathReport crazyI crazy
+--main = easyPathReport crazierI crazier
+main = easyWordReport 15 crazierI crazier
 
 --main = putStrLn $ showLG (constructionGraphI dbgI) (dbg 3)
 --main = print $ immediatelyConstructible dbgI (dbg 3)
@@ -113,8 +121,6 @@ main = game
 --main = range3
 --main = mapM_ (checkOne 4) unknownAt9
 --main = easyLiftingPathReport 3 dbgI (dbg 2)
---main = checkHomomorphism mapGraphI slowSquare
---main = checkHomomorphism mapGraphI slowFour
 --main = print $ searchLifting 7 (conciseGraphI 4) 2063925436
 --main = easyLiftingReport 7 (conciseGraphI 4) 2063925436
 --main = easyLiftingPathReport 5 unsoundI unsound
