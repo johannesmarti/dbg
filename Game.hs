@@ -15,11 +15,13 @@ module Game (
   gameAlloc2,
   gameBig5,
   gameIssues,
+  gameDbg3,
 ) where
 
 import Control.Monad.State.Lazy
 
 import ConciseGraph
+import DeBruijnGraph
 import LiftedGraph
 import LiftedGraphReport
 import Report
@@ -28,7 +30,7 @@ import Patterns
 import Label
 import Spiral
 
-game = gameIssues
+game = gameDbg3
 
 gameEx5 :: IO ()
 gameEx5 = let
@@ -571,6 +573,40 @@ gameIssues = let
     easyLiftedGraphRelReport lifting [Zero,One,One]
     putChar '\n'
     print pairs
+
+gameDbg3 :: IO ()
+gameDbg3 = let
+    combiner = do
+      combine 6 7
+
+      combine 2 3 -- wrap up 01
+      combine 5 8
+
+      combine 4 10 -- unclear what this move really does
+
+      combine 0 1 -- wrap up 0
+      combine 9 12
+      combine 11 13
+      return ()
+    lifting = execState combiner (fromLGraph dbgI (dbg 3))
+    ig = graph lifting
+    cans = filter (weakDominationFilter ig) (liftableCandidates ig)
+    pairs = map extractPair cans
+  in do
+    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putChar '\n'
+    easyLiftedGraphRelReport lifting [Zero]
+    putChar '\n'
+    --easyLiftedGraphRelReport lifting [Zero,One]
+    --putChar '\n'
+    --print $ Spiral.fromHub intGraphI ig [Zero,One] [9,5]
+    --putChar '\n'
+    --easyLiftedGraphRelReport lifting [Zero,Zero,One]
+    --putChar '\n'
+    --easyLiftedGraphRelReport lifting [Zero,One,One]
+    --putChar '\n'
+    print pairs
+
 
 gameStudy :: IO ()
 gameStudy = let
