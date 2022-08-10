@@ -611,14 +611,14 @@ gameDbg3 = let
 gameStudy :: IO ()
 gameStudy = let
     combiner = do
+    {-
       combine 0 2
       combine 1 2
       -- end of forced
 
       combine 0 3 -- creates 6 the universal point of the 10-wing at 110
-    {-
       -- wind up 01  with 3,1
-      combine 0 1 -- clearly best (creates 7)
+      combine 0 1 -- clearly best (creates 7) (and creates universal 01-point!)
       combine 1 3 -- what a smart move. Creates someone that is easy to see
 
       combine 3 7 -- gives 9 for 10
@@ -636,13 +636,13 @@ gameStudy = let
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
     putChar '\n'
-    --easyLiftedGraphRelReport lifting [One,One,Zero]
+    easyLiftedGraphRelReport lifting [Zero,Zero,One]
     --putChar '\n'
     --easyLiftedGraphReport lifting
     --putChar '\n'
     --easyWordReport 15 intGraphI ig
     --putChar '\n'
-    print $ Spiral.fromHub intGraphI ig [One,One,Zero] [6,4,5]
+    --print $ Spiral.fromHub intGraphI ig [One,One,Zero] [6,4,5]
     putChar '\n'
     print pairs
     --easyPathReport intGraphI ig
