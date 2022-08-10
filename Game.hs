@@ -611,51 +611,40 @@ gameDbg3 = let
 gameStudy :: IO ()
 gameStudy = let
     combiner = do
-      combine 0 3
       combine 0 2
       combine 1 2
-      combine 1 3
+      -- end of forced
 
-      combine 2 4 -- gives 8 for 101
-      combine 1 5 -- gives 9 for 011
-      combine 4 9 -- gives 10 for 110
-      combine 1 4 -- gives 11 for 010
-      combine 4 5 -- gives 12 for 100
-      combine 6 12 -- gives 13 for 001
+      combine 0 3 -- creates 6 the universal point of the 10-wing at 110
+    {-
+      -- wind up 01  with 3,1
+      combine 0 1 -- clearly best (creates 7)
+      combine 1 3 -- what a smart move. Creates someone that is easy to see
 
-{-
-      combine 0 1 -- gives 14 for 10
-      combine 2 3 -- gives 15 for 01
-      combine 2 14 -- gives 16 for 10
-      combine 1 15 -- gives 17 for 01
-      combine 4 16 -- gives 18 for 10
-      combine 5 17 -- gives 19 for 01
-      combine 6 18 -- gives 20 for 10
-      combine 7 19 -- gives 21 for 01
-      combine 5 20 -- gives 22 for 10
-      combine 8 22 -- gives 23 for 10
-      combine 9 21 -- gives 24 for 01
-      combine 13 23 -- gives 25 for 10 and 1
-    
-      combine 9 22 -- gives 26 for 0
-      combine 24 26 -- gives 27 for 0
-      combine 25 27 -- gives double self loop!!
+      combine 3 7 -- gives 9 for 10
+      combine 0 8 -- gives 10 for 01
+      combine 4 9 -- gives 11 for 10
+      combine 5 10 -- gives 12 for 01
+      combine 6 11 -- gives 13 for 10
+      combine 12 13
 -}
       return ()
-    lifting = execState combiner (fromLGraph biggestI biggest)
+    lifting = execState combiner (fromLGraph slowSquareI slowSquare)
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
     putChar '\n'
-    easyLiftedGraphRelReport lifting [One,One,Zero]
+    --easyLiftedGraphRelReport lifting [One,One,Zero]
     --putChar '\n'
     --easyLiftedGraphReport lifting
     --putChar '\n'
-    --print $ Spiral.fromHub intGraphI ig [One,One,Zero] [4,5,6]
-    --putChar '\n'
-    print pairs
     --easyWordReport 15 intGraphI ig
+    --putChar '\n'
+    print $ Spiral.fromHub intGraphI ig [One,One,Zero] [6,4,5]
+    putChar '\n'
+    print pairs
+    --easyPathReport intGraphI ig
     --mapM_ (putStrLn . prettyCandidate) cans
 
