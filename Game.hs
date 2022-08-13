@@ -636,13 +636,15 @@ gameStudy = let
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
     putChar '\n'
-    easyLiftedGraphRelReport lifting [Zero,Zero,One]
-    --putChar '\n'
+    easyLiftedGraphRelReport lifting [Zero,One,Zero,One]
+    putChar '\n'
     --easyLiftedGraphReport lifting
     --putChar '\n'
     --easyWordReport 15 intGraphI ig
     --putChar '\n'
-    --print $ Spiral.fromHub intGraphI ig [One,One,Zero] [6,4,5]
+    print $ Spiral.fromHub intGraphI ig [Zero,Zero,One] [0,1,3]
+    putChar '\n'
+    print $ Spiral.fromHub intGraphI ig [Zero,One,Zero,One] [0,0,1,3]
     putChar '\n'
     print pairs
     --easyPathReport intGraphI ig
