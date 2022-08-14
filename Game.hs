@@ -663,7 +663,7 @@ gameStudy = let
       -- wrap up 001 creating 01 universal
       combine 2 3 -- 18
       combine 8 9 -- 19
-      combine 16 18 -- 20 the 01 universal 0-refl and 1-seen by 19
+      combine 0 18 -- 20 the 01 universal 0-refl and 1-seen by 19
       -- can I replace 16 with 0?
 
       -- wrap up 110 creating 10 universal
@@ -677,10 +677,18 @@ gameStudy = let
       combine 10 11 -- 25
       combine 22 24 -- 26
       combine 19 25 -- 27
-      combine 20 26 -- 28
+      combine 0 26 -- 28
       combine 23 27 -- 29
 
+
+      combine 0 16 -- 30
+      combine 20 30 -- 31
+      combine 28 31 -- 32
+      combine 29 32
+     
+{-
       combine 28 29
+-}
       return ()
     lifting = execState combiner (fromLGraph dbgI (dbg 4))
     ig = graph lifting
