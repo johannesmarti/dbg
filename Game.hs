@@ -577,16 +577,18 @@ gameIssues = let
 gameDbg3 :: IO ()
 gameDbg3 = let
     combiner = do
-      combine 6 7
+      -- create 01 universal
+      combine 0 1 -- 8
+      -- create 10 universal
+      combine 6 7 -- 9
 
-      combine 2 3 -- wrap up 01
-      combine 5 8
+      -- wrap up 01
+      combine 2 3 -- 10
+      combine 4 5 -- 11
+      combine 8 10 -- 12
+      combine 9 11 -- 13
 
-      combine 4 10 -- unclear what this move really does
-
-      combine 0 1 -- wrap up 0
-      combine 9 12
-      combine 11 13
+      combine 12 13
       return ()
     lifting = execState combiner (fromLGraph dbgI (dbg 3))
     ig = graph lifting
@@ -611,42 +613,42 @@ gameDbg3 = let
 gameStudy :: IO ()
 gameStudy = let
     combiner = do
-    {-
-      combine 0 2
-      combine 1 2
-      -- end of forced
+      -- create 01 universal
+      combine 0 1 -- 8
+      -- create 10 universal
+      combine 6 7 -- 9
 
-      combine 0 3 -- creates 6 the universal point of the 10-wing at 110
-      -- wind up 01  with 3,1
-      combine 0 1 -- clearly best (creates 7) (and creates universal 01-point!)
-      combine 1 3 -- what a smart move. Creates someone that is easy to see
+      -- wrap up 01
+      combine 2 3 -- 10
+      combine 4 5 -- 11
+      combine 8 10 -- 12
+      combine 9 11 -- 13
 
-      combine 3 7 -- gives 9 for 10
-      combine 0 8 -- gives 10 for 01
-      combine 4 9 -- gives 11 for 10
-      combine 5 10 -- gives 12 for 01
-      combine 6 11 -- gives 13 for 10
       combine 12 13
--}
+
       return ()
-    lifting = execState combiner (fromLGraph slowSquareI slowSquare)
+    lifting = execState combiner (fromLGraph dbgI (dbg 3))
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
     putChar '\n'
-    easyLiftedGraphRelReport lifting [Zero,One,Zero,One]
-    putChar '\n'
+    --easyLiftedGraphRelReport lifting [Zero,Zero,One]
+    --putChar '\n'
     --easyLiftedGraphReport lifting
     --putChar '\n'
     --easyWordReport 15 intGraphI ig
     --putChar '\n'
-    print $ Spiral.fromHub intGraphI ig [Zero,Zero,One] [0,1,3]
-    putChar '\n'
-    print $ Spiral.fromHub intGraphI ig [Zero,One,Zero,One] [0,0,1,3]
-    putChar '\n'
-    print pairs
+    --print $ Spiral.fromHub intGraphI ig [Zero,One] [2,5]
+    --putChar '\n'
+    --print $ Spiral.fromHub intGraphI ig [Zero,Zero,One] [1,2,4]
+    --putChar '\n'
+    --print $ Spiral.fromHub intGraphI ig [Zero,One,One] [3,6,5]
+    --putChar '\n'
+    --print $ Spiral.fromHub intGraphI ig [Zero,One,Zero,One] [0,0,1,3]
+    --putChar '\n'
+    --print pairs
     --easyPathReport intGraphI ig
     --mapM_ (putStrLn . prettyCandidate) cans
 
