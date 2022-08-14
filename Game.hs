@@ -16,6 +16,7 @@ module Game (
   gameBig5,
   gameIssues,
   gameDbg3,
+  gameDbg4,
 ) where
 
 import Control.Monad.State.Lazy
@@ -610,31 +611,87 @@ gameDbg3 = let
     print pairs
 
 
-gameStudy :: IO ()
-gameStudy = let
+gameDbg4 :: IO ()
+gameDbg4 = let
     combiner = do
-      -- create 01 universal
-      combine 0 1 -- 8
-      -- create 10 universal
-      combine 6 7 -- 9
+      -- at 0001 creating 001 universal
+      combine 0 1 -- 16
+      -- at 1110 creating 110 universal
+      combine 14 15 -- 17
+
+      -- wrap up 001 creating 01 universal
+      combine 2 3 -- 18
+      combine 8 9 -- 19
+      combine 16 18 -- 20 the 01 universal 0-refl and 1-seen by 19
+      -- can I replace 16 with 0?
+
+      -- wrap up 110 creating 10 universal
+      combine 12 13 -- 21
+      combine 6 7 -- 22
+      combine 17 21 -- 23 the 10 universal 1-refl and 0-seen by 22
+      -- can I replace 17 with 15?
 
       -- wrap up 01
-      combine 2 3 -- 10
-      combine 4 5 -- 11
-      combine 8 10 -- 12
-      combine 9 11 -- 13
+      combine 4 5 -- 24
+      combine 10 11 -- 25
+      combine 22 24 -- 26
+      combine 19 25 -- 27
+      combine 20 26 -- 28
+      combine 23 27 -- 29
 
-      combine 12 13
+      combine 28 29
 
       return ()
-    lifting = execState combiner (fromLGraph dbgI (dbg 3))
+    lifting = execState combiner (fromLGraph dbgI (dbg 4))
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
     putChar '\n'
-    --easyLiftedGraphRelReport lifting [Zero,Zero,One]
+    print pairs
+
+
+gameStudy :: IO ()
+gameStudy = let
+    combiner = do
+      -- at 0001 creating 001 universal
+      combine 0 1 -- 16
+      -- at 1110 creating 110 universal
+      combine 14 15 -- 17
+
+      -- wrap up 001 creating 01 universal
+      combine 2 3 -- 18
+      combine 8 9 -- 19
+      combine 16 18 -- 20 the 01 universal 0-refl and 1-seen by 19
+      -- can I replace 16 with 0?
+
+      -- wrap up 110 creating 10 universal
+      combine 12 13 -- 21
+      combine 6 7 -- 22
+      combine 17 21 -- 23 the 10 universal 1-refl and 0-seen by 22
+      -- can I replace 17 with 15?
+
+      -- wrap up 01
+      combine 4 5 -- 24
+      combine 10 11 -- 25
+      combine 22 24 -- 26
+      combine 19 25 -- 27
+      combine 20 26 -- 28
+      combine 23 27 -- 29
+
+      combine 28 29
+      return ()
+    lifting = execState combiner (fromLGraph dbgI (dbg 4))
+    ig = graph lifting
+    cans = filter (weakDominationFilter ig) (liftableCandidates ig)
+    pairs = map extractPair cans
+  in do
+    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putChar '\n'
+    --easyLiftedGraphRelReport lifting [Zero,One]
+    --putChar '\n'
+    --easyLiftedGraphRelReport lifting [Zero,One,One,One]
     --putChar '\n'
     --easyLiftedGraphReport lifting
     --putChar '\n'
@@ -642,13 +699,13 @@ gameStudy = let
     --putChar '\n'
     --print $ Spiral.fromHub intGraphI ig [Zero,One] [2,5]
     --putChar '\n'
-    --print $ Spiral.fromHub intGraphI ig [Zero,Zero,One] [1,2,4]
+    --print $ Spiral.fromHub intGraphI ig [Zero,Zero,One] [2,4,9]
     --putChar '\n'
     --print $ Spiral.fromHub intGraphI ig [Zero,One,One] [3,6,5]
     --putChar '\n'
     --print $ Spiral.fromHub intGraphI ig [Zero,One,Zero,One] [0,0,1,3]
     --putChar '\n'
-    --print pairs
+    print pairs
     --easyPathReport intGraphI ig
     --mapM_ (putStrLn . prettyCandidate) cans
 
