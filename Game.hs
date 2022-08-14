@@ -641,25 +641,8 @@ gameDbg4 = let
 
       combine 28 29
 
-      return ()
-    lifting = execState combiner (fromLGraph dbgI (dbg 4))
-    ig = graph lifting
-    cans = filter (weakDominationFilter ig) (liftableCandidates ig)
-    pairs = map extractPair cans
-  in do
-    putStrLn $ unlines $ prettyLiftedGraph lifting
-    putChar '\n'
-    print pairs
-
-
-gameStudy :: IO ()
-gameStudy = let
-    combiner = do
-      -- at 0001 creating 001 universal
-      combine 0 1 -- 16
-      -- at 1110 creating 110 universal
-      combine 14 15 -- 17
-
+    {-
+    -- alternative ending:
       -- wrap up 001 creating 01 universal
       combine 2 3 -- 18
       combine 8 9 -- 19
@@ -685,10 +668,8 @@ gameStudy = let
       combine 20 30 -- 31
       combine 28 31 -- 32
       combine 29 32
-     
-{-
-      combine 28 29
--}
+    -}
+
       return ()
     lifting = execState combiner (fromLGraph dbgI (dbg 4))
     ig = graph lifting
@@ -697,19 +678,33 @@ gameStudy = let
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
     putChar '\n'
+    print pairs
+
+
+gameStudy :: IO ()
+gameStudy = let
+    combiner = do
+      return ()
+    lifting = execState combiner (fromLGraph biggestI biggest)
+    ig = graph lifting
+    cans = filter (weakDominationFilter ig) (liftableCandidates ig)
+    pairs = map extractPair cans
+  in do
+    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putChar '\n'
     --easyLiftedGraphRelReport lifting [Zero,One]
     --putChar '\n'
-    --easyLiftedGraphRelReport lifting [Zero,One,One,One]
-    --putChar '\n'
+    easyLiftedGraphRelReport lifting [Zero,One,One,One]
+    putChar '\n'
     --easyLiftedGraphReport lifting
     --putChar '\n'
     --easyWordReport 15 intGraphI ig
     --putChar '\n'
-    --print $ Spiral.fromHub intGraphI ig [Zero,One] [2,5]
+    --print $ Spiral.fromHub intGraphI ig [Zero,One] [2,0]
     --putChar '\n'
     --print $ Spiral.fromHub intGraphI ig [Zero,Zero,One] [2,4,9]
     --putChar '\n'
-    --print $ Spiral.fromHub intGraphI ig [Zero,One,One] [3,6,5]
+    --print $ Spiral.fromHub intGraphI ig [Zero,One,One] [1,0,2]
     --putChar '\n'
     --print $ Spiral.fromHub intGraphI ig [Zero,One,Zero,One] [0,0,1,3]
     --putChar '\n'
