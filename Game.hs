@@ -689,19 +689,19 @@ gameStudy = let
         1: 3;
     
         (what about 00 and 11)?
-        00: 0, 2 (to 0-see 0,2,1 in 0);
+        00: # 0, 2 (to 0-see 0,2,1 in 0);
         01: 2; 3, 1 (to help 10 1-see 0 of 0);
         10: 0; 1, 2, 3 (to 1-see 0 (and 2 1) of 0);
-        11: 3 (to 1-see 3 of 1);
+        11: # 3 (to 1-see 3 of 1);
 
-        000: 0; (to 0-see 0, 2 in 00);
+        000: # 0; (to 0-see 0, 2 in 00);
         001:
-        011: 1; 3 (to help 110 1-see);
-        101: 2; 3 (to help 110 1-see); 0 (to 1-see 0 in 01)
-
-
+        010:
+        011: 1; 3 (to help 110 1-see in 10);
+        100:
+        101: 2; 3 (to help 110 1-see in 10); # 0 (to 1-see 2 in 01)
         110: 0; 3, 2 (to 1-see 0, 1, 2, 3 in 10); 
-        111: 3; (to 1-see 3 in 11);
+        111: # 3; (to 1-see 3 in 11);
 
 
       -}
