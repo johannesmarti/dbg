@@ -699,7 +699,7 @@ gameStudy = let
         010: 1; 0 (to help 001 0-see);
         011: 1; 3 (to help 110 1-see in 10);
         100: 0; 3, 2 (to help 001 0-see);
-        101: 2; 3 (to help 110 1-see in 10); # 0 (to 1-see 2 in 01)
+        101: 2; 3 (to help 110 1-seae in 10); # 0 (to 1-see 2 in 01)
         110: 0; 3, 2 (to 1-see 0, 1, 2, 3 in 10); 
         111: # 3; (to 1-see 3 in 11);
 
@@ -708,7 +708,7 @@ gameStudy = let
         0010: 2;
         0011: 2; 1 (to 0-see 1, 3 in 011);
         0100: 1;
-        0101: 
+        0101: 1; 3 (to 0-see 2, 3 in 101);
         0110: 1;
         0111:
         1000: 3; 0 (to help 0001 0-see);
@@ -748,7 +748,9 @@ gameStudy = let
     --print $ Spiral.fromHub intGraphI ig [Zero,Zero,One,One] [2,1,3,0]
     --putChar '\n'
     -- 1 in 6
-    print $ Spiral.fromHub intGraphI ig [Zero,One,Zero,One] [2,0,2,0]
+    print $ Spiral.fromHub intGraphI ig [Zero,One,Zero,One] [1,3,0,2]
+    putChar '\n'
+    print $ Spiral.fromHub intGraphI ig [Zero,One,Zero,One] [3,2,1,3]
     putChar '\n'
     -- 1 in 6
     print pairs
