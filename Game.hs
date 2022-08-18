@@ -681,8 +681,8 @@ gameDbg4 = let
     print pairs
 
 
-gameStudy :: IO ()
-gameStudy = let
+gameStudyBiggest :: IO ()
+gameStudyBiggest = let
     combiner = do
       {-
         0: 0; 2, 1 (to 0-see 3 in 1);
@@ -750,7 +750,44 @@ gameStudy = let
     -- 1 in 6
     print $ Spiral.fromHub intGraphI ig [Zero,One,Zero,One] [1,3,0,2]
     putChar '\n'
-    print $ Spiral.fromHub intGraphI ig [Zero,One,Zero,One] [3,2,1,3]
+    -- 1 in 6
+    print pairs
+    --easyPathReport intGraphI ig
+    --mapM_ (putStrLn . prettyCandidate) cans
+
+
+gameStudy :: IO ()
+gameStudy = let
+    combiner = do
+
+      return ()
+    lifting = execState combiner (fromLGraph biggestI biggest)
+    ig = graph lifting
+    cans = filter (weakDominationFilter ig) (liftableCandidates ig)
+    pairs = map extractPair cans
+  in do
+    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putChar '\n'
+    --easyLiftedGraphRelReport lifting [Zero,One]
+    --putChar '\n'
+    easyLiftedGraphRelReport lifting [Zero,One,Zero,One]
+    putChar '\n'
+    --easyLiftedGraphReport lifting
+    --putChar '\n'
+    --easyWordReport 15 intGraphI ig
+    --putChar '\n'
+    --print $ Spiral.fromHub intGraphI ig [Zero,One] [2,0]
+    --putChar '\n'
+    --print $ Spiral.fromHub intGraphI ig [Zero,Zero,One] [2,1,0]
+    --putChar '\n'
+    --print $ Spiral.fromHub intGraphI ig [Zero,One,One] [1,0,2]
+    --putChar '\n'
+    --print $ Spiral.fromHub intGraphI ig [Zero,Zero,Zero,One] [0,2,1,3]
+    --putChar '\n'
+    --print $ Spiral.fromHub intGraphI ig [Zero,Zero,One,One] [2,1,3,0]
+    --putChar '\n'
+    -- 1 in 6
+    print $ Spiral.fromHub intGraphI ig [Zero,One,Zero,One] [1,3,0,2]
     putChar '\n'
     -- 1 in 6
     print pairs
