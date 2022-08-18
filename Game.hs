@@ -770,8 +770,10 @@ gameStudy = let
     putChar '\n'
     --easyLiftedGraphRelReport lifting [Zero,One]
     --putChar '\n'
-    easyLiftedGraphRelReport lifting [Zero,One,Zero,One]
+    easyLiftedGraphRelReport lifting [Zero,One,One,One]
     putChar '\n'
+    --easyLiftedGraphRelReport lifting [Zero,Zero,Zero,One,One]
+    --putChar '\n'
     --easyLiftedGraphReport lifting
     --putChar '\n'
     --easyWordReport 15 intGraphI ig
@@ -784,12 +786,18 @@ gameStudy = let
     --putChar '\n'
     --print $ Spiral.fromHub intGraphI ig [Zero,Zero,Zero,One] [0,2,1,3]
     --putChar '\n'
-    --print $ Spiral.fromHub intGraphI ig [Zero,Zero,One,One] [2,1,3,0]
-    --putChar '\n'
-    -- 1 in 6
-    print $ Spiral.fromHub intGraphI ig [Zero,One,Zero,One] [1,3,0,2]
-    putChar '\n'
-    -- 1 in 6
+--    print $ Spiral.fromHub intGraphI ig [Zero,One,Zero,One] [0,2,1,3]
+--    putChar '\n'
+--    print $ Spiral.fromHub intGraphI ig [Zero,One,Zero,One] [1,3,0,2]
+--    putChar '\n'
+--    print $ Spiral.fromHub intGraphI ig [Zero,One,Zero,One] [1,3,3,2]
+--    putChar '\n'
+--    print $ Spiral.fromHub intGraphI ig [Zero,One,Zero,One] [2,0,2,0]
+--    putChar '\n'
+--    print $ Spiral.fromHub intGraphI ig [Zero,One,Zero,One] [3,2,1,3]
+--    putChar '\n'
+--    print $ Spiral.fromHub intGraphI ig [Zero,,One,One] [2,1,3,0]
+--    putChar '\n'
     print pairs
     --easyPathReport intGraphI ig
     --mapM_ (putStrLn . prettyCandidate) cans
