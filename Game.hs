@@ -770,8 +770,10 @@ gameStudy = let
     putChar '\n'
     --easyLiftedGraphRelReport lifting [Zero,One]
     --putChar '\n'
-    easyLiftedGraphRelReport lifting [Zero,One,One,One]
+    easyLiftedGraphRelReport lifting [One,One,Zero,One,Zero]
     putChar '\n'
+    --easyLiftedGraphRelReport lifting [Zero,Zero,Zero,Zero,One]
+    --putChar '\n'
     --easyLiftedGraphRelReport lifting [Zero,Zero,Zero,One,One]
     --putChar '\n'
     --easyLiftedGraphReport lifting
@@ -796,8 +798,10 @@ gameStudy = let
 --    putChar '\n'
 --    print $ Spiral.fromHub intGraphI ig [Zero,One,Zero,One] [3,2,1,3]
 --    putChar '\n'
---    print $ Spiral.fromHub intGraphI ig [Zero,,One,One] [2,1,3,0]
---    putChar '\n'
+    print $ Spiral.fromHub intGraphI ig [One,One,Zero,One,Zero] [0,2,1,0,2]
+    putChar '\n'
+    print $ Spiral.fromHub intGraphI ig [One,One,Zero,One,Zero] [0,2,1,3,0]
+    putChar '\n'
     print pairs
     --easyPathReport intGraphI ig
     --mapM_ (putStrLn . prettyCandidate) cans
