@@ -182,7 +182,6 @@ gameBiggest = let
     pairs = map extractPair cans
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
-    easyWordReport 15 intGraphI ig
     --mapM_ (putStrLn . prettyCandidate) cans
     putChar '\n'
     print pairs
@@ -696,17 +695,6 @@ gameStudyBiggest = let
       combine 2 4 -- 12
       combine 1 5 -- 13
 
-      combine 2 3 -- 14
-      combine 2 11 -- 15
-      combine 1 14 -- 16
-      combine 3 15 -- 17
-
-      combine 4 16
-      combine 5 17
-      combine 6 18
-      combine 4 19
-      combine 12 20
-      combine 5 22
 
       return ()
     lifting = execState combiner (fromLGraph biggestI biggest)
