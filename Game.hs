@@ -31,7 +31,7 @@ import Patterns
 import Label
 import Spiral
 
-game = gameStudy
+game = gameStudyBiggest
 
 gameEx5 :: IO ()
 gameEx5 = let
@@ -684,42 +684,29 @@ gameDbg4 = let
 gameStudyBiggest :: IO ()
 gameStudyBiggest = let
     combiner = do
-      {-
-        0: 0; 2, 1 (to 0-see 3 in 1);
-        1: 3;
-    
-        (what about 00 and 11)?
-        00: # 0, 2 (to 0-see 0,2,1 in 0);
-        01: 2; 3, 1 (to help 10 1-see 0 of 0);
-        10: 0; 1, 2, 3 (to 1-see 0 (and 2 1) of 0);
-        11: # 3 (to 1-see 3 of 1);
+      combine 0 3 -- 4
+      combine 0 2 -- 5
+      combine 1 2 -- 6
+      combine 1 3 -- 7
+      combine 2 4 -- 8
+      combine 2 3 -- 9
 
-        000: # 0; (to 0-see 0, 2 in 00);
-        001: 2; 0, 1 (to 0-see 2, 3, 1 in 01);
-        010: 1; 0 (to help 001 0-see);
-        011: 1; 3 (to help 110 1-see in 10);
-        100: 0; 3, 2 (to help 001 0-see);
-        101: 2; 3 (to help 110 1-seae in 10); # 0 (to 1-see 2 in 01)
-        110: 0; 3, 2 (to 1-see 0, 1, 2, 3 in 10); 
-        111: # 3; (to 1-see 3 in 11);
+      combine 1 3 -- 10
+      combine 0 1 -- 11
+      combine 2 4 -- 12
+      combine 1 5 -- 13
 
-        0000: # 0;
-        0001: 0; 2 (to 0-see 2, 0, 1 in 001);
-        0010: 2;
-        0011: 2; 1 (to 0-see 1, 3 in 011);
-        0100: 1;
-        0101: 1; 3 (to 0-see 2, 3 in 101);
-        0110: 1;
-        0111:
-        1000: 3; 0 (to help 0001 0-see);
-        1001: 0; 2 (to help 0011 0-see)
-        1010:
-        1011:
-        1100: 3; 0 (to help 0011 0-see)
-        1101:
-        1110:
-        1111: # 3
-      -}
+      combine 2 3 -- 14
+      combine 2 11 -- 15
+      combine 1 14 -- 16
+      combine 3 15 -- 17
+
+      combine 4 16
+      combine 5 17
+      combine 6 18
+      combine 4 19
+      combine 12 20
+      combine 5 22
 
       return ()
     lifting = execState combiner (fromLGraph biggestI biggest)
@@ -729,28 +716,8 @@ gameStudyBiggest = let
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
     putChar '\n'
-    --easyLiftedGraphRelReport lifting [Zero,One]
-    --putChar '\n'
-    easyLiftedGraphRelReport lifting [Zero,One,Zero,One]
+    easyLiftedGraphRelReport lifting [Zero,One]
     putChar '\n'
-    --easyLiftedGraphReport lifting
-    --putChar '\n'
-    --easyWordReport 15 intGraphI ig
-    --putChar '\n'
-    --print $ Spiral.fromHub intGraphI ig [Zero,One] [2,0]
-    --putChar '\n'
-    --print $ Spiral.fromHub intGraphI ig [Zero,Zero,One] [2,1,0]
-    --putChar '\n'
-    --print $ Spiral.fromHub intGraphI ig [Zero,One,One] [1,0,2]
-    --putChar '\n'
-    --print $ Spiral.fromHub intGraphI ig [Zero,Zero,Zero,One] [0,2,1,3]
-    --putChar '\n'
-    --print $ Spiral.fromHub intGraphI ig [Zero,Zero,One,One] [2,1,3,0]
-    --putChar '\n'
-    -- 1 in 6
-    print $ Spiral.fromHub intGraphI ig [Zero,One,Zero,One] [1,3,0,2]
-    putChar '\n'
-    -- 1 in 6
     print pairs
     --easyPathReport intGraphI ig
     --mapM_ (putStrLn . prettyCandidate) cans
@@ -770,37 +737,19 @@ gameStudy = let
     putChar '\n'
     --easyLiftedGraphRelReport lifting [Zero,One]
     --putChar '\n'
-    easyLiftedGraphRelReport lifting [One,One,Zero,One,Zero]
+    easyLiftedGraphRelReport lifting [One,One,Zero,Zero,One,Zero]
     putChar '\n'
-    --easyLiftedGraphRelReport lifting [Zero,Zero,Zero,Zero,One]
-    --putChar '\n'
-    --easyLiftedGraphRelReport lifting [Zero,Zero,Zero,One,One]
-    --putChar '\n'
     --easyLiftedGraphReport lifting
     --putChar '\n'
     --easyWordReport 15 intGraphI ig
     --putChar '\n'
     --print $ Spiral.fromHub intGraphI ig [Zero,One] [2,0]
     --putChar '\n'
-    --print $ Spiral.fromHub intGraphI ig [Zero,Zero,One] [2,1,0]
-    --putChar '\n'
-    --print $ Spiral.fromHub intGraphI ig [Zero,One,One] [1,0,2]
-    --putChar '\n'
-    --print $ Spiral.fromHub intGraphI ig [Zero,Zero,Zero,One] [0,2,1,3]
-    --putChar '\n'
---    print $ Spiral.fromHub intGraphI ig [Zero,One,Zero,One] [0,2,1,3]
---    putChar '\n'
---    print $ Spiral.fromHub intGraphI ig [Zero,One,Zero,One] [1,3,0,2]
---    putChar '\n'
---    print $ Spiral.fromHub intGraphI ig [Zero,One,Zero,One] [1,3,3,2]
---    putChar '\n'
---    print $ Spiral.fromHub intGraphI ig [Zero,One,Zero,One] [2,0,2,0]
---    putChar '\n'
---    print $ Spiral.fromHub intGraphI ig [Zero,One,Zero,One] [3,2,1,3]
---    putChar '\n'
-    print $ Spiral.fromHub intGraphI ig [One,One,Zero,One,Zero] [0,2,1,0,2]
+    print $ Spiral.fromHub intGraphI ig [One,One,One,Zero,One,Zero] [0,2,1,3,2,1]
     putChar '\n'
-    print $ Spiral.fromHub intGraphI ig [One,One,Zero,One,Zero] [0,2,1,3,0]
+    print $ Spiral.fromHub intGraphI ig [One,One,One,Zero,One,Zero] [3,3,3,0,2,1]
+    putChar '\n'
+    print $ Spiral.fromHub intGraphI ig [One,One,One,Zero,One,Zero] [3,3,3,3,2,1]
     putChar '\n'
     print pairs
     --easyPathReport intGraphI ig
