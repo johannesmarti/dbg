@@ -35,13 +35,14 @@ main :: IO ()
 
 --main = gameAlloc2
 --main = gameBig5
-main = game
+--main = game
 --main = print $ SS.searchUpTo 12 crazyI crazy
 --main = print $ SS.searchUpTo 12 crazierI crazier
 
 --main = easyPathReport issuesI issues
 --main = easyPathReport crazierI crazier
---main = easyWordReport 15 issuesI issues
+--main = easyWordReport 15 unfoldedI unfolded
+main = easyWordReport 20 unfoldedI unfolded
 
 --main = putStrLn $ showLG (constructionGraphI dbgI) (dbg 3)
 --main = print $ immediatelyConstructible dbgI (dbg 3)
