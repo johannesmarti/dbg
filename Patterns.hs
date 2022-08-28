@@ -49,6 +49,7 @@ module Patterns (
   crazy, crazyI,
   crazier, crazierI,
   issues, issuesI,
+  strange, strangeI,
 ) where
 
 import qualified Data.Set as Set
@@ -410,3 +411,10 @@ issues :: LMapGraph Int
 issues = mapFromFunction iss
 issuesI :: LabeledGraphI (LMapGraph Int) Int
 issuesI = lMapGraphI
+
+str Zero = [(0,0),(0,2),(2,3),(3,1),(3,4)]
+str One = [(1,1),(1,4),(1,3),(4,0),(4,2)]
+strange :: LMapGraph Int
+strange = mapFromFunction str
+strangeI :: LabeledGraphI (LMapGraph Int) Int
+strangeI = lMapGraphI

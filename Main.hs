@@ -33,13 +33,12 @@ main :: IO ()
 --  let n = read (head args)
 --  findCRange n
 
---main = gameAlloc2
---main = gameBig5
-main = game
---main = print $ SS.searchUpTo 12 crazyI crazy
+--main = game
+main = print $ SS.searchUpTo 12 strangeI strange
 --main = print $ SS.searchUpTo 12 crazierI crazier
 
 --main = easyPathReport issuesI issues
+--main = easyPathReport strangeI strange
 --main = easyPathReport crazierI crazier
 --main = easyWordReport 15 issuesI issues
 
