@@ -42,7 +42,7 @@ main :: IO ()
 --main = easyPathReport issuesI issues
 --main = easyPathReport crazierI crazier
 --main = easyWordReport 15 unfoldedI unfolded
-main = easyWordReport 20 unfoldedI unfolded
+main = easyWordReport 4 unfolded2I unfolded2
 
 --main = putStrLn $ showLG (constructionGraphI dbgI) (dbg 3)
 --main = print $ immediatelyConstructible dbgI (dbg 3)
