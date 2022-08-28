@@ -34,13 +34,18 @@ main :: IO ()
 --  findCRange n
 
 --main = game
-main = print $ SS.searchUpTo 12 strangeI strange
+--main = print $ SS.searchUpTo 12 strangeI strange
+--main = gameAlloc2
+--main = gameBig5
+--main = game
+--main = print $ SS.searchUpTo 12 crazyI crazy
 --main = print $ SS.searchUpTo 12 crazierI crazier
 
 --main = easyPathReport issuesI issues
 --main = easyPathReport strangeI strange
 --main = easyPathReport crazierI crazier
---main = easyWordReport 15 issuesI issues
+--main = easyWordReport 15 unfoldedI unfolded
+main = easyPathReport unfolded2I unfolded2
 
 --main = putStrLn $ showLG (constructionGraphI dbgI) (dbg 3)
 --main = print $ immediatelyConstructible dbgI (dbg 3)
