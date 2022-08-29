@@ -31,7 +31,7 @@ import Patterns
 import Label
 import Spiral
 
-game = gameStudyBiggest
+game = gameStudy
 
 gameEx5 :: IO ()
 gameEx5 = let
@@ -714,30 +714,26 @@ gameStudyBiggest = let
 gameStudy :: IO ()
 gameStudy = let
     combiner = do
-
+      combine 0 1 -- 3
+      combine 0 2 -- 4
+      combine 1 3 -- 5
+      combine 4 5
       return ()
-    lifting = execState combiner (fromLGraph biggestI biggest)
+    lifting = execState combiner (fromLGraph force3dI force3d)
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
     putChar '\n'
-    --easyLiftedGraphRelReport lifting [Zero,One]
+    --easyLiftedGraphRelReport lifting [Zero,Zero,One]
     --putChar '\n'
-    easyLiftedGraphRelReport lifting [One,One,Zero,Zero,One,Zero]
-    putChar '\n'
     --easyLiftedGraphReport lifting
     --putChar '\n'
     --easyWordReport 15 intGraphI ig
     --putChar '\n'
     --print $ Spiral.fromHub intGraphI ig [Zero,One] [2,0]
     --putChar '\n'
-    print $ Spiral.fromHub intGraphI ig [One,One,One,Zero,One,Zero] [0,2,1,3,2,1]
-    putChar '\n'
-    print $ Spiral.fromHub intGraphI ig [One,One,One,Zero,One,Zero] [3,3,3,0,2,1]
-    putChar '\n'
-    print $ Spiral.fromHub intGraphI ig [One,One,One,Zero,One,Zero] [3,3,3,3,2,1]
     putChar '\n'
     print pairs
     --easyPathReport intGraphI ig
