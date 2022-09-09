@@ -714,26 +714,22 @@ gameStudyBiggest = let
 gameStudy :: IO ()
 gameStudy = let
     combiner = do
-      combine 0 1 -- 3
-      combine 0 2 -- 4
-      combine 1 3 -- 5
-      combine 4 5
       return ()
-    lifting = execState combiner (fromLGraph force3dI force3d)
+    lifting = execState combiner (fromLGraph slowSquareI slowSquare)
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
     putChar '\n'
-    --easyLiftedGraphRelReport lifting [Zero,Zero,One]
-    --putChar '\n'
+    easyLiftedGraphRelReport lifting [Zero,One,One]
+    putChar '\n'
     --easyLiftedGraphReport lifting
     --putChar '\n'
     --easyWordReport 15 intGraphI ig
     --putChar '\n'
-    --print $ Spiral.fromHub intGraphI ig [Zero,One] [2,0]
-    --putChar '\n'
+    print $ Spiral.fromHub intGraphI ig [Zero,One,One] [1,3,0]
+    putChar '\n'
     putChar '\n'
     print pairs
     --easyPathReport intGraphI ig
