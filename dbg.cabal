@@ -67,7 +67,7 @@ library
       Paths_dbg
   hs-source-dirs:
       src
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -O0
   build-depends:
       base >=4.7 && <5
     , containers
@@ -85,7 +85,7 @@ executable dbg-exe
       Paths_dbg
   hs-source-dirs:
       app
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -O0 -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
     , containers
@@ -115,7 +115,7 @@ test-suite dbg-test
       Paths_dbg
   hs-source-dirs:
       test
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -O0 -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
     , containers
