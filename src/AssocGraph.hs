@@ -6,7 +6,6 @@ module AssocGraph (
 
 import Control.Exception.Base
 import qualified Data.Set as Set
-import qualified Data.Set.Extra
 
 import qualified Graph
 import Pretty

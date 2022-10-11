@@ -1,4 +1,4 @@
-module Test.LiftedSpec (
+module LiftedSpec (
    spec
 ) where
 

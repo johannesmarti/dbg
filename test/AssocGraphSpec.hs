@@ -1,4 +1,4 @@
-module Test.AssocGraphSpec (
+module AssocGraphSpec (
    spec
 ) where
 

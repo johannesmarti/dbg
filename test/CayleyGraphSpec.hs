@@ -1,4 +1,4 @@
-module Test.CayleyGraphSpec (
+module CayleyGraphSpec (
    spec
 ) where
 

@@ -1,4 +1,4 @@
-module Test.MapGraphSpec (
+module MapGraphSpec (
    spec
 ) where
 

@@ -1,4 +1,4 @@
-module Test.HomomorphismSpec (
+module HomomorphismSpec (
    spec
 ) where
 

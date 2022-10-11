@@ -1,5 +1,5 @@
 {-# LANGUAGE FlexibleInstances #-}
-module Test.BitifySpec (
+module BitifySpec (
    spec
 ) where
 

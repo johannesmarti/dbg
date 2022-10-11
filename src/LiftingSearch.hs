@@ -2,7 +2,7 @@ module LiftingSearch (
   searchLifting,
 ) where
 
-import Control.Monad.Plus (msum)
+--import Control.Monad.Plus (msum)
 import Control.Monad.State.Lazy
 
 import LiftedGraph

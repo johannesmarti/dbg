@@ -1,4 +1,4 @@
-module Test.BitGraphSpec (
+module BitGraphSpec (
    spec
 ) where
 

@@ -1,4 +1,4 @@
-module Test.ArcConsSpec (
+module ArcConsSpec (
    spec
 ) where
 

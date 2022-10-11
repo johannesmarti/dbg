@@ -1,4 +1,4 @@
-module Test.DeterminismPropertySpec (
+module DeterminismPropertySpec (
    spec
 ) where
 

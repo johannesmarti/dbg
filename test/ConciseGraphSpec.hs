@@ -1,4 +1,4 @@
-module Test.ConciseGraphSpec (
+module ConciseGraphSpec (
    spec
 ) where
 
