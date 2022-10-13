@@ -1,5 +1,13 @@
 module RelationCache (
-
+  RelationCachableI,
+  RelationCache,
+  outputType,
+  reflexivesUniversalInMultiple,
+  relationOfWord,
+  buildCache,
+  lBitGraphRelationCacheI,
+  liftedGraphRelationCacheI,
+  genericRelationCacheI
 ) where
 
 import Data.Set as Set
@@ -17,8 +25,11 @@ import RelationTree
 import WordTree (labelOfWord)
 import LWrappedGraph
 
+import Data.Set
+
 data RelationCache r x = RelationCache {
   outputType     :: GraphI r x,
+  reflexivesUniversalInMultiple :: r -> Set x,
   relationOfWord :: [Label] -> r
 }
 
@@ -28,7 +39,8 @@ buildCache :: RelationCachableI g x r -> g -> RelationCache r x
 buildCache ci = ci
 
 lBitGraphRelationCacheI :: Size -> RelationCachableI LBitGraph Node BitGraph
-lBitGraphRelationCacheI s lbg = RelationCache (bitGraphI s) rw where
+lBitGraphRelationCacheI s lbg = RelationCache (bitGraphI s) rum rw where
+  rum = reflexivesUnivInMultiple s
   rt = relationTree (lbg,s)
   rw = labelOfWord rt
 
@@ -50,6 +62,7 @@ genericRelationCacheI gi g = cache where
   decodePair (x,y) = (decode c x, decode c y)
   bgCache = lBitGraphRelationCacheI s (innerGraph wg)
   bgi = bitGraphI s
+  rum bg = Set.map (decode c) $ reflexivesUniversalInMultiple bgCache bg
   outTypeI = interfaceFromAll (\_ -> LG.domain (lWrappedGraphI (lBitGraphI s)) wg)
                               (\bg node -> Set.map (decode c) $
                                             successors bgi bg (encode c node))
@@ -58,4 +71,4 @@ genericRelationCacheI gi g = cache where
                               (\bg (x,y) -> hasArc bgi bg (encode c x, encode c y))
                               (\bg -> Prelude.map decodePair $ arcs bgi bg)
                               (\bg node -> prettyOuterNode wg node)
-  cache = RelationCache outTypeI (relationOfWord bgCache)
+  cache = RelationCache outTypeI rum (relationOfWord bgCache)

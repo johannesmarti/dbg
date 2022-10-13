@@ -10,59 +10,59 @@ module PathTree (
 import Control.Exception.Base
 import qualified Data.Set as Set
 
-import BitGraph
-import CommonLGraphTypes
+import RelationCache
 import Graph
 import Label
-import PairGraph
 import qualified Path
 
 
 -- Doing all of this with sets might be better!
-data PathTree = There Node | Step Node Label [PathTree]
+data PathTree x = There x | Step x Label [PathTree x]
   deriving Show
 
-extractNode :: PathTree -> Node
+extractNode :: PathTree x -> x
 extractNode (There n) = n
 extractNode (Step n _ _) = n
 
-firstArcs :: PathTree -> [(Node,Label,Node)]
+firstArcs :: PathTree x -> [(x,Label,x)]
 firstArcs (There _) = []
 firstArcs (Step s l succs) = [(s,l,extractNode t) | t <- succs]
 
-allArcs :: PathTree -> [(Node,Label,Node)]
+allArcs :: PathTree x -> [(x,Label,x)]
 allArcs (There _) = []
 allArcs (Step s l succs) = [(s,l,extractNode t) | t <- succs] ++
                               concatMap allArcs succs
 
-pathTree :: (LBitGraph, Size) -> ([Label] -> BitGraph) -> [Label] -> Node -> Node -> PathTree
-pathTree _ _ [] source target = assert (source == target) $ There target
-pathTree (lbg,s) relOfWord (next:rest) source target = let
-    nextRel = graphOfLabel lbg next
+pathTree :: Ord x => RelationCache r x -> [Label] -> x -> x -> PathTree x
+pathTree _ [] source target = assert (source == target) $ There target
+pathTree cache (next:rest) source target = let
+    relI = outputType cache
+    relOfWord = relationOfWord cache
+    nextRel = relOfWord [next]
     restRel = relOfWord rest
-    succsSource = successors (bitGraphI s) nextRel source
-    predsTarget = predecessors (bitGraphI s) restRel target
+    succsSource = successors relI nextRel source
+    predsTarget = predecessors relI restRel target
     nextNodes = Set.toList $ succsSource `Set.intersection` predsTarget
-    mapper ns = pathTree (lbg,s) relOfWord rest ns target
+    mapper ns = pathTree cache rest ns target
   in Step source next (map mapper nextNodes)
 
-pathTreesOfMCycles :: (LBitGraph, Size) -> ([Label] -> BitGraph) -> [Label] -> [PathTree]
-pathTreesOfMCycles pair relOfWord word = relOfWords where
-  s = snd pair
+pathTreesOfMCycles :: Ord x => RelationCache r x -> [Label] -> [PathTree x]
+pathTreesOfMCycles cache word = relOfWords where
+  relOfWord = relationOfWord cache
   wordRel = relOfWord word
-  refls = Set.toList $ reflexivesUnivInMultiple s wordRel
-  cycleTreeOfRefl r = pathTree pair relOfWord word r r
+  refls = Set.toList $ reflexivesUniversalInMultiple cache wordRel
+  cycleTreeOfRefl r = pathTree cache word r r
   relOfWords = map cycleTreeOfRefl refls
 
-firstArcsOnMCycles :: (LBitGraph, Size) -> ([Label] -> BitGraph) -> [Label] -> [(Node,Label,Node)]
-firstArcsOnMCycles pair relOfWord word =
-  concatMap firstArcs (pathTreesOfMCycles pair relOfWord word)
+firstArcsOnMCycles :: Ord x => RelationCache r x -> [Label] -> [(x,Label,x)]
+firstArcsOnMCycles cache word =
+  concatMap firstArcs (pathTreesOfMCycles cache word)
 
-arcsOnMCycles :: (LBitGraph, Size) -> ([Label] -> BitGraph) -> [Label] -> [(Node,Label,Node)]
-arcsOnMCycles pair relOfWord word =
-  concatMap allArcs (pathTreesOfMCycles pair relOfWord word)
+arcsOnMCycles :: Ord x => RelationCache r x -> [Label] -> [(x,Label,x)]
+arcsOnMCycles cache word =
+  concatMap allArcs (pathTreesOfMCycles cache word)
 
-pathesOnPathTree :: PathTree -> [Path.Path Node]
+pathesOnPathTree :: PathTree x -> [Path.Path x]
 pathesOnPathTree (There x) = [Path.There x]
 pathesOnPathTree (Step x l cs) =
   map prepender $ concatMap pathesOnPathTree cs where

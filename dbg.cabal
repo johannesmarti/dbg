@@ -22,6 +22,7 @@ source-repository head
 library
   exposed-modules:
       AllocateWords
+      AllSpirals
       ArcCons
       AssocGraph
       BitGraph
@@ -40,7 +41,6 @@ library
       ImprovedSearch
       Label
       LabeledGraph
-      Lib
       Lifted
       LiftedGraph
       LiftedGraphReport
@@ -54,7 +54,7 @@ library
       Patterns
       Pretty
       Range
-      RelationOfWordCache
+      RelationCache
       RelationTree
       Report
       Search
