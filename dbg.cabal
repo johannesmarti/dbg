@@ -22,9 +22,9 @@ source-repository head
 library
   exposed-modules:
       AllocateWords
-      AllSpirals
       ArcCons
       AssocGraph
+      Bitable
       BitGraph
       Bitify
       CayleyGraph
