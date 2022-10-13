@@ -38,11 +38,21 @@ main :: IO ()
 --main = gameAlloc2
 --main = gameBig5
 --main = game
---main = print $ SS.searchUpTo 12 alloc2I alloc2
+
+(gi, g) = (alloc2I,alloc2)
+main = do
+  print $ SS.searchUpTo 10 gi g
+  putChar '\n'
+  print $ Spiral.fromHub gi g [Zero,Zero,One] [2,1,0]
+  putChar '\n'
+  print $ Spiral.fromHub gi g [Zero,Zero,One] [1,0,1]
+  putChar '\n'
+  print $ Spiral.fromHub gi g [Zero,Zero,One] [0,2,1]
+
 --main = print $ SS.searchUpTo 12 crazierI crazier
 --main = print $ SS.searchUpTo 12 b1ef5I b1ef5
 
-main = easyWordReport 15 alloc2I alloc2
+--main = easyWordReport 31 alloc2I alloc2
 --main = easyWordReport 15 force3dI force3d
 --main = easyWordReport 15 hamburgerI hamburger
 --main = easyWordReport 15 slowSquareI slowSquare
