@@ -12,13 +12,14 @@ import Data.Set
 
 import Bitable
 import BitGraph
+import Coding
 import Graph
 import Label
 import RelationTree
 import WordTree (labelOfWord)
 
 data RelationCache r x = RelationCache {
-  outputType     :: GraphI r x,
+  outputType :: GraphI r x,
   reflexivesUniversalInMultiple :: r -> Set x,
   relationOfWord :: [Label] -> r
 }
@@ -30,6 +31,7 @@ buildCache ci = ci
 
 relationTreeRelationCacheableI :: BitableI g x -> RelationCachableI g x BitGraph
 relationTreeRelationCacheableI bi g = RelationCache bgi rum rw where
-  Bitification s lbg rum bgi = bi g
+  Bitification s lbg c bgi = bi g
   rt = relationTree (lbg,s)
+  rum = decodeSet c . BitGraph.reflexivesUnivInMultiple s
   rw = labelOfWord rt

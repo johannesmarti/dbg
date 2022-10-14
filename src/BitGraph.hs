@@ -5,6 +5,7 @@ module BitGraph (
   bitGraphI,
   fromArcs,
   nodes,
+  nodesSet,
   succsAsList,
   predsAsList,
   allGraphsOfSize,
@@ -14,7 +15,6 @@ module BitGraph (
   setArc,
   delArc,
   diagonal,
-  --BitGraph.isRefl,
   isUniv,
   isUnivInDom,
   hasUniv,
@@ -45,8 +45,11 @@ bitGraphI size = interfaceFromHasArcPretty (dom size)
 nodes :: Size -> [Node]
 nodes size = [0 .. size-1]
 
+nodesSet :: Size -> Set.Set Node
+nodesSet = Set.fromList . nodes
+
 dom :: Size -> BitGraph -> Set.Set Node
-dom size graph = Set.fromList $ nodes size
+dom size _ = nodesSet size
 
 fromArcs :: Size -> [(Node,Node)] -> BitGraph
 fromArcs size arcs = bm where

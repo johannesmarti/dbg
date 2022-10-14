@@ -22,7 +22,7 @@ import LWrappedGraph
 data Bitification x = Bitification {
   numBits :: Size,
   labeledBitGraph :: LBitGraph,
-  reflexivesUniversalInMultiple :: BitGraph -> Set.Set x,
+  coding :: Coding x Node,
   relationI :: GraphI BitGraph x
 }
 
@@ -30,7 +30,7 @@ type BitableI g x = g -> Bitification x
 
 lBitGraphBitableI :: Size -> BitableI LBitGraph Node
 lBitGraphBitableI s lbg =
-  Bitification s lbg (reflexivesUnivInMultiple s) (bitGraphI s)
+  Bitification s lbg (identityCoding (BitGraph.nodesSet s)) (bitGraphI s)
 
 conciseGraphBitableI :: Size -> BitableI ConciseGraph Node
 conciseGraphBitableI s cg = bitification where
@@ -45,16 +45,14 @@ liftedGraphBitableI lg = bitification where
 genericBitableI :: Ord x => LG.LabeledGraphI g x -> BitableI g x
 genericBitableI gi g = bitification where
   (wg,s) = labeledBitify gi g
-  c = coding wg
-  decodePair (x,y) = (decode c x, decode c y)
+  c = LWrappedGraph.coding wg
   bgi = bitGraphI s
-  rum bg = Set.map (decode c) $ reflexivesUnivInMultiple s bg
   outTypeI = interfaceFromAll (\_ -> LG.domain (lWrappedGraphI (lBitGraphI s)) wg)
-                              (\bg node -> Set.map (decode c) $
+                              (\bg node -> (decodeSet c) $
                                             successors bgi bg (encode c node))
-                              (\bg node -> Set.map (decode c) $
+                              (\bg node -> (decodeSet c) $
                                             predecessors bgi bg (encode c node))
-                              (\bg (x,y) -> hasArc bgi bg (encode c x, encode c y))
-                              (\bg -> Prelude.map decodePair $ arcs bgi bg)
+                              (\bg arc -> hasArc bgi bg (encodeArc c arc))
+                              (\bg -> (decodeArcs c) $ arcs bgi bg)
                               (\bg node -> prettyOuterNode wg node)
-  bitification = Bitification s (innerGraph wg) rum outTypeI
+  bitification = Bitification s (innerGraph wg) c outTypeI

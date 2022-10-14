@@ -21,6 +21,7 @@ import Label
 import BitGraph
 import PairGraph
 import Bitable
+import Coding hiding (domain)
 import RelationCache
 
 data CayleyGraph = CayleyGraph {
@@ -31,9 +32,12 @@ data CayleyGraph = CayleyGraph {
 } deriving Show
 
 relationCache :: Bitification x -> CayleyGraph -> RelationCache BitGraph x
-relationCache bf cg =
-  RelationCache (relationI bf) (Bitable.reflexivesUniversalInMultiple bf)
-                (CayleyGraph.relationOfWord (numBits bf) cg)
+relationCache bf cg = cache where
+  c = coding bf
+  s = numBits bf
+  cache = RelationCache (relationI bf)
+                        (decodeSet c . BitGraph.reflexivesUnivInMultiple s)
+                        (CayleyGraph.relationOfWord s cg)
 
 domain :: CayleyGraph -> Set.Set BitGraph
 domain = Map.keysSet . successorMap
