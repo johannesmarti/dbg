@@ -3,6 +3,7 @@ module Main (
 ) where
 
 import System.Environment 
+import Data.Set as Set
 
 import Report
 import Range
@@ -11,7 +12,6 @@ import Label
 import Game
 import Spiral
 
-import ConciseGraph
 
 import AllocateWords
 import WordTree
@@ -19,7 +19,7 @@ import RelationTree
 
 import ConstructionGraph
 import DeBruijnGraph
-import LabeledGraph (showLG, prettyLabeledGraph)
+import LabeledGraph (showLG, prettyLabeledGraph, domain)
 
 import qualified SmartSearch as SS
 
@@ -40,10 +40,14 @@ main :: IO ()
 --main = game
 
 (gi, g) = (alloc2I,alloc2)
+--(gi, g) = (force3dI,force3d)
+pgi = powerGraphI gi
 main = do
   putStr . unlines $ prettyLabeledGraph gi g
   putChar '\n'
   print $ SS.searchUpTo 10 gi g
+  putChar '\n'
+  print $ universalReachability pgi g (Set.map Set.singleton (domain gi g)) 
   putChar '\n'
   easySpiralReport 10 gi g
 

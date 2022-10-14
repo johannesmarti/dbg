@@ -110,7 +110,7 @@ spiralReportForWord gi g rc w = let
 spiralReport :: Ord x => Int -> LabeledGraphI g x -> g -> [String]
 spiralReport numWords gi g = let
     rc = buildCache (relationTreeRelationCacheableI (genericBitableI gi)) g
-    words = (take numWords) . (filter isBaseWord) . tail $ Word.allWords labelsList
+    words = take numWords . filter isBaseWord . tail $ Word.allWords labelsList
     wordStrings = map (spiralReportForWord gi g rc) words
   in intercalate ["", "+++++++++++++++++++", ""] wordStrings
 
