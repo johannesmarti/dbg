@@ -16,7 +16,6 @@ module CommonLGraphTypes (
   lMapApplyBijection, 
   lMapAddNodes,
   lMapAddArcs,
-  cayleyGraphOfLBitGraph,
 ) where
 
 import Data.Set
@@ -27,7 +26,6 @@ import LabeledGraph
 import PairGraph
 import AssocGraph
 import MapGraph
-import CayleyGraph hiding (domain)
 import Pretty
 
 type LAssocGraph x = PairGraph (AssocGraph x)
@@ -80,10 +78,6 @@ lMapAddArcs lmg label arcs = PairGraph.fromFunction f where
   f l = if l == label
           then MapGraph.addArcs (PairGraph.graphOfLabel lmg l) arcs
           else PairGraph.graphOfLabel lmg l
-
-cayleyGraphOfLBitGraph :: Size -> LBitGraph -> CayleyGraph
-cayleyGraphOfLBitGraph size bg = rightCayleyGraph size
-                                  (graphOfLabel bg Zero, graphOfLabel bg One)
 
 instance (Ord x, Pretty x) => Show (PairGraph (AssocGraph x)) where
   show g = unlines $ prettyLabeledGraph lAssocGraphI g

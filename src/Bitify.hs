@@ -4,7 +4,6 @@ module Bitify (
   bitify,
   labeledBitify,
   toConcise,
-  hasPathCondition,
 ) where
 
 import Control.Exception.Base
@@ -20,7 +19,6 @@ import LabeledGraph
 import WrappedGraph
 import LWrappedGraph
 import PairGraph
-import CayleyGraph
 
 type BityGraph x = WrappedGraph BitGraph Node x
 type LBityGraph x = LWrappedGraph LBitGraph Node x
@@ -58,9 +56,3 @@ toConcise :: Ord x => LabeledGraphI g x -> g -> (Size, ConciseGraph)
 toConcise gi g = (s,cg) where
   (wg,s) = labeledBitify gi g
   cg = fromLBitGraph s (LWrappedGraph.innerGraph wg)
-
-hasPathCondition :: Ord x => LabeledGraphI g x -> g -> Bool
-hasPathCondition gi g = pathCondition size cg where
-  (wg, size) = labeledBitify gi g
-  inner = LWrappedGraph.innerGraph wg
-  cg = cayleyGraphOfLBitGraph size inner

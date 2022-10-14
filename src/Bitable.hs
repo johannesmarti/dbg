@@ -1,6 +1,8 @@
 module Bitable (
   Bitification(..),
   BitableI,
+  liftedGraphBitableI,
+  genericBitableI,
 ) where
 
 import Data.Set as Set
@@ -18,7 +20,7 @@ import WordTree (labelOfWord)
 import LWrappedGraph
 
 data Bitification x = Bitification {
-  size :: Size,
+  numBits :: Size,
   labeledBitGraph :: LBitGraph,
   reflexivesUniversalInMultiple :: BitGraph -> Set.Set x,
   relationI :: GraphI BitGraph x

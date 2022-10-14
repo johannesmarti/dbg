@@ -1,6 +1,6 @@
 module RelationCache (
   RelationCachableI,
-  RelationCache,
+  RelationCache(..),
   outputType,
   RelationCache.reflexivesUniversalInMultiple,
   relationOfWord,

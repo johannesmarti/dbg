@@ -20,8 +20,6 @@ module ConciseGraph (
   hasBothFp,
   noDoubleRefl,
   notTrivial,
-  cayleyGraphOfConcise,
-  pathConditionConcise,
   showem,
 ) where
 
@@ -31,7 +29,6 @@ import qualified Data.Set as Set
 
 import BitGraph (BitGraph,Node,Size,nodes)
 import PairGraph
-import CayleyGraph
 import CommonLGraphTypes
 import LabeledGraph
 import Pretty
@@ -166,12 +163,6 @@ noDoubleRefl size word = all notDoubleReflAt [0 .. size-1] where
 
 notTrivial :: Size -> ConciseGraph -> Bool
 notTrivial size word = hasBothFp size word && noDoubleRefl size word
-
-cayleyGraphOfConcise :: Size -> ConciseGraph -> CayleyGraph
-cayleyGraphOfConcise size = (cayleyGraphOfLBitGraph size) . (toLBitGraph size)
-
-pathConditionConcise :: Size -> ConciseGraph -> Bool
-pathConditionConcise size = (pathCondition size) . (cayleyGraphOfConcise size)
 
 showem :: Size -> ConciseGraph -> String
 showem size graph = unlines $ prettyLabeledGraph (conciseGraphI size) graph

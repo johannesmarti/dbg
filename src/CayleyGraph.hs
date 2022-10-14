@@ -1,7 +1,7 @@
 module CayleyGraph (
   CayleyGraph(..),
   domain,
-  relationOfWord,
+  relationCache,
   rightCayleyGraph,
   allWords,
   finiteWords,
@@ -19,7 +19,9 @@ import qualified Data.Set as Set
 
 import Label
 import BitGraph
-import Word
+import PairGraph
+import Bitable
+import RelationCache
 
 data CayleyGraph = CayleyGraph {
   successorMap :: Map.Map BitGraph (BitGraph,BitGraph),
@@ -27,6 +29,11 @@ data CayleyGraph = CayleyGraph {
   wellfoundedElements :: Set.Set BitGraph,
   nonWellfoundedElements :: Set.Set BitGraph
 } deriving Show
+
+relationCache :: Bitification x -> CayleyGraph -> RelationCache BitGraph x
+relationCache bf cg =
+  RelationCache (relationI bf) (Bitable.reflexivesUniversalInMultiple bf)
+                (CayleyGraph.relationOfWord (numBits bf) cg)
 
 domain :: CayleyGraph -> Set.Set BitGraph
 domain = Map.keysSet . successorMap
@@ -37,9 +44,13 @@ successor cg node label = assert (node `elem` domain cg) $
     Zero -> fst $ (successorMap cg Map.! node)
     One  -> snd $ (successorMap cg Map.! node)
 
-rightCayleyGraph :: Size -> (BitGraph,BitGraph) -> CayleyGraph
-rightCayleyGraph size (zeroRel,oneRel) =
+rightCayleyGraph :: Bitification x -> CayleyGraph
+rightCayleyGraph bf =
   CayleyGraph succMap wellfounded nonWellfounded where
+    size =  numBits bf
+    lbg = labeledBitGraph bf
+    zeroRel = zeroGraph lbg
+    oneRel = oneGraph lbg
     keepAdding [] m p = (m,p)
     keepAdding (next:rest) m p = let
       zeroSucc = compose size next zeroRel
