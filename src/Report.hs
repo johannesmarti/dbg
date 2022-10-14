@@ -1,11 +1,14 @@
 module Report (
   pathReport, easyPathReport,
   wordReport, easyWordReport,
+  spiralReport, easySpiralReport,
 ) where
 
 import qualified Data.Set as Set
 import Data.List (maximumBy,intercalate,intersperse)
 
+import Word
+import Label
 import Bitable
 import LWrappedGraph
 import qualified WrappedGraph as WG
@@ -77,7 +80,7 @@ wordReport numWords gi g = let
     nwfs = nonWellfoundedElements cg
     finWords = map fst $ finiteWords s cg
     longestFinWord = maximumBy (\a b -> compare (length a) (length b)) finWords
-    wordRels = take numWords $ allWords s cg
+    wordRels = take numWords $ CayleyGraph.allWords s cg
   in ["About the Cayley graph of the pattern:"] ++
       LabeledGraph.prettyLabeledGraph gi g ++
      ["It has " ++ show (Set.size wfs) ++ " finite and " ++
@@ -91,16 +94,25 @@ wordReport numWords gi g = let
       intercalate [""] (map printWordWithRelAndPathes wordRels)
 
 easyWordReport :: Ord x => Int -> LabeledGraphI g x -> g -> IO ()
-easyWordReport numWords gi g = putStr . unlines $ (wordReport numWords gi g)
+easyWordReport numWords gi g = putStr . unlines $ wordReport numWords gi g
 
 cyclesOfWord :: Ord x => RelationCache r x -> [Label] -> [[x]]
 cyclesOfWord rc w =
   map Path.cycleNodeList . concatMap pathesOnPathTree $ pathTreesOfMCycles rc w
 
-spiralReportForWord :: (Ord x, Show x) => LabeledGraphI g x -> g -> RelationCache r x -> [Label] -> [String]
+spiralReportForWord :: Ord x => LabeledGraphI g x
+                                -> g -> RelationCache r x -> [Label] -> [String]
 spiralReportForWord gi g rc w = let
     cycles = cyclesOfWord rc w
-    putCycle cycle = show $ fromHub gi g w cycle
-  in [show w] ++
-       intersperse "" (map putCycle cycles)
-       --intercalate [""] (putCycle cycles)
+    putCycle cycle = prettySpiral (LabeledGraph.prettyNode gi g) $ fromHub gi g w cycle
+  in [show w] ++ intercalate [""] (map putCycle cycles)
+
+spiralReport :: Ord x => Int -> LabeledGraphI g x -> g -> [String]
+spiralReport numWords gi g = let
+    rc = buildCache (relationTreeRelationCacheableI (genericBitableI gi)) g
+    words = (take numWords) . (filter isBaseWord) . tail $ Word.allWords labelsList
+    wordStrings = map (spiralReportForWord gi g rc) words
+  in intercalate ["", "+++++++++++++++++++", ""] wordStrings
+
+easySpiralReport :: Ord x => Int -> LabeledGraphI g x -> g -> IO ()
+easySpiralReport numWords gi g = putStr . unlines $ spiralReport numWords gi g

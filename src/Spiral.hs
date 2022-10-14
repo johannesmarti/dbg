@@ -1,5 +1,6 @@
 module Spiral (
   fromHub,
+  prettySpiral,
 ) where
 
 import Control.Exception.Base
@@ -7,6 +8,7 @@ import qualified Data.Vector as Vec
 import qualified Data.Map as Map
 import qualified Data.Set as Set
 import qualified Data.Set.Extra as SE
+import Data.List (intercalate, sortOn)
 
 import Label
 import LabeledGraph
@@ -69,3 +71,10 @@ fromHub gi g w hubList = assert (length w == length hubList) $
                       (Map.fromSet (const distance) (newGenerator Vec.! i)))
              in atDistance (distance + 1) newGenerator newSpokes
 
+prettySpiral :: (a -> String) -> Spiral a -> [String]
+prettySpiral nodePrinter (Spiral w h sms) =
+  concatMap forIndex (allIndices w) where
+    prettyPair (k,n) = "(" ++ nodePrinter k ++ ": " ++ show n ++ ")"
+    sortedMap sm = sortOn snd $ Map.toList sm
+    prettyMap sm = "{" ++ intercalate " " (map prettyPair $ sortedMap sm) ++ "}"
+    forIndex i = [prettyMap (sms Vec.! i), labelToSymbol (w Vec.! i) ++ "=>"]

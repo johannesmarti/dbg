@@ -19,7 +19,7 @@ import RelationTree
 
 import ConstructionGraph
 import DeBruijnGraph
-import LabeledGraph (showLG)
+import LabeledGraph (showLG, prettyLabeledGraph)
 
 import qualified SmartSearch as SS
 
@@ -41,13 +41,11 @@ main :: IO ()
 
 (gi, g) = (alloc2I,alloc2)
 main = do
+  putStr . unlines $ prettyLabeledGraph gi g
+  putChar '\n'
   print $ SS.searchUpTo 10 gi g
   putChar '\n'
-  print $ Spiral.fromHub gi g [Zero,Zero,One] [2,1,0]
-  putChar '\n'
-  print $ Spiral.fromHub gi g [Zero,Zero,One] [1,0,1]
-  putChar '\n'
-  print $ Spiral.fromHub gi g [Zero,Zero,One] [0,2,1]
+  easySpiralReport 10 gi g
 
 --main = print $ SS.searchUpTo 12 crazierI crazier
 --main = print $ SS.searchUpTo 12 b1ef5I b1ef5
