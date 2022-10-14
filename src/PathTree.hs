@@ -67,4 +67,3 @@ pathesOnPathTree (There x) = [Path.There x]
 pathesOnPathTree (Step x l cs) =
   map prepender $ concatMap pathesOnPathTree cs where
     prepender path = Path.Step x l path
-

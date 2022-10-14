@@ -24,9 +24,9 @@ import PathTree
 
 import Tools
 
-pathReport :: Ord x => LabeledGraphI g x -> BitableI g x -> g -> [String]
-pathReport gi bitify g = let
-    bf = bitify g
+pathReport :: Ord x => LabeledGraphI g x -> g -> [String]
+pathReport gi g = let
+    bf = (genericBitableI gi) g
     s = numBits bf
     inner = labeledBitGraph bf
     cg = rightCayleyGraph bf
@@ -52,12 +52,12 @@ pathReport gi bitify g = let
      ["", "The complete list of its infinite elements is:"] ++
       concatMap printRelWithCode (Set.toList nwfs)
      
-easyPathReport :: Ord x => LabeledGraphI g x -> BitableI g x -> g -> IO ()
-easyPathReport gi bitify g = putStr . unlines $ pathReport gi bitify g
+easyPathReport :: Ord x => LabeledGraphI g x -> g -> IO ()
+easyPathReport gi g = putStr . unlines $ pathReport gi g
 
-wordReport :: Ord x => Int -> LabeledGraphI g x -> BitableI g x -> g -> [String]
-wordReport numWords gi bitify g = let
-    bf = bitify g
+wordReport :: Ord x => Int -> LabeledGraphI g x -> g -> [String]
+wordReport numWords gi g = let
+    bf = (genericBitableI gi) g
     s = numBits bf
     cg = rightCayleyGraph bf
     c = Bitable.coding bf
@@ -89,5 +89,9 @@ wordReport numWords gi bitify g = let
       --intercalate [""] (map printWordWithRel wordRels)
       intercalate [""] (map printWordWithRelAndPathes wordRels)
 
-easyWordReport :: Ord x => Int -> LabeledGraphI g x -> BitableI g x -> g -> IO ()
-easyWordReport numWords gi bi g = putStr . unlines $ (wordReport numWords gi bi g)
+easyWordReport :: Ord x => Int -> LabeledGraphI g x -> g -> IO ()
+easyWordReport numWords gi g = putStr . unlines $ (wordReport numWords gi g)
+
+cyclesOfWord :: Ord x => RelationCache r x -> [Label] -> [[x]]
+cyclesOfWord rc w =
+  map Path.cycleNodeList . concatMap pathesOnPathTree $ pathTreesOfMCycles rc w

@@ -217,12 +217,11 @@ gameEx3 = let
       return ()
     lifting = execState combiner (fromLGraph ex3I ex3)
     ig = graph lifting
-    bitableI _ = liftedGraphBitableI lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
-    easyWordReport 15 intGraphI bitableI ig
+    easyWordReport 15 intGraphI ig
     --mapM_ (putStrLn . prettyCandidate) cans
     putChar '\n'
     print pairs
