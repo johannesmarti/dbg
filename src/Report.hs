@@ -4,7 +4,7 @@ module Report (
 ) where
 
 import qualified Data.Set as Set
-import Data.List (maximumBy,intercalate)
+import Data.List (maximumBy,intercalate,intersperse)
 
 import Bitable
 import LWrappedGraph
@@ -21,6 +21,7 @@ import RelationCache
 import Lifting
 import DeterminismProperty
 import PathTree
+import Spiral
 
 import Tools
 
@@ -95,3 +96,11 @@ easyWordReport numWords gi g = putStr . unlines $ (wordReport numWords gi g)
 cyclesOfWord :: Ord x => RelationCache r x -> [Label] -> [[x]]
 cyclesOfWord rc w =
   map Path.cycleNodeList . concatMap pathesOnPathTree $ pathTreesOfMCycles rc w
+
+spiralReportForWord :: (Ord x, Show x) => LabeledGraphI g x -> g -> RelationCache r x -> [Label] -> [String]
+spiralReportForWord gi g rc w = let
+    cycles = cyclesOfWord rc w
+    putCycle cycle = show $ fromHub gi g w cycle
+  in [show w] ++
+       intersperse "" (map putCycle cycles)
+       --intercalate [""] (putCycle cycles)
