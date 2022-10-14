@@ -1,14 +1,23 @@
 module Word (
+  allWords,
   allWordsOfLength,
   turns,
   normalForm,
   isInNormalForm,
   repeatingInits,
   minimalRepeat,
+  isDivisible,
+  isBaseWord,
 ) where
 
+allWords :: [a] -> [[a]]
+allWords alphabet = [] : generate [[]] where
+  generate (next:rest) = let
+      exts = map (\sym -> next ++ [sym]) alphabet
+    in exts ++ (generate (rest ++ exts))
+
 allWordsOfLength :: [a] -> Int -> [[a]]
-allWordsOfLength list 0 = [[]]
+allWordsOfLength _ 0 = [[]]
 {-
 allWordsOfLength list n = concatMap f (allWordsOfLength list (n - 1)) where
   f shorterWord = map ( : shorterWord) list
@@ -24,7 +33,8 @@ turns l =  map reassemble (splits l) where
   reassemble (x,y) = y ++ x
 
 normalForm :: Ord a => [a] -> [a]
-normalForm = minimum . turns
+normalForm [] = []
+normalForm w = minimum (turns w)
 
 isInNormalForm :: Ord a => [a] -> Bool
 isInNormalForm list = list == normalForm list
@@ -33,10 +43,20 @@ repeatingInits :: Eq a => [a] -> [[a]]
 repeatingInits = map fst . filter isRepeat . splits where
   isRepeat (initial, rest) = eatThroughRest initial rest where
     eatThroughRest [] r = eatThroughRest initial r
-    eatThroughRest i [] = True
+    eatThroughRest _ [] = True
     eatThroughRest (i:is) (r:rs) =
       if i == r then eatThroughRest is rs
                 else False
 
 minimalRepeat :: Eq a => [a] -> [a]
-minimalRepeat = head . repeatingInits
+minimalRepeat [] = []
+minimalRepeat w = head (repeatingInits w)
+
+isDivisible :: Eq a => [a] -> Bool
+isDivisible w = let
+    lenW = length w
+    lenM = length (minimalRepeat w)
+  in lenW /= lenM && lenW `rem` lenM == 0
+
+isBaseWord :: Ord a => [a] -> Bool
+isBaseWord w = isInNormalForm w && not (isDivisible w)
