@@ -9,7 +9,7 @@ import qualified Data.Map.Strict as Map
 
 import AllocateWords
 import ArcCons
-import Bitify
+import Bitable
 import CommonLGraphTypes
 import BitGraph (Node,Size)
 import LWrappedGraph
@@ -37,8 +37,9 @@ instance Monoid Result where
   mempty = NoHomomorphism
 -}
 
-homoAtLevel :: Ord x => Int -> (LMapGraph x,LWrappedGraph LBitGraph Node x,Size,CayleyGraph) -> Bool
-homoAtLevel level (g,wg,s,cg) = let
+homoAtLevel :: Ord x => Int -> (LMapGraph x, Bitification x, CayleyGraph)
+                        -> Bool
+homoAtLevel level (g,bf,cg) = let
     dim = level
     deBruijnGraph = dbg dim
     c = coding wg
@@ -62,7 +63,8 @@ homoAtLevel level (g,wg,s,cg) = let
   in isPossible approx && (not (noHomomorphism (arcConsHomomorphismsFromApprox dbgI bgI approx) deBruijnGraph bg))
 -}
 
-searchLevels :: Ord x => [(LMapGraph x,LWrappedGraph LBitGraph Node x,Size,CayleyGraph)] -> Int -> Int -> Result
+searchLevels :: Ord x => [(LMapGraph x, Bitification x, CayleyGraph)]
+                         -> Int -> Int -> Result
 searchLevels candidates cutoff level =
   if level > cutoff
     then UnknownAt cutoff
@@ -72,14 +74,14 @@ searchLevels candidates cutoff level =
               else searchLevels candidates cutoff (level + 1)
 
 searchUpTo :: Ord x => Int -> LabeledGraphI g x -> g -> Result
-searchUpTo cutoff gi graph = let
+searchUpTo bitify cutoff gi graph = let
     dom = domain gi graph
     subsets = Set.toList $ Set.filter (\s -> Set.size s >= 2) $ Set.powerSet dom
     subgraphs = map (lMapSubgraphFromLGraph gi graph) subsets
     candidates = filter (\s -> not (isConstructionDeterministic lMapGraphINotPretty s)) subgraphs
-    bityCandidates = map (\c -> (c, labeledBitify lMapGraphINotPretty c)) candidates
-    candidatesWithCayley = map (\(g,(wg,s)) -> (g, wg, s, cayleyGraphOfLBitGraph s(innerGraph wg))) bityCandidates
-    isGoodCandi (g, wg, s, cg) = pathCondition s cg
+    bityCandidates = map (\c -> (c, genericBitableI lMapGraphI c)) candidates
+    candidatesWithCayley = map (\(g,bitification) -> (g, bitification, rightCayleyGraph bitification)) bityCandidates
+    isGoodCandi (g, bf, cg) = pathCondition (numBits bf) cg
     goodCandidates = filter isGoodCandi candidatesWithCayley
   in if null goodCandidates
        then NoHomomorphism
