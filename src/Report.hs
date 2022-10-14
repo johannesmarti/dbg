@@ -1,38 +1,38 @@
 module Report (
   pathReport, easyPathReport,
   wordReport, easyWordReport,
-  liftingReport, easyLiftingReport,
-  liftingPathReport, easyLiftingPathReport,
 ) where
 
 import qualified Data.Set as Set
 import Data.List (maximumBy,intercalate)
 
-import Bitify
+import Bitable
 import LWrappedGraph
 import qualified WrappedGraph as WG
 import qualified Path
 import LabeledGraph
 import CommonLGraphTypes
-import CayleyGraph
+import CayleyGraph hiding (relationOfWord)
 import BitGraph
 import Coding
 import Pretty
 import Graph as Graph
+import RelationCache
 import Lifting
 import DeterminismProperty
 import PathTree
 
 import Tools
 
-pathReport :: Ord x => LabeledGraphI g x -> g -> [String]
-pathReport gi g = let
-    (wg,s) = labeledBitify gi g
-    inner = innerGraph wg
-    cg = cayleyGraphOfLBitGraph s inner
-    c = coding wg
+pathReport :: Ord x => LabeledGraphI g x -> BitableI g x -> g -> [String]
+pathReport gi bitify g = let
+    bf = bitify g
+    s = numBits bf
+    inner = labeledBitGraph bf
+    cg = rightCayleyGraph bf
+    c = Bitable.coding bf
     dec = decode c
-    printRel r = Graph.prettyGraph (WG.wrappedGraphI (bitGraphI s)) (WG.WrappedGraph r c (LabeledGraph.prettyNode gi g))
+    printRel r = Graph.prettyGraph (relationI bf) r
     printRelWithCode r = (printNodeWithSuccs cg r ++ ":") : (printRel r)
     wfs = wellfoundedElements cg
     nwfs = nonWellfoundedElements cg
@@ -52,42 +52,25 @@ pathReport gi g = let
      ["", "The complete list of its infinite elements is:"] ++
       concatMap printRelWithCode (Set.toList nwfs)
      
-easyPathReport :: Ord x => LabeledGraphI g x -> g -> IO ()
-easyPathReport gi g = putStr . unlines $ (pathReport gi g)
+easyPathReport :: Ord x => LabeledGraphI g x -> BitableI g x -> g -> IO ()
+easyPathReport gi bitify g = putStr . unlines $ pathReport gi bitify g
 
-liftingReport :: Ord x => Int -> LabeledGraphI g x -> g -> [String]
-liftingReport bound gi graph =
-  let g = toLiftedGraph gi graph
-      lI = liftedGraphIWithNodePrinter (LabeledGraph.prettyNode gi graph)
-      lFilter = weakDominationFilter
-      --lFilter = noFilter
-      lifts = take bound $ takeTill (hasT1 lI) $ untilNothing (liftWithFilter lFilter) g
-      --printer gr = prettyPredLabeledGraph lI gr
-      printer gr = prettyBigLabeledGraph lI gr
-      graphToSize g = Set.size $ LabeledGraph.domain lI g
-  in  prettyLabeledGraph gi graph ++
-      ["Size of the liftings: " ++ show (map graphToSize lifts), "", "==========", ""] ++
-      intercalate ["", "+++++++++++++", ""] (map printer lifts)
-
-easyLiftingReport :: Ord x => Int -> LabeledGraphI g x -> g -> IO ()
-easyLiftingReport b gi g = putStr . unlines $ (liftingReport b gi g)
-
-wordReport :: Ord x => Int -> LabeledGraphI g x -> g -> [String]
-wordReport numWords gi g = let
-    (wg,s) = labeledBitify gi g
-    inner = innerGraph wg
-    cg = cayleyGraphOfLBitGraph s inner
-    c = coding wg
+wordReport :: Ord x => Int -> LabeledGraphI g x -> BitableI g x -> g -> [String]
+wordReport numWords gi bitify g = let
+    bf = bitify g
+    s = numBits bf
+    cg = rightCayleyGraph bf
+    c = Bitable.coding bf
     dec = decode c
-    wordToRel = relationOfWord s cg
-    printNode = (LabeledGraph.prettyNode gi g) . dec
-    wrapI = WG.wrappedGraphI (bitGraphI s)
-    printRel r = Graph.prettyGraph wrapI (WG.WrappedGraph r c (LabeledGraph.prettyNode gi g))
+    printRel r = Graph.prettyGraph (relationI bf) r
+    rc = relationCache bf cg
+    wordToRel = relationOfWord rc
+    printNode = LabeledGraph.prettyNode gi g
     printRelWithCode r = (printNodeWithSuccs cg r ++ ":") : (printRel r)
     printWordWithRel (w,r) = [show w ++ ":"] ++ printRelWithCode r
     printWordWithRelAndPathes (w,r) = let
         cycles = concatMap pathesOnPathTree $
-                   pathTreesOfMCycles (inner,s) wordToRel w
+                   pathTreesOfMCycles rc w
       in printWordWithRel (w,r) ++ map (Path.prettyPath printNode) cycles
     wfs = wellfoundedElements cg
     nwfs = nonWellfoundedElements cg
@@ -106,26 +89,5 @@ wordReport numWords gi g = let
       --intercalate [""] (map printWordWithRel wordRels)
       intercalate [""] (map printWordWithRelAndPathes wordRels)
 
-easyWordReport :: Ord x => Int -> LabeledGraphI g x -> g -> IO ()
-easyWordReport numWords gi g = putStr . unlines $ (wordReport numWords gi g)
-
-liftingPathReport :: Ord x => Int -> LabeledGraphI g x -> g -> [String]
-liftingPathReport bound gi graph =
-  let g = toLiftedGraph gi graph
-      lI = liftedGraphIWithNodePrinter (LabeledGraph.prettyNode gi graph)
-      --fi = weakDominationFilter
-      --fi = dominationFilter
-      fi = noFilter
-      lifts = take bound $ takeTill (hasT1 lI) $ untilNothing (liftWithFilter fi) g
-      --lReport iface gra = wordReport 7 iface gra
-      lReport iface gra = pathReport iface gra
-      printer g = lReport lI g
-      graphToSize g = Set.size $ LabeledGraph.domain lI g
-  in  lReport gi graph ++
-      ["=============="] ++
-      ["Size of the liftings: " ++ show (map graphToSize lifts)] ++
-      intercalate ["", "+++++++++++++", ""] (map printer lifts)
-
-easyLiftingPathReport :: Ord x => Int -> LabeledGraphI g x -> g -> IO ()
-easyLiftingPathReport b gi g = putStr . unlines $ (liftingPathReport b gi g)
-
+easyWordReport :: Ord x => Int -> LabeledGraphI g x -> BitableI g x -> g -> IO ()
+easyWordReport numWords gi bi g = putStr . unlines $ (wordReport numWords gi bi g)

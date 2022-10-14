@@ -12,6 +12,7 @@ module Range (
 import System.Environment 
 
 import AllocateWords
+import Bitable
 import LWrappedGraph
 import CayleyGraph
 import ArcCons
@@ -24,6 +25,8 @@ import SmartSearch as SS
 import CommonLGraphTypes
 import LabeledGraph
 import Pretty
+
+cayleyGraphOfConcise s c = rightCayleyGraph (conciseGraphBitableI s c)
 
 searchLifting :: (Pretty x, Ord x) => Int -> LabeledGraphI g x -> g -> Result
 searchLifting cutoff gi graph = worker g 0 where

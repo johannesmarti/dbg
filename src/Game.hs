@@ -27,6 +27,7 @@ import LiftedGraph
 import LiftedGraphReport
 import Report
 import Patterns
+import Bitable
 
 import Label
 import Spiral
@@ -85,8 +86,6 @@ gameForce4d = let
     pairs = map extractPair cans
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
-    putChar '\n'
-    easyLiftedGraphReport lifting
     putChar '\n'
     --mapM_ (\c -> putStrLn (prettyCanWithArcs c) >> putChar '\n') cans
     --mapM_ (putStrLn . prettyCandidate) cans
@@ -218,11 +217,12 @@ gameEx3 = let
       return ()
     lifting = execState combiner (fromLGraph ex3I ex3)
     ig = graph lifting
+    bitableI _ = liftedGraphBitableI lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
-    easyWordReport 15 intGraphI ig
+    easyWordReport 15 intGraphI bitableI ig
     --mapM_ (putStrLn . prettyCandidate) cans
     putChar '\n'
     print pairs
@@ -270,8 +270,6 @@ gameAlsoBig = let
     pairs = map extractPair cans
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
-    putChar '\n'
-    easyLiftedGraphReport lifting
     putChar '\n'
     --mapM_ (\c -> putStrLn (prettyCanWithArcs c) >> putChar '\n') cans
     --mapM_ (putStrLn . prettyCandidate) cans
@@ -326,8 +324,6 @@ gameTentje = let
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
     putChar '\n'
-    easyLiftedGraphReport lifting
-    putChar '\n'
     --mapM_ (\c -> putStrLn (prettyCanWithArcs c) >> putChar '\n') cans
     --mapM_ (putStrLn . prettyCandidate) cans
     --putChar '\n'
@@ -349,9 +345,6 @@ gameForce6d = let
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
     putChar '\n'
-    easyLiftedGraphReport lifting
-    putChar '\n'
-    --easyLiftedGraphReport lifting
     --mapM_ (\c -> putStrLn (prettyCanWithArcs c) >> putChar '\n') cans
     --mapM_ (putStrLn . prettyCandidate) cans
     --putChar '\n'
@@ -379,9 +372,6 @@ gameForce7d = let
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
     putChar '\n'
-    easyLiftedGraphReport lifting
-    putChar '\n'
-    --easyLiftedGraphReport lifting
     --mapM_ (\c -> putStrLn (prettyCanWithArcs c) >> putChar '\n') cans
     --mapM_ (putStrLn . prettyCandidate) cans
     --putChar '\n'
@@ -403,7 +393,6 @@ gameAlloc1 = let
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
     putChar '\n'
-    --easyLiftedGraphReport lifting
     putChar '\n'
     --mapM_ (\c -> putStrLn (prettyCanWithArcs c) >> putChar '\n') cans
     --mapM_ (putStrLn . prettyCandidate) cans
@@ -519,7 +508,6 @@ gameBig5 = let
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
     putChar '\n'
-    --easyLiftedGraphReport lifting
     --putChar '\n'
     print $ Spiral.fromHub intGraphI ig [Zero,One] [40,46]
     putChar '\n'
@@ -724,8 +712,6 @@ gameStudy = let
     putChar '\n'
     easyLiftedGraphRelReport lifting [Zero,One,One]
     putChar '\n'
-    --easyLiftedGraphReport lifting
-    --putChar '\n'
     --easyWordReport 15 intGraphI ig
     --putChar '\n'
     print $ Spiral.fromHub intGraphI ig [Zero,One,One] [1,3,0]

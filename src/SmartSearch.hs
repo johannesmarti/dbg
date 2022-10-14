@@ -14,7 +14,7 @@ import CommonLGraphTypes
 import BitGraph (Node,Size,nodesSet)
 import LWrappedGraph
 import RelationCache
-import CayleyGraph hiding (domain)
+import CayleyGraph hiding (domain, relationOfWord)
 import DeBruijnGraph
 import LabeledGraph
 import Homomorphism
@@ -24,9 +24,8 @@ import Coding hiding (domain)
 data Result = NoHomomorphism | HomomorphismAt Int | UnknownAt Int
   deriving (Eq, Show)
 
-homoAtLevel :: Ord x => Int -> (LMapGraph x, Bitification x, CayleyGraph)
-                        -> Bool
-homoAtLevel level (g,bf,cg) = let
+homoAtLevel :: Ord x => Int -> (Bitification x, CayleyGraph) -> Bool
+homoAtLevel level (bf,cg) = let
     dim = level
     deBruijnGraph = dbg dim
     lbg = labeledBitGraph bf
@@ -51,8 +50,7 @@ homoAtLevel level (g,wg,s,cg) = let
   in isPossible approx && (not (noHomomorphism (arcConsHomomorphismsFromApprox dbgI bgI approx) deBruijnGraph bg))
 -}
 
-searchLevels :: Ord x => [(LMapGraph x, Bitification x, CayleyGraph)]
-                         -> Int -> Int -> Result
+searchLevels :: Ord x => [(Bitification x, CayleyGraph)] -> Int -> Int -> Result
 searchLevels candidates cutoff level =
   if level > cutoff
     then UnknownAt cutoff
@@ -67,9 +65,9 @@ searchUpTo cutoff gi graph = let
     subsets = Set.toList $ Set.filter (\s -> Set.size s >= 2) $ Set.powerSet dom
     subgraphs = map (lMapSubgraphFromLGraph gi graph) subsets
     candidates = filter (\s -> not (isConstructionDeterministic lMapGraphINotPretty s)) subgraphs
-    bityCandidates = map (\c -> (c, genericBitableI lMapGraphINotPretty c)) candidates
-    candidatesWithCayley = map (\(g,bitification) -> (g, bitification, rightCayleyGraph bitification)) bityCandidates
-    isGoodCandi (g, bf, cg) = pathCondition (numBits bf) cg
+    bityCandidates = map (\c -> genericBitableI lMapGraphINotPretty c) candidates
+    candidatesWithCayley = map (\bitification -> (bitification, rightCayleyGraph bitification)) bityCandidates
+    isGoodCandi (bf, cg) = pathCondition (numBits bf) cg
     goodCandidates = filter isGoodCandi candidatesWithCayley
   in if null goodCandidates
        then NoHomomorphism

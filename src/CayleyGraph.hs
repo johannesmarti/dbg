@@ -10,6 +10,7 @@ module CayleyGraph (
   limitedPathCondition,
   printNodeWithSuccs,
   prettyCayleyGraph,
+  CayleyGraph.relationOfWord,
 ) where
 
 import Control.Exception.Base

@@ -2,6 +2,7 @@ module Bitable (
   Bitification(..),
   BitableI,
   liftedGraphBitableI,
+  conciseGraphBitableI,
   genericBitableI,
 ) where
 
