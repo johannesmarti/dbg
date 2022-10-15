@@ -3,12 +3,13 @@ module ConstructionGraph (
   visibleInConstructionGraph,
   immediatelyConstructible,
   powerGraphI,
-  universalReachability
+  universalReachability,
+  prettyReachability,
 ) where
 
 import qualified Data.Set as Set
 import qualified Data.Set.Extra as SE
-import Data.List (intercalate)
+import Data.List (intercalate, intersperse)
 
 import Label
 import LabeledGraph
@@ -60,3 +61,8 @@ universalReachability gi g base = base : worker base base where
     in if Set.null added
         then []
         else added : worker (reachable `Set.union` added) added
+
+prettyReachability :: (x -> String) -> [Set.Set x] -> [String]
+prettyReachability nodePrinter reachabilitySpheres = let
+    printSphere set = intercalate ", " (map nodePrinter $ Set.toList set)
+  in intersperse "----------------------" $ map printSphere reachabilitySpheres

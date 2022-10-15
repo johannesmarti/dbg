@@ -19,7 +19,7 @@ import RelationTree
 
 import ConstructionGraph
 import DeBruijnGraph
-import LabeledGraph (showLG, prettyLabeledGraph, domain)
+import LabeledGraph (prettyNode,showLG, prettyLabeledGraph, domain)
 
 import qualified SmartSearch as SS
 
@@ -47,7 +47,7 @@ main = do
   putChar '\n'
   print $ SS.searchUpTo 10 gi g
   putChar '\n'
-  print $ universalReachability pgi g (Set.map Set.singleton (domain gi g)) 
+  putStr . unlines . (prettyReachability (prettyNode pgi g)) $ universalReachability pgi g (Set.map Set.singleton (domain gi g)) 
   putChar '\n'
   easySpiralReport 10 gi g
 
