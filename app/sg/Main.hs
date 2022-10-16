@@ -5,12 +5,16 @@ module Main (
 --import System.Environment 
 
 import Patterns
-import ConstructionGraph
-import LabeledGraph (showLG)
+import LabeledGraph
+import Report
 
-main :: IO ()
+wordList = [[One,One,One,One,One,Zero],[Zero,Zero,One,One,One,One],[Zero,One,Zero,One,One,One],[Zero,One,One,Zero,One,One],[Zero,One,One,One,Zero,One]]
+(gi, g) = (big5I,big5)
+--(gi, g) = (force3dI,force3d)
+--(gi, g) = (b1ef5I,b1ef5)
+--(gi, g) = (specialUnfoldI,specialUnfold)
+--(gi, g) = (biggestI,biggest)
 main = do
-  --let (gi, g) = (force3dI,force3d)
-  let (gi, g) = (alloc2I,alloc2)
-  putStrLn $ showLG (constructionGraphI gi) g
-  print $ immediatelyConstructible gi g
+  putStr . unlines $ prettyLabeledGraph gi g
+  putChar '\n'
+  putStr . unlines $ spiralReport wordList gi g

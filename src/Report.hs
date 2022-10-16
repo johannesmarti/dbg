@@ -107,12 +107,13 @@ spiralReportForWord gi g rc w = let
     putCycle cycle = prettySpiral (LabeledGraph.prettyNode gi g) $ fromHub gi g w cycle
   in [show w] ++ intercalate [""] (map putCycle cycles)
 
-spiralReport :: Ord x => Int -> LabeledGraphI g x -> g -> [String]
-spiralReport numWords gi g = let
+spiralReport :: Ord x => [[Label]] -> LabeledGraphI g x -> g -> [String]
+spiralReport words gi g = let
     rc = buildCache (relationTreeRelationCacheableI (genericBitableI gi)) g
-    words = take numWords . filter isBaseWord . tail $ Word.allWords labelsList
     wordStrings = map (spiralReportForWord gi g rc) words
   in intercalate ["", "+++++++++++++++++++", ""] wordStrings
 
 easySpiralReport :: Ord x => Int -> LabeledGraphI g x -> g -> IO ()
-easySpiralReport numWords gi g = putStr . unlines $ spiralReport numWords gi g
+easySpiralReport numWords gi g =
+  putStr . unlines $ spiralReport words gi g where
+    words = take numWords . filter isBaseWord . tail $ Word.allWords labelsList
