@@ -39,8 +39,10 @@ main :: IO ()
 --main = gameBig5
 --main = game
 
-(gi, g) = (alloc2I,alloc2)
+--(gi, g) = (alloc2I,alloc2)
 --(gi, g) = (force3dI,force3d)
+--(gi, g) = (b1ef5I,b1ef5)
+(gi, g) = (specialUnfoldI,specialUnfold)
 pgi = powerGraphI gi
 main = do
   putStr . unlines $ prettyLabeledGraph gi g

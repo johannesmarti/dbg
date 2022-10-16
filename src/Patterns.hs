@@ -53,6 +53,7 @@ module Patterns (
   unfolded, unfoldedI,
   unfolded2, unfolded2I,
   b1ef5, b1ef5I,
+  specialUnfold, specialUnfoldI
 ) where
 
 import qualified Data.Set as Set
@@ -444,3 +445,10 @@ b1ef5 :: LMapGraph Char
 b1ef5 = mapFromFunction b1ef5Fct
 b1ef5I :: LabeledGraphI (LMapGraph Char) Char
 b1ef5I = lMapGraphI
+
+su Zero = [('a','a'),('a','c'),('a','e'),('c','d'),('c','f'),('e','b'),('e','g')]
+su One = [('b','b'),('b','a'),('b','f'),('b','g'),('d','c'),('f','e'),('g','d')]
+specialUnfold :: LMapGraph Char
+specialUnfold = mapFromFunction su
+specialUnfoldI :: LabeledGraphI (LMapGraph Char) Char
+specialUnfoldI = lMapGraphI
