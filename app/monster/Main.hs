@@ -30,8 +30,8 @@ main = do
   putChar '\n'
   print $ SS.searchUpTo 10 gi g
   putChar '\n'
-  putStr . unlines $ prettyBigLabeledGraph (converseI pgi) g 
-  putChar '\n'
+  --putStr . unlines $ prettyBigLabeledGraph (converseI pgi) g 
+  --putChar '\n'
   putStr . unlines . (prettyReachability (prettyNode pgi g)) $ universalReachability pgi g (Set.map Set.singleton (domain gi g)) 
   putChar '\n'
   easySpiralReport 8 gi g
