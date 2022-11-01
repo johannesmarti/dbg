@@ -5,6 +5,7 @@ module Game (
   gameForce4d,
   gameForce6d,
   gameForce7d,
+  gameForce9d,
   gameSlowSquare,
   gameDifficult,
   gameBiggest,
@@ -666,42 +667,40 @@ gameDbg4 = let
     putChar '\n'
     print pairs
 
-
-gameStudyBiggest :: IO ()
-gameStudyBiggest = let
+gameForce9d :: IO ()
+gameForce9d = let
     combiner = do
-      combine 0 3 -- 4
-      combine 0 2 -- 5
-      combine 1 2 -- 6
-      combine 1 3 -- 7
-      combine 2 4 -- 8
-      combine 2 3 -- 9
-
-      combine 1 3 -- 10
-      combine 0 1 -- 11
-      combine 2 4 -- 12
-      combine 1 5 -- 13
-
-
+      combine 0 2 -- 4
+      combine 2 3 -- 5
+      combine 0 1 -- 6 for 1
+      combine 1 2 -- 7
+      combine 0 7 -- 8
+      combine 3 8 -- 9
+      combine 4 9 -- 10
+      combine 5 10 -- 11
+      combine 6 11 -- done
       return ()
-    lifting = execState combiner (fromLGraph biggestI biggest)
+    lifting = execState combiner (fromLGraph force9dI force9d)
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
     putChar '\n'
-    easyLiftedGraphRelReport lifting [Zero,One]
-    putChar '\n'
     print pairs
-    --easyPathReport intGraphI ig
-    --mapM_ (putStrLn . prettyCandidate) cans
-
 
 gameStudy :: IO ()
 gameStudy = let
     combiner = do
-      combine 2 3 -- 4 for 01
+      combine 0 2 -- 4
+      combine 2 3 -- 5
+      combine 0 1 -- 6 for 1
+      combine 1 2 -- 7
+      combine 0 7 -- 8
+      combine 3 8 -- 9
+      combine 4 9 -- 10
+      combine 5 10 -- 11
+      combine 6 11 -- done
       return ()
     lifting = execState combiner (fromLGraph force9dI force9d)
     ig = graph lifting
