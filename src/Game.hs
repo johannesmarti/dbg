@@ -13,6 +13,7 @@ module Game (
   gameTentje,
   gameAlloc1,
   gameAlloc2,
+  gameAlloc3,
   gameBig5,
   gameIssues,
   gameDbg3,
@@ -518,14 +519,13 @@ gameBig5 = let
 gameAlloc3 :: IO ()
 gameAlloc3 = let
     combiner = do
-      combine 2 3
-      combine 0 1 -- 5 and 1 univ
-      -- end of forced
-      combine 0 3
-      combine 2 6
-      combine 1 7
-      combine 4 8
-      combine 5 9
+      combine 2 3 -- 4 for 01
+      combine 0 1 -- 5 for 1
+      combine 0 3 -- 6 for 0000
+      combine 2 6 -- 7 for 000
+      combine 1 7 -- 8 for 00
+      combine 4 8 -- 9 for 0
+      combine 5 9 
       return ()
     lifting = execState combiner (fromLGraph alloc3I alloc3)
     ig = graph lifting
@@ -701,24 +701,9 @@ gameStudyBiggest = let
 gameStudy :: IO ()
 gameStudy = let
     combiner = do
-      combine 2 3
-      combine 3 4
-      combine 1 3
-      combine 0 1
-      combine 0 5
-      combine 1 6
-      combine 0 3
-      combine 4 11
-      combine 1 12
-      combine 1 2
-      combine 1 11
-      combine 0 14
-      combine 2 11
-      combine 4 15
-      -- shit is starting here
-      --combine 10 22
+      combine 2 3 -- 4 for 01
       return ()
-    lifting = execState combiner (fromLGraph big5I big5)
+    lifting = execState combiner (fromLGraph force9dI force9d)
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans

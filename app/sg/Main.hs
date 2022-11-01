@@ -8,8 +8,9 @@ import Patterns
 import LabeledGraph
 import Report
 
-wordList = [[One,Zero,One,One,Zero],[One,One,One,Zero,Zero],[One,One,One,One,Zero],[Zero,Zero,One,One,One],[Zero,One,Zero,One,One],[Zero,One,One,Zero,One]]
-(gi, g) = (big5I,big5)
+wordList = [[Zero,Zero,Zero,Zero,Zero,One]]
+--(gi, g) = (big5I,big5)
+(gi, g) = (alloc3I,alloc3)
 --(gi, g) = (force3dI,force3d)
 --(gi, g) = (b1ef5I,b1ef5)
 --(gi, g) = (specialUnfoldI,specialUnfold)
