@@ -19,6 +19,7 @@ module Game (
   gameIssues,
   gameDbg3,
   gameDbg4,
+  gameSmartDbg4,
 ) where
 
 import Control.Monad.State.Lazy
@@ -34,7 +35,8 @@ import Bitable
 import Label
 import Spiral
 
-game = gameStudy
+game = gameSmartDbg4
+--game = gameDbg4
 
 gameEx5 :: IO ()
 gameEx5 = let
@@ -628,35 +630,42 @@ gameDbg4 = let
 
       combine 28 29
 
-    {-
-    -- alternative ending:
-      -- wrap up 001 creating 01 universal
-      combine 2 3 -- 18
-      combine 8 9 -- 19
-      combine 0 18 -- 20 the 01 universal 0-refl and 1-seen by 19
-      -- can I replace 16 with 0?
+      return ()
+    lifting = execState combiner (fromLGraph dbgI (dbg 4))
+    ig = graph lifting
+    cans = filter (weakDominationFilter ig) (liftableCandidates ig)
+    pairs = map extractPair cans
+  in do
+    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putChar '\n'
+    print pairs
 
-      -- wrap up 110 creating 10 universal
-      combine 12 13 -- 21
-      combine 6 7 -- 22
-      combine 17 21 -- 23 the 10 universal 1-refl and 0-seen by 22
-      -- can I replace 17 with 15?
+
+gameSmartDbg4 :: IO ()
+gameSmartDbg4 = let
+    combiner = do
+      combine 2 3 -- 16 create 01 universal
+      combine 12 13 -- 17 create 10 universal
 
       -- wrap up 01
-      combine 4 5 -- 24
-      combine 10 11 -- 25
-      combine 22 24 -- 26
-      combine 19 25 -- 27
-      combine 0 26 -- 28
-      combine 23 27 -- 29
+      combine 4 5 -- 18 -> 01
+      combine 10 11 -- 19 -> 10
+      combine 7 18 -- 20 -> 01
+      combine 8 19 -- 21 -> 10
+      combine 6 20 -- 22 -> 01
+      combine 9 21 -- 23 -> 10
 
+      -- wrap up 0
+      combine 0 1 -- 24
+      combine 16 24 -- 25
+      combine 22 25 -- 26
 
-      combine 0 16 -- 30
-      combine 20 30 -- 31
-      combine 28 31 -- 32
-      combine 29 32
-    -}
+      -- wrap up 1
+      combine 14 15 -- 27
+      combine 17 27 -- 28
+      combine 23 28 -- 29
 
+      combine 26 29
       return ()
     lifting = execState combiner (fromLGraph dbgI (dbg 4))
     ig = graph lifting
