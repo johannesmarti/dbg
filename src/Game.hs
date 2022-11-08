@@ -15,11 +15,9 @@ module Game (
   gameAlloc1,
   gameAlloc2,
   gameAlloc3,
-  gameBig5,
   gameIssues,
   gameDbg3,
   gameDbg4,
-  gameSmartDbg4,
 ) where
 
 import Control.Monad.State.Lazy
@@ -35,8 +33,7 @@ import Bitable
 import Label
 import Spiral
 
-game = gameSmartDbg4
---game = gameDbg4
+game = gameDbg4
 
 gameEx5 :: IO ()
 gameEx5 = let
@@ -440,85 +437,6 @@ gameAlloc2 = let
     --putChar '\n'
     print pairs
 
-gameBig5 :: IO ()
-gameBig5 = let
-    combiner = do
-      combine 2 3
-
-      -- to get 0 2
-      combine 1 3
-      combine 0 1
-      combine 0 2 -- 8 for 10
-
-      combine 3 8 -- 9 for 10
-
-      -- to get 4 9
-      combine 3 4
-      combine 1 4
-      combine 0 4
-      combine 2 4
-      combine 4 5
-      combine 4 6
-      combine 4 7
-      combine 4 9 -- 17 for 10
-
-      combine 4 5 -- 18 for 01
-
-      -- to get 13 17
-      combine 5 10
-      combine 6 11
-      combine 7 12
-      combine 9 13
-      combine 5 13
-      combine 10 14
-      combine 11 15
-      combine 12 16
-      combine 13 17 -- 27 for 10
-
-      combine 5 27 -- 28 for 10
-
-      -- to get 6 18
-      combine 3 12
-      combine 1 24
-      combine 0 25
-      combine 5 26
-      combine 6 28 -- 33 for 10
-
-      -- to get 7 33
-      combine 1 29
-      combine 0 30
-      combine 5 31
-      combine 6 32
-      combine 7 33 -- 38 for 10
-
-      combine 10 38 -- 39 for 10
-
-      combine 8 18 -- 40 for 01
-
-      combine 10 37
-      combine 11 39 -- 42 for 10
-
-      combine 4 35
-      combine 10 36
-      combine 11 41
-      combine 12 42 -- 46 for 10
-
-      return ()
-    lifting = execState combiner (fromLGraph big5I big5)
-    ig = graph lifting
-    cans = filter (weakDominationFilter ig) (liftableCandidates ig)
-    pairs = map extractPair cans
-  in do
-    putStrLn $ unlines $ prettyLiftedGraph lifting
-    putChar '\n'
-    --putChar '\n'
-    print $ Spiral.fromHub intGraphI ig [Zero,One] [40,46]
-    putChar '\n'
-    --mapM_ (\c -> putStrLn (prettyCanWithArcs c) >> putChar '\n') cans
-    --mapM_ (putStrLn . prettyCandidate) cans
-    --putChar '\n'
-    print pairs
-
 gameAlloc3 :: IO ()
 gameAlloc3 = let
     combiner = do
@@ -599,50 +517,8 @@ gameDbg3 = let
     --putChar '\n'
     print pairs
 
-
 gameDbg4 :: IO ()
 gameDbg4 = let
-    combiner = do
-      -- at 0001 creating 001 universal
-      combine 0 1 -- 16
-      -- at 1110 creating 110 universal
-      combine 14 15 -- 17
-
-      -- wrap up 001 creating 01 universal
-      combine 2 3 -- 18
-      combine 8 9 -- 19
-      combine 16 18 -- 20 the 01 universal 0-refl and 1-seen by 19
-      -- can I replace 16 with 0?
-
-      -- wrap up 110 creating 10 universal
-      combine 12 13 -- 21
-      combine 6 7 -- 22
-      combine 17 21 -- 23 the 10 universal 1-refl and 0-seen by 22
-      -- can I replace 17 with 15?
-
-      -- wrap up 01
-      combine 4 5 -- 24
-      combine 10 11 -- 25
-      combine 22 24 -- 26
-      combine 19 25 -- 27
-      combine 20 26 -- 28
-      combine 23 27 -- 29
-
-      combine 28 29
-
-      return ()
-    lifting = execState combiner (fromLGraph dbgI (dbg 4))
-    ig = graph lifting
-    cans = filter (weakDominationFilter ig) (liftableCandidates ig)
-    pairs = map extractPair cans
-  in do
-    putStrLn $ unlines $ prettyLiftedGraph lifting
-    putChar '\n'
-    print pairs
-
-
-gameSmartDbg4 :: IO ()
-gameSmartDbg4 = let
     combiner = do
       combine 2 3 -- 16 create 01 universal
       combine 12 13 -- 17 create 10 universal

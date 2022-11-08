@@ -18,13 +18,14 @@ import qualified SmartSearch as SS
 
 main :: IO ()
 
+--(gi, g) = (dbgI,dbg 4)
 --(gi, g) = (alloc2I,alloc2)
 --(gi, g) = (big5I,big5)
-(gi, g) = (force9dI,force9d)
+--(gi, g) = (force9dI,force9d)
 --(gi, g) = (force3dI,force3d)
 --(gi, g) = (b1ef5I,b1ef5)
 --(gi, g) = (specialUnfoldI,specialUnfold)
---(gi, g) = (biggestI,biggest)
+(gi, g) = (biggestI,biggest)
 pgi = powerGraphI gi
 main = do
   putStr . unlines $ prettyLabeledGraph gi g
