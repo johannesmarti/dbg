@@ -171,7 +171,7 @@ liftCandidate can = state $ \lg ->
       in withAll
     withNode = lMapAddNodes (graph lg) [next]
     newGraph = addForLabel One (addForLabel Zero withNode)
-    newJustification = insert next (doubleton' u v) (justification lg)
+    newJustification = insert next (doubleton u v) (justification lg)
   in (next,LiftedGraph newGraph newJustification (printBase lg))
   
 combine :: Int -> Int -> State (LiftedGraph x) Int

@@ -18,6 +18,7 @@ module Game (
   gameIssues,
   gameDbg3,
   gameDbg4,
+  gameDbg5,
 ) where
 
 import Control.Monad.State.Lazy
@@ -33,7 +34,7 @@ import Bitable
 import Label
 import Spiral
 
-game = gameDbg4
+game = gameStudy
 
 gameEx5 :: IO ()
 gameEx5 = let
@@ -552,6 +553,66 @@ gameDbg4 = let
     putChar '\n'
     print pairs
 
+gameDbg5 :: IO ()
+gameDbg5 = let
+    combiner = do
+      -- wrap up 0001
+      a0001 <- combine 2 3 -- 32
+
+      -- wrap up 1110
+      a1110 <- combine 28 29 -- 33
+
+      -- wrap up 001
+      a001 <- combine 4 5 -- 34 at 001
+      a100 <- combine 18 19 -- 35 at 100
+      b001 <- combine 6 a001 -- 36 at 001
+      c001 <- combine 7 b001 -- 37 at 001
+
+      -- wrap up 001
+      a110 <- combine 26 27 -- 38 at 110
+      a011 <- combine 12 13 -- 39 at 011
+      b110 <- combine 25 a110 -- 40 at 110
+      c110 <- combine 24 b110 -- 41 at 110
+
+      -- wrap up 01
+      a01 <- combine 10 11 -- 42 at 01
+      a10 <- combine 20 21 -- 43 at 10
+      b01 <- combine 9 a01 -- 44 at 01
+      b10 <- combine 22 a10 -- 45 at 10
+      c01 <- combine 8 b01 -- 46 at 01
+      c10 <- combine 23 b10 -- 47 at 10
+      d01 <- combine a011 c01 -- 48 at 01
+      d10 <- combine a100 c10 -- 49 at 10
+      e01 <- combine 14 d01 -- 50 at 01
+      f01 <- combine 15 e01 -- 51 at 01
+      e10 <- combine 16 d10 -- 52 at 10
+      f10 <- combine 17 e10 -- 53 at 10
+
+      -- wrap up 0
+      a0 <- combine 0 1 -- 54 at 0
+      b0 <- combine a0001 a0 -- 55 at 0
+      c0 <- combine c001 b0 -- 56 at 0
+      d0 <- combine f01 c0 -- 57 at 0
+
+      -- wrap up 1
+      a1 <- combine 30 31 -- 58 at 1
+      b1 <- combine a1110 a1 -- 59 at 1
+      c1 <- combine c110 b1 -- 60 at 1
+      d1 <- combine f10 c1 -- 61 at 1
+
+      combine d0 d1
+
+      return ()
+    lifting = execState combiner (fromLGraph dbgI (dbg 5))
+    ig = graph lifting
+    cans = filter (weakDominationFilter ig) (liftableCandidates ig)
+    pairs = map extractPair cans
+  in do
+    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putChar '\n'
+    print pairs
+
+
 gameForce9d :: IO ()
 gameForce9d = let
     combiner = do
@@ -577,17 +638,54 @@ gameForce9d = let
 gameStudy :: IO ()
 gameStudy = let
     combiner = do
-      combine 0 2 -- 4
-      combine 2 3 -- 5
-      combine 0 1 -- 6 for 1
-      combine 1 2 -- 7
-      combine 0 7 -- 8
-      combine 3 8 -- 9
-      combine 4 9 -- 10
-      combine 5 10 -- 11
-      combine 6 11 -- done
+      -- wrap up 0001
+      a0001 <- combine 2 3 -- 32
+
+      -- wrap up 1110
+      a1110 <- combine 28 29 -- 33
+
+      -- wrap up 001
+      a001 <- combine 4 5 -- 34 at 001
+      a100 <- combine 18 19 -- 35 at 100
+      b001 <- combine 6 a001 -- 36 at 001
+      c001 <- combine 7 b001 -- 37 at 001
+
+      -- wrap up 001
+      a110 <- combine 26 27 -- 38 at 110
+      a011 <- combine 12 13 -- 39 at 011
+      b110 <- combine 25 a110 -- 40 at 110
+      c110 <- combine 24 b110 -- 41 at 110
+
+      -- wrap up 01
+      a01 <- combine 10 11 -- 42 at 01
+      a10 <- combine 20 21 -- 43 at 10
+      b01 <- combine 9 a01 -- 44 at 01
+      b10 <- combine 22 a10 -- 45 at 10
+      c01 <- combine 8 b01 -- 46 at 01
+      c10 <- combine 23 b10 -- 47 at 10
+      d01 <- combine a011 c01 -- 48 at 01
+      d10 <- combine a100 c10 -- 49 at 10
+      e01 <- combine 14 d01 -- 50 at 01
+      f01 <- combine 15 e01 -- 51 at 01
+      e10 <- combine 16 d10 -- 52 at 10
+      f10 <- combine 17 e10 -- 53 at 10
+
+      -- wrap up 0
+      a0 <- combine 0 1 -- 54 at 0
+      b0 <- combine a0001 a0 -- 55 at 0
+      c0 <- combine c001 b0 -- 56 at 0
+      d0 <- combine f01 c0 -- 57 at 0
+
+      -- wrap up 1
+      a1 <- combine 30 31 -- 58 at 1
+      b1 <- combine a1110 a1 -- 59 at 1
+      c1 <- combine c110 b1 -- 60 at 1
+      d1 <- combine f10 c1 -- 61 at 1
+
+      combine d0 d1
+
       return ()
-    lifting = execState combiner (fromLGraph force9dI force9d)
+    lifting = execState combiner (fromLGraph dbgI (dbg 6))
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
