@@ -568,7 +568,7 @@ gameDbg5 = let
       b001 <- combine 6 a001 -- 36 at 001
       c001 <- combine 7 b001 -- 37 at 001
 
-      -- wrap up 001
+      -- wrap up 110
       a110 <- combine 26 27 -- 38 at 110
       a011 <- combine 12 13 -- 39 at 011
       b110 <- combine 25 a110 -- 40 at 110
