@@ -19,6 +19,7 @@ module Game (
   gameDbg3,
   gameDbg4,
   gameDbg5,
+  gameDbg6,
 ) where
 
 import Control.Monad.State.Lazy
@@ -34,7 +35,7 @@ import Bitable
 import Label
 import Spiral
 
-game = gameStudy
+game = gameDbg6
 
 gameEx5 :: IO ()
 gameEx5 = let
@@ -626,6 +627,105 @@ gameDbg5 = let
 
       return ()
     lifting = execState combiner (fromLGraph dbgI (dbg 5))
+    ig = graph lifting
+    cans = filter (weakDominationFilter ig) (liftableCandidates ig)
+    pairs = map extractPair cans
+  in do
+    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putChar '\n'
+    print pairs
+
+gameDbg6 :: IO ()
+gameDbg6 = let
+    combiner = do
+      -- wrap up 00001
+      a00001 <- combine 2 3 -- 64
+      -- wrap up 11110
+      a11110 <- combine 60 61 -- 65
+
+      -- wrap up 00110
+      a00110 <- combine 12 13 -- 66
+      -- wrap up 11001
+      a11001 <- combine 50 51 -- 67
+
+      -- wrap up 0001
+      a1000 <- combine 34 35 -- 68
+      a0001 <- combine 4 5  -- 69
+      b0001 <- combine 6 a0001  -- 70
+      c0001 <- combine 7 b0001  -- 71
+      -- wrap up 1110
+      a0111 <- combine 28 29 -- 72
+      a1110 <- combine 58 59  -- 73 
+      b1110 <- combine 57 a1110  -- 74
+      c1110 <- combine 56 b1110  -- 75
+
+      -- wrap up 001
+      a010 <- combine 18 19 -- 76
+      a100 <- combine 36 37 -- 77
+      b100 <- combine 38 a100 -- 78
+      c100 <- combine 39 b100 -- 79
+      a001 <- combine 8 9 -- 80
+      b001 <- combine 10 11 -- 81
+      c001 <- combine 14 15 -- 82
+      d001 <- combine a001 b001 -- 83
+      e001 <- combine c001 a00110 -- 84
+      f001 <- combine d001 e001 -- 85
+      -- wrap up 110
+      a101 <- combine 44 45 -- 86
+      a011 <- combine 24 25 -- 87
+      b011 <- combine 26 a011 -- 88
+      c011 <- combine 27 b011 -- 89
+      a110 <- combine 54 55 -- 91
+      b110 <- combine 52 53 -- 90
+      c110 <- combine 48 49 -- 92
+      d110 <- combine a110 b110 -- 93
+      e110 <- combine c110 a11001 -- 94
+      f110 <- combine d110 e110 -- 95
+
+      -- wrap up 01
+      a01 <- combine 20 21 -- 96
+      a10 <- combine 42 43 -- 97
+      b01 <- combine 22 23 -- 98
+      c01 <- combine b01 a01 -- 99
+      b10 <- combine 40 41 -- 100
+      c10 <- combine b10 a10 -- 101
+      d01 <- combine 16 17 -- 102
+      e01 <- combine a010 d01 -- 103
+      f01 <- combine e01 c01 -- 104
+      d10 <- combine 46 47 -- 105
+      e10 <- combine a101 d10 -- 106
+      f10 <- combine e10 c10 -- 107
+      g01 <- combine 28 29 -- 108
+      h01 <- combine 30 31 -- 109
+      i01 <- combine g01 h01-- 110
+      j01 <- combine a0111 c011 -- 111
+      k01 <- combine j01 i01 -- 112
+      l01 <- combine f01 k01 -- 113
+      g10 <- combine 32 33 -- 114
+      h10 <- combine 34 35 -- 115
+      i10 <- combine g10 h10 -- 116
+      j10 <- combine a1000 c100 -- 117
+      k10 <- combine j10 i10 -- 118
+      l10 <- combine f10 k10 -- 119
+
+      -- wrap up 0
+      a0 <- combine 0 1 -- 120
+      b0 <- combine a00001 a0 -- 121
+      c0 <- combine c0001 b0 -- 122
+      d0 <- combine f001 c0 -- 123
+      e0 <- combine l01 d0 -- 124
+
+      -- wrap up 1
+      a1 <- combine 62 63 -- 125
+      b1 <- combine a11110 a1 -- 126
+      c1 <- combine c1110 b1 -- 127
+      d1 <- combine f110 c1 -- 128
+      e1 <- combine l10 d1 -- 129
+      
+      combine e0 e1 -- 130
+
+      return ()
+    lifting = execState combiner (fromLGraph dbgI (dbg 6))
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
