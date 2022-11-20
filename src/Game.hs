@@ -739,7 +739,7 @@ gameStudy = let
     combiner = do
 
       return ()
-    lifting = execState combiner (fromLGraph dbgI (dbg 6))
+    lifting = execState combiner (fromLGraph big5I big5)
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
