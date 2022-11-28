@@ -5,9 +5,8 @@ module WordTree (
   wordTreeFromFunction,
   labelOfWord,
   updateWord,
+  updateWordM,
   setWord,
-  allWordsUntil,
-  allWordsWithout,
 ) where
 
 import Label
@@ -52,27 +51,16 @@ updateWord updater (Zero:rest) (WordTreeNode l zs os) =
 updateWord updater (One:rest) (WordTreeNode l zs os) =
   WordTreeNode l zs (updateWord updater rest os)
 
+updateWordM :: Monad m => (d -> m d) -> [Label] -> WordTree d -> m (WordTree d)
+updateWordM updater [] (WordTreeNode l zs os) = do
+  l' <- updater l
+  return $ WordTreeNode l' zs os
+updateWordM updater (Zero:rest) (WordTreeNode l zs os) = do
+  zs' <- updateWordM updater rest zs
+  return $ WordTreeNode l zs' os
+updateWordM updater (One:rest) (WordTreeNode l zs os) = do
+  os' <- updateWordM updater rest os
+  return $ WordTreeNode l zs os'
+
 setWord :: d -> [Label] -> WordTree d -> WordTree d
 setWord value word wt = updateWord (const value) word wt
-
--- This function could maybe be made quicker by using Sequence.
-allWordsUntil :: WordTree d -> (d -> Bool) -> [([Label],WordTree d)]
-allWordsUntil wt untilCondition = generateAllWords [([],wt)] where
-  generateAllWords [] = []
-  generateAllWords ((nextWord, nextTree):rest) =
-    if untilCondition (label nextTree)
-      then (reverse nextWord,nextTree) : generateAllWords rest
-      else (reverse nextWord,nextTree) :
-                 (generateAllWords (rest ++ [(Zero:nextWord,zeroSucc nextTree),
-                                             (One:nextWord,oneSucc nextTree)]))
-
--- This function could maybe be made quicker by using Sequence.
-allWordsWithout :: WordTree d -> (d -> Bool) -> [([Label],WordTree d)]
-allWordsWithout wt withoutCondition = generateAllWords [([], wt)] where
-  generateAllWords [] = []
-  generateAllWords ((nextWord, nextTree):rest) =
-    if withoutCondition (label nextTree)
-      then generateAllWords rest
-      else (reverse nextWord,nextTree) :
-                 (generateAllWords (rest ++ [(Zero:nextWord,zeroSucc nextTree),
-                                             (One:nextWord,oneSucc nextTree)]))
