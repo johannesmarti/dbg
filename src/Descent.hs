@@ -34,10 +34,29 @@ descentSuccessor word dt = case lookupWord word dt of
   Cycle     -> turnForward word
   Descent w -> w
 
+descentPathTo :: Label -> [Label] -> DescentTree -> [Label]
+descentPathTo target toWalkFrom dt =
+  if (toWalkFrom == [Zero,One] && target = Zero) ||
+     (toWalkFrom == [One,Zero] && target = One)
+   then []
+   else head toWalkFrom :
+          descentPathTo target (descendSuccessor toWalkFrom dt) dt
+
 addCycleOfWord :: [Label] -> DescentTree -> DescentTree
 addCycleOfWord word dt = let
     wordsOnCycle = turns word
     descentInformation word = (labelOfWord dt word) >>= maybeDescent
     descentPoints = catMaybes $ map descentInformation wordsOnCycle
-  in assert (not $ isDivisible word) $ undefined
+  in assert (not $ isDivisible word) $
+     assert (not $ null descentPoints) $
+     undefined
 
+addAscentOfWord :: [Label] -> DescentTree -> DescentTree
+addAscentOfWord word dt = undefined where
+  firstLetter = case last word of Zero -> One
+                                  One  -> Zero
+  ascentPath = computeDescentPathTo firstLetter word 
+
+addPredecessorsOnCycle :: [Label] -> DescentTree -> DescentTree
+addPredecessorsOnCycle word dt = where
+  ascentWord computeAscent word
