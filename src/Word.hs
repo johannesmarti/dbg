@@ -8,6 +8,7 @@ module Word (
   minimalRepeat,
   isDivisible,
   isBaseWord,
+  descent,
 ) where
 
 allWords :: [a] -> [[a]]
@@ -60,3 +61,21 @@ isDivisible w = let
 
 isBaseWord :: Ord a => [a] -> Bool
 isBaseWord w = isInNormalForm w && not (isDivisible w)
+
+turnForward :: [a] -> [a]
+turnForward [] = []
+turnForward (f:rest) = rest ++ [f]
+
+descent :: Eq a => [a] -> [a]
+descent word = let
+    letter = head word 
+    nextInCycle = turnForward word
+    candidates = repeatingInits nextInCycle
+    goodCandidate c = last c /= letter
+    goodCandidates = filter goodCandidate candidates
+  in if isDivisible word
+       then error "trying to descend from divisible word"
+       else case goodCandidates of
+              []  -> nextInCycle
+              [d] -> d
+              _   -> error "There is a word with multiple descends. This is conjectured to be impossible!"
