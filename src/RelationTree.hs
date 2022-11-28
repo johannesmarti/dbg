@@ -12,7 +12,7 @@ import WordTree
 type RelationTree = WordTree BitGraph
 
 relationTree :: (LBitGraph, Size) -> RelationTree
-relationTree (lbg, s) = wordTree generator where
+relationTree (lbg, s) = wordTreeFromGenerator generator where
   zeroRel = graphOfLabel lbg Zero
   oneRel  = graphOfLabel lbg One
   generator = WordTreeGenerator (diagonal s)

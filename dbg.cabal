@@ -33,6 +33,7 @@ library
       ConciseGraph
       ConstructionGraph
       DeBruijnGraph
+      Descent
       DeterminismProperty
       Function
       Game

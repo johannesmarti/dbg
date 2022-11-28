@@ -8,6 +8,8 @@ module Word (
   minimalRepeat,
   isDivisible,
   isBaseWord,
+  turnForward,
+  turnBackward,
   descent,
 ) where
 
@@ -63,8 +65,15 @@ isBaseWord :: Ord a => [a] -> Bool
 isBaseWord w = isInNormalForm w && not (isDivisible w)
 
 turnForward :: [a] -> [a]
-turnForward [] = []
+turnForward [] = error "empty list can not turn forward"
 turnForward (f:rest) = rest ++ [f]
+
+turnBackward :: [a] -> [a]
+turnBackward [] = error "empty list can not turn forward"
+turnBackward list = a:l' where
+  (a,l') = worker list
+  worker [a]   = (a,[])
+  worker (n:l) = let (a,l') = worker l in (a,n:l')
 
 descent :: Eq a => [a] -> [a]
 descent word = let
