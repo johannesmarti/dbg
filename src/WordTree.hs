@@ -3,6 +3,8 @@ module WordTree (
   WordTree(..),
   wordTree,
   labelOfWord,
+  updateWord,
+  setWord,
   allWordsUntil,
   allWordsWithout,
 ) where
@@ -34,6 +36,17 @@ subtreeOfWord wt (One:rest)  = subtreeOfWord ( oneSucc wt) rest
 
 labelOfWord :: WordTree d -> [Label] -> d
 labelOfWord wt = label . subtreeOfWord wt
+
+updateWord :: (d -> d) -> [Label] -> WordTree d -> WordTree d
+updateWord updater [] (WordTreeNode l zs os) =
+  WordTreeNode (updater l) zs os
+updateWord updater [Zero:rest] (WordTreeNode l zs os) =
+  WordTreeNode l (updateWord updater rest zs) os
+updateWord updater [One:rest] (WordTreeNode l zs os) =
+  WordTreeNode l zs (updateWord updater rest os)
+
+setWord :: d -> [Label] -> WordTree d -> WordTree d
+setWord value word wt = updateWord (const value) word wt
 
 -- This function could maybe be made quicker by using Sequence.
 allWordsUntil :: WordTree d -> (d -> Bool) -> [([Label],WordTree d)]
