@@ -10,7 +10,6 @@ module Word (
   isBaseWord,
   turnForward,
   turnBackward,
-  descent,
 ) where
 
 allWords :: [a] -> [[a]]
@@ -74,17 +73,3 @@ turnBackward list = a:l' where
   (a,l') = worker list
   worker [a]   = (a,[])
   worker (n:l) = let (a,l') = worker l in (a,n:l')
-
-descent :: Eq a => [a] -> [a]
-descent word = let
-    letter = head word 
-    nextInCycle = turnForward word
-    candidates = repeatingInits nextInCycle
-    goodCandidate c = last c /= letter
-    goodCandidates = filter goodCandidate candidates
-  in if isDivisible word
-       then error "trying to descend from divisible word"
-       else case goodCandidates of
-              []  -> nextInCycle
-              [d] -> d
-              _   -> error "There is a word with multiple descends. This is conjectured to be impossible!"

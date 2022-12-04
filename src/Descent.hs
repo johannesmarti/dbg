@@ -1,28 +1,49 @@
 module Descent (
+  canDescent,
   prettyDescentStatus,
+  prettyDescentInfo,
+  DescentTree,
   lookupWord,
+  ascentNode,
+  descentSuccessor,
   descentTreeForBound,
+  gathers,
+  immediatelyGatheredBy,
 ) where
 
 import Control.Exception
+import Data.List (find,inits,isPrefixOf)
 import Data.Maybe
-import Debug.Trace
+--import Debug.Trace
 
 import Label
 import Word
 import WordTree
 
-data DescentStatus = Divisible | Cycle | Descent [Label]
+data DescentStatus = Divisible | Isolated | Cycle | Descent [Label]
   deriving Show
 
-prettyDescentStatus :: DescentStatus -> String
-prettyDescentStatus Divisible = "divisible"
-prettyDescentStatus Cycle = "cycle"
-prettyDescentStatus (Descent to) = "descent to " ++ prettyWord to
+canDescent :: DescentStatus -> Bool
+canDescent Divisible   = False
+canDescent Isolated    = False
+canDescent Cycle       = True
+canDescent (Descent _) = True
 
 maybeDescent :: DescentStatus -> Maybe [Label]
 maybeDescent (Descent word) = Just word
 maybeDescent _              = Nothing
+
+prettyDescentStatus :: DescentStatus -> String
+prettyDescentStatus Divisible = "divisible"
+prettyDescentStatus Isolated = "isolated"
+prettyDescentStatus Cycle = "cycle"
+prettyDescentStatus (Descent to) = "descent to " ++ prettyWord to
+
+prettyDescentInfo :: [Label] -> DescentStatus -> String
+prettyDescentInfo _ Divisible = "divisible"
+prettyDescentInfo _ Isolated = "isolated"
+prettyDescentInfo w Cycle = "cyc to " ++ prettyWord (turnForward w)
+prettyDescentInfo _ (Descent to) = "desc to " ++ prettyWord to
 
 type DescentTree = WordTree (Maybe DescentStatus)
 
@@ -34,7 +55,7 @@ emptyDescentTree = wordTreeFromFunction fct where
 
 baseDescentTree :: DescentTree
 baseDescentTree = dt2 where
-  dt1 = insertNode [One] Cycle (insertNode [Zero] Cycle emptyDescentTree)
+  dt1 = insertNode [One] Isolated (insertNode [Zero] Isolated emptyDescentTree)
   dt2 = addAscentOfWord [One] (addAscentOfWord [Zero] dt1)
 
 lookupWord :: [Label] -> DescentTree -> DescentStatus
@@ -47,14 +68,22 @@ insertNode word status dt = {-trace ("insert " ++ show status ++ " at " ++ prett
   updater Nothing = Just status
   updater (Just _) = error "trying to insert word in descent tree that already has an entry"
 
-descentSuccessor :: [Label] -> DescentTree -> [Label]
-descentSuccessor word dt = case lookupWord word dt of
+descentSuccessorMaybe :: DescentTree -> [Label] -> Maybe [Label]
+descentSuccessorMaybe dt word = case lookupWord word dt of
+  Divisible -> Nothing
+  Isolated  -> Nothing
+  Cycle     -> Just $ turnForward word
+  Descent w -> Just w
+
+descentSuccessor :: DescentTree -> [Label] -> [Label]
+descentSuccessor dt word = case lookupWord word dt of
   Divisible -> error "trying to descent from divisible"
+  Isolated  -> error "trying to descent from isolated"
   Cycle     -> turnForward word
   Descent w -> w
 
-descentPathTo :: Label -> [Label] -> DescentTree -> [Label]
-descentPathTo target toWalkFrom dt =
+descentPathTo :: DescentTree -> Label -> [Label] -> [Label]
+descentPathTo dt target toWalkFrom =
   if (toWalkFrom == [Zero,One] && target == One)
     then [Zero]
   else if (toWalkFrom == [One,Zero] && target == Zero)
@@ -68,24 +97,28 @@ descentPathTo target toWalkFrom dt =
   else if (toWalkFrom == [One] && target == Zero)
    then [One]
   else head toWalkFrom :
-          descentPathTo target (descentSuccessor toWalkFrom dt) dt
+          descentPathTo dt target (descentSuccessor dt toWalkFrom)
 
 addCycleOfWord :: [Label] -> DescentTree -> DescentTree
 addCycleOfWord word dt = let
     wordsOnCycle = turns word
-    descentInformation word = (labelOfWord dt word) >>= maybeDescent
+    descentInformation wd = (labelOfWord dt wd) >>= maybeDescent
     descentPoints = filter (isJust .  descentInformation) wordsOnCycle
   in assert (not $ isDivisible word) $
      if null descentPoints
-       then trace ("no descent points for " ++ prettyWord word) dt
+       then foldl (\dtree w -> insertNode w Isolated dtree) dt wordsOnCycle
        else {-trace (show descentPoints ++ "\n") $-} foldl (flip addPredecessorsOnCycle) dt descentPoints
+
+ascentNode :: DescentTree -> [Label] -> [Label]
+ascentNode dt word = newNode where
+  firstLetter = case last word of Zero -> One
+                                  One  -> Zero
+  ascentPath = descentPathTo dt firstLetter word
+  newNode = firstLetter : ascentPath
 
 addAscentOfWord :: [Label] -> DescentTree -> DescentTree
 addAscentOfWord word dt = dt' where
-  firstLetter = case last word of Zero -> One
-                                  One  -> Zero
-  ascentPath = descentPathTo firstLetter word dt
-  newNode = firstLetter : ascentPath
+  newNode = ascentNode dt word
   dt' = insertNode newNode (Descent word) dt
 
 addPredecessorsOnCycle :: [Label] -> DescentTree -> DescentTree
@@ -104,3 +137,26 @@ descentTreeForBound bound =
   foldl (flip addCycleOfWord) baseDescentTree nfs where
     nfs = take bound . filter isBaseWord . tail . tail . tail $ Word.allWords labelsList
   
+gathersMaybe :: DescentTree -> [Label] -> Maybe [Label]
+gathersMaybe _ [Zero] = Just [Zero]
+gathersMaybe _ [One]  = Just [One]
+gathersMaybe dt word  = do descSuc <- descentSuccessorMaybe dt word
+                           descGather <- gathersMaybe dt descSuc
+                           return $ head word : descGather
+
+gathers :: DescentTree -> [Label] -> [Label]
+gathers _ [Zero] = [Zero]
+gathers _ [One]  = [One]
+gathers dt word  = head word : descGather where
+  descGather = gathers dt descSuc
+  descSuc = descentSuccessor dt word
+
+immediatelyGatheredBy :: DescentTree -> [Label] -> [Label]
+immediatelyGatheredBy dt word = let
+    searchList = reverse $ inits word
+    gathersMe gath = case gathersMaybe dt gath of
+                       Nothing    -> False
+                       Just gthrs -> gthrs `isPrefixOf` word
+  in case find gathersMe searchList of
+       Just  g -> g
+       Nothing -> error $ "the word " ++ prettyWord word ++ " is not gathered"
