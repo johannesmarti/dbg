@@ -20,6 +20,7 @@ module Game (
   gameDbg4,
   gameDbg5,
   gameDbg6,
+  gameBig5,
 ) where
 
 import Control.Monad.State.Lazy
@@ -35,7 +36,7 @@ import Bitable
 import Label
 import Spiral
 
-game = gameDbg6
+game = gameStudy
 
 gameEx5 :: IO ()
 gameEx5 = let
@@ -734,9 +735,146 @@ gameDbg6 = let
     putChar '\n'
     print pairs
 
+gameBig5 :: IO ()
+gameBig5 = let
+    combiner = do
+      combine 2 3 -- 5
+      combine 3 4 -- 6
+      combine 1 3 -- 7
+      combine 0 1 -- 8
+      combine 0 5 -- 9  0,2,3   -> 01111
+      combine 1 6 -- 10 1,3,4   -> 11110
+      combine 0 1 -- 11         -> 01011
+      combine 0 3 -- 12         -> 01010
+
+      combine 0 2 -- 13 -> 0110
+      combine 1 4 -- 14 -> 1100
+      combine 0 4 -- 15 -> 1001
+      combine 2 4 -- 16 -> 0011
+      combine 1 3 -- 17 -> 1101
+      combine 0 1 -- 18 -> 1011
+      combine 0 5 -- 19 -> 0111
+      combine 4 12 -- 20 -> 1110
+      combine 1 20 -- 21 -> 1110
+      combine 6 21 -- 22 -> 1110
+
+      combine 0 3  -- 23 -> 110
+      combine 1 2  -- 24 -> 101
+      combine 0 3  -- 25 -> 011
+      combine 1 23 -- 26 -> 110
+      combine 0 24 -- 27 -> 101
+      combine 2 25 -- 28 -> 011
+      combine 4 26 -- 29 -> 110
+      combine 4 27 -- 30 -> 101
+      combine 4 28 -- 31 -> 011
+      combine 7 29 -- 32 -> 110
+      combine 8 30 -- 33 -> 101
+      combine 13 31 -- 34 -> 011
+      combine 14 32 -- 35 -> 110
+      combine 17 35 -- 36 -> 110
+      combine  5 36 -- 37 -> 110
+
+      combine 0 3  -- 38 -> 01
+      combine 3 8  -- 39 -> 10
+      combine 2 38 -- 40 -> 01
+      combine 4 39 -- 41 -> 10
+      combine 2 41 -- 42 -> 10
+      combine 4 40 -- 43 -> 01
+
+      combine 7 42  -- 44 -> 10
+      combine 19 43 -- 45 -> 01
+      combine 15 42 -- 46 -> 10
+
+      combine 33 46 -- 47 -> 10
+      combine 34 45 -- 48 -> 01
+
+      combine  9 48 -- 49 -> 01
+
+      combine  2 16 -- 50 -> 0
+      combine 49 50 -- 51 -> 0
+
+      combine  4  6 -- 52 -> 1
+      combine 10 52 -- 53 -> 1
+      combine 22 53 -- 54 -> 1
+      combine 37 54 -- 55 -> 1
+      combine 47 55 -- 56 -> 1
+
+      combine 51 56 -- solved!!!
+
+      return ()
+    lifting = execState combiner (fromLGraph big5I big5)
+    ig = graph lifting
+    cans = filter (weakDominationFilter ig) (liftableCandidates ig)
+    pairs = map extractPair cans
+  in do
+    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putChar '\n'
+
 gameStudy :: IO ()
 gameStudy = let
     combiner = do
+      combine 2 3 -- 5
+      combine 3 4 -- 6
+      combine 1 3 -- 7
+      combine 0 1 -- 8
+      combine 0 5 -- 9  0,2,3   -> 01111
+      combine 1 6 -- 10 1,3,4   -> 11110
+      combine 0 1 -- 11         -> 01011
+      combine 0 3 -- 12         -> 01010
+
+      combine 0 2 -- 13 -> 0110
+      combine 1 4 -- 14 -> 1100
+      combine 0 4 -- 15 -> 1001
+      combine 2 4 -- 16 -> 0011
+      combine 1 3 -- 17 -> 1101
+      combine 0 1 -- 18 -> 1011
+      combine 0 5 -- 19 -> 0111
+      combine 4 12 -- 20 -> 1110
+      combine 1 20 -- 21 -> 1110
+      combine 6 21 -- 22 -> 1110
+
+      combine 0 3  -- 23 -> 110
+      combine 1 2  -- 24 -> 101
+      combine 0 3  -- 25 -> 011
+      combine 1 23 -- 26 -> 110
+      combine 0 24 -- 27 -> 101
+      combine 2 25 -- 28 -> 011
+      combine 4 26 -- 29 -> 110
+      combine 4 27 -- 30 -> 101
+      combine 4 28 -- 31 -> 011
+      combine 7 29 -- 32 -> 110
+      combine 8 30 -- 33 -> 101
+      combine 13 31 -- 34 -> 011
+      combine 14 32 -- 35 -> 110
+      combine 17 35 -- 36 -> 110
+      combine  5 36 -- 37 -> 110
+
+      combine 0 3  -- 38 -> 01
+      combine 3 8  -- 39 -> 10
+      combine 2 38 -- 40 -> 01
+      combine 4 39 -- 41 -> 10
+      combine 2 41 -- 42 -> 10
+      combine 4 40 -- 43 -> 01
+
+      combine 7 42  -- 44 -> 10
+      combine 19 43 -- 45 -> 01
+      combine 15 42 -- 46 -> 10
+
+      combine 33 46 -- 47 -> 10
+      combine 34 45 -- 48 -> 01
+
+      combine  9 48 -- 49 -> 01
+
+      combine  2 16 -- 50 -> 0
+      combine 49 50 -- 51 -> 0
+
+      combine  4  6 -- 52 -> 1
+      combine 10 52 -- 53 -> 1
+      combine 22 53 -- 54 -> 1
+      combine 37 54 -- 55 -> 1
+      combine 47 55 -- 56 -> 1
+
+      combine 51 56 -- solved!!!
 
       return ()
     lifting = execState combiner (fromLGraph big5I big5)
@@ -750,7 +888,7 @@ gameStudy = let
     --putChar '\n'
     --easyWordReport 15 intGraphI ig
     --putChar '\n'
-    putChar '\n'
-    print pairs
+    --putChar '\n'
+    --print pairs
     --mapM_ (putStrLn . prettyCandidate) cans
 
