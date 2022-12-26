@@ -18,9 +18,20 @@ bound = 64
 main :: IO ()
 main = let
     dt = descentTreeForBound bound
-    list w = immediatelyGathers dt w
-    forWord word = do
-      putStr (prettyWord word)
-      putStrLn ":"
-      mapM_ (putStrLn . prettyWord) (list word)
+    forWord word = let
+        list = immediatelyGathers dt word
+        rev = reverse word
+        chainOf w = prettyWord w ++ workBack rev w where
+          workBack [l] curr =
+            case descentPredecessorMaybe dt l curr of
+              Nothing -> ""
+              Just n  -> " <" ++ labelToSymbol l ++ " " ++  prettyWord n
+          workBack (l:rest) curr =
+            case descentPredecessorMaybe dt l curr of
+              Nothing -> ""
+              Just n  -> " <" ++ labelToSymbol l ++ " " ++  prettyWord n ++ (workBack rest n)
+      in do
+           putStr (prettyWord word)
+           putStrLn ":"
+           mapM_ (putStrLn . chainOf) list
   in mapM_ forWord wordList

@@ -5,6 +5,8 @@ module Descent (
   DescentTree,
   lookupWord,
   ascentNode,
+  descentPredecessor,
+  descentPredecessorMaybe,
   descentSuccessor,
   descentTreeForBound,
   gathers,
@@ -82,6 +84,20 @@ descentSuccessor dt word = case lookupWord word dt of
   Isolated  -> error "trying to descent from isolated"
   Cycle     -> turnForward word
   Descent w -> w
+
+descentPredecessor :: DescentTree -> Label -> [Label] -> [Label]
+descentPredecessor dt label word =
+  if last word == label
+    then turnBackward word
+    else ascentNode dt word
+
+descentPredecessorMaybe :: DescentTree -> Label -> [Label] -> Maybe [Label]
+descentPredecessorMaybe dt label word =
+  if last word == label
+    then Just $ turnBackward word
+    else if isNothing (labelOfWord dt word)
+           then Nothing
+           else Just $ ascentNode dt word
 
 descentPathTo :: DescentTree -> Label -> [Label] -> [Label]
 descentPathTo dt target toWalkFrom =
@@ -167,7 +183,9 @@ immediatelyGathers dt word = generate [word] where
   generate [] = []
   generate (next:rest) = let
       exts = map (\l -> next ++ [l]) labelsList
-      keep can = isJust (labelOfWord dt can) &&
-                   word == immediatelyGatheredBy dt can
-      keeps = filter keep exts
-    in keeps ++ (generate (rest ++ keeps))
+      keep can = case labelOfWord dt can of
+                   Nothing        -> False
+                   Just _         -> word == immediatelyGatheredBy dt can
+      keepGenerating = filter keep exts
+      out = filter (not . isDivisible) keepGenerating
+    in out ++ (generate (rest ++ keepGenerating))
