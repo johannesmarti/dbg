@@ -95,9 +95,10 @@ descentPredecessorMaybe :: DescentTree -> Label -> [Label] -> Maybe [Label]
 descentPredecessorMaybe dt label word =
   if last word == label
     then Just $ turnBackward word
-    else if isNothing (labelOfWord dt word)
-           then Nothing
-           else Just $ ascentNode dt word
+    else case labelOfWord dt word of
+           Nothing       -> Nothing
+           Just Isolated -> Nothing
+           Just        _ -> Just $ ascentNode dt word
 
 descentPathTo :: DescentTree -> Label -> [Label] -> [Label]
 descentPathTo dt target toWalkFrom =
@@ -179,7 +180,8 @@ immediatelyGatheredBy dt word = let
        Nothing -> error $ "the word " ++ prettyWord word ++ " is not gathered"
 
 immediatelyGathers :: DescentTree -> [Label] -> [[Label]]
-immediatelyGathers dt word = generate [word] where
+immediatelyGathers dt word = start : generate [start] where
+  start = gathers dt word
   generate [] = []
   generate (next:rest) = let
       exts = map (\l -> next ++ [l]) labelsList
