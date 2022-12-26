@@ -772,35 +772,31 @@ gameBig5 = let
       combine 13 31 -- 34 -> 011
       combine 14 32 -- 35 -> 110
       combine 17 35 -- 36 -> 110
-      combine  5 36 -- 37 -> 110
 
-      combine 0 3  -- 38 -> 01
-      combine 3 8  -- 39 -> 10
-      combine 2 38 -- 40 -> 01
-      combine 4 39 -- 41 -> 10
-      combine 2 41 -- 42 -> 10
-      combine 4 40 -- 43 -> 01
+      a01 <- combine 0 3
+      a10 <- combine 3 8  -- 39 -> 10
+      b01 <- combine 2 a01-- 40 -> 01
+      b10 <- combine 4 a10 -- 41 -> 10
+      c10 <- combine 2 b10 -- 42 -> 10
+      c01 <- combine 4 b01 -- 43 -> 01
 
-      combine 7 42  -- 44 -> 10
-      combine 19 43 -- 45 -> 01
-      combine 15 42 -- 46 -> 10
+      d01 <- combine 19 c01 -- 44 -> 01
+      d10 <- combine 15 c10 -- 46 -> 10
+      e10 <- combine 33 d10 -- 47 -> 10
+      e01 <- combine 34 d01 -- 48 -> 01
+      f01 <- combine  9 e01 -- 49 -> 01
 
-      combine 33 46 -- 47 -> 10
-      combine 34 45 -- 48 -> 01
 
-      combine  9 48 -- 49 -> 01
+      a0 <- combine  2 16 -- 50 -> 0
+      b0 <- combine f01 a0 -- 51 -> 0
 
-      combine  2 16 -- 50 -> 0
-      combine 49 50 -- 51 -> 0
+      a1 <- combine  4  6 -- 52 -> 1
+      b1 <- combine 10 a1 -- 53 -> 1
+      c1 <- combine 22 b1 -- 54 -> 1
+      d1 <- combine 36 c1 -- 55 -> 1
+      e1 <- combine e10 d1 -- 56 -> 1
 
-      combine  4  6 -- 52 -> 1
-      combine 10 52 -- 53 -> 1
-      combine 22 53 -- 54 -> 1
-      combine 37 54 -- 55 -> 1
-      combine 47 55 -- 56 -> 1
-
-      combine 51 56 -- solved!!!
-
+      combine b0 e1 -- solved!!!
       return ()
     lifting = execState combiner (fromLGraph big5I big5)
     ig = graph lifting
@@ -847,34 +843,31 @@ gameStudy = let
       combine 13 31 -- 34 -> 011
       combine 14 32 -- 35 -> 110
       combine 17 35 -- 36 -> 110
-      combine  5 36 -- 37 -> 110
 
-      combine 0 3  -- 38 -> 01
-      combine 3 8  -- 39 -> 10
-      combine 2 38 -- 40 -> 01
-      combine 4 39 -- 41 -> 10
-      combine 2 41 -- 42 -> 10
-      combine 4 40 -- 43 -> 01
+      a01 <- combine 0 3
+      a10 <- combine 3 8  -- 39 -> 10
+      b01 <- combine 2 a01-- 40 -> 01
+      b10 <- combine 4 a10 -- 41 -> 10
+      c10 <- combine 2 b10 -- 42 -> 10
+      c01 <- combine 4 b01 -- 43 -> 01
 
-      combine 7 42  -- 44 -> 10
-      combine 19 43 -- 45 -> 01
-      combine 15 42 -- 46 -> 10
+      d01 <- combine 19 c01 -- 44 -> 01
+      d10 <- combine 15 c10 -- 46 -> 10
+      e10 <- combine 33 d10 -- 47 -> 10
+      e01 <- combine 34 d01 -- 48 -> 01
+      f01 <- combine  9 e01 -- 49 -> 01
 
-      combine 33 46 -- 47 -> 10
-      combine 34 45 -- 48 -> 01
 
-      combine  9 48 -- 49 -> 01
+      a0 <- combine  2 16 -- 50 -> 0
+      b0 <- combine f01 a0 -- 51 -> 0
 
-      combine  2 16 -- 50 -> 0
-      combine 49 50 -- 51 -> 0
+      a1 <- combine  4  6 -- 52 -> 1
+      b1 <- combine 10 a1 -- 53 -> 1
+      c1 <- combine 22 b1 -- 54 -> 1
+      d1 <- combine 36 c1 -- 55 -> 1
+      e1 <- combine e10 d1 -- 56 -> 1
 
-      combine  4  6 -- 52 -> 1
-      combine 10 52 -- 53 -> 1
-      combine 22 53 -- 54 -> 1
-      combine 37 54 -- 55 -> 1
-      combine 47 55 -- 56 -> 1
-
-      combine 51 56 -- solved!!!
+      combine b0 e1 -- solved!!!
 
       return ()
     lifting = execState combiner (fromLGraph big5I big5)
