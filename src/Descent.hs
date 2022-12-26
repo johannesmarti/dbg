@@ -9,6 +9,7 @@ module Descent (
   descentTreeForBound,
   gathers,
   immediatelyGatheredBy,
+  immediatelyGathers,
 ) where
 
 import Control.Exception
@@ -160,3 +161,13 @@ immediatelyGatheredBy dt word = let
   in case find gathersMe searchList of
        Just  g -> g
        Nothing -> error $ "the word " ++ prettyWord word ++ " is not gathered"
+
+immediatelyGathers :: DescentTree -> [Label] -> [[Label]]
+immediatelyGathers dt word = generate [word] where
+  generate [] = []
+  generate (next:rest) = let
+      exts = map (\l -> next ++ [l]) labelsList
+      keep can = isJust (labelOfWord dt can) &&
+                   word == immediatelyGatheredBy dt can
+      keeps = filter keep exts
+    in keeps ++ (generate (rest ++ keeps))

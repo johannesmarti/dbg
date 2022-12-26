@@ -2,41 +2,25 @@ module Main (
   main
 ) where
 
-import System.Environment 
-import Data.Set as Set
-
-import Report
-import Patterns
+import Descent
 import Label
-import Spiral
-import ConstructionGraph
-import DeBruijnGraph
-import LabeledGraph
+import Word
 
-import qualified SmartSearch as SS
+baseWord :: [Label]
+baseWord = [Zero,One]
 
+wordList :: [[Label]]
+wordList = turns baseWord
+
+bound :: Int
+bound = 64
 
 main :: IO ()
-
---(gi, g) = (dbgI,dbg 4)
---(gi, g) = (alloc2I,alloc2)
-(gi, g) = (big5I,big5)
---(gi, g) = (force9dI,force9d)
---(gi, g) = (force3dI,force3d)
---(gi, g) = (b1ef5I,b1ef5)
---(gi, g) = (specialUnfoldI,specialUnfold)
---(gi, g) = (biggestI,biggest)
-pgi = powerGraphI gi
-main = do
-  putStr . unlines $ prettyLabeledGraph gi g
-  putChar '\n'
-  putStr . unlines $ prettyLabeledGraph (converseI gi) g
-  putChar '\n'
-  print $ SS.searchUpTo 6 gi g
-  putChar '\n'
-  --putStr . unlines $ prettyBigLabeledGraph (converseI pgi) g 
-  --putChar '\n'
-  putStr . unlines . (prettyReachability (prettyNode pgi g)) $ universalReachability pgi g (Set.map Set.singleton (domain gi g)) 
-  putChar '\n'
-  easySpiralReport 8 gi g
-
+main = let
+    dt = descentTreeForBound bound
+    list w = immediatelyGathers dt w
+    forWord word = do
+      putStr (prettyWord word)
+      putStrLn ":"
+      mapM_ (putStrLn . prettyWord) (list word)
+  in mapM_ forWord wordList
