@@ -177,6 +177,25 @@ executable sg
     , vector
   default-language: Haskell2010
 
+executable thering
+  main-is: Main.hs
+  other-modules:
+      Paths_dbg
+  hs-source-dirs:
+      app/thering
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , containers
+    , data-ordlist
+    , dbg
+    , extra
+    , hspec
+    , mtl
+    , set-extra
+    , vector
+  default-language: Haskell2010
+
 test-suite dbg-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs

@@ -2,15 +2,16 @@ module Main (
   main
 ) where
 
+import Data.List (intersperse, intercalate)
+
 import Descent
 import Label
 import Word
+import Gathering
+import Path
 
 baseWord :: [Label]
 baseWord = [Zero,Zero,One]
-
-wordList :: [[Label]]
-wordList = turns baseWord
 
 bound :: Int
 bound = 256
@@ -18,20 +19,9 @@ bound = 256
 main :: IO ()
 main = let
     dt = descentTreeForBound bound
-    forWord word = let
-        list = immediatelyGathers dt word
-        rev = reverse word
-        chainOf w = prettyWord w ++ workBack rev w where
-          workBack [l] curr =
-            case descentPredecessorMaybe dt l curr of
-              Nothing -> ""
-              Just n  -> " <" ++ labelToSymbol l ++ " " ++  prettyWord n
-          workBack (l:rest) curr =
-            case descentPredecessorMaybe dt l curr of
-              Nothing -> ""
-              Just n  -> " <" ++ labelToSymbol l ++ " " ++  prettyWord n ++ (workBack rest n)
-      in do
-           putStr (prettyWord word)
-           putStrLn ":"
-           mapM_ (putStrLn . chainOf) list
-  in mapM_ forWord wordList
+    ap = ascentPaths dt baseWord
+    toOut = map (map (prettyReversePath prettyWord)) ap
+    lins = intercalate ["", "===========",""] toOut
+    linss = intersperse "" lins
+    str = unlines linss
+  in putStrLn str

@@ -180,14 +180,17 @@ immediatelyGatheredBy dt word = let
        Nothing -> error $ "the word " ++ prettyWord word ++ " is not gathered"
 
 immediatelyGathers :: DescentTree -> [Label] -> [[Label]]
-immediatelyGathers dt word = start : generate [start] where
-  start = gathers dt word
-  generate [] = []
-  generate (next:rest) = let
-      exts = map (\l -> next ++ [l]) labelsList
-      keep can = case labelOfWord dt can of
-                   Nothing        -> False
-                   Just _         -> word == immediatelyGatheredBy dt can
-      keepGenerating = filter keep exts
-      out = filter (not . isDivisible) keepGenerating
-    in out ++ (generate (rest ++ keepGenerating))
+immediatelyGathers dt word = let
+    start = gathers dt word
+    generate [] = []
+    generate (next:rest) = let
+        exts = map (\l -> next ++ [l]) labelsList
+        keep can = case labelOfWord dt can of
+                     Nothing        -> False
+                     Just _         -> word == immediatelyGatheredBy dt can
+        keepGenerating = filter keep exts
+        out = filter (not . isDivisible) keepGenerating
+      in out ++ (generate (rest ++ keepGenerating))
+  in if start == word
+       then generate [start]
+       else start : generate [start]

@@ -9,6 +9,7 @@ module Word (
   isDivisible,
   isBaseWord,
   realTurns,
+  onAllTurns,
   turnForward,
   turnBackward,
 ) where
@@ -68,6 +69,9 @@ realTurns :: [a] -> [[a]]
 realTurns l = turner l [] where
   turner [] _ = []
   turner (n:r) o = ((n:r) ++ reverse o) : turner r (n:o)
+
+onAllTurns :: ([a] -> [b] -> c) -> [a] -> [b] -> [c]
+onAllTurns f xs ys = map (uncurry f) (zip (realTurns xs) (realTurns ys))
 
 turnForward :: [a] -> [a]
 turnForward [] = error "empty list can not turn forward"
