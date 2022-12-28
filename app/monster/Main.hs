@@ -7,13 +7,13 @@ import Label
 import Word
 
 baseWord :: [Label]
-baseWord = [Zero,One]
+baseWord = [Zero,Zero,One]
 
 wordList :: [[Label]]
 wordList = turns baseWord
 
 bound :: Int
-bound = 64
+bound = 256
 
 main :: IO ()
 main = let

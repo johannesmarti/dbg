@@ -1,9 +1,11 @@
 module Path (
   Path(..),
+  start,
   labelList,
   nodeList,
   cycleNodeList,
   prettyPath,
+  prettyReversePath,
 ) where
 
 import Label
@@ -14,6 +16,10 @@ data Path a = There a | Step a Label (Path a)
 instance Functor Path where
   fmap f (There a) = There (f a)
   fmap f (Step a l cont) = Step (f a) l (fmap f cont)
+
+start :: Path a -> a
+start (There x) = x
+start (Step x _ _) = x
 
 labelList :: Path a -> [Label]
 labelList (There _) = []
@@ -32,3 +38,8 @@ prettyPath :: (a -> String) -> Path a -> String
 prettyPath nodePrinter (There a) = nodePrinter a
 prettyPath nodePrinter (Step a l cont) = 
   nodePrinter a ++ "  " ++ labelToSymbol l ++ ">  " ++ (prettyPath nodePrinter cont)
+
+prettyReversePath :: (a -> String) -> Path a -> String
+prettyReversePath nodePrinter (There a) = nodePrinter a
+prettyReversePath nodePrinter (Step a l cont) = 
+  nodePrinter a ++ "  <" ++ labelToSymbol l ++ "  " ++ (prettyReversePath nodePrinter cont)

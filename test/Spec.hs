@@ -14,6 +14,7 @@ import qualified DeterminismPropertySpec
 import qualified CayleyGraphSpec
 import qualified BitifySpec
 import qualified LiftedSpec
+import qualified WordSpec
 
 main :: IO ()
 main = hspec spec
@@ -30,4 +31,5 @@ spec = do
   describe "CayleyGraph" CayleyGraphSpec.spec
   describe "Bitify" BitifySpec.spec
   describe "Lifted" LiftedSpec.spec
+  describe "Word" WordSpec.spec
 

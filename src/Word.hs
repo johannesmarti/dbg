@@ -8,6 +8,7 @@ module Word (
   minimalRepeat,
   isDivisible,
   isBaseWord,
+  realTurns,
   turnForward,
   turnBackward,
 ) where
@@ -62,6 +63,11 @@ isDivisible w = let
 
 isBaseWord :: Ord a => [a] -> Bool
 isBaseWord w = isInNormalForm w && not (isDivisible w)
+
+realTurns :: [a] -> [[a]]
+realTurns l = turner l [] where
+  turner [] _ = []
+  turner (n:r) o = ((n:r) ++ reverse o) : turner r (n:o)
 
 turnForward :: [a] -> [a]
 turnForward [] = error "empty list can not turn forward"

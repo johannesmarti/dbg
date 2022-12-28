@@ -37,6 +37,7 @@ library
       DeterminismProperty
       Function
       Game
+      Gathering
       Graph
       Homomorphism
       ImprovedSearch
@@ -190,6 +191,7 @@ test-suite dbg-test
       HomomorphismSpec
       LiftedSpec
       MapGraphSpec
+      WordSpec
       Paths_dbg
   hs-source-dirs:
       test
