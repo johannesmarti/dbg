@@ -11,7 +11,8 @@ import Gathering
 import Path
 
 baseWord :: [Label]
-baseWord = [Zero,Zero,One]
+baseWord = [Zero,Zero,One,One]
+--baseWord = [Zero,One]
 
 bound :: Int
 bound = 256

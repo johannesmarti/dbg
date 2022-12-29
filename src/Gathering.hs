@@ -1,4 +1,6 @@
 module Gathering (
+  generateAscentPath,
+  longer,
   ascentPaths,
   --verifyPath,
 ) where
@@ -20,12 +22,16 @@ nodeOnPath (Step a _ cont) b =
 longer :: Path [Label] -> Path [Label] -> Bool
 longer a b = nodeOnPath a (start b)
 
-generateAscentPath :: DescentTree -> [Label] -> [Label] -> Path [Label]
-generateAscentPath _ [] word = There word
-generateAscentPath dt (next:rest) word =
+generateAscentPathWorker :: DescentTree -> [Label] -> [Label] -> Path [Label]
+generateAscentPathWorker _ [] word = There word
+generateAscentPathWorker dt (next:rest) word =
   case descentPredecessorMaybe dt next word of
     Nothing -> There word
-    Just x  -> Step x next (generateAscentPath dt rest x)
+    Just x  -> Step word next (generateAscentPathWorker dt rest x)
+
+generateAscentPath :: DescentTree -> [Label] -> [Label] -> Path [Label]
+generateAscentPath dt along start =
+  generateAscentPathWorker dt (cycle (reverse along)) start
 
 populateWordLists :: DescentTree -> [Label] -> [[[Label]]]
 populateWordLists dt word = map (immediatelyGathers dt) (realTurns word)
@@ -33,9 +39,9 @@ populateWordLists dt word = map (immediatelyGathers dt) (realTurns word)
 ascentPaths :: DescentTree -> [Label] -> [[Path [Label]]]
 ascentPaths dt baseWord = let
     wordLists = populateWordLists dt baseWord
-    makePaths w wl = map (generateAscentPath dt ((cycle (reverse w)))) (head wl)
+    makePaths w wl = map (generateAscentPath dt w) (head wl)
     allPaths = onAllTurns makePaths baseWord wordLists
-  in {-filterPaths -}allPaths
+  in filterPaths allPaths
 
 filterPaths :: [[Path [Label]]] -> [[Path [Label]]]
 filterPaths pss = map (filter undominated) pss where

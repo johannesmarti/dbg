@@ -15,6 +15,7 @@ import qualified CayleyGraphSpec
 import qualified BitifySpec
 import qualified LiftedSpec
 import qualified WordSpec
+import qualified GatheringSpec
 
 main :: IO ()
 main = hspec spec
@@ -32,4 +33,5 @@ spec = do
   describe "Bitify" BitifySpec.spec
   describe "Lifted" LiftedSpec.spec
   describe "Word" WordSpec.spec
+  describe "Gathring" GatheringSpec.spec
 
