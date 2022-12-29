@@ -6,12 +6,13 @@ import Data.List (intersperse, intercalate)
 
 import Descent
 import Label
-import Word
 import Gathering
 import Path
 
 baseWord :: [Label]
-baseWord = [Zero,Zero,One,One]
+baseWord = [Zero,Zero,Zero,One]
+--baseWord = [Zero,Zero,One,One]
+--baseWord = [Zero,Zero,One]
 --baseWord = [Zero,One]
 
 bound :: Int

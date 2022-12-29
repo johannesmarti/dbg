@@ -21,6 +21,6 @@ forWord dt word = let
 
 main :: IO ()
 main = let
-    dt = descentTreeForBound 2000
-    toShow = take 4096 . tail $ Word.allWords labelsList
+    dt = descentTreeForBound 4000
+    toShow = take 8096 . tail $ Word.allWords labelsList
   in mapM_ (forWord dt) toShow
