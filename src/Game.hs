@@ -809,65 +809,50 @@ gameBig5 = let
 gameStudy :: IO ()
 gameStudy = let
     combiner = do
-      combine 2 3 -- 5
-      combine 3 4 -- 6
-      combine 1 3 -- 7
-      combine 0 1 -- 8
-      combine 0 5 -- 9  0,2,3   -> 01111
-      combine 1 6 -- 10 1,3,4   -> 11110
-      combine 0 1 -- 11         -> 01011
-      combine 0 3 -- 12         -> 01010
+      a011111 <- combine 2 3
+      a111110 <- combine 3 4
 
-      combine 0 2 -- 13 -> 0110
-      combine 1 4 -- 14 -> 1100
-      combine 0 4 -- 15 -> 1001
-      combine 2 4 -- 16 -> 0011
-      combine 1 3 -- 17 -> 1101
-      combine 0 1 -- 18 -> 1011
-      combine 0 5 -- 19 -> 0111
-      combine 4 12 -- 20 -> 1110
-      combine 1 20 -- 21 -> 1110
-      combine 6 21 -- 22 -> 1110
+      a11010 <- combine 1 3
+      a10101 <- combine 0 1
+      a01011 <- combine 0 2
 
-      combine 0 3  -- 23 -> 110
-      combine 1 2  -- 24 -> 101
-      combine 0 3  -- 25 -> 011
-      combine 1 23 -- 26 -> 110
-      combine 0 24 -- 27 -> 101
-      combine 2 25 -- 28 -> 011
-      combine 4 26 -- 29 -> 110
-      combine 4 27 -- 30 -> 101
-      combine 4 28 -- 31 -> 011
-      combine 7 29 -- 32 -> 110
-      combine 8 30 -- 33 -> 101
-      combine 13 31 -- 34 -> 011
-      combine 14 32 -- 35 -> 110
-      combine 17 35 -- 36 -> 110
+      a01111 <- combine 2 3
+      a11110 <- combine 3 4
+      a11101 <- combine 3 4
+      a11011 <- combine 1 3
+      a10111 <- combine 0 1
+      b01111 <- combine 0 a01111
+      b11110 <- combine 1 a11110
+      c11110 <- combine 0 b11110
 
-      a01 <- combine 0 3
-      a10 <- combine 3 8  -- 39 -> 10
-      b01 <- combine 2 a01-- 40 -> 01
-      b10 <- combine 4 a10 -- 41 -> 10
-      c10 <- combine 2 b10 -- 42 -> 10
-      c01 <- combine 4 b01 -- 43 -> 01
+      a1110 <- combine 0 3
+      a1101 <- combine 1 3
+      a1011 <- combine 0 1
+      a0111 <- combine 0 3
+      b0111 <- combine a011111 a0111
+      b1110 <- combine 1 a1110
+      c1110 <- combine a11101 b1110
+      b1101 <- combine 4 a1101
+      b1011 <- combine 4 a1011
+      --c0111 <- combine 4 b0111
+      --d1110 <- combine a011111 c1110 -- somehow still need the 2 3 to see 11010
 
-      d01 <- combine 19 c01 -- 44 -> 01
-      d10 <- combine 15 c10 -- 46 -> 10
-      e10 <- combine 33 d10 -- 47 -> 10
-      e01 <- combine 34 d01 -- 48 -> 01
-      f01 <- combine  9 e01 -- 49 -> 01
+{-
+      a110 <- combine 0 3
+      a101 <- combine 1 2
+      a011 <- combine 0 3
+      b110 <- combine 1 a110
+      c110 <- combine a11011 b110
+      b011 <- combine 4 a011 -- from 00101 and 01101
+      d110 <- combine 1 c110 -- from 11000
+      b101 <- combine 4 a101 -- from 10110
+
+      e110 <- combine a11010 d110
+-}
+
+      --c011 <- combine 4 b011
 
 
-      a0 <- combine  2 16 -- 50 -> 0
-      b0 <- combine f01 a0 -- 51 -> 0
-
-      a1 <- combine  4  6 -- 52 -> 1
-      b1 <- combine 10 a1 -- 53 -> 1
-      c1 <- combine 22 b1 -- 54 -> 1
-      d1 <- combine 36 c1 -- 55 -> 1
-      e1 <- combine e10 d1 -- 56 -> 1
-
-      combine b0 e1 -- solved!!!
 
       return ()
     lifting = execState combiner (fromLGraph big5I big5)

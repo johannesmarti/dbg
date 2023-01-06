@@ -7,7 +7,7 @@ import Label
 import Word
 
 baseWord :: [Label]
-baseWord = [Zero,Zero,One]
+baseWord = [Zero,One,One,One]
 
 wordList :: [[Label]]
 wordList = turns baseWord
