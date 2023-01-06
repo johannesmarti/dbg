@@ -8,7 +8,7 @@ import Patterns
 import LabeledGraph
 import Report
 
-wordList = [[Zero,One,Zero,One,One]]
+wordList = [[Zero,One,One,One]]
 --wordList = [[Zero,Zero,One,One,Zero,One]]
 (gi, g) = (big5I,big5)
 --(gi, g) = (alloc3I,alloc3)
