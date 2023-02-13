@@ -1,5 +1,5 @@
 module FlyingPig (
-  parent,
+  turningWord,parent,
   epsilon,zero,one,
   predecessor,
 ) where

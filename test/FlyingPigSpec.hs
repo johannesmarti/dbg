@@ -7,7 +7,6 @@ import Test.Hspec
 import FlyingPig
 import Label
 
-
 spec :: Spec
 spec = do
   let p0 = predecessor Zero
@@ -21,7 +20,7 @@ spec = do
       p0 zero `shouldBe` zero
     it "1-predecessor of one is one" $
       p1 one `shouldBe` one
-  describe "predecessors of 0 are above 1" $ do
+  describe "1-predecessors of 0 are above 1" $ do
     it "for 10" $
       parent (p1 zero) `shouldBe` one
     it "for 110" $
@@ -33,26 +32,28 @@ spec = do
       p0 (p1 zero) `shouldBe` (p0 one)
     it "01 <1 10" $
       p1 (p0 one) `shouldBe` (p1 zero)
-{-
-  describe "working with an ascent path" $ do
-    let dt = descentTreeForBound 64
-    let path = generateAscentPath dt [Zero,Zero,One] [Zero,Zero,One,One]
-    let (Step first l1 (Step second l2 (Step third l3 _))) = path
-    it "first element is the one we generated from" $ do
-      first `shouldBe` [Zero,Zero,One,One]
-    it "second is [One,Zero,Zero,One]" $ do
-      second `shouldBe` [One,Zero,Zero,One]
-    it "third element is [Zero,One,Zero,Zero,One,One]" $ do
-      third `shouldBe` [Zero,One,Zero,Zero,One,One]
-    it "first label is One" $ do
-      l1 `shouldBe` One
-    it "second label is Zero" $ do
-      l2 `shouldBe` Zero
-    it "third label is Zero" $ do
-      l3 `shouldBe` Zero
-    let shorterPath = generateAscentPath dt [Zero,Zero,One] third
-    it "path is longer than shorter path" $ do
-      (path `longer` shorterPath) `shouldBe` True
-    it "shorter path is not longer than path" $ do
-      (shorterPath `longer` path) `shouldBe` False
--}
+  describe "words are reasonable" $ do
+    it "001 has [001]" $
+      turningWord (p0 . p0 $ one) `shouldBe` [Zero,Zero,One]
+    let node = p0 . p1 . p1 . p0 . p0 $ one
+    it "0110 at right positions" $
+      turningWord node `shouldBe` [Zero,One,One,Zero]
+    it "parent of 0110 has [011]" $
+      (turningWord . parent $ node) `shouldBe` [Zero,One,One]
+    it "0-pred of 0110 is above 001" $
+      (turningWord . parent . p0 $ node) `shouldBe` [Zero,Zero,One]
+  describe "110-loop" $ do
+    it "110 is at 01101" $
+      turningWord (p1 . p1 $ zero) `shouldBe` [One,One,Zero]
+    it "101 is at 01101" $
+      turningWord (p1 . p0 . p1 . p1 $ zero) `shouldBe` [One,Zero,One]
+    it "101 <1 110" $
+      p1 (p1 . p0 . p1 . p1 $ zero) `shouldBe` (p1 . p1 $ zero)
+  describe "the difficult case for ascent trees" $ do
+    let node = p0 . p1 . p0 . p0 . p1 . p0 . p1 . p0 . p0 $ one
+    it "01001 is at 1001010010" $
+      turningWord node `shouldBe` [Zero,One,Zero,Zero,One]
+    it "its parent has word 010" $
+      turningWord (parent node) `shouldBe` [Zero,One,Zero]
+    it "its 0-predecessor has word 00100101" $
+      turningWord (p0 node) `shouldBe` [Zero,Zero,One,Zero,Zero,One,Zero,One]
