@@ -11,7 +11,7 @@ module Path (
 import Label
 
 data Path a = There a | Step a Label (Path a)
-  deriving Show
+  deriving (Eq,Show)
 
 instance Functor Path where
   fmap f (There a) = There (f a)
