@@ -1,6 +1,7 @@
 module Word (
   allWords,
   allWordsOfLength,
+  first,
   turns,
   normalForm,
   isInNormalForm,
@@ -28,6 +29,10 @@ allWordsOfLength list n = concatMap f (allWordsOfLength list (n - 1)) where
 -}
 allWordsOfLength list n = concatMap f list where
   f letter = map (letter :) (allWordsOfLength list (n - 1))
+
+first :: [a] -> a
+first (x:_) = x
+first [] = error "empty word has no first letter"
 
 splits :: [a] -> [([a],[a])]
 splits xx = zipWith splitAt [1..(length xx)] (repeat xx)

@@ -35,6 +35,7 @@ library
       DeBruijnGraph
       Descent
       DeterminismProperty
+      FlyingPig
       Function
       Game
       Gathering
