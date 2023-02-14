@@ -3,7 +3,7 @@ module FlyingPig (
   epsilon,zero,one,
   predecessor,
   address,
-  nodeFromAddress,
+  lookupAddress,
 ) where
 
 import Control.Exception.Base
@@ -86,7 +86,11 @@ predecessor = fix looper
 
 address :: PigNode -> [Label]
 address (PigNode [] x y) = assert (PigNode [] x y == epsilon) []
-address (PigNode w _ p) = first w : labelList p
+address (PigNode w _ p) = addressWorker p [(first w)]
 
-nodeFromAddress :: [Label] -> PigNode
-nodeFromAddress = foldl (flip predecessor) epsilon
+addressWorker :: (Path PigNode) -> [Label] -> [Label]
+addressWorker (There x) accum = assert (x == epsilon) accum
+addressWorker (Step _ label cont) accum = addressWorker cont (label:accum)
+
+lookupAddress :: [Label] -> PigNode
+lookupAddress = foldl (flip predecessor) epsilon

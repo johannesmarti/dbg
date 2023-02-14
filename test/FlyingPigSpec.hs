@@ -57,3 +57,27 @@ spec = do
       turningWord (parent node) `shouldBe` [Zero,One,Zero]
     it "its 0-predecessor has word 00100101" $
       turningWord (p0 node) `shouldBe` [Zero,Zero,One,Zero,Zero,One,Zero,One]
+  describe "checking addresses" $ do
+    it "of 01" $
+      address (p0 $ one) `shouldBe` [One,Zero]
+    it "of 1001" $
+      address (p1 . p0 . p0 . p1 . p1 $ zero) `shouldBe` [Zero,One,One,Zero,Zero,One]
+  describe "lookup at addresses" $ do
+    it "011 is 110" $
+      lookupAddress [Zero,One,One] `shouldBe` (p1 . p1 $ zero)
+    it "0101 is 10" $
+      lookupAddress [Zero,One,Zero,One] `shouldBe` (p1 zero)
+  describe "lookupAdress . address = id " $ do
+    it "on epsilon" $
+      (lookupAddress . address $ epsilon) `shouldBe` epsilon
+    it "on one" $
+      (lookupAddress . address $ one) `shouldBe` one
+    it "0101 is 10" $
+      (lookupAddress . address $ (p1 . p1 . p0 . p0 $ one)) `shouldBe` (p1 . p1 . p0 . p0 $ one)
+  describe "address . lookupAddress = shortes address" $ do
+    it "on []" $
+      (address . lookupAddress $ [])`shouldBe` []
+    it "on [One,One,Zero,Zero,Zero,One]" $
+      (address . lookupAddress $ [One,One,Zero,Zero,Zero,One]) `shouldBe` [One,Zero,Zero,Zero,One]
+
+
