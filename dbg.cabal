@@ -83,6 +83,25 @@ library
     , vector
   default-language: Haskell2010
 
+executable address
+  main-is: Main.hs
+  other-modules:
+      Paths_dbg
+  hs-source-dirs:
+      app/address
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -O0 -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , containers
+    , data-ordlist
+    , dbg
+    , extra
+    , hspec
+    , mtl
+    , set-extra
+    , vector
+  default-language: Haskell2010
+
 executable descent
   main-is: Main.hs
   other-modules:
@@ -165,25 +184,6 @@ executable sg
       Paths_dbg
   hs-source-dirs:
       app/sg
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -O0 -threaded -rtsopts -with-rtsopts=-N
-  build-depends:
-      base >=4.7 && <5
-    , containers
-    , data-ordlist
-    , dbg
-    , extra
-    , hspec
-    , mtl
-    , set-extra
-    , vector
-  default-language: Haskell2010
-
-executable thering
-  main-is: Main.hs
-  other-modules:
-      Paths_dbg
-  hs-source-dirs:
-      app/thering
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -O0 -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5

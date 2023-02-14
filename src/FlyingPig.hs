@@ -1,4 +1,5 @@
 module FlyingPig (
+  PigNode,
   turningWord,parent,
   epsilon,zero,one,
   predecessor,

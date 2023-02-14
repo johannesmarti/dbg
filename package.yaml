@@ -90,9 +90,9 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - dbg
-  thering:
+  address:
     main:                Main.hs
-    source-dirs:         app/thering
+    source-dirs:         app/address
     ghc-options:
     - -threaded
     - -rtsopts
