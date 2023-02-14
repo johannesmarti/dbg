@@ -2,6 +2,8 @@ module FlyingPig (
   turningWord,parent,
   epsilon,zero,one,
   predecessor,
+  address,
+  nodeFromAddress,
 ) where
 
 import Control.Exception.Base
@@ -81,3 +83,10 @@ looper expander label expd = let
 
 predecessor :: Expander
 predecessor = fix looper
+
+address :: PigNode -> [Label]
+address (PigNode [] x y) = assert (PigNode [] x y == epsilon) []
+address (PigNode w _ p) = first w : labelList p
+
+nodeFromAddress :: [Label] -> PigNode
+nodeFromAddress = foldl (flip predecessor) epsilon
