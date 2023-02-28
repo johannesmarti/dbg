@@ -45,15 +45,6 @@ library:
   source-dirs: src
 
 executables:
-  monster:
-    main:                Main.hs
-    source-dirs:         app/monster
-    ghc-options:
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N
-    dependencies:
-    - dbg
   report:
     main:                Main.hs
     source-dirs:         app/report
