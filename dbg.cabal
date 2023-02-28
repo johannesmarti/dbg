@@ -100,6 +100,25 @@ executable address
     , vector
   default-language: Haskell2010
 
+executable cayrep
+  main-is: Main.hs
+  other-modules:
+      Paths_dbg
+  hs-source-dirs:
+      app/cayrep
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -O0 -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , containers
+    , data-ordlist
+    , dbg
+    , extra
+    , hspec
+    , mtl
+    , set-extra
+    , vector
+  default-language: Haskell2010
+
 executable game
   main-is: Main.hs
   other-modules:
@@ -119,12 +138,12 @@ executable game
     , vector
   default-language: Haskell2010
 
-executable report
+executable spiral
   main-is: Main.hs
   other-modules:
       Paths_dbg
   hs-source-dirs:
-      app/report
+      app/spiral
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -O0 -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
@@ -138,12 +157,12 @@ executable report
     , vector
   default-language: Haskell2010
 
-executable sg
+executable spirep
   main-is: Main.hs
   other-modules:
       Paths_dbg
   hs-source-dirs:
-      app/sg
+      app/spirep
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -O0 -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5

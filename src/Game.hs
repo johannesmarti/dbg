@@ -144,8 +144,6 @@ gameDifficult = let
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
-    --easyWordReport 15 intGraphI ig
-    --mapM_ (putStrLn . prettyCandidate) cans
 
 gameBiggest :: IO ()
 gameBiggest = let
@@ -206,8 +204,6 @@ gameUnsound = let
     pairs = map extractPair cans
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
-    --easyWordReport 15 intGraphI ig
-    --mapM_ (putStrLn . prettyCandidate) cans
     putChar '\n'
     print pairs
 
@@ -225,8 +221,6 @@ gameEx3 = let
     pairs = map extractPair cans
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
-    easyWordReport 15 intGraphI ig
-    --mapM_ (putStrLn . prettyCandidate) cans
     putChar '\n'
     print pairs
 
@@ -862,11 +856,4 @@ gameStudy = let
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
     putChar '\n'
-    --easyLiftedGraphRelReport lifting [Zero,One,One]
-    --putChar '\n'
-    --easyWordReport 15 intGraphI ig
-    --putChar '\n'
-    --putChar '\n'
-    --print pairs
-    --mapM_ (putStrLn . prettyCandidate) cans
 

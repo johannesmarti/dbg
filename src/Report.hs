@@ -1,6 +1,5 @@
 module Report (
-  pathReport, easyPathReport,
-  wordReport, easyWordReport,
+  cayleyReport, easyCayleyReport,
   spiralReport, easySpiralReport,
 ) where
 
@@ -28,8 +27,8 @@ import Spiral
 
 import Tools
 
-pathReport :: Ord x => LabeledGraphI g x -> g -> [String]
-pathReport gi g = let
+cayleyReport :: Ord x => LabeledGraphI g x -> g -> [String]
+cayleyReport gi g = let
     bf = (genericBitableI gi) g
     s = numBits bf
     inner = labeledBitGraph bf
@@ -56,45 +55,8 @@ pathReport gi g = let
      ["", "The complete list of its infinite elements is:"] ++
       concatMap printRelWithCode (Set.toList nwfs)
      
-easyPathReport :: Ord x => LabeledGraphI g x -> g -> IO ()
-easyPathReport gi g = putStr . unlines $ pathReport gi g
-
-wordReport :: Ord x => Int -> LabeledGraphI g x -> g -> [String]
-wordReport numWords gi g = let
-    bf = (genericBitableI gi) g
-    s = numBits bf
-    cg = rightCayleyGraph bf
-    c = Bitable.coding bf
-    dec = decode c
-    printRel r = Graph.prettyGraph (relationI bf) r
-    rc = relationCache bf cg
-    wordToRel = relationOfWord rc
-    printNode = LabeledGraph.prettyNode gi g
-    printRelWithCode r = (printNodeWithSuccs cg r ++ ":") : (printRel r)
-    printWordWithRel (w,r) = [show w ++ ":"] ++ printRelWithCode r
-    printWordWithRelAndPathes (w,r) = let
-        cycles = concatMap pathesOnPathTree $
-                   pathTreesOfMCycles rc w
-      in printWordWithRel (w,r) ++ map (Path.prettyPath printNode) cycles
-    wfs = wellfoundedElements cg
-    nwfs = nonWellfoundedElements cg
-    finWords = map fst $ finiteWords s cg
-    longestFinWord = maximumBy (\a b -> compare (length a) (length b)) finWords
-    wordRels = take numWords $ CayleyGraph.allWords s cg
-  in ["About the Cayley graph of the pattern:"] ++
-      LabeledGraph.prettyLabeledGraph gi g ++
-     ["It has " ++ show (Set.size wfs) ++ " finite and " ++
-                   show (Set.size nwfs) ++ " infinite elements.", "",
-      "It " ++ (if isConstructionDeterministic gi g then "is" else "is not") ++ " construction deterministic.", "",
-      "It " ++ (if pathCondition s cg then "satisfies" else "does not satisfy") ++ " the path condition.", ""] ++ 
---      "It's finite words are:", show finWords,
---      "Of which one with maximal length is " ++ show longestFinWord ++ ".", ""] ++
-     ["The relations of the first " ++ show numWords ++ " words are:"] ++
-      --intercalate [""] (map printWordWithRel wordRels)
-      intercalate [""] (map printWordWithRelAndPathes wordRels)
-
-easyWordReport :: Ord x => Int -> LabeledGraphI g x -> g -> IO ()
-easyWordReport numWords gi g = putStr . unlines $ wordReport numWords gi g
+easyCayleyReport :: Ord x => LabeledGraphI g x -> g -> IO ()
+easyCayleyReport gi g = putStr . unlines $ cayleyReport gi g
 
 cyclesOfWord :: Ord x => RelationCache r x -> [Label] -> [[x]]
 cyclesOfWord rc w =
