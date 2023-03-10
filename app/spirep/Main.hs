@@ -18,7 +18,7 @@ import qualified SmartSearch as SS
 
 main :: IO ()
 
-(gi, g) = (slowLiftingI, slowLifting)
+--(gi, g) = (slowLiftingI, slowLifting)
 --(gi, g) = (dbgI,dbg 4)
 --(gi, g) = (alloc3I,alloc3)
 --(gi, g) = (big5I,big5)

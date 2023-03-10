@@ -188,7 +188,6 @@ test-suite dbg-test
       ConciseGraphSpec
       DeterminismPropertySpec
       FlyingPigSpec
-      GatheringSpec
       HomomorphismSpec
       LiftedSpec
       MapGraphSpec
