@@ -10,16 +10,40 @@ a :: [Label]
 a = [Zero,One,One,One]
 b = a ++ [Zero,One,Zero,Zero,Zero] ++ a ++ [Zero,One,One]
 
+addressList :: [[Label]]
+addressList = map ([Zero,One,One,Zero] ++) [
+  [],
+  [One],
+  [One,Zero],
+  [One,Zero,One],
+  [One,Zero,One,Zero],
+  [One,Zero,One,Zero,One],
+  [One,Zero,One,Zero,One,Zero],
+  [One,Zero,One,Zero,One,Zero,One],
+  [One,Zero,One,Zero,One,Zero,One,Zero],
+  [One,Zero,One,Zero,One,Zero,One,Zero,One],
+  [One,Zero,One,Zero,One,Zero,One,Zero,One,Zero]   ]
+
+list :: [CoveringNode]
+list = map lookupAddress addressList
+
 addressPrinter :: CoveringNode -> [String]
 addressPrinter node = 
   if node == epsilon then []
   else (prettyWord (turningWord node) ++ " at address "
             ++ prettyWord (address node)) : addressPrinter (parent node)
 
+listPrinter :: [CoveringNode] -> IO ()
+listPrinter [] = putStrLn "===="
+listPrinter (a:as) = do
+  putStrLn "===="
+  mapM_ putStrLn (addressPrinter a)
+  listPrinter as
+
 main :: IO ()
 main = let
     p0 = predecessor Zero
     p1 = predecessor One
     --node = p0 . p1 . p0 . p0 . p1 . p0 . p1 . p0 . p0 $ one
-    node = lookupAddress b
-  in mapM_ putStrLn (addressPrinter node)
+  --in print addressList -- listPrinter list
+  in listPrinter list
