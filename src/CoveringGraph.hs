@@ -5,6 +5,7 @@ module CoveringGraph (
   predecessor,
   address,
   lookupAddress,
+  generateNodes,
 ) where
 
 import Control.Exception.Base
@@ -36,6 +37,9 @@ instance Eq CoveringNode where
                            True
                else False
 
+instance Ord CoveringNode where
+  ea `compare` eb = turningWord ea `compare` turningWord eb
+
 instance Show CoveringNode where
   show (CoveringNode tw _ par _) = "[ " ++ prettyWord tw ++ " | " ++
                                     prettyWord (turningWord par) ++ " ]"
@@ -62,16 +66,21 @@ pathToAncestor parentStack (Step curr label cont) =
     else label : (pathToAncestor parentStack cont)
 pathToAncestor ps (There here) = assert (here == epsilon) $
                                  assert (here `isAncestor` ps) $ []
-                                        
 
 fullPathDown :: CoveringNode -> Path CoveringNode
 fullPathDown expd = Step expd (first . turningWord $ expd) (pathDown expd)
 
-data AscentStatus a = Ascent a | LoopBack a
+data AscentStatus a = ProperAscent a | LoopingAscent a | LoopBack a
 
 extractNode :: AscentStatus a -> a
-extractNode (Ascent x) = x
+extractNode (ProperAscent x) = x
+extractNode (LoopingAscent x) = x
 extractNode (LoopBack x) = x
+
+isAscent :: AscentStatus a -> Bool
+isAscent (ProperAscent _) = True
+isAscent (LoopingAscent _) = True
+isAscent (LoopBack _) = False
 
 type Expander = Label -> CoveringNode -> (AscentStatus CoveringNode)
 
@@ -81,16 +90,16 @@ looper expander label expd = let
     pathToAncestors = label : (pathToAncestor movedEpsilon extendedPath)
     extendedPath = fullPathDown expd
     newAddress = address expd ++ [label]
-  in if expd == epsilon then case label of Zero -> (Ascent zero)
-                                           One  -> (Ascent one)
+  in if expd == epsilon then case label of Zero -> (ProperAscent zero)
+                                           One  -> (ProperAscent one)
      else if last (turningWord expd) == label
        then let turned = turnBackward (turningWord expd)
             in if turned == turningWord movedEpsilon
                  then (LoopBack movedEpsilon)
-                 else Ascent (CoveringNode turned newAddress
-                 			   movedEpsilon extendedPath)
+                 else LoopingAscent (CoveringNode turned newAddress
+                 	                          movedEpsilon extendedPath)
      else assert (pathToAncestors /= turningWord movedEpsilon) $
-                 Ascent (CoveringNode pathToAncestors newAddress
+                 ProperAscent (CoveringNode pathToAncestors newAddress
                  	              movedEpsilon extendedPath)
 
 predecessor :: Label -> CoveringNode -> CoveringNode
@@ -108,10 +117,20 @@ atAddress = labelOfWord cacheTree
 cacheTree :: WordTree (AscentStatus CoveringNode)
 cacheTree =  wordTreeFromGenerator generator where
   expandOn l n = looper treeCover l (extractNode n)
-  generator = WordTreeGenerator (Ascent epsilon)
+  generator = WordTreeGenerator (LoopingAscent epsilon)
                 (expandOn Zero)
                 (expandOn One)
 
 lookupAddress :: [Label] -> CoveringNode
 lookupAddress = extractNode . atAddress
+
+generateNodes :: [CoveringNode]
+generateNodes = generator [epsilon] []
+
+generator :: [CoveringNode] -> [CoveringNode] -> [CoveringNode]
+generator [] [] = error "The covering graph seems to be finite. This is thought to be false!"
+generator [] nextLevel = generator nextLevel []
+generator (curr:rest) nextLevel = curr : generator rest (more ++ nextLevel) where
+  pre = map ((flip treeCover) curr) labelsList
+  more = map extractNode (filter isAscent pre)
 
