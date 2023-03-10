@@ -35,7 +35,6 @@ library
       CoveringGraph
       DeBruijnGraph
       DeterminismProperty
-      FlyingPig
       Function
       Game
       Graph
@@ -189,7 +188,6 @@ test-suite dbg-test
       ConciseGraphSpec
       CoveringGraphSpec
       DeterminismPropertySpec
-      FlyingPigSpec
       HomomorphismSpec
       LiftedSpec
       MapGraphSpec

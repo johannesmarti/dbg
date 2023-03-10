@@ -100,7 +100,10 @@ fixCover :: Expander
 fixCover = fix looper
 
 treeCover :: Expander
-treeCover l node = labelOfWord cacheTree ((address node) ++ [l])
+treeCover l node = atAddress ((address node) ++ [l])
+
+atAddress :: [Label] -> AscentStatus CoveringNode
+atAddress = labelOfWord cacheTree
 
 cacheTree :: WordTree (AscentStatus CoveringNode)
 cacheTree =  wordTreeFromGenerator generator where
@@ -110,5 +113,5 @@ cacheTree =  wordTreeFromGenerator generator where
                 (expandOn One)
 
 lookupAddress :: [Label] -> CoveringNode
-lookupAddress = foldl (flip predecessor) epsilon
+lookupAddress = extractNode . atAddress
 

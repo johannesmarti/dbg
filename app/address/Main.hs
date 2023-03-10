@@ -2,7 +2,7 @@ module Main (
   main
 ) where
 
-import FlyingPig
+import CoveringGraph
 import Label
 import Word
 
@@ -10,7 +10,7 @@ a :: [Label]
 a = [Zero,One,One,One]
 b = a ++ [Zero,One,Zero,Zero,Zero] ++ a ++ [Zero,One,One]
 
-addressPrinter :: PigNode -> [String]
+addressPrinter :: CoveringNode -> [String]
 addressPrinter node = 
   if node == epsilon then []
   else (prettyWord (turningWord node) ++ " at address "
