@@ -9,6 +9,7 @@ module FlyingPig (
 
 import Control.Exception.Base
 import Data.Function (fix)
+import Data.Map.Lazy as Map
 
 import Label
 import Path
@@ -83,7 +84,10 @@ looper expander label expd = let
                  PigNode pathToAncestors movedEpsilon extendedPath
 
 predecessor :: Expander
-predecessor = fix looper
+predecessor = fixPredecessor
+
+fixPredecessor :: Expander
+fixPredecessor = fix looper
 
 address :: PigNode -> [Label]
 address (PigNode [] x y) = assert (PigNode [] x y == epsilon) []
@@ -95,3 +99,4 @@ addressWorker (Step _ label cont) accum = addressWorker cont (label:accum)
 
 lookupAddress :: [Label] -> PigNode
 lookupAddress = foldl (flip predecessor) epsilon
+
