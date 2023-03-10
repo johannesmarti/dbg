@@ -26,7 +26,7 @@ deepEqual (PigNode twa paa pda) (PigNode twb pab pdb) =
   else if null twb then False
   else twa == twb &&
        deepEqual paa pab &&
-       pda == pdb -- actually we should call deep equal recursivel here. but that is too much of a hassle
+       pda == pdb -- actually we should call deep equal recursively here. but that is too much of a hassle
 
 instance Eq PigNode where
   ea == eb = if turningWord ea == turningWord eb
