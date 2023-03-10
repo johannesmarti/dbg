@@ -1,10 +1,10 @@
-module FlyingPigSpec (
+module CoveringGraphSpec (
    spec
 ) where
 
 import Test.Hspec
 
-import FlyingPig
+import CoveringGraph
 import Label
 
 spec :: Spec

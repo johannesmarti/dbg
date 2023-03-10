@@ -32,6 +32,7 @@ library
       CommonLGraphTypes
       ConciseGraph
       ConstructionGraph
+      CoveringGraph
       DeBruijnGraph
       DeterminismProperty
       FlyingPig
@@ -186,6 +187,7 @@ test-suite dbg-test
       BitifySpec
       CayleyGraphSpec
       ConciseGraphSpec
+      CoveringGraphSpec
       DeterminismPropertySpec
       FlyingPigSpec
       HomomorphismSpec

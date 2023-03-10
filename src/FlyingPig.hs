@@ -9,7 +9,6 @@ module FlyingPig (
 
 import Control.Exception.Base
 import Data.Function (fix)
-import Data.Map.Lazy as Map
 
 import Label
 import Path
