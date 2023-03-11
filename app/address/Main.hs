@@ -12,18 +12,11 @@ a = [One,Zero,Zero,Zero,One,Zero,Zero,One]
 --b = a ++ [Zero,One,Zero,Zero,Zero] ++ a ++ [Zero,One,One]
 
 addressList :: [[Label]]
-addressList = map ([Zero,One,One,Zero] ++) [
+addressList = map ([One,Zero,Zero,Zero,One,Zero,Zero] ++) [
   [],
   [One],
   [One,Zero],
-  [One,Zero,One],
-  [One,Zero,One,Zero],
-  [One,Zero,One,Zero,One],
-  [One,Zero,One,Zero,One,Zero],
-  [One,Zero,One,Zero,One,Zero,One],
-  [One,Zero,One,Zero,One,Zero,One,Zero],
-  [One,Zero,One,Zero,One,Zero,One,Zero,One],
-  [One,Zero,One,Zero,One,Zero,One,Zero,One,Zero]   ]
+  [One,Zero,Zero]   ]
 
 list :: [CoveringNode]
 list = map lookupAddress addressList
@@ -46,10 +39,5 @@ main = let
     p0 = predecessor Zero
     p1 = predecessor One
     --node = p0 . p1 . p0 . p0 . p1 . p0 . p1 . p0 . p0 $ one
-<<<<<<< HEAD
   --in print addressList -- listPrinter list
   in listPrinter list
-=======
-    node = lookupAddress a
-  in mapM_ putStrLn (addressPrinter node)
->>>>>>> 4fcb3fa (fiddelig with apps)
