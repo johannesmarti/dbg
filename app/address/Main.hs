@@ -12,11 +12,9 @@ a = [One,Zero,Zero,Zero,One,Zero,Zero,One]
 --b = a ++ [Zero,One,Zero,Zero,Zero] ++ a ++ [Zero,One,One]
 
 addressList :: [[Label]]
-addressList = map ([One,Zero,Zero,Zero,One,Zero,Zero] ++) [
+addressList = map ([One,Zero,Zero,One,Zero,One,Zero] ++) [
   [],
-  [One],
-  [One,Zero],
-  [One,Zero,Zero]   ]
+  [Zero] ]
 
 list :: [CoveringNode]
 list = map lookupAddress addressList

@@ -1,0 +1,54 @@
+
+add 0, 1
+
+at 1:
+0 0n 1
+(over 0)
+
+at 0:
+1 1n 0
+(over 1)
+
+
+size 2:
+
+at 0 0n 1:
+1 0n 0
+(over 10)
+0 1 0n
+(over 01)
+1 0 1 0n 0
+(over 10)
+0 1 0 1 0n
+(over 01)
+
+in general:
+(1 0)m 1 0n 0
+(0 1)m 0 1 0n
+
+
+at 1 1n 0:
+0 1n 1
+(over 01)
+1 0 1n
+(over 10)
+0 1 0 1n 1
+(over 01)
+1 0 1 0 1n
+(over 10)
+
+in general:
+(0 1)m 0 1n 1
+(1 0)m 1 0 1n
+
+
+size 3:
+
+at (1 0)m 1 0 0n 0:
+1 (1 0)m 1 0 0n 0
+(over 110)
+0 1 (1 0)m 1 0 0n
+(over 011)
+1 0 1 (1 0)m 1 0 0n 0
+(over 101)
+1 1 0 
