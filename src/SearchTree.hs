@@ -50,11 +50,11 @@ This is done to avoid reversing and appending at the end of worklists.
 breadthFirstSearch :: (d -> Bool) -> Int -> SearchTree d -> Maybe d
 breadthFirstSearch predicate depth tree = worker depth [tree] [] where
   worker _ [] [] = Nothing
-  worker d [] nextLevel = if depth <= 0 then Nothing
+  worker d [] nextLevel = if d <= 0 then Nothing
                           else worker (d - 1) nextLevel []
   worker d (next:rest) nextLevel = let dl = label next
     in if predicate dl then Just dl
-       else worker d rest ((children tree) ++ nextLevel)
+       else worker d rest ((children next) ++ nextLevel)
 
 {-
 Searches a tree

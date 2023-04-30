@@ -211,6 +211,7 @@ test-suite dbg-test
       HomomorphismSpec
       LiftedSpec
       MapGraphSpec
+      SearchTreeSpec
       WordSpec
       Paths_dbg
   hs-source-dirs:
