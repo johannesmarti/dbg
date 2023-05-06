@@ -86,21 +86,21 @@ type Expander = Label -> CoveringNode -> (AscentStatus CoveringNode)
 
 looper :: Expander -> Expander
 looper expander label expd = let
-    movedEpsilon = extractNode $ (expander label) (parent expd)
-    pathToAncestors = label : (pathToAncestor movedEpsilon extendedPath)
+    movedParent = extractNode $ (expander label) (parent expd)
+    pathToAncestors = label : (pathToAncestor movedParent extendedPath)
     extendedPath = fullPathDown expd
     newAddress = address expd ++ [label]
   in if expd == epsilon then case label of Zero -> (ProperAscent zero)
                                            One  -> (ProperAscent one)
      else if last (turningWord expd) == label
        then let turned = turnBackward (turningWord expd)
-            in if turned == turningWord movedEpsilon
-                 then (LoopBack movedEpsilon)
+            in if turned == turningWord movedParent
+                 then (LoopBack movedParent)
                  else LoopingAscent (CoveringNode turned newAddress
-                 	                          movedEpsilon extendedPath)
-     else assert (pathToAncestors /= turningWord movedEpsilon) $
+                 	                          movedParent extendedPath)
+     else assert (pathToAncestors /= turningWord movedParent) $
                  ProperAscent (CoveringNode pathToAncestors newAddress
-                 	              movedEpsilon extendedPath)
+                 	              movedParent extendedPath)
 
 predecessor :: Label -> CoveringNode -> CoveringNode
 predecessor l n = extractNode $ treeCover l n

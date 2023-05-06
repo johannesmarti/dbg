@@ -39,7 +39,6 @@ library
       Game
       Graph
       Homomorphism
-      ImprovedSearch
       Label
       LabeledGraph
       Lifted
@@ -53,6 +52,7 @@ library
       Path
       PathTree
       Patterns
+      Plan
       Pretty
       Range
       RelationCache
