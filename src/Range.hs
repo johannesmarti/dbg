@@ -45,8 +45,8 @@ isCounterexample gi graph = let
     properSubsets = Set.toList $ Set.filter (\s -> Set.size s < Set.size dom) subsets
     subI = lMapGraphIWithNodePrinter (prettyNode gi graph)
     subgraphs = map (lMapSubgraphFromLGraph gi graph) properSubsets
-   in isStrictlyConstructionDeterministic gi graph
-        && not (isConstructionDeterministic gi graph)
+   in not (isStronglyConstructionDeterministic gi graph)
+        && isConstructionDeterministic gi graph
         && all (not . (isGood subI)) subgraphs && easyPathCondition gi graph
 
 rangePartition :: IO ()
@@ -56,6 +56,7 @@ rangePartition = do
   let bitmaps = Prelude.filter (notTrivial size) (ConciseGraph.allGraphsOfSize size)
   let lessTrivial = filter (not . hasT1 gi) bitmaps
   let list = Prelude.filter (isCounterexample gi) lessTrivial
+  putStrLn (head list)
   putStrLn (showLG (conciseGraphI size) (head list))
   --putStrLn (show $ length list)
 
