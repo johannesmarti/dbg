@@ -56,8 +56,8 @@ rangePartition = do
   let bitmaps = Prelude.filter (notTrivial size) (ConciseGraph.allGraphsOfSize size)
   let lessTrivial = filter (not . hasT1 gi) bitmaps
   let list = Prelude.filter (isCounterexample gi) lessTrivial
-  let ex = head list
-  putStrLn (show ex)
-  putStrLn (showLG (conciseGraphI size) ex)
+  let example = head list
+  putStrLn (show (toCode size example))
+  putStrLn (showLG (conciseGraphI size) example)
   --putStrLn (show $ length list)
 

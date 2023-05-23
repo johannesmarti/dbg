@@ -53,7 +53,7 @@ module Patterns (
   unfolded, unfoldedI,
   unfolded2, unfolded2I,
   b1ef5, b1ef5I,
-  specialUnfold, specialUnfoldI
+  specialUnfold, specialUnfoldI,
   weaklyDeterministic, weaklyDeterministicI,
 ) where
 
@@ -457,7 +457,7 @@ specialUnfoldI = lMapGraphI
 {- This pattern is not construction deterministic for any partition, but it is
 construction deterministic for the anti-chain {1}, {0,1}, {0,3}. -}
 weaklyDeterministic :: ConciseGraph
-weaklyDeterministic = 4003476
+weaklyDeterministic = fromCode 4 287515978
 weaklyDeterministicI :: LabeledGraphI ConciseGraph Node
 weaklyDeterministicI = conciseGraphI 4
 
