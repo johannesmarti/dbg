@@ -39,12 +39,21 @@ ghc-options:
 - -Wmissing-home-modules
 - -Wpartial-fields
 - -Wredundant-constraints
-- -O0
+- -O2
 
 library:
   source-dirs: src
 
 executables:
+  dbg:
+    main:                Main.hs
+    source-dirs:         app/dbg
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - dbg
   cayrep:
     main:                Main.hs
     source-dirs:         app/cayrep
