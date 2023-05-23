@@ -54,6 +54,7 @@ module Patterns (
   unfolded2, unfolded2I,
   b1ef5, b1ef5I,
   specialUnfold, specialUnfoldI
+  weaklyDeterministic, weaklyDeterministicI,
 ) where
 
 import qualified Data.Set as Set
@@ -452,3 +453,11 @@ specialUnfold :: LMapGraph Char
 specialUnfold = mapFromFunction su
 specialUnfoldI :: LabeledGraphI (LMapGraph Char) Char
 specialUnfoldI = lMapGraphI
+
+{- This pattern is not construction deterministic for any partition, but it is
+construction deterministic for the anti-chain {1}, {0,1}, {0,3}. -}
+weaklyDeterministic :: ConciseGraph
+weaklyDeterministic = 4003476
+weaklyDeterministicI :: LabeledGraphI ConciseGraph Node
+weaklyDeterministicI = conciseGraphI 4
+
