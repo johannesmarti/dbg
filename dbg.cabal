@@ -64,6 +64,9 @@ library
       Spiral
       Tools
       Word
+      WordMap.Algebraic
+      WordMap.Coalgebraic
+      WordMap.MapWrapper
       WordTree
       WrappedGraph
   other-modules:
@@ -231,6 +234,7 @@ test-suite dbg-test
       LiftedSpec
       MapGraphSpec
       SearchTreeSpec
+      WordMapSpec
       WordSpec
       Paths_dbg
   hs-source-dirs:

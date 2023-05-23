@@ -16,8 +16,6 @@ import CommonLGraphTypes
 import Graph
 import LiftedGraph
 import qualified LabeledGraph as LG
-import RelationTree
-import WordTree (labelOfWord)
 import LWrappedGraph
 
 data Bitification x = Bitification {
