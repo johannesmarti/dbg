@@ -18,6 +18,7 @@ import qualified WordSpec
 import qualified CoveringGraphSpec
 import qualified SearchTreeSpec
 import qualified WordMapSpec
+import qualified PlanSpec
 
 main :: IO ()
 main = hspec spec
@@ -38,4 +39,5 @@ spec = do
   describe "CoveringGraph" CoveringGraphSpec.spec
   describe "SearchTree" SearchTreeSpec.spec
   describe "WordMap" WordMapSpec.spec
+  describe "Plan" PlanSpec.spec
 

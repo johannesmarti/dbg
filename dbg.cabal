@@ -233,6 +233,7 @@ test-suite dbg-test
       HomomorphismSpec
       LiftedSpec
       MapGraphSpec
+      PlanSpec
       SearchTreeSpec
       WordMapSpec
       WordSpec
