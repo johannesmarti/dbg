@@ -6,10 +6,14 @@ module Plan (
   Plan.insert,
 ) where
 
+-- TODO: Should we use the strict or the lazy state monad? Need to read up!
+import Control.Monad.State.Lazy
+import qualified Data.Map.Strict as Map
+
+import CoveringGraph
 import LabeledGraph
 import LiftedGraph
 import WordTree
-import qualified Data.Map.Strict as Map
 
 import WordMap.Algebraic as WordMap
 
@@ -39,4 +43,22 @@ insert = WordMap.insert
 executePlan :: Ord x => LabeledGraphI g x -> g -> Plan x -> LiftedGraph x
 executePlan gi g plan = result where
   result = undefined
+
+{-
+wrap-up/roll a cycle:
+- Check that the ancestor of all nodes on the cycle have been completely wrapped. Otherwise do it.
+- Wrap up the nodes on the spiral for the cycle
+-- Count up d = 1 .. n and wrap up all nodes with distance d (Once nodes for d hhave been wrapped we should be able to wrap nodes of dinstance d + 1) At each stage keep track of the node at the hub.
+-- Check that all the children of the nodes on the hub have been constructed and return them in a reasonable order.
+-- wrap these children in a raesonable order.
+-- store the fat hub nodes in the partial result word map
+-}
+
+data PartialResult x = PartialResult {
+  liftedGraph :: LiftedGraph x,
+  constructedNodes :: WordMap Int
+}
+
+constructNode :: Plan x -> CoveringNode -> State (PartialResult x) int
+constructNode = undefined
 

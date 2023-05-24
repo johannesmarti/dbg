@@ -4,6 +4,7 @@ module LiftedGraph (
   graph,
   LiftedGraph.size,
   fromLGraph,
+  fromLGraphWithCoding,
   toLBitGraph,
   liftCandidate,
   combine,
@@ -19,8 +20,6 @@ module LiftedGraph (
   dominationFilter,
   weakDominationFilter,
 ) where
-
-import Debug.Trace
 
 import Control.Exception.Base (assert)
 import Control.Monad.State.Lazy
@@ -82,7 +81,11 @@ nextNode :: LiftedGraph x -> Int
 nextNode lg = topNode lg + 1
 
 fromLGraph :: Ord x => LabeledGraphI g x -> g -> LiftedGraph x
-fromLGraph gi g = LiftedGraph intGraph just pb where
+fromLGraph gi g = fst (fromLGraphWithCoding gi g)
+
+fromLGraphWithCoding :: Ord x => LabeledGraphI g x -> g
+                                 -> (LiftedGraph x, Coding x Int)
+fromLGraphWithCoding gi g = (LiftedGraph intGraph just pb, coding) where
   coding = codeSet (domain gi g)
   intGraph = lMapApplyBijection gi g (encode coding)
   just = fromSet justifyBase (domain intGraphI intGraph)
@@ -194,7 +197,7 @@ instance Show (LiftedGraph x) where
   show lg = unlines $ prettyLiftedGraph lg
 
 noFilter :: IntGraph -> LiftingCandidate -> Bool
-noFilter lg can = True
+noFilter _ _ = True
 
 dominationFilter :: IntGraph -> LiftingCandidate -> Bool
 dominationFilter ig can = not $ any dominatesCan (domain intGraphI ig) where
