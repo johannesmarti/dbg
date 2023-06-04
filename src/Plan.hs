@@ -8,6 +8,7 @@ module Plan (
 
 -- TODO: Should we use the strict or the lazy state monad? Need to read up!
 import Control.Monad.State.Lazy
+import qualified Data.Vector as Vec
 import qualified Data.Map.Strict as Map
 
 import CoveringGraph
@@ -52,6 +53,9 @@ wrap-up/roll a cycle:
 -- Check that all the children of the nodes on the hub have been constructed and return them in a reasonable order.
 -- wrap these children in a raesonable order.
 -- store the fat hub nodes in the partial result word map
+
+Things to be done:
+- List nodes in plan for a spiral
 -}
 
 data PartialResult x = PartialResult {
@@ -59,6 +63,12 @@ data PartialResult x = PartialResult {
   constructedNodes :: WordMap Int
 }
 
-constructNode :: Plan x -> CoveringNode -> State (PartialResult x) int
-constructNode = undefined
+constructNode :: Plan x -> CoveringNode -> State (PartialResult x) Int
+constructNode plan coveringNode = do
+  PartialResult lg constructed <- get
+  case WordMap.lookup (address coveringNode) constructed of
+    Just n  -> return n
+    Nothing -> undefined
 
+wrapSpiral :: Vec.Vector (Spoke x) -> State (LiftedGraph x) (Vec.Vector Int)
+wrapSpiral _ = undefined

@@ -134,3 +134,6 @@ generator (curr:rest) nextLevel = curr : generator rest (more ++ nextLevel) wher
   pre = map ((flip treeCover) curr) labelsList
   more = map extractNode (filter isAscent pre)
 
+children :: CoveringNode -> [CoveringNode]
+children node = undefined
+
