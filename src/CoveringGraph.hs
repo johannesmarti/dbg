@@ -71,40 +71,35 @@ pathToAncestor ps (There here) = assert (here == epsilon) $
 fullPathDown :: CoveringNode -> Path CoveringNode
 fullPathDown expd = Step expd (first . turningWord $ expd) (pathDown expd)
 
-data AscentStatus a = ProperAscent a | LoopingAscent a | LoopBack a
+data AscentStatus = ProperAscent | LoopingAscent | LoopBack
 
-extractNode :: AscentStatus a -> a
-extractNode (ProperAscent x) = x
-extractNode (LoopingAscent x) = x
-extractNode (LoopBack x) = x
+isAscent :: AscentStatus -> Bool
+isAscent ProperAscent = True
+isAscent LoopingAscent = True
+isAscent LoopBack = False
 
-isAscent :: AscentStatus a -> Bool
-isAscent (ProperAscent _) = True
-isAscent (LoopingAscent _) = True
-isAscent (LoopBack _) = False
-
-type Expander = Label -> CoveringNode -> (AscentStatus CoveringNode)
+type Expander = Label -> CoveringNode -> (CoveringNode, AscentStatus)
 
 looper :: Expander -> Expander
 looper expander label expd = let
-    movedParent = extractNode $ (expander label) (parent expd)
+    movedParent = fst $ (expander label) (parent expd)
     pathToAncestors = label : (pathToAncestor movedParent extendedPath)
     extendedPath = fullPathDown expd
     newAddress = address expd ++ [label]
-  in if expd == epsilon then case label of Zero -> (ProperAscent zero)
-                                           One  -> (ProperAscent one)
+  in if expd == epsilon then case label of Zero -> (zero, ProperAscent)
+                                           One  -> (one,  ProperAscent)
      else if last (turningWord expd) == label
        then let turned = turnBackward (turningWord expd)
             in if turned == turningWord movedParent
-                 then (LoopBack movedParent)
-                 else LoopingAscent (CoveringNode turned newAddress
-                 	                          movedParent extendedPath)
+                 then (movedParent, LoopBack)
+                 else (CoveringNode turned newAddress movedParent extendedPath,
+                       LoopingAscent)
      else assert (pathToAncestors /= turningWord movedParent) $
-                 ProperAscent (CoveringNode pathToAncestors newAddress
-                 	              movedParent extendedPath)
+                 (CoveringNode pathToAncestors newAddress
+                 	          movedParent extendedPath, ProperAscent)
 
 predecessor :: Label -> CoveringNode -> CoveringNode
-predecessor l n = extractNode $ treeCover l n
+predecessor l n = fst $ treeCover l n
 
 fixCover :: Expander
 fixCover = fix looper
@@ -112,18 +107,18 @@ fixCover = fix looper
 treeCover :: Expander
 treeCover l node = atAddress ((address node) ++ [l])
 
-atAddress :: [Label] -> AscentStatus CoveringNode
+atAddress :: [Label] -> (CoveringNode, AscentStatus)
 atAddress = labelOfWord cacheTree
 
-cacheTree :: WordTree (AscentStatus CoveringNode)
+cacheTree :: WordTree (CoveringNode, AscentStatus)
 cacheTree =  wordTreeFromGenerator generator where
-  expandOn l n = looper treeCover l (extractNode n)
-  generator = WordTreeGenerator (LoopingAscent epsilon)
+  expandOn l n = looper treeCover l (fst n)
+  generator = WordTreeGenerator (epsilon, LoopingAscent)
                 (expandOn Zero)
                 (expandOn One)
 
 lookupAddress :: [Label] -> CoveringNode
-lookupAddress = extractNode . atAddress
+lookupAddress = fst . atAddress
 
 generateNodes :: [CoveringNode]
 generateNodes = generator [epsilon] []
@@ -133,7 +128,7 @@ generator [] [] = error "The covering graph seems to be finite. This is thought 
 generator [] nextLevel = generator nextLevel []
 generator (curr:rest) nextLevel = curr : generator rest (more ++ nextLevel) where
   pre = map ((flip treeCover) curr) labelsList
-  more = map extractNode (filter isAscent pre)
+  more = map fst (filter (isAscent . snd) pre)
 
 {- Returns an infinite list that contains one element from every cycle. -}
 cycles :: [CoveringNode]
