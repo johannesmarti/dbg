@@ -3,6 +3,7 @@ module Main (
 ) where
 
 import System.Environment
+import Data.Maybe (listToMaybe)
 
 import CoveringGraph
 import Label
@@ -30,6 +31,12 @@ main = do
   let nfs = take numNodes cycles
   let cycs = map cycleOfNode nfs
   let isInteresting cycle = length (filter isAscending cycle) > 2
+  let isVeryInteresting cycle = length (filter isAscending cycle) > 3
+  let isIncredibelyInteresting cycle = length (filter isAscending cycle) > 4
   let wow = filter isInteresting cycs
+  --let wow = filter isVeryInteresting cycs
+  --let wow = filter isIncredibelyInteresting cycs
+  case listToMaybe wow of
+    Nothing -> putStrLn "nothing"
+    Just c -> listPrinter c
   putStrLn (show (length wow))
-  listPrinter (head wow)
