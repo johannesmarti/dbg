@@ -33,9 +33,9 @@ main = do
   let isInteresting cycle = length (filter isAscending cycle) > 2
   let isVeryInteresting cycle = length (filter isAscending cycle) > 3
   let isIncredibelyInteresting cycle = length (filter isAscending cycle) > 4
-  let wow = filter isInteresting cycs
+  --let wow = filter isInteresting cycs
   --let wow = filter isVeryInteresting cycs
-  --let wow = filter isIncredibelyInteresting cycs
+  let wow = filter isIncredibelyInteresting cycs
   case listToMaybe wow of
     Nothing -> putStrLn "nothing"
     Just c -> listPrinter c

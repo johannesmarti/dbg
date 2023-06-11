@@ -173,4 +173,23 @@ isAscending node = let
 
 {- This is almost the converse of the parent relation. The first argument is a predicate which should be true on a connected subtree (over the tree of addresses) which contains the second argument. Only children inside of the subTree are returned. -}
 children :: (CoveringNode -> Bool) -> CoveringNode -> [CoveringNode]
-children connSubtree node = undefined
+children inConnSubtree node = let
+    -- TODO: Don't forget to filter by connSubtree
+    cycle = cycleOfNode node
+    descending = filter isAscending cycle
+    childrenAtDescend descendNode = let
+        myChildren = children inConnSubtree descendNode
+        startChainAtChild child = undefined {-
+                move backwards from child along cycle (in the right way).
+                But some conditions need to be satisfied, otherwise we just kepe cycling at the child and we don't get nodes whose parents is quite right?!?
+            -}
+      in concatMap startChainAtChild myChildren
+  in if node == epsilon
+       then [zero, one]
+       else concatMap childrenAtDescend descending
+
+{-
+Assume we have the cycle of the parent
+
+Assume we have all the children of a descending ancestor. It's only at these where children for the cycle can attach.
+-}
