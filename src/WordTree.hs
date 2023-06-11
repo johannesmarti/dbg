@@ -3,6 +3,7 @@ module WordTree (
   WordTree(..),
   wordTreeFromGenerator,
   wordTreeFromFunction,
+  subtreeOfWord,
   labelOfWord,
   updateWord,
   updateWordM,

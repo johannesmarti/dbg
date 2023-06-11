@@ -27,4 +27,6 @@ main :: IO ()
 main = do
   args <- getArgs
   let numNodes = read (head args)
-  listPrinter (take numNodes cycles)
+  let nfs = take numNodes cycles
+  let hello = concatMap (filter isAscending . cycleOfNode) nfs
+  listPrinter hello

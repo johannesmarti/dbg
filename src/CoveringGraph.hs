@@ -6,7 +6,8 @@ module CoveringGraph (
   address,
   lookupAddress,
   generateNodes, cycles,
---  cycleOfNode,
+  cycleOfNode,
+  isAscending,
 ) where
 
 import Control.Exception.Base
@@ -72,6 +73,7 @@ fullPathDown :: CoveringNode -> Path CoveringNode
 fullPathDown expd = Step expd (first . turningWord $ expd) (pathDown expd)
 
 data AscentStatus = ProperAscent | LoopingAscent | LoopBack
+  deriving Eq
 
 isAscent :: AscentStatus -> Bool
 isAscent ProperAscent = True
@@ -98,9 +100,6 @@ looper expander label expd = let
                  (CoveringNode pathToAncestors newAddress
                  	          movedParent extendedPath, ProperAscent)
 
-predecessor :: Label -> CoveringNode -> CoveringNode
-predecessor l n = fst $ treeCover l n
-
 fixCover :: Expander
 fixCover = fix looper
 
@@ -120,6 +119,30 @@ cacheTree =  wordTreeFromGenerator generator where
 lookupAddress :: [Label] -> CoveringNode
 lookupAddress = fst . atAddress
 
+predecessor :: Label -> CoveringNode -> CoveringNode
+predecessor l n = fst $ treeCover l n
+
+bothPredecessors :: CoveringNode -> ((CoveringNode, AscentStatus),
+                                     (CoveringNode, AscentStatus))
+bothPredecessors n = (label zeroTreeNode, label oneTreeNode) where
+  treeNode = subtreeOfWord cacheTree (address n)
+  zeroTreeNode = zeroSucc treeNode
+  oneTreeNode  = oneSucc treeNode
+
+loopingPredecessor :: CoveringNode -> CoveringNode
+loopingPredecessor node = let
+    ((pz,sz),(po,so)) = bothPredecessors node
+  in if sz /= ProperAscent then pz
+     else if so /= ProperAscent then po
+     else error "Node has no looping predecessor. (This is believed to impossible)"
+
+properlyAscendingPredecessor :: CoveringNode -> CoveringNode
+properlyAscendingPredecessor node = let
+    ((pz,sz),(po,so)) = bothPredecessors node
+  in if sz == ProperAscent then pz
+     else if so == ProperAscent then po
+     else error "Node has no properly ascending predecessor. (This is believed to impossible)"
+
 generateNodes :: [CoveringNode]
 generateNodes = generator [epsilon] []
 
@@ -134,12 +157,19 @@ generator (curr:rest) nextLevel = curr : generator rest (more ++ nextLevel) wher
 cycles :: [CoveringNode]
 cycles = filter (isInNormalForm . turningWord) (tail generateNodes)
 
-{-
- TODO: implement these
-fatCycleOfNode :: CoveringNode -> []
-
 cycleOfNode :: CoveringNode -> [CoveringNode]
--}
+cycleOfNode node = (node : remaining) where
+  infList = tail (iterate loopingPredecessor node)
+  remaining = takeWhile (/= node) infList
+
+{- True if the node is ascending somewhere. -}
+isAscending :: CoveringNode -> Bool
+isAscending node = let
+    (_,status) = atAddress (address node)
+  in case status of
+       ProperAscent  -> True
+       LoopingAscent -> False
+       LoopBack      -> error "Node is looping back at its own address. This is thought to be impossible!"
 
 {- This is almost the converse of the parent relation. The first argument is a predicate which should be true on a connected subtree (over the tree of addresses) which contains the second argument. Only children inside of the subTree are returned. -}
 children :: (CoveringNode -> Bool) -> CoveringNode -> [CoveringNode]
