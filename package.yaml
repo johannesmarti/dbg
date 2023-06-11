@@ -99,9 +99,9 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - dbg
-  covering:
+  duplicates:
     main:                Main.hs
-    source-dirs:         app/covering
+    source-dirs:         app/duplicates
     ghc-options:
     - -threaded
     - -rtsopts
