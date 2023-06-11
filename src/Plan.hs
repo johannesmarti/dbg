@@ -14,7 +14,6 @@ import qualified Data.Map.Strict as Map
 import CoveringGraph
 import LabeledGraph
 import LiftedGraph
-import WordTree
 
 import WordMap.Algebraic as WordMap
 
@@ -26,8 +25,8 @@ and the remaining elements in the set are the required nodes for the covering.
 -}
 
 data Spoke x = Spoke {
-  hub     :: x,
-  points  :: Map.Map x Int
+  hub    :: x,
+  points :: Map.Map x Int
 }
 
 spoke :: Ord x => x -> [(x,Int)] -> Spoke x
