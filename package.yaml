@@ -109,6 +109,15 @@ executables:
     - -O2
     dependencies:
     - dbg
+  play:
+    main:                Main.hs
+    source-dirs:         app/play
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - dbg
 
 
 

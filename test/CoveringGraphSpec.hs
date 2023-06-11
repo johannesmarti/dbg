@@ -6,6 +6,7 @@ import Test.Hspec
 
 import CoveringGraph
 import Label
+import Path (labelList)
 
 spec :: Spec
 spec = do
@@ -79,5 +80,17 @@ spec = do
       (address . lookupAddress $ [])`shouldBe` []
     it "on [One,One,Zero,Zero,Zero,One]" $
       (address . lookupAddress $ [One,One,Zero,Zero,Zero,One]) `shouldBe` [One,Zero,Zero,Zero,One]
+  let allNodes = tail generateNodes
+  let checkOn cn = (address cn) `shouldBe`
+                      (reverse . labelList . fullPathDown $ cn)
+  describe "address equals the reverse of the full path down" $ do
+    it "on [One,One,Zero,Zero,Zero,One]" $
+      checkOn (lookupAddress [One,One,Zero,Zero,Zero,One])
+    it "on 5th node" $
+      checkOn (allNodes !! 5)
+    it "on 42th node" $
+      checkOn (allNodes !! 42)
+    it "on 182th node" $
+      checkOn (allNodes !! 182)
 
 

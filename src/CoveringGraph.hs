@@ -1,6 +1,6 @@
 module CoveringGraph (
   CoveringNode,
-  turningWord,parent,
+  turningWord,parent,fullPathDown,
   epsilon,zero,one,
   predecessor,
   address,
