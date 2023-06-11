@@ -27,4 +27,4 @@ main :: IO ()
 main = do
   args <- getArgs
   let numNodes = read (head args)
-  listPrinter (take numNodes (tail generateNodes))
+  listPrinter (take numNodes cycles)

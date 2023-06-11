@@ -5,7 +5,8 @@ module CoveringGraph (
   predecessor,
   address,
   lookupAddress,
-  generateNodes,
+  generateNodes, cycles,
+--  cycleOfNode,
 ) where
 
 import Control.Exception.Base
@@ -134,6 +135,17 @@ generator (curr:rest) nextLevel = curr : generator rest (more ++ nextLevel) wher
   pre = map ((flip treeCover) curr) labelsList
   more = map extractNode (filter isAscent pre)
 
-children :: CoveringNode -> [CoveringNode]
-children node = undefined
+{- Returns an infinite list that contains one element from every cycle. -}
+cycles :: [CoveringNode]
+cycles = filter (isInNormalForm . turningWord) (tail generateNodes)
 
+{-
+ TODO: implement these
+fatCycleOfNode :: CoveringNode -> []
+
+cycleOfNode :: CoveringNode -> [CoveringNode]
+-}
+
+{- This is almost the converse of the parent relation. The first argument is a predicate which should be true on a connected subtree (over the tree of addresses) which contains the second argument. Only children inside of the subTree are returned. -}
+children :: (CoveringNode -> Bool) -> CoveringNode -> [CoveringNode]
+children connSubtree node = undefined
