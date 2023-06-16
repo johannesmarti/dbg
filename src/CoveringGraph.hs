@@ -8,6 +8,7 @@ module CoveringGraph (
   generateNodes, cycles,
   cycleOfNode,
   isAscending,
+  children,
 ) where
 
 import Control.Exception.Base
@@ -171,6 +172,9 @@ isAscending node = let
        LoopingAscent -> False
        LoopBack      -> error "Node is looping back at its own address. This is thought to be impossible!"
 
+{-
+ Maybe the recursion in the following function should be on the ``actual'' children of the descent point. The other nodes on the cycle don't really seem to matter that much.
+-}
 {- This is almost the converse of the parent relation. The first argument is a predicate which should be true on a connected subtree (over the tree of addresses) which contains the second argument. Only children inside of the subTree are returned. -}
 children :: (CoveringNode -> Bool) -> CoveringNode -> [CoveringNode]
 children inConnSubtree node = let
@@ -178,6 +182,7 @@ children inConnSubtree node = let
     cycle = cycleOfNode node
     descending = filter isAscending cycle
     childrenAtDescend descendNode = let
+        -- Here we shouldprobabely take the children of the descent point!
         myChildren = children inConnSubtree descendNode
         startChainAtChild child = undefined {-
                 move backwards from child along cycle (in the right way).

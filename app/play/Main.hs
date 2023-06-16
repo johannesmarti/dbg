@@ -3,18 +3,15 @@ module Main (
 ) where
 
 import System.Environment
-import Data.Maybe (listToMaybe)
 
 import CoveringGraph
 import Label
-import Word
-import Path (labelList)
 
-addressPrinter :: CoveringNode -> String
-addressPrinter node = 
+printer :: CoveringNode -> String
+printer node = 
   (prettyWord (turningWord node) ++ " at address "
-            ++ prettyWord (address node)) ++ " is ascending: "
-            ++ show (isAscending node)
+            ++ prettyWord (address node)) ++ " with parent "
+            ++ show (turningWord (parent node))
 
 listPrinter :: [CoveringNode] -> IO ()
 listPrinter [] = putStrLn "===="
@@ -24,19 +21,19 @@ listPrinter (a:as) = do
   putStrLn (addressPrinter a)
   listPrinter as
 
+childrenOfNode :: (CoveringNode -> Bool) -> CoveringNode -> IO ()
+childrenOfNode predicte n = do
+  putStrLn "The node:"
+  printer n
+  putStrLn "hasChildren:"
+  listPrinter (children predicate n)
+
+node :: CoveringNode
+--node = lookupAddress [Zero,One]
+node = zero
+
 main :: IO ()
 main = do
   args <- getArgs
-  let numNodes = read (head args)
-  let nfs = take numNodes cycles
-  let cycs = map cycleOfNode nfs
-  let isInteresting cycle = length (filter isAscending cycle) > 2
-  let isVeryInteresting cycle = length (filter isAscending cycle) > 3
-  let isIncredibelyInteresting cycle = length (filter isAscending cycle) > 4
-  --let wow = filter isInteresting cycs
-  --let wow = filter isVeryInteresting cycs
-  let wow = filter isIncredibelyInteresting cycs
-  case listToMaybe wow of
-    Nothing -> putStrLn "nothing"
-    Just c -> listPrinter c
-  putStrLn (show (length wow))
+  let bound = read (head args)
+  childrenOfNode (\g -> length (turningWord g) < bound) node
