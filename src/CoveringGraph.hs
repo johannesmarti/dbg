@@ -8,7 +8,7 @@ module CoveringGraph (
   generateNodes, cycles,
   cycleOfNode,
   isAscending,
-  children,
+  childrenCycles,
 ) where
 
 import Control.Exception.Base
@@ -25,6 +25,9 @@ data CoveringNode = CoveringNode {
   parent      :: CoveringNode,
   pathDown    :: Path CoveringNode
 }
+
+descent :: CoveringNode -> CoveringNode
+descent node = Path.start (pathDown node)
 
 deepEqual :: CoveringNode -> CoveringNode -> Bool
 deepEqual (CoveringNode twa aa paa pda) (CoveringNode twb ab pab pdb) =
@@ -173,6 +176,7 @@ isAscending node = let
        LoopBack      -> error "Node is looping back at its own address. This is thought to be impossible!"
 
 {-
+{-
  Maybe the recursion in the following function should be on the ``actual'' children of the descent point. The other nodes on the cycle don't really seem to matter that much.
 -}
 {- This is almost the converse of the parent relation. The first argument is a predicate which should be true on a connected subtree (over the tree of addresses) which contains the second argument. Only children inside of the subTree are returned. -}
@@ -198,3 +202,29 @@ Assume we have the cycle of the parent
 
 Assume we have all the children of a descending ancestor. It's only at these where children for the cycle can attach.
 -}
+-}
+
+-- TODO: is it descendNode or descentNode
+childrenCycles :: (CoveringNode -> Bool) -> CoveringNode -> [[CoveringNode]]
+childrenCycles inConnSubtree node = let
+    -- TODO: Don't forget to filter by connSubtree
+    cycle = cycleOfNode node
+    descending = filter isAscending cycle
+    childrenAtDescend descendNode = let
+        -- Here we shouldprobabely take the children of the descent point!
+        descentTarget = descent descendNode
+        candidates = concat(childrenCycles inConnSubtree descentTarget)
+        myChildren = filter (\n -> parent n == descentTarget) candidates
+        startChainAtChild child = let
+            x = undefined
+          in undefined
+            {-
+                move backwards from child along cycle (in the right way).
+                But some conditions need to be satisfied, otherwise we just kepe cycling at the child and we don't get nodes whose parents is quite right?!?
+            -}
+      in map startChainAtChild myChildren
+  in if node == epsilon
+       then [[zero], [one]]
+       else concatMap childrenAtDescend descending
+
+
