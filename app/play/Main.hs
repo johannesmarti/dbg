@@ -11,26 +11,26 @@ printer :: CoveringNode -> String
 printer node = 
   (prettyWord (turningWord node) ++ " at address "
             ++ prettyWord (address node)) ++ " with parent "
-            ++ show (turningWord (parent node))
+            ++ prettyWord (turningWord (parent node))
 
 listPrinter :: [CoveringNode] -> IO ()
 listPrinter [] = putStrLn "===="
 listPrinter (a:as) = do
   putStrLn "===="
   -- mapM_ putStrLn (addressPrinter a)
-  putStrLn (addressPrinter a)
+  putStrLn (printer a)
   listPrinter as
 
 childrenOfNode :: (CoveringNode -> Bool) -> CoveringNode -> IO ()
-childrenOfNode predicte n = do
+childrenOfNode predicate n = do
   putStrLn "The node:"
-  printer n
+  putStrLn (printer n)
   putStrLn "hasChildren:"
-  listPrinter (children predicate n)
+  mapM_ listPrinter (childrenCycles predicate n)
 
 node :: CoveringNode
 --node = lookupAddress [Zero,One]
-node = zero
+node = predecessor One zero
 
 main :: IO ()
 main = do

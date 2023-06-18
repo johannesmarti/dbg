@@ -207,17 +207,19 @@ Assume we have all the children of a descending ancestor. It's only at these whe
 -- TODO: is it descendNode or descentNode
 childrenCycles :: (CoveringNode -> Bool) -> CoveringNode -> [[CoveringNode]]
 childrenCycles inConnSubtree node = let
-    -- TODO: Don't forget to filter by connSubtree
-    cycle = cycleOfNode node
-    descending = filter isAscending cycle
+    myCycle = cycleOfNode node
+    descending = filter isAscending myCycle
+    childrenAtDescend :: CoveringNode -> [[CoveringNode]]
     childrenAtDescend descendNode = let
-        -- Here we shouldprobabely take the children of the descent point!
         descentTarget = descent descendNode
-        candidates = concat(childrenCycles inConnSubtree descentTarget)
+        candidates = concat (childrenCycles inConnSubtree descentTarget)
         myChildren = filter (\n -> parent n == descentTarget) candidates
+        reverseLoop = cycle . reverse . turningWord $ descendNode
+        startChainAtChild :: CoveringNode -> [CoveringNode]
         startChainAtChild child = let
-            x = undefined
-          in undefined
+            start = properlyAscendingPredecessor child
+            chain = scanl (flip predecessor) start reverseLoop
+          in takeWhile inConnSubtree chain
             {-
                 move backwards from child along cycle (in the right way).
                 But some conditions need to be satisfied, otherwise we just kepe cycling at the child and we don't get nodes whose parents is quite right?!?
