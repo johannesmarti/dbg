@@ -26,11 +26,12 @@ childrenOfNode predicate n = do
   putStrLn "The node:"
   putStrLn (printer n)
   putStrLn "hasChildren:"
-  mapM_ listPrinter (childrenCycles predicate n)
+  mapM_ listPrinter (childCycles predicate n)
 
 node :: CoveringNode
 --node = lookupAddress [Zero,One]
 node = predecessor One zero
+--node = zero
 
 main :: IO ()
 main = do

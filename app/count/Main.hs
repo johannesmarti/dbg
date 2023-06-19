@@ -14,7 +14,7 @@ addressPrinter :: CoveringNode -> String
 addressPrinter node = 
   (prettyWord (turningWord node) ++ " at address "
             ++ prettyWord (address node)) ++ " is ascending: "
-            ++ show (isAscending node)
+            ++ show (isDescending node)
 
 listPrinter :: [CoveringNode] -> IO ()
 listPrinter [] = putStrLn "===="
@@ -30,9 +30,9 @@ main = do
   let numNodes = read (head args)
   let nfs = take numNodes cycles
   let cycs = map cycleOfNode nfs
-  let isInteresting cycle = length (filter isAscending cycle) > 2
-  let isVeryInteresting cycle = length (filter isAscending cycle) > 3
-  let isIncredibelyInteresting cycle = length (filter isAscending cycle) > 4
+  let isInteresting cycle = length (filter isDescending cycle) > 2
+  let isVeryInteresting cycle = length (filter isDescending cycle) > 3
+  let isIncredibelyInteresting cycle = length (filter isDescending cycle) > 4
   let wow = filter isInteresting cycs
   --let wow = filter isVeryInteresting cycs
   --let wow = filter isIncredibelyInteresting cycs

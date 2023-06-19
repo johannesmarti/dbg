@@ -7,8 +7,8 @@ module CoveringGraph (
   lookupAddress,
   generateNodes, cycles,
   cycleOfNode,
-  isAscending,
-  childrenCycles,
+  isDescending,
+  childCycles,
 ) where
 
 import Control.Exception.Base
@@ -167,8 +167,8 @@ cycleOfNode node = (node : remaining) where
   remaining = takeWhile (/= node) infList
 
 {- True if the node is ascending somewhere. -}
-isAscending :: CoveringNode -> Bool
-isAscending node = let
+isDescending :: CoveringNode -> Bool
+isDescending node = let
     (_,status) = atAddress (address node)
   in case status of
        ProperAscent  -> True
@@ -184,7 +184,7 @@ children :: (CoveringNode -> Bool) -> CoveringNode -> [CoveringNode]
 children inConnSubtree node = let
     -- TODO: Don't forget to filter by connSubtree
     cycle = cycleOfNode node
-    descending = filter isAscending cycle
+    descending = filter isDescending cycle
     childrenAtDescend descendNode = let
         -- Here we shouldprobabely take the children of the descent point!
         myChildren = children inConnSubtree descendNode
@@ -205,28 +205,30 @@ Assume we have all the children of a descending ancestor. It's only at these whe
 -}
 
 -- TODO: is it descendNode or descentNode
-childrenCycles :: (CoveringNode -> Bool) -> CoveringNode -> [[CoveringNode]]
-childrenCycles inConnSubtree node = let
+childCycles :: (CoveringNode -> Bool) -> CoveringNode -> [[CoveringNode]]
+childCycles inConnSubtree node = let
     myCycle = cycleOfNode node
-    descending = filter isAscending myCycle
+    descending = filter isDescending myCycle
+    chainAt labels node = let infChain = scanl (flip predecessor) node labels
+                            in takeWhile inConnSubtree infChain
     childrenAtDescend :: CoveringNode -> [[CoveringNode]]
     childrenAtDescend descendNode = let
         descentTarget = descent descendNode
-        candidates = concat (childrenCycles inConnSubtree descentTarget)
-        myChildren = filter (\n -> parent n == descentTarget) candidates
+        candidates = concat (childCycles inConnSubtree descentTarget)
+        myChildren = filter (\c -> parent c == descentTarget) candidates
         reverseLoop = cycle . reverse . turningWord $ descendNode
         startChainAtChild :: CoveringNode -> [CoveringNode]
         startChainAtChild child = let
             start = properlyAscendingPredecessor child
-            chain = scanl (flip predecessor) start reverseLoop
-          in takeWhile inConnSubtree chain
+          in chainAt reverseLoop start
             {-
                 move backwards from child along cycle (in the right way).
                 But some conditions need to be satisfied, otherwise we just kepe cycling at the child and we don't get nodes whose parents is quite right?!?
             -}
       in map startChainAtChild myChildren
-  in if node == epsilon
-       then [[zero], [one]]
-       else concatMap childrenAtDescend descending
+  in if node == epsilon then error "no child cycles for epsilon"
+     else if node == zero then [chainAt (repeat Zero) (predecessor Zero one)]
+     else if node == one  then [chainAt (repeat One) (predecessor One zero)]
+     else concatMap childrenAtDescend descending
 
 
