@@ -30,7 +30,9 @@ childrenOfNode predicate n = do
 
 node :: CoveringNode
 --node = lookupAddress [Zero,One]
-node = predecessor One zero
+--node = lookupAddress [Zero,One,One]
+node = lookupAddress [Zero,One,One,Zero,One]
+--node = predecessor One zero
 --node = zero
 
 main :: IO ()

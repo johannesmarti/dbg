@@ -14,6 +14,8 @@ module CoveringGraph (
 import Control.Exception.Base
 import Data.Function (fix)
 
+import Debug.Trace
+
 import Label
 import Path
 import Word
@@ -73,8 +75,12 @@ pathToAncestor parentStack (Step curr label cont) =
 pathToAncestor ps (There here) = assert (here == epsilon) $
                                  assert (here `isAncestor` ps) $ []
 
+typeLabel :: CoveringNode -> Label
+typeLabel n = if n == epsilon then error "epsilon has no type label"
+                              else first (turningWord n)
+
 fullPathDown :: CoveringNode -> Path CoveringNode
-fullPathDown expd = Step expd (first . turningWord $ expd) (pathDown expd)
+fullPathDown expd = Step expd (typeLabel expd) (pathDown expd)
 
 data AscentStatus = ProperAscent | LoopingAscent | LoopBack
   deriving Eq
@@ -214,18 +220,21 @@ childCycles inConnSubtree node = let
     childrenAtDescend :: CoveringNode -> [[CoveringNode]]
     childrenAtDescend descendNode = let
         descentTarget = descent descendNode
+        descentLabel = typeLabel descendNode
         candidates = concat (childCycles inConnSubtree descentTarget)
-        myChildren = filter (\c -> parent c == descentTarget) candidates
+        interestingChild c = parent c == descentTarget
+                                && not (c `elem` myCycle)
+        myChildren = filter interestingChild candidates
         reverseLoop = cycle . reverse . turningWord $ descendNode
         startChainAtChild :: CoveringNode -> [CoveringNode]
         startChainAtChild child = let
-            start = properlyAscendingPredecessor child
-          in chainAt reverseLoop start
+            start = predecessor descentLabel child
+          in {-trace ("starting chain at child: " ++ prettyWord (turningWord child) ++ " working for: " ++ prettyWord (turningWord descendNode)) $-}  chainAt reverseLoop start
             {-
                 move backwards from child along cycle (in the right way).
                 But some conditions need to be satisfied, otherwise we just kepe cycling at the child and we don't get nodes whose parents is quite right?!?
             -}
-      in map startChainAtChild myChildren
+      in filter (not . null) (map startChainAtChild myChildren)
   in if node == epsilon then error "no child cycles for epsilon"
      else if node == zero then [chainAt (repeat Zero) (predecessor Zero one)]
      else if node == one  then [chainAt (repeat One) (predecessor One zero)]
