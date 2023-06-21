@@ -3,6 +3,7 @@ module CoveringGraph (
   turningWord,parent,fullPathDown,
   epsilon,zero,one,
   predecessor,
+  properlyAscendingPredecessor,
   address,
   lookupAddress,
   generateNodes, cycles,

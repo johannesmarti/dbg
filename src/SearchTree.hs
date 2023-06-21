@@ -82,6 +82,7 @@ breadthFirstSearch' predicate depth tree = worker depth [tree] [] where
   worker d (next:rest) nextLevel = let dl = label next
     in if predicate dl then Just dl
        else worker d rest ((children next) ++ nextLevel)
+
 {-
 Searches a tree
   (r,[(0, [(00,[...]), ...]),(1, [(10, [...]), ...]), (2, [...]), ...])
