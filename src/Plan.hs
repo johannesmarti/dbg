@@ -5,6 +5,7 @@ module Plan (
   Plan,
   Plan.empty,
   Plan.insert,
+  wrapSpiral,
 ) where
 
 -- TODO: Should we use the strict or the lazy state monad? Need to read up!
@@ -34,8 +35,8 @@ pointsAtDistance :: Int -> Spoke x -> [x]
 pointsAtDistance distance =
   map fst . filter (\(p,d) -> d == distance) . M.toList . points
 
-maxDistance :: Spoke x -> Int
-maxDistance = maximum . M.elems . points
+maximalDistance :: Spoke x -> Int
+maximalDistance = maximum . M.elems . points
 
 spoke :: Ord x => x -> [(x,Int)] -> Spoke x
 spoke h p = Spoke h (M.insert h 0 (M.fromList p))
@@ -48,8 +49,11 @@ empty = WordMap.empty
 insert :: [Label] -> Spoke x -> Plan x -> Plan x
 insert = WordMap.insert
 
-executePlan :: Ord x => LabeledGraphI g x -> g -> Plan x -> LiftedGraph x
+executePlan :: Ord x => LabeledGraphI g x -> g -> Plan x -> (LiftedGraph x, Int)
 executePlan gi g plan = result where
+  -- construct zero
+  -- construct one
+  -- combine the two results
   result = undefined
 
 {-
@@ -62,13 +66,6 @@ wrap-up/roll a cycle:
 
 Things to be done:
 - List nodes in plan for a spiral
--}
-
-{-
-data PartialResult x = PartialResult {
-  liftedGraph :: LiftedGraph x,
-  constructedNodes :: WordMap Int
-}
 -}
 
 constructNode :: Plan x -> CoveringNode
@@ -88,6 +85,7 @@ constructNode plan coveringNode = let
     mapM_ (constructNode plan) ancestors
     fatVector <- lift $ wrapSpiral planVector
     -- need to wrap up further over the fat vector
+    -- TODO: Wrap up all the childCycles
 
     -- TODO: The following two lines could be improved
     constructed <- get
@@ -96,7 +94,18 @@ constructNode plan coveringNode = let
     return 32
 
 wrapSpiral :: (V.Vector (Spoke x)) -> State (LiftedGraph x) (V.Vector Int)
-wrapSpiral spokes = undefined
+wrapSpiral spokes = do
+  lg <- get
+  let emb = embed lg
+      maximalDistanceInSpiral = maximum $ V.map maximalDistance spokes
+      helper distance constructed =
+        if distance > maximalDistanceInSpiral then return constructed
+        else do let constructInSpoke plan soFar = 
+                        foldM LiftedGraph.combine soFar
+                              (map emb (pointsAtDistance distance plan))
+                improved <- V.zipWithM constructInSpoke spokes constructed
+                helper (distance + 1) improved
+    in helper 1 (V.map (emb . hub) spokes)
 
 --wrapSpiral :: Vec.Vector (Spoke x) -> State (LiftedGraph x) (Vec.Vector Int)
 --wrapSpiral _ = undefined

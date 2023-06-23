@@ -1,6 +1,7 @@
 module LiftedGraph (
   LiftedGraph,
   intGraphI,
+  embed,
   graph,
   LiftedGraph.size,
   fromLGraph,
@@ -57,6 +58,7 @@ intGraphI = lMapGraphI
 data LiftedGraph x = LiftedGraph {
   graph         :: IntGraph,
   justification :: Map Int (Justification x),
+  embed         :: x -> Int,
   printBase     :: x -> String
 }
 
@@ -85,9 +87,10 @@ fromLGraph gi g = fst (fromLGraphWithCoding gi g)
 
 fromLGraphWithCoding :: Ord x => LabeledGraphI g x -> g
                                  -> (LiftedGraph x, Coding x Int)
-fromLGraphWithCoding gi g = (LiftedGraph intGraph just pb, coding) where
+fromLGraphWithCoding gi g = (LiftedGraph intGraph just emb pb, coding) where
   coding = codeSet (domain gi g)
-  intGraph = lMapApplyBijection gi g (encode coding)
+  emb = encode coding
+  intGraph = lMapApplyBijection gi g emb
   just = fromSet justifyBase (domain intGraphI intGraph)
   justifyBase i = base (decode coding i)
   pb = prettyNode gi g
@@ -175,7 +178,7 @@ liftCandidate can = state $ \lg ->
     withNode = lMapAddNodes (graph lg) [next]
     newGraph = addForLabel One (addForLabel Zero withNode)
     newJustification = insert next (doubleton u v) (justification lg)
-  in (next,LiftedGraph newGraph newJustification (printBase lg))
+  in (next,LiftedGraph newGraph newJustification (embed lg) (printBase lg))
   
 combine :: Int -> Int -> State (LiftedGraph x) Int
 combine x y = do

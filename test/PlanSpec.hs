@@ -6,6 +6,8 @@ import Test.Hspec
 
 import Plan
 import qualified Data.Map.Strict as Map
+--import Control.Monad.State.Lazy
+import qualified Data.Vector as V
 import Label
 
 force3dPlan :: Plan Char
@@ -23,5 +25,6 @@ force3dPlan =
 
 spec :: Spec
 spec = do
-  describe "nothing to do here" $ do
-    return ()
+  describe "testing wrapSpiral" $ do
+    it "wrap up a simple spiral" $
+      undefined `shouldBe` undefined -- wrap up a simple spiral
