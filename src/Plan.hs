@@ -80,12 +80,18 @@ constructNode plan coveringNode = let
     ancestors = map properlyAscendingPredecessor myCycleList
     myCycle = V.fromList myCycleList
     planVector = V.map (maybe (error "node should be in map of plans") id . (\a -> WordMap.lookup a plan) . address) myCycle
+    inDom cn = inDomain (address cn) plan
+    liftingsOfCycle = childCycles inDom coveringNode
+    fatTentacles = map reverse liftingsOfCycle
+    --wrapTentacle tentacle = undefined
+    -- need to find index where the parent of the beginning is identical to the covering node of myCycle
+    -- loop away from this index (in parallel in myCycle and the tentacle) and lookup the nodes in the tentacle in the constructed wordmap that is part of the monad. combine the found node with the element that is part of the fat Vector at this index.
   in lookupNodeWrapper $ do
     -- Make sure that the ancestor of all nodes on the cycle have been completely wrapped.
     mapM_ (constructNode plan) ancestors
     fatVector <- lift $ wrapSpiral planVector
-    -- need to wrap up further over the fat vector
-    -- TODO: Wrap up all the childCycles
+
+    -- wrap up all the childCycles
 
     -- TODO: The following two lines could be improved
     constructed <- get

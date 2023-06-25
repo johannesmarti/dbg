@@ -2,10 +2,13 @@ module WordMap.Algebraic (
   WordMap,
   empty,
   combine,
+  inDomain,
   WordMap.Algebraic.lookup,
   insert,
   delete,
 ) where
+
+import Data.Maybe (isJust)
 
 import Label
 
@@ -16,6 +19,9 @@ empty = Empty
 
 combine :: x -> WordMap x -> WordMap x -> WordMap x
 combine lbl left right = Branch (Just lbl) left right
+
+inDomain :: [Label] -> WordMap x -> Bool
+inDomain word wm = isJust $ WordMap.Algebraic.lookup word wm
 
 lookup :: [Label] -> WordMap x -> Maybe x
 lookup _ Empty = Nothing

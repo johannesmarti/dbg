@@ -2,6 +2,7 @@ module WordMap.MapWrapper (
   WordMap,
   empty,
   combine,
+  inDomain,
   WordMap.MapWrapper.lookup,
   insert,
   delete,
@@ -20,6 +21,9 @@ combine :: x -> WordMap x -> WordMap x -> WordMap x
 combine lbl left right = Map.insert [] lbl (Map.union left' right') where
   left'  = Map.mapKeysMonotonic (Zero:) left
   right' = Map.mapKeysMonotonic (One :) right
+
+inDomain :: [Label] -> WordMap x -> Bool
+inDomain = Map.member
 
 lookup :: [Label] -> WordMap x -> Maybe x
 lookup = Map.lookup

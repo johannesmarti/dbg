@@ -2,10 +2,13 @@ module WordMap.Coalgebraic (
   WordMap,
   empty,
   combine,
+  inDomain,
   WordMap.Coalgebraic.lookup,
   insert,
   delete,
 ) where
+
+import Data.Maybe (isJust)
 
 import Label
 import WordTree
@@ -18,6 +21,9 @@ empty = wordTreeFromGenerator gen where
 
 combine :: x -> WordMap x -> WordMap x -> WordMap x
 combine lbl left right = WordTreeNode (Just lbl) left right
+
+inDomain :: [Label] -> WordMap x -> Bool
+inDomain word wm = isJust $ WordMap.Coalgebraic.lookup word wm
 
 lookup :: [Label] -> WordMap x -> Maybe x
 lookup key wt = labelOfWord wt key
