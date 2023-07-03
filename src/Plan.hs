@@ -5,6 +5,7 @@ module Plan (
   Plan,
   Plan.empty,
   Plan.insert,
+  executePlan,
   wrapSpiral,
 ) where
 
@@ -73,7 +74,7 @@ constructNode plan coveringNode = let
     myIndex = 0
     ancestors = map properlyAscendingPredecessor myCycleList
     myCycle = V.fromList myCycleList
-    planVector = V.map (maybe (error "node should be in map of plans") id . (\a -> WordMap.lookup a plan) . address) myCycle
+    planVector = V.map ((\a -> WordMap.forceLookup a plan) . address) myCycle
     inDom cn = inDomain (address cn) plan
     liftingsOfCycle = childCycles inDom coveringNode
     fatTentacles = map reverse liftingsOfCycle
@@ -81,6 +82,7 @@ constructNode plan coveringNode = let
                       return (cn, intNode)
   in lookupNodeWrapper $ do
     -- Make sure that the ancestor of all nodes on the cycle have been completely wrapped.
+    -- TODO: They only need to be constructed if the current node is not single
     mapM_ (constructNode plan) ancestors
     fatVector <- lift $ wrapSpiral planVector
     -- it might be that it is not needed to construct the nodes in the tentacles because they have already been constructed. I am not sure about this!

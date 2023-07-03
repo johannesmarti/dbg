@@ -3,12 +3,13 @@ module WordMap.Algebraic (
   empty,
   combine,
   inDomain,
+  forceLookup,
   WordMap.Algebraic.lookup,
   insert,
   delete,
 ) where
 
-import Data.Maybe (isJust)
+import Data.Maybe (fromMaybe,isJust)
 
 import Label
 
@@ -22,6 +23,10 @@ combine lbl left right = Branch (Just lbl) left right
 
 inDomain :: [Label] -> WordMap x -> Bool
 inDomain word wm = isJust $ WordMap.Algebraic.lookup word wm
+
+forceLookup :: [Label] -> WordMap x -> x
+forceLookup key m = fromMaybe err (WordMap.Algebraic.lookup key m) where
+  err = error $ "node " ++ show key ++ " not in WordMap"
 
 lookup :: [Label] -> WordMap x -> Maybe x
 lookup _ Empty = Nothing

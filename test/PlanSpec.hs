@@ -45,3 +45,9 @@ spec = do
       f001 `elem` domain intGraphI ig `shouldBe` True
     it "fat 001 0-> fat 010 0-> fat 100 1-> fat 001" $
       ha Zero (f001, f010) && ha Zero (f010, f100) && ha One (f100, f001) `shouldBe` True
+  let (lg,dsl) = executePlan force3dI force3d force3dPlan
+  let ig = graph lg
+  describe "executing plan on force3d" $ do
+    it "is generating double self loop" $
+      (hasArc intGraphI ig Zero (dsl,dsl) &&
+       hasArc intGraphI ig One (dsl,dsl)) `shouldBe` True

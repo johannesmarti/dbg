@@ -28,7 +28,6 @@ import Control.Monad.State.Lazy
 import ConciseGraph
 import DeBruijnGraph
 import LiftedGraph
-import LiftedGraphReport
 import Report
 import Patterns
 import Bitable
@@ -469,14 +468,6 @@ gameIssues = let
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
     putChar '\n'
-    easyLiftedGraphRelReport lifting [One]
-    putChar '\n'
-    easyLiftedGraphRelReport lifting [Zero,One]
-    putChar '\n'
-    easyLiftedGraphRelReport lifting [Zero,Zero,One]
-    putChar '\n'
-    easyLiftedGraphRelReport lifting [Zero,One,One]
-    putChar '\n'
     print pairs
 
 gameForce9d :: IO ()
@@ -524,16 +515,6 @@ gameDbg3 = let
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
     putChar '\n'
-    easyLiftedGraphRelReport lifting [Zero]
-    putChar '\n'
-    --easyLiftedGraphRelReport lifting [Zero,One]
-    --putChar '\n'
-    --print $ Spiral.fromHub intGraphI ig [Zero,One] [9,5]
-    --putChar '\n'
-    --easyLiftedGraphRelReport lifting [Zero,Zero,One]
-    --putChar '\n'
-    --easyLiftedGraphRelReport lifting [Zero,One,One]
-    --putChar '\n'
     print pairs
 
 gameDbg4 :: IO ()
