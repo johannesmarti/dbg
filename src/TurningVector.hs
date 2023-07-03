@@ -6,6 +6,7 @@ module TurningVector (
   turnBackward,
   at,
   zipWithList,
+  zipWithListM,
 ) where
 
 import Debug.Trace
@@ -65,3 +66,33 @@ zipVectorWithList f vec list = let
        then let (toProcess, rest) = V.splitAt batchLength vec
             in (V.zipWith f toProcess batchVector) V.++ rest
        else zipVectorWithList f (V.zipWith f vec batchVector) tail
+
+zipWithListM :: Monad m => (x -> a -> m x) -> TurningVector x -> [a]
+                           -> m (TurningVector x)
+zipWithListM f (TurningVector o vec) list = newVec >>= (return . TurningVector o) where
+  (before, after) = V.splitAt o vec
+  vecLength = V.length after
+  (batch,tail) = splitAt vecLength list
+  batchVector = V.fromList batch
+  batchLength = V.length batchVector
+  newVec = 
+    if null tail
+       then let (toProcess,rest) = V.splitAt batchLength after
+            in do updated <- V.zipWithM f toProcess batchVector
+                  return (before V.++ updated V.++ rest)
+       else do updated <- V.zipWithM f after batchVector
+               zipVectorWithListM f (before V.++ updated) tail
+
+zipVectorWithListM :: Monad m => (x -> a -> m x) -> V.Vector x -> [a]
+                                -> m (V.Vector x)
+zipVectorWithListM f vec list = let
+    n = V.length vec
+    (batch,tail) = splitAt n list
+    batchVector = V.fromList batch
+    batchLength = V.length batchVector
+  in if batchLength < n
+       then let (toProcess, rest) = V.splitAt batchLength vec
+            in do updated <- V.zipWithM f toProcess batchVector
+                  return (updated V.++ rest)
+       else do updated <- V.zipWithM f vec batchVector
+               zipVectorWithListM f updated tail
