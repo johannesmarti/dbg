@@ -87,6 +87,8 @@ constructNode plan coveringNode = let
     inDom cn = inDomain (address cn) plan
     liftingsOfCycle = childCycles inDom coveringNode
     fatTentacles = map reverse liftingsOfCycle
+    pairNodes cn = do intNode <- constructNode plan cn
+                      return (cn, intNode)
     --wrapTentacle tentacle = undefined
     -- need to find index where the parent of the beginning is identical to the covering node in myCycle
     -- loop away from this index (in parallel in myCycle and the tentacle) and lookup the nodes in the tentacle in the constructed wordmap that is part of the monad. combine the found node with the element that is part of the fat Vector at this index.
@@ -94,7 +96,9 @@ constructNode plan coveringNode = let
     -- Make sure that the ancestor of all nodes on the cycle have been completely wrapped.
     mapM_ (constructNode plan) ancestors
     fatVector <- lift $ wrapSpiral planVector
-    fatterVector <- foldM (wrapTentacle myCycle) fatVector fatTentacles
+    -- it might be that it is not needed to construct the nodes in the tentacles because they have already been constructed. I am not sure about this!
+    fatterTentacles <- mapM (mapM pairNodes) fatTentacles
+    fatterVector <- lift $ foldM (wrapTentacle myCycle) fatVector fatterTentacles
 
     -- wrap up all the childCycles
 
@@ -119,10 +123,10 @@ wrapSpiral spokes = do
                 helper (distance + 1) improved
     in helper 1 (V.map (emb . hub) spokes)
 
-wrapTentacle :: V.Vector CoveringNode -> V.Vector Int -> [CoveringNode]
-                -> StateT (WordMap Int) (State (LiftedGraph x)) (V.Vector Int) 
+wrapTentacle :: V.Vector CoveringNode -> V.Vector Int -> [(CoveringNode, Int)]
+                -> State (LiftedGraph x) (V.Vector Int) 
 wrapTentacle cycle fatVector tentacle = let
     startIndex = fromMaybe (error "tentacle does not seem to match the cycle")
-                           (V.findIndex (== parent (head tentacle)) cycle)
+                           (V.findIndex (== parent (fst . head $ tentacle)) cycle)
     turningVector = TV.fromVectorWithIndex startIndex fatVector
   in undefined

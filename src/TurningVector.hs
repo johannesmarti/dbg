@@ -8,6 +8,8 @@ module TurningVector (
   zipWithList,
 ) where
 
+import Debug.Trace
+
 import Control.Exception.Base (assert)
 import qualified Data.Vector as V
 
@@ -41,11 +43,17 @@ at :: TurningVector x -> Int -> x
 at tv i = (vector tv) V.! (ix tv i)
 
 zipWithList :: (x -> a -> x) -> TurningVector x -> [a] -> TurningVector x
-zipWithList f (TurningVector o vec) list = let
-    (before, after) = V.splitAt o vec
-    batchLength = V.length after
-    (batch,tail) = splitAt batchLength list
-  in undefined
+zipWithList f (TurningVector o vec) list = TurningVector o newVec where
+  (before, after) = V.splitAt o vec
+  vecLength = V.length after
+  (batch,tail) = splitAt vecLength list
+  batchVector = V.fromList batch
+  batchLength = V.length batchVector
+  newVec = 
+    if null tail
+       then let (toProcess,rest) = V.splitAt batchLength after
+            in before V.++ (V.zipWith f toProcess batchVector) V.++ rest
+       else zipVectorWithList f (before V.++ (V.zipWith f after batchVector)) tail
 
 zipVectorWithList :: (x -> a -> x) -> V.Vector x -> [a] -> V.Vector x
 zipVectorWithList f vec list = let
