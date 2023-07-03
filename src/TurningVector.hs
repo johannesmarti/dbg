@@ -1,4 +1,5 @@
 module TurningVector (
+  offset,vector,
   fromVectorWithIndex,
   fromList,
   toList,

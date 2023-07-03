@@ -53,23 +53,13 @@ insert :: [Label] -> Spoke x -> Plan x -> Plan x
 insert = WordMap.insert
 
 executePlan :: Ord x => LabeledGraphI g x -> g -> Plan x -> (LiftedGraph x, Int)
-executePlan gi g plan = result where
-  -- construct zero
-  -- construct one
-  -- combine the two results
-  result = undefined
-
-{-
-wrap-up/roll a cycle:
-- Wrap up the nodes on the spiral for the cycle
--- Count up d = 1 .. n and wrap up all nodes with distance d (Once nodes for d hhave been wrapped we should be able to wrap nodes of dinstance d + 1) At each stage keep track of the node at the hub.
--- Check that all the children of the nodes on the hub have been constructed and return them in a reasonable order.
--- wrap these children in a raesonable order.
--- store the fat hub nodes in the partial result word map
-
-Things to be done:
-- List nodes in plan for a spiral
--}
+executePlan gi g plan = (lg,dsl) where
+  liftedGraph = LiftedGraph.fromLGraph gi g
+  ((dsl,_),lg) = runState (runStateT lastStuff WordMap.empty) liftedGraph
+  lastStuff = do zi <- constructNode plan zero
+                 oz <- constructNode plan one
+                 doubleSelfLoop <- lift $ LiftedGraph.combine zi oz
+                 return doubleSelfLoop
 
 constructNode :: Plan x -> CoveringNode
                  -> StateT (WordMap Int) (State (LiftedGraph x)) Int
@@ -89,20 +79,17 @@ constructNode plan coveringNode = let
     fatTentacles = map reverse liftingsOfCycle
     pairNodes cn = do intNode <- constructNode plan cn
                       return (cn, intNode)
-    --wrapTentacle tentacle = undefined
-    -- need to find index where the parent of the beginning is identical to the covering node in myCycle
-    -- loop away from this index (in parallel in myCycle and the tentacle) and lookup the nodes in the tentacle in the constructed wordmap that is part of the monad. combine the found node with the element that is part of the fat Vector at this index.
   in lookupNodeWrapper $ do
     -- Make sure that the ancestor of all nodes on the cycle have been completely wrapped.
     mapM_ (constructNode plan) ancestors
     fatVector <- lift $ wrapSpiral planVector
     -- it might be that it is not needed to construct the nodes in the tentacles because they have already been constructed. I am not sure about this!
+
+    -- wrap up the childCycles
     fatterTentacles <- mapM (mapM pairNodes) fatTentacles
     fatterVector <- lift $ foldM (wrapTentacle myCycle) fatVector fatterTentacles
 
-    -- wrap up all the childCycles
-
-    -- TODO: The following two lines could be improved
+    -- TODO: The following four lines could be improved
     constructed <- get
     put $ V.ifoldl (\m i node -> WordMap.insert (address (myCycle V.! i)) node m)
                    constructed fatterVector
@@ -129,4 +116,6 @@ wrapTentacle cycle fatVector tentacle = let
     startIndex = fromMaybe (error "tentacle does not seem to match the cycle")
                            (V.findIndex (== parent (fst . head $ tentacle)) cycle)
     turningVector = TV.fromVectorWithIndex startIndex fatVector
-  in undefined
+    operation fatNode (cn,cni) = LiftedGraph.combine fatNode cni
+  in do tv <- TV.zipWithListM operation turningVector tentacle
+        return (TV.vector tv)
