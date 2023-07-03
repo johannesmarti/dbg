@@ -63,6 +63,7 @@ library
       SmartSearch
       Spiral
       Tools
+      TurningVector
       Word
       WordMap.Algebraic
       WordMap.Coalgebraic
@@ -273,6 +274,7 @@ test-suite dbg-test
       MapGraphSpec
       PlanSpec
       SearchTreeSpec
+      TurningVectorSpec
       WordMapSpec
       WordSpec
       Paths_dbg
