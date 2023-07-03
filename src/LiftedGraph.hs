@@ -181,7 +181,7 @@ liftCandidate can = state $ \lg ->
   in (next,LiftedGraph newGraph newJustification (embed lg) (printBase lg))
   
 combine :: Int -> Int -> State (LiftedGraph x) Int
-combine x y = do
+combine x y = if x == y then return x else do
   lg <- get
   let can = computeCandidate (graph lg) (x,y)
   if isVisible can

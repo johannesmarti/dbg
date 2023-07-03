@@ -9,6 +9,8 @@ module Plan (
   wrapSpiral,
 ) where
 
+import Debug.Trace
+
 -- TODO: Should we use the strict or the lazy state monad? Need to read up!
 import Control.Exception.Base (assert)
 import Control.Monad.State.Lazy
@@ -45,6 +47,17 @@ maximalDistance = maximum . M.elems . points
 spoke :: Ord x => x -> [(x,Int)] -> Spoke x
 spoke h p = Spoke h (M.insert h 0 (M.fromList p))
 
+isSingleton :: Spoke x -> Bool
+isSingleton spoke = M.size (points spoke) <= 1
+
+singletonNode :: Spoke x -> Maybe x
+singletonNode spoke = if isSingleton spoke
+                        then Just (hub spoke)
+                        else Nothing
+
+contained :: Ord x => x -> Spoke x -> Bool
+contained x (Spoke _ map) = x `M.member` map
+
 type Plan x = WordMap (Spoke x)
 
 empty :: Plan x
@@ -62,8 +75,8 @@ executePlan gi g plan = (lg,dsl) where
                  doubleSelfLoop <- lift $ LiftedGraph.combine zi oz
                  return doubleSelfLoop
 
-constructNode :: Plan x -> CoveringNode
-                 -> StateT (WordMap Int) (State (LiftedGraph x)) Int
+constructNode :: Ord x => Plan x -> CoveringNode
+                          -> StateT (WordMap Int) (State (LiftedGraph x)) Int
 constructNode plan coveringNode = let
     lookupNodeWrapper otherAction = do
       constructed <- get
@@ -72,7 +85,18 @@ constructNode plan coveringNode = let
         Nothing -> otherAction
     myCycleList = cycleOfNode coveringNode
     myIndex = 0
-    ancestors = map properlyAscendingPredecessor myCycleList
+    planOfNode cn = forceLookup (address cn) plan
+    needsCounterPoint cn = case singletonNode $ planOfNode cn of
+                             Just a  -> let par = parent cn
+                                        in if par == epsilon
+                                             then True
+                                             else not (a `contained` planOfNode par)
+                             Nothing -> True
+    constructCounterPoint node =
+        when (needsCounterPoint node)
+             (trace ("need counterpoint for: " ++ show node)
+                    (do constructNode plan (properlyAscendingPredecessor node)
+                        return ()))
     myCycle = V.fromList myCycleList
     planVector = V.map ((\a -> WordMap.forceLookup a plan) . address) myCycle
     inDom cn = inDomain (address cn) plan
@@ -81,9 +105,9 @@ constructNode plan coveringNode = let
     pairNodes cn = do intNode <- constructNode plan cn
                       return (cn, intNode)
   in lookupNodeWrapper $ do
-    -- Make sure that the ancestor of all nodes on the cycle have been completely wrapped.
-    -- TODO: They only need to be constructed if the current node is not single
-    mapM_ (constructNode plan) ancestors
+    trace ("on spiral: " ++ show myCycleList) $ return ()
+    -- Make sure that the counterpoints of all nodes on the cycle have been completely wrapped up.
+    mapM_ constructCounterPoint myCycleList
     fatVector <- lift $ wrapSpiral planVector
     -- it might be that it is not needed to construct the nodes in the tentacles because they have already been constructed. I am not sure about this!
 
