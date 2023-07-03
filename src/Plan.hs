@@ -9,15 +9,18 @@ module Plan (
 ) where
 
 -- TODO: Should we use the strict or the lazy state monad? Need to read up!
+import Control.Exception.Base (assert)
 import Control.Monad.State.Lazy
 import qualified Data.Vector as V
 import qualified Data.Map.Strict as M
+import Data.Maybe (fromMaybe)
 
 import CoveringGraph
 import LabeledGraph
 import LiftedGraph
 
 import WordMap.Algebraic as WordMap
+import qualified TurningVector as TV
 
 {-
  We have a WordTree that maps addresses of Covering nodes to a pointed set. The
@@ -77,6 +80,7 @@ constructNode plan coveringNode = let
         Just n  -> return n
         Nothing -> otherAction
     myCycleList = cycleOfNode coveringNode
+    myIndex = 0
     ancestors = map properlyAscendingPredecessor myCycleList
     myCycle = V.fromList myCycleList
     planVector = V.map (maybe (error "node should be in map of plans") id . (\a -> WordMap.lookup a plan) . address) myCycle
@@ -84,20 +88,22 @@ constructNode plan coveringNode = let
     liftingsOfCycle = childCycles inDom coveringNode
     fatTentacles = map reverse liftingsOfCycle
     --wrapTentacle tentacle = undefined
-    -- need to find index where the parent of the beginning is identical to the covering node of myCycle
+    -- need to find index where the parent of the beginning is identical to the covering node in myCycle
     -- loop away from this index (in parallel in myCycle and the tentacle) and lookup the nodes in the tentacle in the constructed wordmap that is part of the monad. combine the found node with the element that is part of the fat Vector at this index.
   in lookupNodeWrapper $ do
     -- Make sure that the ancestor of all nodes on the cycle have been completely wrapped.
     mapM_ (constructNode plan) ancestors
     fatVector <- lift $ wrapSpiral planVector
+    fatterVector <- foldM (wrapTentacle myCycle) fatVector fatTentacles
 
     -- wrap up all the childCycles
 
     -- TODO: The following two lines could be improved
     constructed <- get
     put $ V.ifoldl (\m i node -> WordMap.insert (address (myCycle V.! i)) node m)
-                   constructed fatVector
-    return 32
+                   constructed fatterVector
+    return (assert ((myCycle V.! myIndex) == coveringNode) 
+                   (fatterVector V.! myIndex))
 
 wrapSpiral :: (V.Vector (Spoke x)) -> State (LiftedGraph x) (V.Vector Int)
 wrapSpiral spokes = do
@@ -113,5 +119,10 @@ wrapSpiral spokes = do
                 helper (distance + 1) improved
     in helper 1 (V.map (emb . hub) spokes)
 
---wrapSpiral :: Vec.Vector (Spoke x) -> State (LiftedGraph x) (Vec.Vector Int)
---wrapSpiral _ = undefined
+wrapTentacle :: V.Vector CoveringNode -> V.Vector Int -> [CoveringNode]
+                -> StateT (WordMap Int) (State (LiftedGraph x)) (V.Vector Int) 
+wrapTentacle cycle fatVector tentacle = let
+    startIndex = fromMaybe (error "tentacle does not seem to match the cycle")
+                           (V.findIndex (== parent (head tentacle)) cycle)
+    turningVector = TV.fromVectorWithIndex startIndex fatVector
+  in undefined

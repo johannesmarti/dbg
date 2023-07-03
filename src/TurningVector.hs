@@ -1,9 +1,11 @@
 module TurningVector (
+  fromVectorWithIndex,
   fromList,
   toList,
   turnForward,
   turnBackward,
   at,
+  zipWithList,
 ) where
 
 import Control.Exception.Base (assert)
@@ -37,3 +39,21 @@ turnBackward tv = TurningVector (ix tv (-1)) (vector tv)
 
 at :: TurningVector x -> Int -> x
 at tv i = (vector tv) V.! (ix tv i)
+
+zipWithList :: (x -> a -> x) -> TurningVector x -> [a] -> TurningVector x
+zipWithList f (TurningVector o vec) list = let
+    (before, after) = V.splitAt o vec
+    batchLength = V.length after
+    (batch,tail) = splitAt batchLength list
+  in undefined
+
+zipVectorWithList :: (x -> a -> x) -> V.Vector x -> [a] -> V.Vector x
+zipVectorWithList f vec list = let
+    n = V.length vec
+    (batch,tail) = splitAt n list
+    batchVector = V.fromList batch
+    batchLength = V.length batchVector
+  in if batchLength < n
+       then let (toProcess, rest) = V.splitAt batchLength vec
+            in (V.zipWith f toProcess batchVector) V.++ rest
+       else zipVectorWithList f (V.zipWith f vec batchVector) tail
