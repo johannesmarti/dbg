@@ -4,7 +4,7 @@ module Main (
 
 --import System.Environment 
 
-import Patterns
+import Examples.Patterns
 import LabeledGraph
 import Report
 

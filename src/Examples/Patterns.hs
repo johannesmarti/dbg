@@ -1,4 +1,4 @@
-module Patterns (
+module Examples.Patterns (
   triple,
   hamburger, hamburgerI,
   force2d,

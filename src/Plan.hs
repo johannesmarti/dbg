@@ -9,8 +9,6 @@ module Plan (
   wrapSpiral,
 ) where
 
-import Debug.Trace
-
 -- TODO: Should we use the strict or the lazy state monad? Need to read up!
 import Control.Exception.Base (assert)
 import Control.Monad.State.Lazy
@@ -69,11 +67,11 @@ insert = WordMap.insert
 executePlan :: Ord x => LabeledGraphI g x -> g -> Plan x -> (LiftedGraph x, Int)
 executePlan gi g plan = (lg,dsl) where
   liftedGraph = LiftedGraph.fromLGraph gi g
-  ((dsl,_),lg) = runState (runStateT lastStuff WordMap.empty) liftedGraph
-  lastStuff = do zi <- constructNode plan zero
-                 oz <- constructNode plan one
-                 doubleSelfLoop <- lift $ LiftedGraph.combine zi oz
-                 return doubleSelfLoop
+  ((dsl,_),lg) = runState (runStateT lastNode WordMap.empty) liftedGraph
+  lastNode = do zi <- constructNode plan zero
+                oz <- constructNode plan one
+                doubleSelfLoop <- lift $ LiftedGraph.combine zi oz
+                return doubleSelfLoop
 
 constructNode :: Ord x => Plan x -> CoveringNode
                           -> StateT (WordMap Int) (State (LiftedGraph x)) Int
@@ -94,9 +92,8 @@ constructNode plan coveringNode = let
                              Nothing -> True
     constructCounterPoint node =
         when (needsCounterPoint node)
-             (trace ("need counterpoint for: " ++ show node)
-                    (do constructNode plan (properlyAscendingPredecessor node)
-                        return ()))
+             (do constructNode plan (properlyAscendingPredecessor node)
+                 return ())
     myCycle = V.fromList myCycleList
     planVector = V.map ((\a -> WordMap.forceLookup a plan) . address) myCycle
     inDom cn = inDomain (address cn) plan
@@ -105,7 +102,6 @@ constructNode plan coveringNode = let
     pairNodes cn = do intNode <- constructNode plan cn
                       return (cn, intNode)
   in lookupNodeWrapper $ do
-    trace ("on spiral: " ++ show myCycleList) $ return ()
     -- Make sure that the counterpoints of all nodes on the cycle have been completely wrapped up.
     mapM_ constructCounterPoint myCycleList
     fatVector <- lift $ wrapSpiral planVector
@@ -143,5 +139,5 @@ wrapTentacle cycle fatVector tentacle = let
                            (V.findIndex (== parent (fst . head $ tentacle)) cycle)
     turningVector = TV.fromVectorWithIndex startIndex fatVector
     operation fatNode (cn,cni) = LiftedGraph.combine fatNode cni
-  in do tv <- TV.zipWithListM operation turningVector tentacle
+  in do tv <- TV.zipReverseWithListM operation turningVector tentacle
         return (TV.vector tv)

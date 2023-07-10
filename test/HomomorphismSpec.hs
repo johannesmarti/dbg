@@ -9,7 +9,7 @@ import DeBruijnGraph
 import LabeledGraph
 import CommonLGraphTypes
 import Homomorphism
-import Patterns
+import Examples.Patterns
 
 spec :: Spec
 spec = do

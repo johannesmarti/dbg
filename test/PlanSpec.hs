@@ -8,24 +8,12 @@ import qualified Data.Map.Strict as Map
 import Control.Monad.State.Lazy
 import qualified Data.Vector as V
 
-import Patterns
+import Examples.Patterns
+import Examples.Plans
 import Plan
 import Label
 import LabeledGraph
 import LiftedGraph
-
-force3dPlan :: Plan Char
-force3dPlan =
-  insert [Zero] (spoke 'a' []) $
-  insert [One] (spoke 'b' []) $
-  insert [Zero,One] (spoke 'a' [('b', 1)]) $
-  insert [One,Zero] (spoke 'c' []) $
-  insert [Zero,One,One] (spoke 'b' []) $
-  insert [Zero,One,One,Zero] (spoke 'c' []) $
-  insert [Zero,One,One,Zero,One] (spoke 'a' []) $
-  insert [One,Zero,Zero] (spoke 'a' []) $
-  insert [One,Zero,Zero,One] (spoke 'b' []) $
-  insert [One,Zero,Zero,One,Zero] (spoke 'c' []) $ empty
 
 spec :: Spec
 spec = do
@@ -48,6 +36,12 @@ spec = do
   let (lg,dsl) = executePlan force3dI force3d force3dPlan
   let ig = graph lg
   describe "executing plan on force3d" $ do
+    it "is generating double self loop" $
+      (hasArc intGraphI ig Zero (dsl,dsl) &&
+       hasArc intGraphI ig One (dsl,dsl)) `shouldBe` True
+  let (lg,dsl) = executePlan alloc3I alloc3 alloc3Plan
+  let ig = graph lg
+  describe "executing plan on alloc3" $ do
     it "is generating double self loop" $
       (hasArc intGraphI ig Zero (dsl,dsl) &&
        hasArc intGraphI ig One (dsl,dsl)) `shouldBe` True

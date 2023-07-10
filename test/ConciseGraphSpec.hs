@@ -5,7 +5,7 @@ module ConciseGraphSpec (
 import Test.Hspec
 
 import ConciseGraph
-import Patterns
+import Examples.Patterns
 
 spec :: Spec
 spec = do

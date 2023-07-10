@@ -2,7 +2,7 @@ module Main (
   main
 ) where
 
-import Game
+import Examples.Games
 
 main :: IO ()
 main = game

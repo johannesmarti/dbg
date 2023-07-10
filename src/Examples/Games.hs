@@ -1,4 +1,4 @@
-module Game (
+module Examples.Games (
   game,
   gameEx5,
   gameForce5d,
@@ -29,7 +29,7 @@ import ConciseGraph
 import DeBruijnGraph
 import LiftedGraph
 import Report
-import Patterns
+import Examples.Patterns
 import Bitable
 
 import Label

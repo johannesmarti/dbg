@@ -10,7 +10,7 @@ import ArcCons
 import DeBruijnGraph
 import LabeledGraph
 import CommonLGraphTypes
-import Patterns
+import Examples.Patterns
 
 spec :: Spec
 spec = do

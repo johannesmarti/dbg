@@ -6,7 +6,7 @@ import System.Environment
 import Data.Set as Set
 
 import Report
-import Patterns
+import Examples.Patterns
 import Label
 import LabeledGraph
 import DeBruijnGraph

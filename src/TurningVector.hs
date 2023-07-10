@@ -8,6 +8,7 @@ module TurningVector (
   at,
   zipWithList,
   zipWithListM,
+  zipReverseWithListM,
 ) where
 
 import Debug.Trace
@@ -31,6 +32,9 @@ fromList l = fromVectorWithIndex 0 (V.fromList l)
 toList :: TurningVector x -> [x]
 toList (TurningVector o v) = V.toList after ++ V.toList before where
   (before, after) = V.splitAt o v
+
+reverse :: TurningVector x -> TurningVector x
+reverse (TurningVector o v) = TurningVector (V.length v - o - 1) (V.reverse v)
 
 ix :: TurningVector x -> Int -> Int
 ix (TurningVector o v) i = (o + i) `mod` V.length v
@@ -67,6 +71,13 @@ zipVectorWithList f vec list = let
        then let (toProcess, rest) = V.splitAt batchLength vec
             in (V.zipWith f toProcess batchVector) V.++ rest
        else zipVectorWithList f (V.zipWith f vec batchVector) tail
+
+-- TODO: This function should maybe be implemented properly!
+zipReverseWithListM :: Monad m => (x -> a -> m x) -> TurningVector x -> [a]
+                               -> m (TurningVector x)
+zipReverseWithListM f input list = do
+  reverseOutput <- zipWithListM f (TurningVector.reverse input) list
+  return (TurningVector.reverse reverseOutput)
 
 zipWithListM :: Monad m => (x -> a -> m x) -> TurningVector x -> [a]
                            -> m (TurningVector x)

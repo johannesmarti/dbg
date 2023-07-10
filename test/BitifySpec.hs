@@ -9,7 +9,7 @@ import Test.Hspec
 import BitGraph
 import Bitify
 import LabeledGraph
-import Patterns
+import Examples.Patterns
 import CommonLGraphTypes
 import LWrappedGraph
 

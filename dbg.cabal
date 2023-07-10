@@ -35,8 +35,10 @@ library
       CoveringGraph
       DeBruijnGraph
       DeterminismProperty
+      Examples.Games
+      Examples.Patterns
+      Examples.Plans
       Function
-      Game
       Graph
       Homomorphism
       Label
@@ -50,7 +52,6 @@ library
       PairGraph
       Path
       PathTree
-      Patterns
       Plan
       Pretty
       Range

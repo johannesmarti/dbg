@@ -6,7 +6,7 @@ import Test.Hspec
 
 import Bitable
 import CayleyGraph
-import Patterns
+import Examples.Patterns
 
 spec :: Spec
 spec = do

@@ -9,7 +9,7 @@ import Test.Hspec
 import DeBruijnGraph
 import LabeledGraph
 import ConciseGraph
-import Patterns
+import Examples.Patterns
 import CommonLGraphTypes
 import DeterminismProperty
 
