@@ -38,6 +38,7 @@ library
       Examples.Games
       Examples.Patterns
       Examples.Plans
+      ExecutePlan
       Function
       Graph
       Homomorphism
