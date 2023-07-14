@@ -7,10 +7,10 @@ import Data.Set
 import Test.Hspec
 
 import DeBruijnGraph
-import LabeledGraph
+import LabeledGraphInterface
 import ConciseGraph
 import Examples.Patterns
-import CommonLGraphTypes
+import CommonLabeledGraphTypes
 import DeterminismProperty
 
 
@@ -37,34 +37,34 @@ spec = do
       pt `shouldSatisfy` isTrivial
   describe "is strictly construction deterministic" $ do
     it "strictDet" $
-      strictDet `shouldSatisfy` (isStrictlyConstructionDeterministic lMapGraphI)
+      strictDet `shouldSatisfy` (isStrictlyConstructionDeterministic labeledMapGraphInterface)
   describe "is not strictly construction deterministic" $ do
     it "dbg 3" $
-      (dbg 3) `shouldSatisfy` (not . isStrictlyConstructionDeterministic dbgI)
+      (dbg 3) `shouldSatisfy` (not . isStrictlyConstructionDeterministic dbgInterface)
     it "force3d" $
-      force3d `shouldSatisfy` (not . isStrictlyConstructionDeterministic lMapGraphI)
+      force3d `shouldSatisfy` (not . isStrictlyConstructionDeterministic labeledMapGraphInterface)
     it "hamburger" $
-      hamburger `shouldSatisfy` (not . isStrictlyConstructionDeterministic lMapGraphI)
+      hamburger `shouldSatisfy` (not . isStrictlyConstructionDeterministic labeledMapGraphInterface)
     it "strange3" $
-      strange3 `shouldSatisfy` (not . isStrictlyConstructionDeterministic lMapGraphI)
+      strange3 `shouldSatisfy` (not . isStrictlyConstructionDeterministic labeledMapGraphInterface)
     it "4003476 of size 4" $
-      4003476 `shouldSatisfy` (not . isStrictlyConstructionDeterministic (conciseGraphI 4))
+      4003476 `shouldSatisfy` (not . isStrictlyConstructionDeterministic (conciseGraphInterface 4))
   describe "is strongly construction determinism" $ do
     it "hamburger" $
-      hamburger `shouldSatisfy` (isStronglyConstructionDeterministic lMapGraphI)
+      hamburger `shouldSatisfy` (isStronglyConstructionDeterministic labeledMapGraphInterface)
     it "strange3" $
-      strange3 `shouldSatisfy` (isStronglyConstructionDeterministic lMapGraphI)
+      strange3 `shouldSatisfy` (isStronglyConstructionDeterministic labeledMapGraphInterface)
   describe "is not strongly construction deterministic" $ do
     it "dbg 1" $
-      (dbg 1) `shouldSatisfy` (not . isStronglyConstructionDeterministic dbgI)
+      (dbg 1) `shouldSatisfy` (not . isStronglyConstructionDeterministic dbgInterface)
     it "dbg 3" $
-      (dbg 3) `shouldSatisfy` (not . isStronglyConstructionDeterministic dbgI)
+      (dbg 3) `shouldSatisfy` (not . isStronglyConstructionDeterministic dbgInterface)
     it "force3d" $
-      force3d `shouldSatisfy` (not . isStronglyConstructionDeterministic lMapGraphI)
+      force3d `shouldSatisfy` (not . isStronglyConstructionDeterministic labeledMapGraphInterface)
     it "slowFourConcise" $
-      slowFourConcise `shouldSatisfy` (not . isStronglyConstructionDeterministic (conciseGraphI 4))
+      slowFourConcise `shouldSatisfy` (not . isStronglyConstructionDeterministic (conciseGraphInterface 4))
     it "slowLifting" $
-      slowLifting `shouldSatisfy` (not . isStronglyConstructionDeterministic slowLiftingI)
+      slowLifting `shouldSatisfy` (not . isStronglyConstructionDeterministic slowLiftingInterface)
   describe "antichain is working" $ do
     let dom = fromList [1,2,3,4]
     let sA = singletonChain dom
@@ -113,31 +113,31 @@ spec = do
         top `shouldSatisfy` (isTotal dom)
   describe "is construction deterministic" $ do
     it "hamburger" $
-      hamburger `shouldSatisfy` (isConstructionDeterministic lMapGraphI)
+      hamburger `shouldSatisfy` (isConstructionDeterministic labeledMapGraphInterface)
     it "strange3" $
-      strange3 `shouldSatisfy` (isConstructionDeterministic lMapGraphI)
+      strange3 `shouldSatisfy` (isConstructionDeterministic labeledMapGraphInterface)
     it "slowLifting" $
-      slowLifting `shouldSatisfy` (isConstructionDeterministic slowLiftingI)
+      slowLifting `shouldSatisfy` (isConstructionDeterministic slowLiftingInterface)
     it "half celtic" $
-      halfCeltic `shouldSatisfy` (isConstructionDeterministic lMapGraphI)
+      halfCeltic `shouldSatisfy` (isConstructionDeterministic labeledMapGraphInterface)
     it "allPaths" $
-      allPaths`shouldSatisfy` (isConstructionDeterministic lMapGraphI)
+      allPaths`shouldSatisfy` (isConstructionDeterministic labeledMapGraphInterface)
     it "complicatedNeg" $
-      complicatedNeg `shouldSatisfy` (isConstructionDeterministic lMapGraphI)
+      complicatedNeg `shouldSatisfy` (isConstructionDeterministic labeledMapGraphInterface)
     it "slowFourConcise" $
-      slowFourConcise `shouldSatisfy` (isConstructionDeterministic (conciseGraphI 4))
+      slowFourConcise `shouldSatisfy` (isConstructionDeterministic (conciseGraphInterface 4))
     it "slowLifting" $
-      slowLifting `shouldSatisfy` (isConstructionDeterministic slowLiftingI)
+      slowLifting `shouldSatisfy` (isConstructionDeterministic slowLiftingInterface)
   describe "is not construction deterministic" $ do
     it "dbg 1" $
-      (dbg 1) `shouldSatisfy` (not . isConstructionDeterministic dbgI)
+      (dbg 1) `shouldSatisfy` (not . isConstructionDeterministic dbgInterface)
     it "dbg 3" $
-      (dbg 3) `shouldSatisfy` (not . isConstructionDeterministic dbgI)
+      (dbg 3) `shouldSatisfy` (not . isConstructionDeterministic dbgInterface)
     it "force3d" $
-      force3d `shouldSatisfy` (not . isConstructionDeterministic lMapGraphI)
+      force3d `shouldSatisfy` (not . isConstructionDeterministic labeledMapGraphInterface)
     it "celtic" $
-      celtic `shouldSatisfy` (not . isConstructionDeterministic lMapGraphI)
+      celtic `shouldSatisfy` (not . isConstructionDeterministic labeledMapGraphInterface)
     it "complicatedPos" $
-      complicatedPos `shouldSatisfy` (not . isConstructionDeterministic lMapGraphI)
+      complicatedPos `shouldSatisfy` (not . isConstructionDeterministic labeledMapGraphInterface)
     it "noPath" $
-      noPath `shouldSatisfy` (not . isConstructionDeterministic noPathI)
+      noPath `shouldSatisfy` (not . isConstructionDeterministic noPathInterface)

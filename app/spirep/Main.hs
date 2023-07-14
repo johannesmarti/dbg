@@ -11,7 +11,7 @@ import Data.Label
 import Spiral
 import ConstructionGraph
 import DeBruijnGraph
-import LabeledGraph
+import LabeledGraphInterface
 
 import qualified HomomorphismSearch.SmartSearch as SS
 
@@ -23,12 +23,12 @@ main :: IO ()
 --(gi, g) = (alloc3I,alloc3)
 --(gi, g) = (big5I,big5)
 --(gi, g) = (force9dI,force9d)
-(gi, g) = (force6dI,force6d)
+(gi, g) = (force6dInterface,force6d)
 --(gi, g) = (b1ef5I,b1ef5)
 --(gi, g) = (specialUnfoldI,specialUnfold)
 --(gi, g) = (biggestI,biggest)
 --(gi, g) = (hamburgerI,hamburger)
-pgi = powerGraphI gi
+pgi = powerGraphInterface gi
 main = do
   putStr . unlines $ prettyLabeledGraph gi g
   putChar '\n'

@@ -1,6 +1,6 @@
 module Bitify (
-  BityGraph, bityGraphI,
-  LBityGraph, lBityGraphI,
+  BityGraph, bityGraphInterface,
+  LabeledBityGraph, labeledBityGraphInterface,
   bitify,
   labeledBitify,
   toConcise,
@@ -10,49 +10,49 @@ import Control.Exception.Base
 import Data.List (maximumBy)
 import qualified Data.Set as Set
 
-import CommonLGraphTypes
+import CommonLabeledGraphTypes
 import BitGraph
 import Coding
 import ConciseGraph
-import Graph
-import LabeledGraph
+import GraphInterface
+import LabeledGraphInterface as LGI
 import WrappedGraph
-import LWrappedGraph
+import LabeledWrappedGraph
 import PairGraph
 
 type BityGraph x = WrappedGraph BitGraph Node x
-type LBityGraph x = LWrappedGraph LBitGraph Node x
+type LabeledBityGraph x = LabeledWrappedGraph LabeledBitGraph Node x
 
-bityGraphI :: Ord x => Size -> GraphI (BityGraph x) x
-bityGraphI s = wrappedGraphI (bitGraphI s)
+bityGraphInterface :: Ord x => Size -> GraphInterface (BityGraph x) x
+bityGraphInterface s = wrappedGraphInterface (bitGraphInterface s)
 
-lBityGraphI :: Ord x => Size -> LabeledGraphI (LBityGraph x) x
-lBityGraphI s = lWrappedGraphI (lBitGraphI s)
+labeledBityGraphInterface :: Ord x => Size -> LabeledGraphInterface (LabeledBityGraph x) x
+labeledBityGraphInterface s = labeledWrappedGraphInterface (labeledBitGraphInterface s)
 
-bitify :: Ord x => GraphI g x -> g -> (BityGraph x, Size)
+bitify :: Ord x => GraphInterface g x -> g -> (BityGraph x, Size)
 bitify gi g = (wrappedGraph,size) where
   wrappedGraph = WrappedGraph bg c printer
   bg = BitGraph.fromArcs size newArcs
-  oldDom = Graph.domain gi g
+  oldDom = GraphInterface.domain gi g
   c = codeSet oldDom
-  printer = Graph.prettyNode gi g
+  printer = GraphInterface.prettyNode gi g
   size = Set.size oldDom
-  newArcs = map enc (Graph.arcs gi g)
+  newArcs = map enc (GraphInterface.arcs gi g)
   enc (u,v) = (encode c u, encode c v)
 
-labeledBitify :: Ord x => LabeledGraphI g x -> g -> (LBityGraph x, Size)
+labeledBitify :: Ord x => LabeledGraphInterface g x -> g -> (LabeledBityGraph x, Size)
 labeledBitify gi g = (wrappedGraph, size) where
-  wrappedGraph = LWrappedGraph lbg c printer
+  wrappedGraph = LabeledWrappedGraph lbg c printer
   bitGraphPerLabel l = BitGraph.fromArcs size (newArcs l)
   lbg = PairGraph.fromFunction bitGraphPerLabel
-  oldDom = LabeledGraph.domain gi g
+  oldDom = LGI.domain gi g
   c = codeSet oldDom
-  printer = LabeledGraph.prettyNode gi g
+  printer = LGI.prettyNode gi g
   size = Set.size oldDom
-  newArcs l = map enc (LabeledGraph.arcsOfLabel gi g l)
+  newArcs l = map enc (LGI.arcsOfLabel gi g l)
   enc (u,v) = (encode c u, encode c v)
 
-toConcise :: Ord x => LabeledGraphI g x -> g -> (Size, ConciseGraph)
+toConcise :: Ord x => LabeledGraphInterface g x -> g -> (Size, ConciseGraph)
 toConcise gi g = (s,cg) where
   (wg,s) = labeledBitify gi g
-  cg = fromLBitGraph s (LWrappedGraph.innerGraph wg)
+  cg = fromLabeledBitGraph s (LabeledWrappedGraph.innerGraph wg)

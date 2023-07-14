@@ -30,7 +30,7 @@ import DeBruijnGraph
 import LiftedGraph
 import Report
 import Examples.Patterns
-import Bitable
+import BitableInterface
 
 import Data.Label
 import Spiral
@@ -47,7 +47,7 @@ gameEx5 = let
       combine 10 13
       combine 2 11
       combine 14 15
-    lifting = execState combiner (fromLGraph ex5I ex5)
+    lifting = execState combiner (fromLabeledGraph ex5Interface ex5)
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
   in do
@@ -62,7 +62,7 @@ gameForce5d = let
       combine 0 3
       combine 4 6
       combine 5 7
-    lifting = execState combiner (fromLGraph force5dI force5d')
+    lifting = execState combiner (fromLabeledGraph force5dInterface force5d')
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
   in do
@@ -82,7 +82,7 @@ gameForce4d = let
       combine 4 6
 
       return ()
-    lifting = execState combiner (fromLGraph force4dI force4d')
+    lifting = execState combiner (fromLabeledGraph force4dInterface force4d')
     ig = graph lifting
     allCans = liftableCandidates ig
     cans = filter (weakDominationFilter ig) allCans
@@ -116,7 +116,7 @@ gameSlowSquare = let
       combine 6 11 -- gives 13 for 10
       combine 12 13
       return ()
-    lifting = execState combiner (fromLGraph slowSquareI slowSquare)
+    lifting = execState combiner (fromLabeledGraph slowSquareInterface slowSquare)
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
@@ -138,7 +138,7 @@ gameDifficult = let
       combine 5 10
       combine 6 11
       return ()
-    lifting = execState combiner (fromLGraph difficultI difficult)
+    lifting = execState combiner (fromLabeledGraph difficultInterface difficult)
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
   in do
@@ -176,7 +176,7 @@ gameBiggest = let
       combine 24 26 -- gives 27 for 0
       combine 25 27 -- gives double self loop!!
       return ()
-    lifting = execState combiner (fromLGraph biggestI biggest)
+    lifting = execState combiner (fromLabeledGraph biggestInterface biggest)
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
@@ -197,7 +197,7 @@ gameUnsound = let
       combine 4 8 -- gives 9 for 0
       combine 6 9 -- gives double self-loop
       return ()
-    lifting = execState combiner (fromLGraph unsoundI unsound)
+    lifting = execState combiner (fromLabeledGraph unsoundInterface unsound)
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
@@ -214,7 +214,7 @@ gameEx3 = let
       combine 2 6
       combine 5 7
       return ()
-    lifting = execState combiner (fromLGraph ex3I ex3)
+    lifting = execState combiner (fromLabeledGraph ex3Interface ex3)
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
@@ -260,7 +260,7 @@ gameAlsoBig = let
       combine 29 30
 
       return ()
-    lifting = execState combiner (fromLGraph alsoBigI alsoBig)
+    lifting = execState combiner (fromLabeledGraph alsoBigInterface alsoBig)
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
@@ -313,7 +313,7 @@ gameTentje = let
       combine 33 36 -- is 37
 
       return ()
-    lifting = execState combiner (fromLGraph (conciseGraphI 4) 3372361817)
+    lifting = execState combiner (fromLabeledGraph (conciseGraphInterface 4) 3372361817)
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
@@ -333,7 +333,7 @@ gameForce6d = let
       combine 0 2
 
       return ()
-    lifting = execState combiner (fromLGraph force6dI force6d)
+    lifting = execState combiner (fromLabeledGraph force6dInterface force6d)
     ig = graph lifting
     allCans = liftableCandidates ig
     cans = filter (weakDominationFilter ig) allCans
@@ -360,7 +360,7 @@ gameForce7d = let
       combine 5 9
 
       return ()
-    lifting = execState combiner (fromLGraph force7dI force7d)
+    lifting = execState combiner (fromLabeledGraph force7dInterface force7d)
     ig = graph lifting
     allCans = liftableCandidates ig
     cans = filter (weakDominationFilter ig) allCans
@@ -382,7 +382,7 @@ gameAlloc1 = let
       combine 0 2
       combine 3 4
       return ()
-    lifting = execState combiner (fromLGraph alloc1I alloc1)
+    lifting = execState combiner (fromLabeledGraph alloc1Interface alloc1)
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
@@ -405,28 +405,28 @@ gameAlloc2 = let
       combine 4 7
       combine 5 8
       return ()
-    lifting = execState combiner (fromLGraph alloc2I alloc2)
+    lifting = execState combiner (fromLabeledGraph alloc2Interface alloc2)
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
   in do
     putStrLn $ unlines $ prettyLiftedGraph lifting
     putChar '\n'
-    print $ Spiral.fromHub intGraphI ig [Zero] [2]
+    print $ Spiral.fromHub intGraphInterface ig [Zero] [2]
     putChar '\n'
-    print $ Spiral.fromHub intGraphI ig [One] [1]
+    print $ Spiral.fromHub intGraphInterface ig [One] [1]
     putChar '\n'
-    print $ Spiral.fromHub intGraphI ig [Zero,One] [0,1]
+    print $ Spiral.fromHub intGraphInterface ig [Zero,One] [0,1]
     putChar '\n'
-    print $ Spiral.fromHub intGraphI ig [Zero,Zero,One] [0,2,1]
+    print $ Spiral.fromHub intGraphInterface ig [Zero,Zero,One] [0,2,1]
     putChar '\n'
-    print $ Spiral.fromHub intGraphI ig [Zero,One,One] [0,1,1]
+    print $ Spiral.fromHub intGraphInterface ig [Zero,One,One] [0,1,1]
     putChar '\n'
-    print $ Spiral.fromHub intGraphI ig [Zero,Zero,Zero,One] [1,0,2,1]
+    print $ Spiral.fromHub intGraphInterface ig [Zero,Zero,Zero,One] [1,0,2,1]
     putChar '\n'
-    print $ Spiral.fromHub intGraphI ig [Zero,Zero,One,One] [0,2,1,1]
+    print $ Spiral.fromHub intGraphInterface ig [Zero,Zero,One,One] [0,2,1,1]
     putChar '\n'
-    print $ Spiral.fromHub intGraphI ig [Zero,One,One,One] [0,1,1,1]
+    print $ Spiral.fromHub intGraphInterface ig [Zero,One,One,One] [0,1,1,1]
     putChar '\n'
     --mapM_ (\c -> putStrLn (prettyCanWithArcs c) >> putChar '\n') cans
     --mapM_ (putStrLn . prettyCandidate) cans
@@ -444,7 +444,7 @@ gameAlloc3 = let
       combine 4 8 -- 9 for 0
       combine 5 9 
       return ()
-    lifting = execState combiner (fromLGraph alloc3I alloc3)
+    lifting = execState combiner (fromLabeledGraph alloc3Interface alloc3)
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
@@ -461,7 +461,7 @@ gameIssues = let
       combine 0 2
       combine 6 7
       return ()
-    lifting = execState combiner (fromLGraph issuesI issues)
+    lifting = execState combiner (fromLabeledGraph issuesInterface issues)
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
@@ -483,7 +483,7 @@ gameForce9d = let
       combine 5 10 -- 11
       combine 6 11 -- done
       return ()
-    lifting = execState combiner (fromLGraph force9dI force9d)
+    lifting = execState combiner (fromLabeledGraph force9dInterface force9d)
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
@@ -508,7 +508,7 @@ gameDbg3 = let
 
       combine 12 13
       return ()
-    lifting = execState combiner (fromLGraph dbgI (dbg 3))
+    lifting = execState combiner (fromLabeledGraph dbgInterface (dbg 3))
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
@@ -543,7 +543,7 @@ gameDbg4 = let
 
       combine 26 29
       return ()
-    lifting = execState combiner (fromLGraph dbgI (dbg 4))
+    lifting = execState combiner (fromLabeledGraph dbgInterface (dbg 4))
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
@@ -602,7 +602,7 @@ gameDbg5 = let
       combine d0 d1
 
       return ()
-    lifting = execState combiner (fromLGraph dbgI (dbg 5))
+    lifting = execState combiner (fromLabeledGraph dbgInterface (dbg 5))
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
@@ -701,7 +701,7 @@ gameDbg6 = let
       combine e0 e1 -- 130
 
       return ()
-    lifting = execState combiner (fromLGraph dbgI (dbg 6))
+    lifting = execState combiner (fromLabeledGraph dbgInterface (dbg 6))
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
@@ -773,7 +773,7 @@ gameBig5 = let
 
       combine b0 e1 -- solved!!!
       return ()
-    lifting = execState combiner (fromLGraph big5I big5)
+    lifting = execState combiner (fromLabeledGraph big5Interface big5)
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
@@ -827,10 +827,8 @@ gameStudy = let
 
       --c011 <- combine 4 b011
 
-
-
       return ()
-    lifting = execState combiner (fromLGraph big5I big5)
+    lifting = execState combiner (fromLabeledGraph big5Interface big5)
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans

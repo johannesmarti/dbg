@@ -11,7 +11,7 @@ import Control.Exception.Base ( assert )
 import qualified Data.Set as Set
 
 import RelationCache
-import Graph
+import GraphInterface
 import Data.Label
 import qualified Data.Path as Path
 

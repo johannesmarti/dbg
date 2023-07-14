@@ -3,7 +3,7 @@ module Main (
 ) where
 
 import CoveringGraph
-import Label
+import Data.Label
 import Word
 
 a :: [Label]

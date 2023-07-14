@@ -2,13 +2,13 @@ module BitGraph (
   BitGraph,
   Node,
   Size,
-  bitGraphI,
+  bitGraphInterface,
   fromArcs,
   nodes,
   nodesSet,
   succsAsList,
   predsAsList,
-  allGraphsOfSize,
+  allabeledGraphsOfSize,
   hasBitForArc,
   nullWord,
   totalGraph,
@@ -31,14 +31,14 @@ import Control.Exception.Base
 import Data.Bits
 import qualified Data.Set as Set
 
-import Graph
+import GraphInterface
 
 type BitGraph = Integer
 type Node = Int
 type Size = Int
 
-bitGraphI :: Size -> Graph.GraphI (BitGraph) Node
-bitGraphI size = interfaceFromHasArcPretty (dom size)
+bitGraphInterface :: Size -> GraphInterface BitGraph Node
+bitGraphInterface size = interfaceFromHasArcPretty (dom size)
                                            (hasBitForArc size)
                                            (\_ n -> show n) 
 
@@ -66,8 +66,8 @@ totalGraph :: Size -> BitGraph
 totalGraph size =
   (shiftL 1 (numBits size)) - 1
 
-allGraphsOfSize :: Size -> [BitGraph]
-allGraphsOfSize n = [nullWord .. totalGraph n]
+allabeledGraphsOfSize :: Size -> [BitGraph]
+allabeledGraphsOfSize n = [nullWord .. totalGraph n]
 
 isValidBitset :: Size -> BitGraph -> Bool
 isValidBitset size bitset = bitset <= totalGraph size

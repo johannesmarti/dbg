@@ -13,7 +13,7 @@ import Examples.Plans
 import Plan
 import ExecutePlan
 import Data.Label
-import LabeledGraph
+import LabeledGraphInterface
 import LiftedGraph
 
 spec :: Spec
@@ -23,26 +23,26 @@ spec = do
     let s010 = spoke 'c' [('a', 1), ('b', 3)]
     let s100 = spoke 'b' [('a', 1), ('c', 2)]
     let spokes = V.fromList [s001, s010, s100]
-    let lg = LiftedGraph.fromLGraph force3dI force3d
+    let lg = LiftedGraph.fromLabeledGraph force3dInterface force3d
     let (fatVec, extendedLg) = runState (wrapSpiral spokes) lg
     let ig = graph extendedLg
     let f001 = fatVec V.! 0
     let f010 = fatVec V.! 1
     let f100 = fatVec V.! 2
-    let ha = hasArc intGraphI ig
+    let ha = hasArc intGraphInterface ig
     it "fat 001 is in domain" $
-      f001 `elem` domain intGraphI ig `shouldBe` True
+      f001 `elem` domain intGraphInterface ig `shouldBe` True
     it "fat 001 0-> fat 010 0-> fat 100 1-> fat 001" $
       ha Zero (f001, f010) && ha Zero (f010, f100) && ha One (f100, f001) `shouldBe` True
-  let (lg,dsl) = executePlan force3dI force3d force3dPlan
+  let (lg,dsl) = executePlan force3dInterface force3d force3dPlan
   let ig = graph lg
   describe "executing plan on force3d" $ do
     it "is generating double self loop" $
-      (hasArc intGraphI ig Zero (dsl,dsl) &&
-       hasArc intGraphI ig One (dsl,dsl)) `shouldBe` True
-  let (lg,dsl) = executePlan alloc3I alloc3 alloc3Plan
+      (hasArc intGraphInterface ig Zero (dsl,dsl) &&
+       hasArc intGraphInterface ig One (dsl,dsl)) `shouldBe` True
+  let (lg,dsl) = executePlan alloc3Interface alloc3 alloc3Plan
   let ig = graph lg
   describe "executing plan on alloc3" $ do
     it "is generating double self loop" $
-      (hasArc intGraphI ig Zero (dsl,dsl) &&
-       hasArc intGraphI ig One (dsl,dsl)) `shouldBe` True
+      (hasArc intGraphInterface ig Zero (dsl,dsl) &&
+       hasArc intGraphInterface ig One (dsl,dsl)) `shouldBe` True

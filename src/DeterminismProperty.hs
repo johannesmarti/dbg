@@ -22,7 +22,7 @@ import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 
 import Data.FiniteFunction hiding (domain)
-import LabeledGraph
+import LabeledGraphInterface
 
 type Partition a = Function a a
 
@@ -51,7 +51,7 @@ identify partition x y = let
          then partition
          else Map.map modifier partition
 
-overlappingPairs :: (Ord x, Ord y) => LabeledGraphI g x -> g -> (x -> y) -> [(x,x)]
+overlappingPairs :: (Ord x, Ord y) => LabeledGraphInterface g x -> g -> (x -> y) -> [(x,x)]
 overlappingPairs gi g f = let
     pairs = ps (Set.toList (domain gi g))
     ps [] = []
@@ -60,14 +60,14 @@ overlappingPairs gi g f = let
     overlapOnLabel x y l = not . Set.null $ Set.map f (predecessors gi g l x) `Set.intersection` Set.map f (predecessors gi g l y)
   in Prelude.filter (uncurry overlappingConstruction) pairs
 
-isStrictlyConstructionDeterministic :: Ord x => LabeledGraphI g x -> g -> Bool
+isStrictlyConstructionDeterministic :: Ord x => LabeledGraphInterface g x -> g -> Bool
 isStrictlyConstructionDeterministic gi g = Prelude.null $ overlappingPairs gi g id
 
-isStronglyConstructionDeterministic :: Ord x => LabeledGraphI g x -> g -> Bool
+isStronglyConstructionDeterministic :: Ord x => LabeledGraphInterface g x -> g -> Bool
 isStronglyConstructionDeterministic gi g = not . isTrivial $
   deterministicPartition gi g
 
-deterministicPartition :: Ord x => LabeledGraphI g x -> g -> Partition x
+deterministicPartition :: Ord x => LabeledGraphInterface g x -> g -> Partition x
 deterministicPartition gi g = inner (discrete (domain gi g)) where
   inner partition = let
     overlappings = overlappingPairs gi g (representative partition)
@@ -107,7 +107,7 @@ addProposition prop antichain = assert (isRealAntichain antichain) $
           then antichain
           else Set.insert prop filtered
 
-isConstructionDeterministic :: Ord x => LabeledGraphI g x -> g -> Bool
+isConstructionDeterministic :: Ord x => LabeledGraphInterface g x -> g -> Bool
 isConstructionDeterministic gi g = not . (isTotal  (domain gi g)) $
   deterministicAntichain gi g
 
@@ -116,7 +116,7 @@ image set rel = foldl Set.union Set.empty listOfSets where
   list = Set.toList set
   listOfSets = map rel list
 
-deterministicAntichain :: Ord x => LabeledGraphI g x -> g -> Antichain x
+deterministicAntichain :: Ord x => LabeledGraphInterface g x -> g -> Antichain x
 deterministicAntichain gi g = inner (singletonChain (domain gi g)) where
   {- This code is somehow not perfect. We first filter out all the propositions that are covered in order to be able to detect later whether anything has added. But then if we add the propositions that are not covered the addProposition function still check again whether they are covered (by the somewhat bigger antichain where we now have all the previous new propostions already added. -}
   inner ac = let

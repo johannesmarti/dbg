@@ -1,13 +1,12 @@
 module WrappedGraph (
   WrappedGraph(..),
-  wrappedGraphI,
+  wrappedGraphInterface,
 ) where
 
 import qualified Data.Set as Set
 
 import Coding
-import Graph
-import Pretty
+import GraphInterface
 
 data WrappedGraph g x y = WrappedGraph {
   innerGraph      :: g,
@@ -15,8 +14,8 @@ data WrappedGraph g x y = WrappedGraph {
   prettyOuterNode :: y -> String
 }
 
-wrappedGraphI :: (Ord x, Ord y) => GraphI g x -> GraphI (WrappedGraph g x y) y
-wrappedGraphI innerI = interfaceFromAll dom succ pred hasAr ar prettyNode where
+wrappedGraphInterface :: (Ord x, Ord y) => GraphInterface g x -> GraphInterface (WrappedGraph g x y) y
+wrappedGraphInterface innerI = interfaceFromAll dom succ pred hasAr ar prettyNode where
   dom wg = Coding.domain (coding wg)
   succ (WrappedGraph ig c _) node = (decodeSet c) $
                                     successors innerI ig (encode c node)

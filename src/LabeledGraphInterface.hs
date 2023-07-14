@@ -1,13 +1,13 @@
-module LabeledGraph (
+module LabeledGraphInterface (
   Label(..),
   labels,
   Arc,
-  LabeledGraphI,
+  LabeledGraphInterface,
   MapFunction,
   domain, successors, predecessors, hasArc, arcs, arcsOfLabel, prettyNode,
-  interfaceFromAll,
-  interfaceFromSuccPredPretty,
-  interfaceFromHasArcPretty,
+  iFromAll,
+  iFromSuccPredPretty,
+  iFromHasArcPretty,
   converseI,
   noPredecessor,
   hasT1,
@@ -25,13 +25,12 @@ import Data.Set as Set
 import Data.Tuple (swap)
 
 import Data.Label
-import Pretty
-import Tools
+import PrettyNode
 
 
 type MapFunction x = Label -> x -> Set x
 
-data LabeledGraphI g x = LabeledGraphI {
+data LabeledGraphInterface g x = LabeledGraphInterface {
   domain       :: g -> Set x,
   successors   :: g -> MapFunction x,
   predecessors :: g -> MapFunction x,
@@ -40,10 +39,11 @@ data LabeledGraphI g x = LabeledGraphI {
   prettyNode   :: g -> x -> String
 }
 
-interfaceFromAll :: (g -> Set x) -> (g -> MapFunction x) -> (g -> MapFunction x)
-                    -> (g -> Label -> (x,x) -> Bool) -> (g -> Label -> [(x,x)])                     -> (g -> x -> String) -> LabeledGraphI g x
-interfaceFromAll dom succ pred hasAr ar pretty =
-  LabeledGraphI dom succ pred hasAr ar pretty
+iFromAll :: (g -> Set x) -> (g -> MapFunction x) -> (g -> MapFunction x)
+                    -> (g -> Label -> (x,x) -> Bool) -> (g -> Label -> [(x,x)])
+                    -> (g -> x -> String) -> LabeledGraphInterface g x
+iFromAll dom succ pred hasAr ar pretty =
+  LabeledGraphInterface dom succ pred hasAr ar pretty
 
 hasArcFromSucc :: Ord x => (g -> MapFunction x) -> g -> Label -> (x,x) -> Bool
 hasArcFromSucc succ g l (v,w) = w `Set.member` (succ g l v)
@@ -65,43 +65,43 @@ arcsFromHasArc dom hasAr g l = [(x,y) | x <- d, y <- d, hasAr g l (x,y)] where
   d = Set.toList $ dom g
 
 
-interfaceFromSuccPredPretty :: Ord x => (g -> Set x) -> (g -> MapFunction x)
-  -> (g -> MapFunction x) -> (g -> x -> String) -> LabeledGraphI g x
-interfaceFromSuccPredPretty dom succ pred pretty =
-  LabeledGraphI dom succ pred (hasArcFromSucc succ)
+iFromSuccPredPretty :: Ord x => (g -> Set x) -> (g -> MapFunction x)
+  -> (g -> MapFunction x) -> (g -> x -> String) -> LabeledGraphInterface g x
+iFromSuccPredPretty dom succ pred pretty =
+  LabeledGraphInterface dom succ pred (hasArcFromSucc succ)
                               (aOLFromSucc dom succ) pretty
 
-interfaceFromHasArcPretty :: Ord x => (g -> Set x)
-  -> (g -> Label -> (x,x) -> Bool) -> (g -> x -> String) -> LabeledGraphI g x
-interfaceFromHasArcPretty dom hasAr pretty =
-  LabeledGraphI dom (succFromHasArc dom hasAr) (predFromHasArc dom hasAr) hasAr (arcsFromHasArc dom hasAr) pretty
+iFromHasArcPretty :: Ord x => (g -> Set x)
+  -> (g -> Label -> (x,x) -> Bool) -> (g -> x -> String) -> LabeledGraphInterface g x
+iFromHasArcPretty dom hasAr pretty =
+  LabeledGraphInterface dom (succFromHasArc dom hasAr) (predFromHasArc dom hasAr) hasAr (arcsFromHasArc dom hasAr) pretty
 
-converseI :: LabeledGraphI g x -> LabeledGraphI g x
+converseI :: LabeledGraphInterface g x -> LabeledGraphInterface g x
 converseI gi = let
     hasAr g l arc = hasArc gi g l (swap arc)
     ars g l = Prelude.map swap (arcsOfLabel gi g l)
-  in LabeledGraphI (domain gi) (predecessors gi) (successors gi)
+  in LabeledGraphInterface (domain gi) (predecessors gi) (successors gi)
                    hasAr ars (prettyNode gi)
 
 
-arcs :: LabeledGraphI g x -> g -> [Arc x]
+arcs :: LabeledGraphInterface g x -> g -> [Arc x]
 arcs gi g = concatMap fromLabel labels where
   fromLabel l = Prelude.map (insert l) (arcsOfLabel gi g l) 
   insert l (x,y) = (x,l,y)
 
-noPredecessor :: Ord x => LabeledGraphI g x -> g -> x -> Bool
+noPredecessor :: Ord x => LabeledGraphInterface g x -> g -> x -> Bool
 noPredecessor gi g node = any (\l -> Prelude.null $ predecessors gi g l node) labels
 
-hasBothPredecessorDom :: Ord x => LabeledGraphI g x -> g -> Set x
+hasBothPredecessorDom :: Ord x => LabeledGraphInterface g x -> g -> Set x
 hasBothPredecessorDom gi g = Set.filter (\n -> not (noPredecessor gi g n)) (domain gi g)
 
-hasBothLoops :: Ord x => LabeledGraphI g x -> g -> x -> Bool
+hasBothLoops :: Ord x => LabeledGraphInterface g x -> g -> x -> Bool
 hasBothLoops gi g n = all (\l -> hasArc gi g l (n, n)) labels
 
-hasDoubleRefl :: Ord x => LabeledGraphI g x -> g -> Bool
+hasDoubleRefl :: Ord x => LabeledGraphInterface g x -> g -> Bool
 hasDoubleRefl gi g = any (hasBothLoops gi g) (domain gi g)
 
-hasT1 :: Ord x => LabeledGraphI g x -> g -> Bool
+hasT1 :: Ord x => LabeledGraphInterface g x -> g -> Bool
 hasT1 gi g = let
     dom = domain gi g
     isRefl l v = hasArc gi g l (v,v)
@@ -111,11 +111,11 @@ hasT1 gi g = let
     isConnected (z,o) = hasArc gi g Zero (z,o) && hasArc gi g One (o,z)
   in any isConnected pairs
 
-prettyLabeledGraph :: Ord x => LabeledGraphI g x -> g -> [String]
+prettyLabeledGraph :: Ord x => LabeledGraphInterface g x -> g -> [String]
 prettyLabeledGraph gi g = basePrinter gi printNode (stdPrintSet printNode) g where
   printNode = prettyNode gi g
 
-basePrinter :: Ord x => LabeledGraphI g x -> (x -> String) -> (Set x -> String) -> g -> [String]
+basePrinter :: Ord x => LabeledGraphInterface g x -> (x -> String) -> (Set x -> String) -> g -> [String]
 basePrinter gi printNode printSuccessors g = let
     succsForLabel v l lrep = " <" ++ lrep ++ " " ++
                              (printSuccessors (successors gi g l v))
@@ -123,26 +123,26 @@ basePrinter gi printNode printSuccessors g = let
                                   ++ succsForLabel v One "1"
   in Prelude.map lineForNode (Set.toList (domain gi g))
 
-prettyPredLabeledGraph :: Ord x => LabeledGraphI g x -> g -> [String]
+prettyPredLabeledGraph :: Ord x => LabeledGraphInterface g x -> g -> [String]
 prettyPredLabeledGraph gi g = basePredPrinter gi printNode (stdPrintSet printNode) g where
   printNode = prettyNode gi g
 
-basePredPrinter :: Ord x => LabeledGraphI g x -> (x -> String) -> (Set x -> String) -> g -> [String]
+basePredPrinter :: Ord x => LabeledGraphInterface g x -> (x -> String) -> (Set x -> String) -> g -> [String]
 basePredPrinter gi printNode printSuccessors g = let
     predsForLabel v l lrep = (printSuccessors (predecessors gi g l v)) ++ " <" ++ lrep ++ " "
     lineForNode v = predsForLabel v Zero "0"
                     ++ predsForLabel v One "1" ++ (printNode v)
   in Prelude.map lineForNode (Set.toList (domain gi g))
 
-prettyBigLabeledGraph :: Ord x => LabeledGraphI g x -> g -> [String]
+prettyBigLabeledGraph :: Ord x => LabeledGraphInterface g x -> g -> [String]
 prettyBigLabeledGraph gi g = baseBigPrinter gi printNode (stdPrintSet printNode) g where
   printNode = prettyNode gi g
 
-prettierBigLabeledGraph :: Ord x => LabeledGraphI g x -> g -> (x -> String) -> (x -> String) -> [String]
+prettierBigLabeledGraph :: Ord x => LabeledGraphInterface g x -> g -> (x -> String) -> (x -> String) -> [String]
 prettierBigLabeledGraph gi g printNode printNodeInSet =
   baseBigPrinter gi printNode (stdPrintSet printNodeInSet) g
 
-baseBigPrinter :: Ord x => LabeledGraphI g x -> (x -> String) -> (Set x -> String) -> g -> [String]
+baseBigPrinter :: Ord x => LabeledGraphInterface g x -> (x -> String) -> (Set x -> String) -> g -> [String]
 baseBigPrinter gi printNode printSuccessors g = let
     succsForLabel v l lrep = " <" ++ lrep ++ " " ++
                    (printSuccessors (successors gi g l v))
@@ -151,5 +151,5 @@ baseBigPrinter gi printNode printSuccessors g = let
     d = Set.toList $ domain gi g
   in Prelude.map lineForZero d ++ [""] ++ Prelude.map lineForOne d
 
-showLG :: Ord x => LabeledGraphI g x -> g -> String
+showLG :: Ord x => LabeledGraphInterface g x -> g -> String
 showLG gi = unlines . (prettyBigLabeledGraph gi)

@@ -1,8 +1,9 @@
 -- These are needed to make String an instance of Pretty
 {-# LANGUAGE TypeSynonymInstances #-}
 {-# LANGUAGE FlexibleInstances #-}
-module Pretty (
-  Pretty,
+{-# LANGUAGE InstanceSigs #-}
+module PrettyNode (
+  PrettyNode,
   pretty,
   stdPrintSet,
 ) where
@@ -12,19 +13,19 @@ import Data.Set as Set
 
 {- The Pretty class determines how datatypes are pretty printed as parts of graphs. -}
 
-class Pretty x where
+class PrettyNode x where
   pretty :: x -> String
 
-instance Pretty Char where
+instance PrettyNode Char where
   pretty c = [c]
 
-instance Pretty Int where
+instance PrettyNode Int where
   pretty i = show i
 
-instance Pretty Word where
+instance PrettyNode Word where
   pretty i = show i
 
-instance Pretty String where
+instance PrettyNode String where
   pretty i = i
 
 stdPrintSet :: (a -> String) -> Set a -> String

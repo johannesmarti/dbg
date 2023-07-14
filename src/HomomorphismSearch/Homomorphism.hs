@@ -9,14 +9,14 @@ import Control.Exception.Base
 import Data.Set as Set
 
 import Data.FiniteFunction as Function
-import LabeledGraph
+import LabeledGraphInterface as LGI
 
 type HomomorphismSearch g1 g2 x y = g1 -> g2 -> [Function x y]
 
-isHomomorphism :: (Ord x, Ord y) => LabeledGraphI g1 x -> LabeledGraphI g2 y -> Function x y -> g1 -> g2 -> Bool
+isHomomorphism :: (Ord x, Ord y) => LabeledGraphInterface g1 x -> LabeledGraphInterface g2 y -> Function x y -> g1 -> g2 -> Bool
 isHomomorphism di ci fct d c =
-  assert (dom `isSubsetOf` LabeledGraph.domain di d) $
-  assert (Function.range fct `isSubsetOf` LabeledGraph.domain ci c) $
+  assert (dom `isSubsetOf` LGI.domain di d) $
+  assert (Function.range fct `isSubsetOf` LGI.domain ci c) $
   all pairMapsWell' product where
     dom = Function.domain fct
     product = cartesianProduct labels dom
@@ -26,9 +26,9 @@ isHomomorphism di ci fct d c =
                             csuccs = successors ci c l (applyFct fct v)
                             succIsWell s = (applyFct fct s) `elem` csuccs
 
-searchHomomorphisms :: (Ord x, Ord y) => LabeledGraphI g1 x -> LabeledGraphI g2 y -> HomomorphismSearch g1 g2 x y
+searchHomomorphisms :: (Ord x, Ord y) => LabeledGraphInterface g1 x -> LabeledGraphInterface g2 y -> HomomorphismSearch g1 g2 x y
 searchHomomorphisms di ci d c = Prelude.filter (\f -> isHomomorphism di ci f d c)
-                                 (allFunctions (LabeledGraph.domain di d) (LabeledGraph.domain ci c))
+                                 (allFunctions (LGI.domain di d) (LGI.domain ci c))
 
 noHomomorphism :: HomomorphismSearch g1 g2 x y -> g1 -> g2 -> Bool
 noHomomorphism search d c = Prelude.null $ search d c

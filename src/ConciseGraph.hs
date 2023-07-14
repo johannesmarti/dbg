@@ -1,6 +1,6 @@
 module ConciseGraph (
   ConciseGraph,
-  conciseGraphI,
+  conciseGraphInterface,
   Size,
   Node,
   fromCode,
@@ -9,13 +9,13 @@ module ConciseGraph (
   fromOldCode,
   toCode,
   nodes,
-  fromLBitGraph,
-  toLBitGraph,
+  fromLabeledBitGraph,
+  toLabeledBitGraph,
   hasBitForArc,
   setBitForArc,
   isNode,
-  allGraphsOfSize,
-  totalGraph,
+  allabeledGraphsOfSize,
+  totalabeledGraph,
   relationOfLabel,
   hasBothFp,
   noDoubleRefl,
@@ -29,14 +29,14 @@ import qualified Data.Set as Set
 
 import BitGraph (BitGraph,Node,Size,nodes)
 import PairGraph
-import CommonLGraphTypes
-import LabeledGraph
-import Pretty
+import CommonLabeledGraphTypes
+import LabeledGraphInterface
+import PrettyNode
 
 type ConciseGraph = Integer
 
-conciseGraphI :: Size -> LabeledGraphI ConciseGraph Node
-conciseGraphI size = LabeledGraph.interfaceFromSuccPredPretty
+conciseGraphInterface :: Size -> LabeledGraphInterface ConciseGraph Node
+conciseGraphInterface size = iFromSuccPredPretty
                        (dom size) (succs size) (preds size)
                        (\_ n -> pretty n)
 
@@ -53,7 +53,7 @@ preds size bitset label node = assert (isNode size node) $
 
 converse :: Size -> Integer -> Integer
 converse size cg = let
-    cgi = (converseI (conciseGraphI size))
+    cgi = (converseI (conciseGraphInterface size))
     zArcs = arcsOfLabel cgi cg Zero
     oArcs = arcsOfLabel cgi cg One
     withZ = foldl (\g a -> setBitForArc size g Zero a) nullConciseGraph zArcs
@@ -79,16 +79,16 @@ fromOldCode = id
 toCode :: Size -> ConciseGraph -> Integer
 toCode size cg = converse size cg
 
-fromLBitGraph :: Size -> LBitGraph -> ConciseGraph
-fromLBitGraph s bg =
+fromLabeledBitGraph :: Size -> LabeledBitGraph -> ConciseGraph
+fromLabeledBitGraph s bg =
   let
     zeroWord = zeroGraph bg
     oneWord = oneGraph bg
     cg = zeroWord .|. shiftL oneWord (s * s)
   in cg
 
-toLBitGraph :: Size -> ConciseGraph -> LBitGraph
-toLBitGraph size cg = PairGraph.fromFunction (relationOfLabel size cg)
+toLabeledBitGraph :: Size -> ConciseGraph -> LabeledBitGraph
+toLabeledBitGraph size cg = PairGraph.fromFunction (relationOfLabel size cg)
 
 nullConciseGraph :: ConciseGraph
 nullConciseGraph = zeroBits
@@ -96,15 +96,15 @@ nullConciseGraph = zeroBits
 numBits :: Size -> Int
 numBits size = 2 * size * size
 
-totalGraph :: Size -> ConciseGraph
-totalGraph size =
+totalabeledGraph :: Size -> ConciseGraph
+totalabeledGraph size =
   (shiftL 1 (numBits size)) - 1
 
-allGraphsOfSize :: Size -> [ConciseGraph]
-allGraphsOfSize n = [nullConciseGraph .. totalGraph n]
+allabeledGraphsOfSize :: Size -> [ConciseGraph]
+allabeledGraphsOfSize n = [nullConciseGraph .. totalabeledGraph n]
 
 isValidBitset :: Size -> ConciseGraph -> Bool
-isValidBitset size bitset = bitset <= totalGraph size
+isValidBitset size bitset = bitset <= totalabeledGraph size
 
 isNode :: Size -> Node -> Bool
 isNode size node = 0 <= node && node <= size
@@ -165,4 +165,4 @@ notTrivial :: Size -> ConciseGraph -> Bool
 notTrivial size word = hasBothFp size word && noDoubleRefl size word
 
 showem :: Size -> ConciseGraph -> String
-showem size graph = unlines $ prettyLabeledGraph (conciseGraphI size) graph
+showem size graph = unlines $ prettyLabeledGraph (conciseGraphInterface size) graph

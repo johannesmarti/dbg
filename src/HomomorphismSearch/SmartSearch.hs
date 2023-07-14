@@ -9,14 +9,14 @@ import qualified Data.Map.Strict as Map
 
 import HomomorphismSearch.AllocateWords
 import HomomorphismSearch.ArcCons
-import Bitable
-import CommonLGraphTypes
+import BitableInterface
+import CommonLabeledGraphTypes
 import BitGraph (Node,Size,nodesSet)
-import LWrappedGraph
+import LabeledWrappedGraph
 import RelationCache
 import CayleyGraph hiding (domain, relationOfWord)
 import DeBruijnGraph
-import LabeledGraph
+import LabeledGraphInterface
 import HomomorphismSearch.Homomorphism
 import DeterminismProperty
 import Coding hiding (domain)
@@ -31,23 +31,23 @@ homoAtLevel level (bf,cg) = let
     lbg = labeledBitGraph bf
     s = numBits bf
     dom = nodesSet s
-    approx = Map.fromSet f (domain dbgI deBruijnGraph)
+    approx = Map.fromSet f (domain dbgInterface deBruijnGraph)
     f dbgnode = Set.filter (isPossVal (nodeToList dim dbgnode)) dom
     relOfWord = relationOfWord (relationCache bf cg)
     isPossVal word node = isPossibleValue s relOfWord word node
-  in isPossible approx && (not (noHomomorphism (arcConsHomomorphismsFromApprox dbgI (lBitGraphI s) approx) deBruijnGraph lbg))
+  in isPossible approx && (not (noHomomorphism (arcConsHomomorphismsFromApprox dbgInterface (labeledBitGraphInterface s) approx) deBruijnGraph lbg))
 
 {-
-homoAtLevel :: (Ord x, Pretty x) => Int -> (LMapGraph x,LWrappedGraph LBitGraph Node x,Size,CayleyGraph) -> Bool
+homoAtLevel :: (Ord x, Pretty x) => Int -> (LabeledMapGraph x,LWrappedGraph LBitGraph Node x,Size,CayleyGraph) -> Bool
 homoAtLevel level (g,wg,s,cg) = let
     dim = level
     deBruijnGraph = dbg dim
     bg = innerGraph wg
-    bgI = lBitGraphI s
-    dom = domain bgI bg
-    approx = Map.fromSet f (domain dbgI deBruijnGraph)
+    bgInterface = labeledBitGraphInterface s
+    dom = domain bgInterface bg
+    approx = Map.fromSet f (domain dbgInterface deBruijnGraph)
     f dbgnode = Set.filter (isPossibleValue s cg (nodeToList dim dbgnode)) dom
-  in isPossible approx && (not (noHomomorphism (arcConsHomomorphismsFromApprox dbgI bgI approx) deBruijnGraph bg))
+  in isPossible approx && (not (noHomomorphism (arcConsHomomorphismsFromApprox dbgInterface bgInterface approx) deBruijnGraph bg))
 -}
 
 searchLevels :: Ord x => [(Bitification x, CayleyGraph)] -> Int -> Int -> Result
@@ -59,13 +59,13 @@ searchLevels candidates cutoff level =
               then HomomorphismAt level
               else searchLevels candidates cutoff (level + 1)
 
-searchUpTo :: Ord x => Int -> LabeledGraphI g x -> g -> Result
+searchUpTo :: Ord x => Int -> LabeledGraphInterface g x -> g -> Result
 searchUpTo cutoff gi graph = let
     dom = domain gi graph
     subsets = Set.toList $ Set.filter (\s -> Set.size s >= 2) $ Set.powerSet dom
-    subgraphs = map (lMapSubgraphFromLGraph gi graph) subsets
-    candidates = filter (\s -> not (isConstructionDeterministic lMapGraphINotPretty s)) subgraphs
-    bityCandidates = map (\c -> genericBitableI lMapGraphINotPretty c) candidates
+    subgraphs = map (labeledMapSubgraphFromLabeledGraph gi graph) subsets
+    candidates = filter (\s -> not (isConstructionDeterministic labeledMapGraphInterfaceNotPretty s)) subgraphs
+    bityCandidates = map (\c -> genericBitableInterface labeledMapGraphInterfaceNotPretty c) candidates
     candidatesWithCayley = map (\bitification -> (bitification, rightCayleyGraph bitification)) bityCandidates
     isGoodCandi (bf, cg) = pathCondition (numBits bf) cg
     goodCandidates = filter isGoodCandi candidatesWithCayley
@@ -73,11 +73,11 @@ searchUpTo cutoff gi graph = let
        then NoHomomorphism
        else searchLevels goodCandidates cutoff 1
 
-subPathCondition :: Ord x => LabeledGraphI g x -> g -> Bool
+subPathCondition :: Ord x => LabeledGraphInterface g x -> g -> Bool
 subPathCondition gi graph = hasT1 gi graph || let
     dom = domain gi graph
     subsets = Set.toList $ Set.filter (\s -> Set.size s >= 3) $ Set.powerSet dom
-    subgraphs = map (lMapSubgraphFromLGraph gi graph) subsets
-    bityCandidates = map (\c -> genericBitableI lMapGraphINotPretty c) subgraphs
+    subgraphs = map (labeledMapSubgraphFromLabeledGraph gi graph) subsets
+    bityCandidates = map (\c -> genericBitableInterface labeledMapGraphInterfaceNotPretty c) subgraphs
     cayleys = map (\bf -> (rightCayleyGraph bf, numBits bf)) bityCandidates
    in any (\(cg, s) -> pathCondition s cg) cayleys

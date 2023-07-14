@@ -1,103 +1,103 @@
 module Examples.Patterns (
   triple,
-  hamburger, hamburgerI,
+  hamburger, hamburgerInterface,
   force2d,
-  force3d, force3dI,
+  force3d, force3dInterface,
   allPaths,
   testPattern,
   strange3,
   strictDet,
   cayleySchreck,
   cayleySchreckSize,
-  slowFourConcise, slowFourConciseI, slowFourConciseSize,
+  slowFourConcise, slowFourConciseInterface, slowFourConciseSize,
   celtic,
   halfCeltic,
-  slowSquare, slowSquareI,
-  difficult, difficultI,
-  deadEnd, deadEndI,
-  deadEndWithoutEnd, deadEndWithoutEndI,
-  slowLifting, slowLiftingI,
-  goesWrong, goesWrongI,
+  slowSquare, slowSquareInterface,
+  difficult, difficultInterface,
+  deadEnd, deadEndInterface,
+  deadEndWithoutEnd, deadEndWithoutEndInterface,
+  slowLifting, slowLiftingInterface,
+  goesWrong, goesWrongInterface,
   complicatedPos,
   complicatedNeg,
-  unsound, unsoundI,
-  noPath, noPathI,
-  notQuitePath, notQuitePathI,
-  zoComp, zoCompI,
-  ex1, ex1I,
-  force4d, force4dI,
+  unsound, unsoundInterface,
+  noPath, noPathInterface,
+  notQuitePath, notQuitePathInterface,
+  zoComp, zoCompInterface,
+  ex1, ex1Interface,
+  force4d, force4dInterface,
   force4d',
-  force5d, force5dI,
+  force5d, force5dInterface,
   force5d',
-  ex2, ex2I,
-  ex3, ex3I,
-  ex4, ex4I,
-  ex5, ex5I,
-  uh, uhI,
-  study, studyI,
-  growingLifting, growingLiftingI,
-  biggest, biggestI,
-  alsoBig, alsoBigI,
-  big5, big5I,
-  force6d, force6dI,
-  force7d, force7dI,
-  force8d, force8dI,
-  force9d, force9dI,
-  alloc1, alloc1I,
-  alloc2, alloc2I,
-  alloc3, alloc3I,
-  crazy, crazyI,
-  crazier, crazierI,
-  issues, issuesI,
-  strange, strangeI,
-  unfolded, unfoldedI,
-  unfolded2, unfolded2I,
-  b1ef5, b1ef5I,
-  specialUnfold, specialUnfoldI,
-  weaklyDeterministic, weaklyDeterministicI,
+  ex2, ex2Interface,
+  ex3, ex3Interface,
+  ex4, ex4Interface,
+  ex5, ex5Interface,
+  uh, uhInterface,
+  study, studyInterface,
+  growingLifting, growingLiftingInterface,
+  biggest, biggestInterface,
+  alsoBig, alsoBigInterface,
+  big5, big5Interface,
+  force6d, force6dInterface,
+  force7d, force7dInterface,
+  force8d, force8dInterface,
+  force9d, force9dInterface,
+  alloc1, alloc1Interface,
+  alloc2, alloc2Interface,
+  alloc3, alloc3Interface,
+  crazy, crazyInterface,
+  crazier, crazierInterface,
+  issues, issuesInterface,
+  strange, strangeInterface,
+  unfolded, unfoldedInterface,
+  unfolded2, unfolded2Interface,
+  b1ef5, b1ef5Interface,
+  specialUnfold, specialUnfoldInterface,
+  weaklyDeterministic, weaklyDeterministicInterface,
 ) where
 
 import qualified Data.Set as Set
 
-import CommonLGraphTypes
-import LabeledGraph
-import Pretty
+import CommonLabeledGraphTypes
+import LabeledGraphInterface
+import PrettyNode
 import BitGraph
 import ConciseGraph
 import qualified PairGraph
 
 trap Zero = [('a','a'),('a','c'),('c','b'),('c','a')]
 trap One = [('b','b'),('b','c'),('c','a'),('a','c')]
-triple :: LMapGraph Char
+triple :: LabeledMapGraph Char
 triple = mapFromFunction trap
 
 hb Zero = [('a','a'),('a','c'),('c','b'),('b','c'),('b','a'),('c','a')]
 hb One = [('b','b'),('b','c'),('c','a'),('a','c'),('a','b'),('c','b')]
-hamburger :: LMapGraph Char
+hamburger :: LabeledMapGraph Char
 hamburger = mapFromFunction hb
-hamburgerI :: LabeledGraphI (LMapGraph Char) Char
-hamburgerI = lMapGraphI
+hamburgerInterface :: LabeledGraphInterface (LabeledMapGraph Char) Char
+hamburgerInterface = labeledMapGraphInterface
 
 data N = Co | OZ | OO
   deriving (Eq,Ord,Show)
-instance Pretty N where
+instance PrettyNode N where
   pretty n = show n
 
 f2d Zero = [(Co,Co),(Co,OZ),(Co,OO)]
 f2d One = [(OO,OO),(OO,OZ),(OZ,Co)]
-force2d :: LMapGraph N
+force2d :: LabeledMapGraph N
 force2d = mapFromFunction f2d
 
 f3d Zero = [('a','a'),('a','c'),('c','a'),('c','b')]
 f3d One = [('a','c'),('b','a'),('b','b')]
-force3d :: LMapGraph Char
+force3d :: LabeledMapGraph Char
 force3d = mapFromFunction f3d
-force3dI :: LabeledGraphI (LMapGraph Char) Char
-force3dI = lMapGraphI
+force3dInterface :: LabeledGraphInterface (LabeledMapGraph Char) Char
+force3dInterface = labeledMapGraphInterface
 
 noPat1 Zero = [('a','a'),('a','c'),('c','b'),('b','a'),('b','c')]
 noPat1 One = [('a','c'),('a','b'),('c','a'),('b','a'),('b','b')]
-noPattern1 :: LMapGraph Char
+noPattern1 :: LabeledMapGraph Char
 noPattern1 = mapFromFunction noPat1
 
 {- This pattern does not in fact have all paths. -}
@@ -115,22 +115,22 @@ ap Zero = [(u,v),(u,w),(u,x),(v,u),(v,w),(v,x)
 ap One = [(a,a),(a,b),(a,c),(a,d),(b,a),(b,c),(b,d)
           ,(c,a),(c,b),(c,d),(d,a),(d,b),(d,c)
           ,(a,u),(b,v),(c,w),(d,x)]
-allPaths :: LMapGraph Char
+allPaths :: LabeledMapGraph Char
 allPaths = mapFromFunction ap
 
 test Zero = [('a','a'),('a','c'),('c','b'),('b','a'),('b','c')]
 test One = [('a','c'),('a','b'),('c','a'),('b','a'),('b','b')]
-testPattern :: LMapGraph Char
+testPattern :: LabeledMapGraph Char
 testPattern = mapFromFunction test
 
 s3 Zero = [('a','a'),('a','b'),('b','a'),('b','c'),('c','b')]
 s3 One = [('b','b'),('b','c'),('c','c'),('c','a')]
-strange3 :: LMapGraph Char
+strange3 :: LabeledMapGraph Char
 strange3 = mapFromFunction s3
 
 sd Zero = [('a','a'),('a','c'),('b','a'),('b','c'),('c','b')]
 sd One = [('a','c'),('a','b'),('b','a'),('b','b'),('c','a'),('c','b')]
-strictDet :: LMapGraph Char
+strictDet :: LabeledMapGraph Char
 strictDet = mapFromFunction sd
 
 cayleySchreck :: ConciseGraph
@@ -143,8 +143,8 @@ slowFourConcise :: ConciseGraph
 slowFourConcise = fromOldCode 4003476
 slowFourConciseSize :: Size
 slowFourConciseSize = 4
-slowFourConciseI :: LabeledGraphI ConciseGraph Node
-slowFourConciseI = conciseGraphI slowFourConciseSize
+slowFourConciseInterface :: LabeledGraphInterface ConciseGraph Node
+slowFourConciseInterface = conciseGraphInterface slowFourConciseSize
 
 cel Zero = [('a','a'),('a','b'),
             ('b','b'),('b','c'),
@@ -152,143 +152,143 @@ cel Zero = [('a','a'),('a','b'),
 cel One  =  [('a','a'),('a','b'),
             ('b','b'),('b','c'),
             ('c','a'),('c','c')]
-celtic :: LMapGraph Char
+celtic :: LabeledMapGraph Char
 celtic = mapFromFunction cel
 
 hcel Zero = [('a','a'),('a','b'),
             ('b','b'),('b','c'),
             ('c','a'),('c','c')]
 hcel One = [('a','b'),('b','c'),('c','a')]
-halfCeltic :: LMapGraph Char
+halfCeltic :: LabeledMapGraph Char
 halfCeltic = mapFromFunction hcel
 
 -- 3569496551
 slowSquare' Zero = [('a', 'a'), ('a', 'b'), ('a', 'c'), ('b', 'b'), ('b', 'c'), ('b', 'd'), ('c', 'a'), ('d', 'a'), ('d', 'b')]
 slowSquare' One = [('a', 'b'), ('b', 'c'), ('b', 'd'), ('c', 'c'), ('d', 'a'), ('d', 'c'), ('d', 'd')]
-slowSquare :: LMapGraph Char
+slowSquare :: LabeledMapGraph Char
 slowSquare = mapFromFunction slowSquare'
-slowSquareI :: LabeledGraphI (LMapGraph Char) Char
-slowSquareI = lMapGraphI
+slowSquareInterface :: LabeledGraphInterface (LabeledMapGraph Char) Char
+slowSquareInterface = labeledMapGraphInterface
 
 deadEnd :: ConciseGraph
 deadEnd = fromOldCode 4072604
-deadEndI :: LabeledGraphI ConciseGraph Node
-deadEndI = (conciseGraphI 4)
+deadEndInterface :: LabeledGraphInterface ConciseGraph Node
+deadEndInterface = (conciseGraphInterface 4)
 
-deadEndWithoutEnd :: LMapGraph Node
-deadEndWithoutEnd = lMapSubgraphFromLGraph deadEndI deadEnd (Set.fromList [0,1,3])
-deadEndWithoutEndI :: LabeledGraphI (LMapGraph Node) Node
-deadEndWithoutEndI = lMapGraphI
+deadEndWithoutEnd :: LabeledMapGraph Node
+deadEndWithoutEnd = labeledMapSubgraphFromLabeledGraph deadEndInterface deadEnd (Set.fromList [0,1,3])
+deadEndWithoutEndInterface :: LabeledGraphInterface (LabeledMapGraph Node) Node
+deadEndWithoutEndInterface = labeledMapGraphInterface
 
 {- is not construction deterministic. -}
 slowLifting :: ConciseGraph 
 slowLifting = fromOldCode 4966674
-slowLiftingI :: LabeledGraphI ConciseGraph Node
-slowLiftingI = conciseGraphI 4
+slowLiftingInterface :: LabeledGraphInterface ConciseGraph Node
+slowLiftingInterface = conciseGraphInterface 4
 
 {- Here it seems where hard to find a homo -}
 difficult :: ConciseGraph
 difficult = fromOldCode 2063974806
-difficultI :: LabeledGraphI ConciseGraph Node
-difficultI = conciseGraphI 4
+difficultInterface :: LabeledGraphInterface ConciseGraph Node
+difficultInterface = conciseGraphInterface 4
 
 {- does not have path condition but is not construction deterministic -}
 goesWrong :: ConciseGraph
 goesWrong = fromOldCode 1612382568
-goesWrongI :: LabeledGraphI ConciseGraph Node
-goesWrongI = conciseGraphI 4
+goesWrongInterface :: LabeledGraphInterface ConciseGraph Node
+goesWrongInterface = conciseGraphInterface 4
 
 -- complicated
 complicatedPos' Zero = [('a', 'a'), ('a', 'c'), ('c', 'a'), ('c', 'b'), ('b', 'a'), ('b', 'c')]
 complicatedPos' One = [('a', 'c'), ('a', 'b'), ('c', 'a'), ('c', 'b'), ('b', 'a'), ('b', 'b')]
-complicatedPos :: LMapGraph Char
+complicatedPos :: LabeledMapGraph Char
 complicatedPos = mapFromFunction complicatedPos'
 
 -- complicated
 complicatedNeg' Zero = [('a', 'a'), ('a', 'c'), ('c', 'a'), ('c', 'b'), ('b', 'a'), ('b', 'c')]
 complicatedNeg' One = [('a', 'c'), ('a', 'b'), ('c', 'a'), ('c', 'b'), ('b', 'c'), ('b', 'b')]
-complicatedNeg :: LMapGraph Char
+complicatedNeg :: LabeledMapGraph Char
 complicatedNeg = mapFromFunction complicatedNeg'
 
 {- This shows that the unsound filter for the lifting is indeed unsound. -}
 unsound :: ConciseGraph
 unsound = fromOldCode 2063931814
-unsoundI :: LabeledGraphI ConciseGraph Node
-unsoundI = conciseGraphI 4
+unsoundInterface :: LabeledGraphInterface ConciseGraph Node
+unsoundInterface = conciseGraphInterface 4
 
 {- The following pattern is not construction deterministic but also does not satisfy the path condition -}
 noPath :: ConciseGraph
 noPath = fromOldCode 988302
-noPathI :: LabeledGraphI ConciseGraph Node
-noPathI = conciseGraphI 4
+noPathInterface :: LabeledGraphInterface ConciseGraph Node
+noPathInterface = conciseGraphInterface 4
 
 {- This pattern satisfies the path condition up to words of length 2, but not for longer words. It is construction deterministic. -}
 notQuitePath :: ConciseGraph
 notQuitePath = fromOldCode 57450828
-notQuitePathI :: LabeledGraphI ConciseGraph Node
-notQuitePathI = conciseGraphI 4
+notQuitePathInterface :: LabeledGraphInterface ConciseGraph Node
+notQuitePathInterface = conciseGraphInterface 4
 
 {- In this pattern there is a 0-loop that reaches all other nodes over a 0-path and similarly for 1. But it does not satify the path condition. It is not construction deterministic. -}
 zoComp :: ConciseGraph
 zoComp = fromOldCode 23617753
-zoCompI :: LabeledGraphI ConciseGraph Node
-zoCompI = conciseGraphI 4
+zoCompInterface :: LabeledGraphInterface ConciseGraph Node
+zoCompInterface = conciseGraphInterface 4
 
 {- just a random example -}
 e1 Zero = [('a','a'),('a','x'),('x','u'),('u','v'),('v','x'),('a','y'),('y','b')]
 e1 One = [('b','b'),('b','a'),('b','x'),('b','u'),('b','v'),('x','y')]
-ex1 :: LMapGraph Char
+ex1 :: LabeledMapGraph Char
 ex1 = mapFromFunction e1
-ex1I :: LabeledGraphI (LMapGraph Char) Char
-ex1I = lMapGraphI
+ex1Interface :: LabeledGraphInterface (LabeledMapGraph Char) Char
+ex1Interface = labeledMapGraphInterface
 
 {- Just some pattern with a homo at 4. -}
 force4d :: ConciseGraph
 force4d = fromOldCode 201822290
-force4dI :: LabeledGraphI ConciseGraph Node
-force4dI = conciseGraphI 4
+force4dInterface :: LabeledGraphInterface ConciseGraph Node
+force4dInterface = conciseGraphInterface 4
 
 force4d' :: ConciseGraph
-force4d' = ConciseGraph.fromLBitGraph 4 (PairGraph.fromFunction fct) where
+force4d' = ConciseGraph.fromLabeledBitGraph 4 (PairGraph.fromFunction fct) where
   fct Zero = PairGraph.graphOfLabel pairGraph Zero
   fct One  = BitGraph.delArc 4 (PairGraph.graphOfLabel pairGraph One) (2,2)
-  pairGraph = ConciseGraph.toLBitGraph 4 force4d
+  pairGraph = ConciseGraph.toLabeledBitGraph 4 force4d
 
 {- Just some pattern with a homo at 5. -}
 force5d :: ConciseGraph
 force5d = fromOldCode 201822534
-force5dI :: LabeledGraphI ConciseGraph Node
-force5dI = conciseGraphI 4
+force5dInterface :: LabeledGraphInterface ConciseGraph Node
+force5dInterface = conciseGraphInterface 4
 
 force5d' :: ConciseGraph
-force5d' = ConciseGraph.fromLBitGraph 4 (PairGraph.fromFunction fct) where
+force5d' = ConciseGraph.fromLabeledBitGraph 4 (PairGraph.fromFunction fct) where
   fct Zero = PairGraph.graphOfLabel pairGraph Zero
   fct One  = BitGraph.delArc 4 (BitGraph.delArc 4 (PairGraph.graphOfLabel pairGraph One) (2,2)) (2,2)
-  pairGraph = ConciseGraph.toLBitGraph 4 force5d
+  pairGraph = ConciseGraph.toLabeledBitGraph 4 force5d
 
 {- another random example -}
 e2 Zero = [('a','a'),('a','o'),('a','x'),('a','z'),('o','u'),('x','v'),('x','i'),('z','b'),('u','y'),('u','v')]
 e2 One = [('b','b'),('b','i'),('b','y'),('b','a'),('i','v'),('y','z'),('y','o'),('y','u'),('y','x'),('v','u')]
-ex2 :: LMapGraph Char
+ex2 :: LabeledMapGraph Char
 ex2 = mapFromFunction e2
-ex2I :: LabeledGraphI (LMapGraph Char) Char
-ex2I = lMapGraphI
+ex2Interface :: LabeledGraphInterface (LabeledMapGraph Char) Char
+ex2Interface = labeledMapGraphInterface
 
 {- An example in which initially all nodes are 1 00-step away from a but then in the first lifting [y b] is only reachable via a 000-path. -}
 e3 Zero = [('a','a'),('a','x'),('a','y'),('x','u'),('x','b'),('u','y'),('u','b')]
 e3 One = [('b','b'),('b','y'),('b','u'),('b','a'),('y','x')]
-ex3 :: LMapGraph Char
+ex3 :: LabeledMapGraph Char
 ex3 = mapFromFunction e3
-ex3I :: LabeledGraphI (LMapGraph Char) Char
-ex3I = lMapGraphI
+ex3Interface :: LabeledGraphInterface (LabeledMapGraph Char) Char
+ex3Interface = labeledMapGraphInterface
 
 {- One more example to play around with -}
 e4 Zero = [('a','a'),('a','x'),('a','u'),('x','b'),('x','y'),('u','v')]
 e4 One = [('b','b'),('b','y'),('b','v'),('y','a'),('v','x'),('v','u')]
-ex4 :: LMapGraph Char
+ex4 :: LabeledMapGraph Char
 ex4 = mapFromFunction e4
-ex4I :: LabeledGraphI (LMapGraph Char) Char
-ex4I = lMapGraphI
+ex4Interface :: LabeledGraphInterface (LabeledMapGraph Char) Char
+ex4Interface = labeledMapGraphInterface
 
 {- It satisfies the path condition and is not construction deterministic. -}
 e5 Zero =
@@ -303,10 +303,10 @@ e5 One =
    ("v","u"),("v","x"),("v","x'"),("v","b"),("v","b'"),
    ("y","y'"), ("y","a"),
    ("y'","y"), ("y'","a'")]
-ex5 :: LMapGraph String
+ex5 :: LabeledMapGraph String
 ex5 = mapFromFunction e5
-ex5I :: LabeledGraphI (LMapGraph String) String
-ex5I = lMapGraphI
+ex5Interface :: LabeledGraphInterface (LabeledMapGraph String) String
+ex5Interface = labeledMapGraphInterface
 
 {- It satisfies the path condition and is not construction deterministic. -}
 uhf Zero =
@@ -317,147 +317,146 @@ uhf One =
   [("b","b"),("b","c''"),("b","c'"),("b","c'''"),
    ("c''","a"),("c''","a'"),
    ("c'''","a'")]
-uh :: LMapGraph String
+uh :: LabeledMapGraph String
 uh = mapFromFunction uhf
-uhI :: LabeledGraphI (LMapGraph String) String
-uhI = lMapGraphI
+uhInterface :: LabeledGraphInterface (LabeledMapGraph String) String
+uhInterface = labeledMapGraphInterface
 
 stud Zero = [('b','a'),('c','a'),('c','b'),('c','c')]
 stud One = [('a','a'),('a','b'),('b','c')]
-study :: LMapGraph Char
+study :: LabeledMapGraph Char
 study = mapFromFunction stud
-studyI :: LabeledGraphI (LMapGraph Char) Char
-studyI = lMapGraphI
+studyInterface :: LabeledGraphInterface (LabeledMapGraph Char) Char
+studyInterface = labeledMapGraphInterface
 
 sld = ['a', 'b', 'c']
 sl Zero = [('a','a'),('a','b'),('b','c'),('c','b'),('c','c')]
 sl One = [(x,y) | x <- sld, y <- sld] 
-growingLifting :: LMapGraph Char
+growingLifting :: LabeledMapGraph Char
 growingLifting = mapFromFunction sl
-growingLiftingI :: LabeledGraphI (LMapGraph Char) Char
-growingLiftingI = lMapGraphI
+growingLiftingInterface :: LabeledGraphInterface (LabeledMapGraph Char) Char
+growingLiftingInterface = labeledMapGraphInterface
 
 {- This pattern is the pattern such that it has a homo for a maximal dimension among all the patterns of size 4 -}
 biggest :: ConciseGraph
 biggest = fromOldCode 2458141589
-biggestI :: LabeledGraphI ConciseGraph Node
-biggestI = conciseGraphI 4
+biggestInterface :: LabeledGraphInterface ConciseGraph Node
+biggestInterface = conciseGraphInterface 4
 
 alsoBig :: ConciseGraph
 alsoBig = fromOldCode 675781230
-alsoBigI :: LabeledGraphI ConciseGraph Node
-alsoBigI = conciseGraphI 4
+alsoBigInterface :: LabeledGraphInterface ConciseGraph Node
+alsoBigInterface = conciseGraphInterface 4
 
 big5 :: ConciseGraph
 big5 = fromOldCode 846900323733667
-big5I :: LabeledGraphI ConciseGraph Node
-big5I = conciseGraphI 5
+big5Interface :: LabeledGraphInterface ConciseGraph Node
+big5Interface = conciseGraphInterface 5
 
 force6d :: ConciseGraph
 force6d = fromOldCode 3936965
-force6dI :: LabeledGraphI ConciseGraph Node
-force6dI = conciseGraphI 4
+force6dInterface :: LabeledGraphInterface ConciseGraph Node
+force6dInterface = conciseGraphInterface 4
 
 force7d :: ConciseGraph
 force7d = fromOldCode 3937932
-force7dI :: LabeledGraphI ConciseGraph Node
-force7dI = conciseGraphI 4
+force7dInterface :: LabeledGraphInterface ConciseGraph Node
+force7dInterface = conciseGraphInterface 4
 
 force8d :: ConciseGraph
 force8d = fromOldCode 4019848
-force8dI :: LabeledGraphI ConciseGraph Node
-force8dI = conciseGraphI 4
+force8dInterface :: LabeledGraphInterface ConciseGraph Node
+force8dInterface = conciseGraphInterface 4
 
 force9d :: ConciseGraph
 force9d = fromOldCode 4019736
-force9dI :: LabeledGraphI ConciseGraph Node
-force9dI = conciseGraphI 4
+force9dInterface :: LabeledGraphInterface ConciseGraph Node
+force9dInterface = conciseGraphInterface 4
 
 alloc1 :: ConciseGraph
 alloc1 = fromOldCode 15589
-alloc1I :: LabeledGraphI ConciseGraph Node
-alloc1I = conciseGraphI 3
+alloc1Interface :: LabeledGraphInterface ConciseGraph Node
+alloc1Interface = conciseGraphInterface 3
 
 alloc2 :: ConciseGraph
 alloc2 = fromOldCode 3937822
-alloc2I :: LabeledGraphI ConciseGraph Node
-alloc2I = conciseGraphI 4
+alloc2Interface :: LabeledGraphInterface ConciseGraph Node
+alloc2Interface = conciseGraphInterface 4
 
 alloc3 :: ConciseGraph
 alloc3 = fromOldCode 3955401
-alloc3I :: LabeledGraphI ConciseGraph Node
-alloc3I = conciseGraphI 4
+alloc3Interface :: LabeledGraphInterface ConciseGraph Node
+alloc3Interface = conciseGraphInterface 4
 
 alloc4 :: ConciseGraph
 alloc4 = fromOldCode 4019736
-alloc4I :: LabeledGraphI ConciseGraph Node
-alloc4I = conciseGraphI 4
+alloc4Interface :: LabeledGraphInterface ConciseGraph Node
+alloc4Interface = conciseGraphInterface 4
 
 {- crazy and crazier are simple patterns that can be solved by winding up the
 01 spiral. There are elements that see the complete spikes of the spiral. -}
 craz Zero = [(0,0),(0,5),(2,3),(2,4),(5,2),(5,6),(6,1)]
 craz One = [(1,1),(1,3),(1,4),(1,5),(3,2),(4,0),(4,6)]
-crazy :: LMapGraph Int
+crazy :: LabeledMapGraph Int
 crazy = mapFromFunction craz
-crazyI :: LabeledGraphI (LMapGraph Int) Int
-crazyI = lMapGraphI
+crazyInterface :: LabeledGraphInterface (LabeledMapGraph Int) Int
+crazyInterface = labeledMapGraphInterface
 
 crazer Zero = [(0,0),(0,7),(2,3),(2,4),(5,2),(5,6),(6,1),(7,5)]
 crazer One = [(1,1),(1,3),(1,4),(1,5),(3,2),(3,7),(4,0),(4,6)]
-crazier :: LMapGraph Int
+crazier :: LabeledMapGraph Int
 crazier = mapFromFunction craz
-crazierI :: LabeledGraphI (LMapGraph Int) Int
-crazierI = lMapGraphI
+crazierInterface :: LabeledGraphInterface (LabeledMapGraph Int) Int
+crazierInterface = labeledMapGraphInterface
 
 {- issues can not be solved by winding up the 01 spiral. There is no node that sees the complete spikes -}
 iss Zero = [(0,0),(0,2),(2,1),(2,3),(2,4)]
 iss One = [(1,0),(1,1),(1,4),(3,2),(4,3)]
-issues :: LMapGraph Int
+issues :: LabeledMapGraph Int
 issues = mapFromFunction iss
-issuesI :: LabeledGraphI (LMapGraph Int) Int
-issuesI = lMapGraphI
+issuesInterface :: LabeledGraphInterface (LabeledMapGraph Int) Int
+issuesInterface = labeledMapGraphInterface
 
 str Zero = [(0,0),(0,2),(2,3),(3,1),(3,4)]
 str One = [(1,1),(1,4),(1,3),(4,0),(4,2)]
-strange :: LMapGraph Int
+strange :: LabeledMapGraph Int
 strange = mapFromFunction str
-strangeI :: LabeledGraphI (LMapGraph Int) Int
-strangeI = lMapGraphI
+strangeInterface :: LabeledGraphInterface (LabeledMapGraph Int) Int
+strangeInterface = labeledMapGraphInterface
 
 {- interesting patter generated by unfolding -}
 unf Zero = [(0,0),(0,2),(0,5),(2,1),(3,4),(5,3)]
 unf One = [(1,1),(1,2),(1,3),(1,4),(4,0),(4,5)]
-unfolded :: LMapGraph Int
+unfolded :: LabeledMapGraph Int
 unfolded = mapFromFunction unf
-unfoldedI :: LabeledGraphI (LMapGraph Int) Int
-unfoldedI = lMapGraphI
+unfoldedInterface :: LabeledGraphInterface (LabeledMapGraph Int) Int
+unfoldedInterface = labeledMapGraphInterface
 
 {- interesting patter generated by unfolding -}
 unf2 Zero = [(0,0),(0,2),(2,1),(2,3)]
 unf2 One = [(1,1),(1,2),(1,3),(3,0)]
-unfolded2 :: LMapGraph Int
+unfolded2 :: LabeledMapGraph Int
 unfolded2 = mapFromFunction unf2
-unfolded2I :: LabeledGraphI (LMapGraph Int) Int
-unfolded2I = lMapGraphI
+unfolded2Interface :: LabeledGraphInterface (LabeledMapGraph Int) Int
+unfolded2Interface = labeledMapGraphInterface
 
 b1ef5Fct Zero = [('a','a'),('a','e'),('a','c'),('e','f'),('c','b'),('c','d')]
 b1ef5Fct One = [('b','b'),('b','d'),('d','f'),('b','e'),('d','c'),('f','a')]
-b1ef5 :: LMapGraph Char
+b1ef5 :: LabeledMapGraph Char
 b1ef5 = mapFromFunction b1ef5Fct
-b1ef5I :: LabeledGraphI (LMapGraph Char) Char
-b1ef5I = lMapGraphI
+b1ef5Interface :: LabeledGraphInterface (LabeledMapGraph Char) Char
+b1ef5Interface = labeledMapGraphInterface
 
 su Zero = [('a','a'),('a','c'),('a','e'),('c','d'),('c','f'),('e','b'),('e','g')]
 su One = [('b','b'),('b','a'),('b','f'),('b','g'),('d','c'),('f','e'),('g','d')]
-specialUnfold :: LMapGraph Char
+specialUnfold :: LabeledMapGraph Char
 specialUnfold = mapFromFunction su
-specialUnfoldI :: LabeledGraphI (LMapGraph Char) Char
-specialUnfoldI = lMapGraphI
+specialUnfoldInterface :: LabeledGraphInterface (LabeledMapGraph Char) Char
+specialUnfoldInterface = labeledMapGraphInterface
 
 {- This pattern is not construction deterministic for any partition, but it is
 construction deterministic for the anti-chain {1}, {0,1}, {0,3}. -}
 weaklyDeterministic :: ConciseGraph
 weaklyDeterministic = fromCode 4 287515978
-weaklyDeterministicI :: LabeledGraphI ConciseGraph Node
-weaklyDeterministicI = conciseGraphI 4
-
+weaklyDeterministicInterface :: LabeledGraphInterface ConciseGraph Node
+weaklyDeterministicInterface = conciseGraphInterface 4

@@ -1,7 +1,7 @@
 module PairGraph (
   PairGraph,
   zeroGraph, oneGraph,
-  pairGraphI,
+  pairGraphInterface,
   graphOfLabel,
   fromFunction,
 ) where
@@ -9,8 +9,8 @@ module PairGraph (
 import Control.Exception.Base
 import qualified Data.Set as Set
 
-import qualified Graph
-import LabeledGraph
+import qualified GraphInterface as GI
+import LabeledGraphInterface
 
 data PairGraph g = PairGraph {
   zeroGraph :: g,
@@ -20,16 +20,16 @@ data PairGraph g = PairGraph {
 instance Functor PairGraph where
   fmap f (PairGraph zg og) = PairGraph (f zg) (f og)
 
-pairGraphI :: Eq x => Graph.GraphI g x -> LabeledGraphI(PairGraph g) x
-pairGraphI innerI = interfaceFromAll dom succ pred hasAr ar pretty where
-  dom pg = let zd = Graph.domain innerI (zeroGraph pg)
-               od = Graph.domain innerI (oneGraph pg)
+pairGraphInterface :: Eq x => GI.GraphInterface g x -> LabeledGraphInterface(PairGraph g) x
+pairGraphInterface innerI = iFromAll dom succ pred hasAr ar pretty where
+  dom pg = let zd = GI.domain innerI (zeroGraph pg)
+               od = GI.domain innerI (oneGraph pg)
            in assert (zd == od) zd
-  succ pg label = Graph.successors innerI (graphOfLabel pg label)
-  pred pg label = Graph.predecessors innerI (graphOfLabel pg label)
-  hasAr pg label = Graph.hasArc innerI (graphOfLabel pg label)
-  ar pg l = Graph.arcs innerI (graphOfLabel pg l)
-  pretty pg = Graph.prettyNode innerI (zeroGraph pg)
+  succ pg label = GI.successors innerI (graphOfLabel pg label)
+  pred pg label = GI.predecessors innerI (graphOfLabel pg label)
+  hasAr pg label = GI.hasArc innerI (graphOfLabel pg label)
+  ar pg l = GI.arcs innerI (graphOfLabel pg l)
+  pretty pg = GI.prettyNode innerI (zeroGraph pg)
 
 graphOfLabel :: PairGraph g -> Label -> g
 graphOfLabel pg Zero = zeroGraph pg

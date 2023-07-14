@@ -1,8 +1,8 @@
 module Lifting (
   LiftedGraph,
-  liftedGraphI,
-  liftedGraphINotPretty,
-  liftedGraphIWithNodePrinter,
+  liftedGraphInterface,
+  liftedGraphInterfaceNotPretty,
+  liftedGraphInterfaceWithNodePrinter,
   toLiftedGraph,
   lift,
   liftWithFilter,
@@ -16,33 +16,33 @@ import Control.Exception.Base (assert)
 import qualified Data.Set as Set
 import qualified Data.List.Extra as ListExtra
 
-import CommonLGraphTypes
-import LabeledGraph
+import CommonLabeledGraphTypes
+import LabeledGraphInterface
 import Lifted
-import Pretty
+import PrettyNode
 import Tools (strictPairs)
 
-type LiftedGraph x = LMapGraph (Lifted x)
+type LiftedGraph x = LabeledMapGraph (Lifted x)
 
-liftedGraphI :: (Ord x, Pretty x) => LabeledGraphI (LiftedGraph x) (Lifted x)
-liftedGraphI = lMapGraphI
+liftedGraphInterface :: (Ord x, PrettyNode x) => LabeledGraphInterface (LiftedGraph x) (Lifted x)
+liftedGraphInterface = labeledMapGraphInterface
 
-liftedGraphIWithNodePrinter :: Ord x => (x -> String) -> LabeledGraphI (LiftedGraph x) (Lifted x)
-liftedGraphIWithNodePrinter printer = lMapGraphIWithNodePrinter (prettyLifted printer)
+liftedGraphInterfaceWithNodePrinter :: Ord x => (x -> String) -> LabeledGraphInterface (LiftedGraph x) (Lifted x)
+liftedGraphInterfaceWithNodePrinter printer = labeledMapGraphInterfaceWithNodePrinter (prettyLifted printer)
 
-liftedGraphINotPretty :: Ord x => LabeledGraphI (LiftedGraph x) (Lifted x)
-liftedGraphINotPretty = lMapGraphINotPretty
+liftedGraphInterfaceNotPretty :: Ord x => LabeledGraphInterface (LiftedGraph x) (Lifted x)
+liftedGraphInterfaceNotPretty = labeledMapGraphInterfaceNotPretty
 
 balanced :: Ord x => LiftedGraph x -> Bool
 balanced liftedGraph = let
-    dom = Set.toList $ domain liftedGraphINotPretty liftedGraph
+    dom = Set.toList $ domain liftedGraphInterfaceNotPretty liftedGraph
     depths = map depth dom
   in ListExtra.allSame depths
 
 
-toLiftedGraph :: Ord x => LabeledGraphI g x -> g -> LiftedGraph x
+toLiftedGraph :: Ord x => LabeledGraphInterface g x -> g -> LiftedGraph x
 toLiftedGraph gi g = assert (not (any (noPredecessor gi g) (domain gi g))) $
-  lMapApplyBijection gi g bn
+  labeledMapApplyBijection gi g bn
 
 type LiftingCandidate x = ((Set.Set x, Set.Set x), (x,x), (Set.Set x, Set.Set x))
 
@@ -57,7 +57,7 @@ extractSuccs :: Label -> LiftingCandidate x -> Set.Set x
 extractSuccs Zero (_,_,suc) = fst suc
 extractSuccs One  (_,_,suc) = snd suc 
 
-liftedPairsWithPS :: Ord x => LabeledGraphI g x -> g -> [LiftingCandidate x]
+liftedPairsWithPS :: Ord x => LabeledGraphInterface g x -> g -> [LiftingCandidate x]
 liftedPairsWithPS gi g = let
     domList = Set.toList $ domain gi g
     succ = successors gi g
@@ -72,13 +72,13 @@ liftedPairsWithPS gi g = let
     dointersect can = not (Set.null $ extractPreds Zero can) && not (Set.null $ extractPreds One can)
   in candidates
 
-liftedPairs :: Ord x => LabeledGraphI g x -> g -> [(x,x)]
+liftedPairs :: Ord x => LabeledGraphInterface g x -> g -> [(x,x)]
 liftedPairs gi g = map extractPair $ liftedPairsWithPS gi g
 
 liftWithFilter :: Ord x => (LiftedGraph x -> LiftingCandidate (Lifted x) -> Bool)
                            -> (LiftedGraph x) -> Maybe (LiftedGraph x)
 liftWithFilter newNodeFilter graph = assert (balanced graph) $ let
-    liftedPairs = liftedPairsWithPS liftedGraphINotPretty graph
+    liftedPairs = liftedPairsWithPS liftedGraphInterfaceNotPretty graph
     candidatesWithPS = filter (newNodeFilter graph) liftedPairs
     candidates = map extractPair candidatesWithPS
     newNodes = map doubler candidates
@@ -106,10 +106,10 @@ liftWithFilter newNodeFilter graph = assert (balanced graph) $ let
         arcs = map (\(u,v) -> (du u v, du x y)) plainDPreds
       in arcs
     newArcsForLabel l = fromOldEdges l ++ toOldEdges l ++ betweenNewEdges l
-    liftedOld = lMapApplyBijection liftedGraphINotPretty graph si
-    withNewNodes = lMapAddNodes liftedOld newNodes
-    withZeroArcs = lMapAddArcs withNewNodes Zero (newArcsForLabel Zero)
-    newGraph = lMapAddArcs withZeroArcs One (newArcsForLabel One)
+    liftedOld = labeledMapApplyBijection liftedGraphInterfaceNotPretty graph si
+    withNewNodes = labeledMapAddNodes liftedOld newNodes
+    withZeroArcs = labeledMapAddArcs withNewNodes Zero (newArcsForLabel Zero)
+    newGraph = labeledMapAddArcs withZeroArcs One (newArcsForLabel One)
   in if null newNodes
        then Nothing
        else Just $ newGraph
@@ -118,9 +118,9 @@ noFilter :: Ord x => LiftedGraph x -> LiftingCandidate (Lifted x) -> Bool
 noFilter lg can = True
 
 dominationFilter :: Ord x => LiftedGraph x -> LiftingCandidate (Lifted x) -> Bool
-dominationFilter lg can = not $ any dominatesCan (domain liftedGraphINotPretty lg) where
-  pred = predecessors liftedGraphINotPretty lg
-  succ = successors liftedGraphINotPretty lg
+dominationFilter lg can = not $ any dominatesCan (domain liftedGraphInterfaceNotPretty lg) where
+  pred = predecessors liftedGraphInterfaceNotPretty lg
+  succ = successors liftedGraphInterfaceNotPretty lg
   dominatesCan oldNode =
     extractSuccs Zero can `Set.isSubsetOf` succ Zero oldNode &&
     extractSuccs One  can `Set.isSubsetOf` succ One  oldNode &&
@@ -130,9 +130,9 @@ dominationFilter lg can = not $ any dominatesCan (domain liftedGraphINotPretty l
 weakDominationFilter :: Ord x => LiftedGraph x -> LiftingCandidate (Lifted x) -> Bool
 weakDominationFilter lg can = not $ (any (dominatesCan Zero) dom &&
                                      any (dominatesCan One) dom) where
-  pred = predecessors liftedGraphINotPretty lg
-  succ = successors liftedGraphINotPretty lg
-  dom = domain liftedGraphINotPretty lg
+  pred = predecessors liftedGraphInterfaceNotPretty lg
+  succ = successors liftedGraphInterfaceNotPretty lg
+  dom = domain liftedGraphInterfaceNotPretty lg
   dominatesCan label oldNode =
     extractPreds Zero can `Set.isSubsetOf` pred Zero oldNode &&
     extractPreds One  can `Set.isSubsetOf` pred One  oldNode &&
@@ -141,9 +141,9 @@ weakDominationFilter lg can = not $ (any (dominatesCan Zero) dom &&
 unsoundDominationFilter :: Ord x => LiftedGraph x -> LiftingCandidate (Lifted x) -> Bool
 unsoundDominationFilter lg can = not $ (any (dominatesCan Zero) dom &&
                                      any (dominatesCan One) dom) where
-  pred = predecessors liftedGraphINotPretty lg
-  succ = successors liftedGraphINotPretty lg
-  dom = domain liftedGraphINotPretty lg
+  pred = predecessors liftedGraphInterfaceNotPretty lg
+  succ = successors liftedGraphInterfaceNotPretty lg
+  dom = domain liftedGraphInterfaceNotPretty lg
   dominatesCan label oldNode =
     extractSuccs label can `Set.isSubsetOf` succ label oldNode 
 

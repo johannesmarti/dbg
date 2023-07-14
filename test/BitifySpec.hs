@@ -8,20 +8,20 @@ import Test.Hspec
 
 import BitGraph
 import Bitify
-import LabeledGraph
+import LabeledGraphInterface
 import Examples.Patterns
-import CommonLGraphTypes
-import LWrappedGraph
+import CommonLabeledGraphTypes
+import LabeledWrappedGraph
 
 
-instance Show (LWrappedGraph LBitGraph Node y) where
+instance Show (LabeledWrappedGraph LabeledBitGraph Node y) where
   show g = "fuck type classes"
 
 spec :: Spec
 spec = do
   describe "bitify hamburger" $ do
-    let (bitburger, bsize) = labeledBitify lMapGraphI hamburger
-    let iface = lWrappedGraphI (lBitGraphI bsize)
+    let (bitburger, bsize) = labeledBitify hamburgerInterface hamburger
+    let iface = labeledWrappedGraphInterface (labeledBitGraphInterface bsize)
     it "0-sucs of a match [a,c]" $
       successors iface bitburger Zero 'a' `shouldBe` Set.fromList ['a','c']
     it "1-pred of a match [c]" $
@@ -29,7 +29,7 @@ spec = do
     it "1-pred of b match [a,c,b]" $
       predecessors iface bitburger One 'b' `shouldBe` Set.fromList ['a','c','b']
   describe "bitify allPaths" $ do
-    let (bitpaths, psize) = labeledBitify lMapGraphI allPaths
-    let pface = lWrappedGraphI (lBitGraphI psize)
+    let (bitpaths, psize) = labeledBitify labeledMapGraphInterface allPaths
+    let pface = labeledWrappedGraphInterface (labeledBitGraphInterface psize)
     it "bitpaths has 8 elements" $
       Set.size (domain pface bitpaths) `shouldBe` 8

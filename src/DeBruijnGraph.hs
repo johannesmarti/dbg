@@ -1,7 +1,7 @@
 module DeBruijnGraph (
   DBG,
   dbg,
-  dbgI,
+  dbgInterface,
   nodeToList,
 ) where
 
@@ -11,7 +11,7 @@ import Data.Char (intToDigit)
 import Data.Set as Set
 import Numeric (showHex, showIntAtBase)
 
-import LabeledGraph hiding (domain,successors,predecessors)
+import LabeledGraphInterface hiding (domain,successors,predecessors)
 
 type Dimension = Int
 type Node = Word
@@ -22,8 +22,8 @@ zeroes = zeroBits
 newtype DBG = DBG {dimension :: Dimension}
 
 -- TODO: Quite some speedup in the arccons might be possible by explicitely implemeniting arcs!
-dbgI :: LabeledGraphI DBG Node
-dbgI = interfaceFromSuccPredPretty domain successors predecessors nodePrinter
+dbgInterface :: LabeledGraphInterface DBG Node
+dbgInterface = iFromSuccPredPretty domain successors predecessors nodePrinter
 
 domain :: DBG -> Set Node
 domain (DBG dim) = fromList [zeroes .. (DeBruijnGraph.mask dim)]
@@ -75,7 +75,7 @@ nodeToList dim node = assert (isNode dim node) $ reverse $
     setLabel i = if testBit node i then One else Zero
 
 instance Show DBG where
-  show g = showLG dbgI g
+  show g = showLG dbgInterface g
 
 nodePrinter :: DBG -> Node -> String
 nodePrinter g n = let str = showIntAtBase 2 intToDigit n ""

@@ -21,7 +21,7 @@ import qualified Data.Set as Set
 import Data.Label
 import BitGraph
 import PairGraph
-import Bitable
+import BitableInterface
 import Coding hiding (domain)
 import RelationCache
 

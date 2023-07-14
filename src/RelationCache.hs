@@ -1,36 +1,36 @@
 module RelationCache (
-  RelationCachableI,
+  RelationCachableInterface,
   RelationCache(..),
   outputType,
   RelationCache.reflexivesUniversalInMultiple,
   relationOfWord,
   buildCache,
-  relationTreeRelationCacheableI,
+  relationTreeRelationCacheableInterface,
 ) where
 
 import Data.Set
 
-import Bitable
+import BitableInterface
 import BitGraph
 import Coding
-import Graph
+import GraphInterface
 import Data.Label
 import RelationTree
 import WordTree (labelOfWord)
 
 data RelationCache r x = RelationCache {
-  outputType :: GraphI r x,
+  outputType :: GraphInterface r x,
   reflexivesUniversalInMultiple :: r -> Set x,
   relationOfWord :: [Label] -> r
 }
 
-type RelationCachableI g x r = g -> RelationCache r x
+type RelationCachableInterface g x r = g -> RelationCache r x
 
-buildCache :: RelationCachableI g x r -> g -> RelationCache r x
+buildCache :: RelationCachableInterface g x r -> g -> RelationCache r x
 buildCache ci = ci
 
-relationTreeRelationCacheableI :: BitableI g x -> RelationCachableI g x BitGraph
-relationTreeRelationCacheableI bi g = RelationCache bgi rum rw where
+relationTreeRelationCacheableInterface :: BitableInterface g x -> RelationCachableInterface g x BitGraph
+relationTreeRelationCacheableInterface bi g = RelationCache bgi rum rw where
   Bitification s lbg c bgi = bi g
   rt = relationTree (lbg,s)
   rum = decodeSet c . BitGraph.reflexivesUnivInMultiple s

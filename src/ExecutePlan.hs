@@ -11,7 +11,7 @@ import qualified Data.Vector as V
 import Data.Maybe (fromMaybe)
 
 import CoveringGraph
-import LabeledGraph
+import LabeledGraphInterface
 import LiftedGraph
 import Plan
 
@@ -24,9 +24,9 @@ point denotes the center of the spiral at the turningWord of the Covering node
 and the remaining elements in the set are the required nodes for the covering.
 -}
 
-executePlan :: Ord x => LabeledGraphI g x -> g -> Plan x -> (LiftedGraph x, Int)
+executePlan :: Ord x => LabeledGraphInterface g x -> g -> Plan x -> (LiftedGraph x, Int)
 executePlan gi g plan = (lg,dsl) where
-  liftedGraph = LiftedGraph.fromLGraph gi g
+  liftedGraph = LiftedGraph.fromLabeledGraph gi g
   ((dsl,_),lg) = runState (runStateT lastNode WordMap.empty) liftedGraph
   lastNode = do zi <- constructNode plan zero
                 oz <- constructNode plan one

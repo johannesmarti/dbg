@@ -1,6 +1,6 @@
 module MapGraph (
   MapGraph,
-  mapGraphI, mapGraphINotPretty, mapGraphIWithNodePrinter,
+  mapGraphInterface, mapGraphInterfaceNotPretty, mapGraphInterfaceWithNodePrinter,
   fromGraph,
   subgraph,
   projection,
@@ -16,19 +16,19 @@ import Data.Map.Strict as Map
 import Data.Set as Set
 import Data.Set.Extra as SetExtra
 
-import qualified Graph
-import Pretty
+import qualified GraphInterface as GI
+import PrettyNode
 
 newtype MapGraph x = MapGraph { succPredMap :: Map x (Set x, Set x) }
 
-mapGraphI :: (Ord x,Pretty x) => Graph.GraphI (MapGraph x) x
-mapGraphI = mapGraphIWithNodePrinter pretty
+mapGraphInterface :: (Ord x, PrettyNode x) => GI.GraphInterface (MapGraph x) x
+mapGraphInterface = mapGraphInterfaceWithNodePrinter pretty
 
-mapGraphINotPretty :: Ord x => Graph.GraphI (MapGraph x) x
-mapGraphINotPretty = mapGraphIWithNodePrinter (error "can not show nodes of this graph")
+mapGraphInterfaceNotPretty :: Ord x => GI.GraphInterface (MapGraph x) x
+mapGraphInterfaceNotPretty = mapGraphInterfaceWithNodePrinter (error "can not show nodes of this graph")
 
-mapGraphIWithNodePrinter :: Ord x => (x -> String) -> Graph.GraphI (MapGraph x) x
-mapGraphIWithNodePrinter prettyNode = Graph.interfaceFromSuccPredPretty
+mapGraphInterfaceWithNodePrinter :: Ord x => (x -> String) -> GI.GraphInterface (MapGraph x) x
+mapGraphInterfaceWithNodePrinter prettyNode = GI.interfaceFromSuccPredPretty
                                          domain successors predecessors
                                          (\_ n -> prettyNode n) 
 
@@ -45,45 +45,45 @@ successors mg v = fst $ succPredPair mg v
 predecessors :: Ord x => MapGraph x -> x -> Set x
 predecessors mg v = snd $ succPredPair mg v
 
-fromGraph :: Ord a => Graph.GraphI g a -> g -> MapGraph a
+fromGraph :: Ord a => GI.GraphInterface g a -> g -> MapGraph a
 fromGraph gi graph = 
-  assert (Graph.succPredInDom mapGraphINotPretty result) $
-  assert (Graph.succPredMatch mapGraphINotPretty result) result where
+  assert (GI.succPredInDom mapGraphInterfaceNotPretty result) $
+  assert (GI.succPredMatch mapGraphInterfaceNotPretty result) result where
     result = MapGraph spm
-    dom = Graph.domain gi graph
-    spmapping v = (Graph.successors gi graph v, Graph.predecessors gi graph v)
+    dom = GI.domain gi graph
+    spmapping v = (GI.successors gi graph v, GI.predecessors gi graph v)
     spm = Map.fromSet spmapping dom
 
-subgraph :: Ord a => Graph.GraphI g a -> g -> Set a -> MapGraph a
-subgraph gi g subdomain = assert (subdomain `isSubsetOf` Graph.domain gi g) $
-  assert (Graph.succPredInDom mapGraphINotPretty result) $
-  assert (Graph.succPredMatch mapGraphINotPretty result) result where
+subgraph :: Ord a => GI.GraphInterface g a -> g -> Set a -> MapGraph a
+subgraph gi g subdomain = assert (subdomain `isSubsetOf` GI.domain gi g) $
+  assert (GI.succPredInDom mapGraphInterfaceNotPretty result) $
+  assert (GI.succPredMatch mapGraphInterfaceNotPretty result) result where
     result = MapGraph spm
     dom = subdomain
-    spmapping v = (Graph.successors gi g v `Set.intersection` subdomain,
-                   Graph.predecessors gi g v `Set.intersection` subdomain)
+    spmapping v = (GI.successors gi g v `Set.intersection` subdomain,
+                   GI.predecessors gi g v `Set.intersection` subdomain)
     spm = Map.fromSet spmapping dom
 
-projection :: (Ord a, Ord b) => Graph.GraphI g a -> g -> (a -> b) -> MapGraph b
+projection :: (Ord a, Ord b) => GI.GraphInterface g a -> g -> (a -> b) -> MapGraph b
 projection gi g projection =
-  assert (Graph.succPredInDom mapGraphINotPretty result) $
-  assert (Graph.succPredMatch mapGraphINotPretty result) result where
+  assert (GI.succPredInDom mapGraphInterfaceNotPretty result) $
+  assert (GI.succPredMatch mapGraphInterfaceNotPretty result) result where
     result = MapGraph spm
-    oldDomain = Graph.domain gi g
+    oldDomain = GI.domain gi g
     dom = Set.map projection oldDomain
     preimage n = Set.filter (\m -> projection m == n) oldDomain
     mapper direction = SetExtra.concatMap (Set.map projection . direction gi g) . preimage
-    spmapping v = (mapper Graph.successors v, mapper Graph.predecessors v)
+    spmapping v = (mapper GI.successors v, mapper GI.predecessors v)
     spm = Map.fromSet spmapping dom
 
-applyBijection :: (Ord a, Ord b) => Graph.GraphI g a -> g -> (a -> b) -> MapGraph b
+applyBijection :: (Ord a, Ord b) => GI.GraphInterface g a -> g -> (a -> b) -> MapGraph b
 applyBijection gi g b =
-  assert (Graph.succPredInDom mapGraphINotPretty result) $
-  assert (Graph.succPredMatch mapGraphINotPretty result) result where
+  assert (GI.succPredInDom mapGraphInterfaceNotPretty result) $
+  assert (GI.succPredMatch mapGraphInterfaceNotPretty result) result where
     result = MapGraph nmg
-    oldDomain = Graph.domain gi g
+    oldDomain = GI.domain gi g
     mapper direction = Set.map b . direction gi g
-    spmapping v = (mapper Graph.successors v, mapper Graph.predecessors v)
+    spmapping v = (mapper GI.successors v, mapper GI.predecessors v)
     spm = Map.fromSet spmapping oldDomain
     nmg = Map.mapKeys b spm
 
@@ -97,7 +97,7 @@ addNodes g list = Prelude.foldl addNode g list
 addArc :: Ord x => MapGraph x -> (x,x) -> MapGraph x
 addArc (MapGraph map) (v,w) = assert (v `Map.member` map) $
                               assert (w `Map.member` map) $
-                              assert (Graph.hasArc mapGraphINotPretty res (v,w)) res where
+                              assert (GI.hasArc mapGraphInterfaceNotPretty res (v,w)) res where
   insw (ss,ps) = (Set.insert w ss, ps)
   insv (ss,ps) = (ss, Set.insert v ps)
   imap = Map.adjust insw v map
@@ -107,6 +107,5 @@ addArc (MapGraph map) (v,w) = assert (v `Map.member` map) $
 addArcs :: Ord x => MapGraph x -> [(x,x)] -> MapGraph x
 addArcs g list = Prelude.foldl addArc g list
 
-instance (Ord x, Pretty x) => Show (MapGraph x) where
-  show = Graph.showG mapGraphI
-
+instance (Ord x, PrettyNode x) => Show (MapGraph x) where
+  show = GI.showG mapGraphInterface

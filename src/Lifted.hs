@@ -10,7 +10,7 @@ module Lifted (
 
 import Control.Exception.Base (assert)
 
-import Pretty
+import PrettyNode
 
 data Lifted x = BaseNode x | Singleton (Lifted x)
                            | Doubleton (Lifted x) (Lifted x)
@@ -26,7 +26,7 @@ prettyLifted prettyBase (Doubleton u v) =
 instance Show x => Show (Lifted x) where
   show lifted = prettyLifted show lifted
 
-instance Pretty x => Pretty (Lifted x) where
+instance PrettyNode x => PrettyNode (Lifted x) where
   pretty lifted = prettyLifted pretty lifted
 
 bn :: x -> Lifted x

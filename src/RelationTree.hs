@@ -6,12 +6,12 @@ module RelationTree (
 import BitGraph
 import PairGraph
 import Data.Label
-import CommonLGraphTypes
+import CommonLabeledGraphTypes
 import WordTree
 
 type RelationTree = WordTree BitGraph
 
-relationTree :: (LBitGraph, Size) -> RelationTree
+relationTree :: (LabeledBitGraph, Size) -> RelationTree
 relationTree (lbg, s) = wordTreeFromGenerator generator where
   zeroRel = graphOfLabel lbg Zero
   oneRel  = graphOfLabel lbg One

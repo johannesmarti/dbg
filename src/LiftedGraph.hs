@@ -1,12 +1,12 @@
 module LiftedGraph (
   LiftedGraph,
-  intGraphI,
+  intGraphInterface,
   embed,
   graph,
   LiftedGraph.size,
-  fromLGraph,
-  fromLGraphWithCoding,
-  toLBitGraph,
+  fromLabeledGraph,
+  fromLabeledGraphWithCoding,
+  toLabeledBitGraph,
   liftCandidate,
   combine,
   prettyLiftedGraph,
@@ -29,11 +29,11 @@ import qualified Data.Set as Set
 
 import BitGraph (Size,fromArcs)
 import Coding hiding (domain)
-import CommonLGraphTypes
-import LabeledGraph
+import CommonLabeledGraphTypes
+import LabeledGraphInterface
 import Lifted
 import Tools (strictPairs)
-import Pretty (stdPrintSet)
+import PrettyNode (stdPrintSet)
 import PairGraph (fromFunction)
 
 data Justification x = Base x | Doubleton Int Int
@@ -50,10 +50,10 @@ doubleton a b = case compare a b of
   EQ -> error "Refuse to create doubleton justification of two equal numbers."
   GT -> doubleton' b a
 
-type IntGraph = LMapGraph Int
+type IntGraph = LabeledMapGraph Int
 
-intGraphI :: LabeledGraphI IntGraph Int
-intGraphI = lMapGraphI
+intGraphInterface :: LabeledGraphInterface IntGraph Int
+intGraphInterface = labeledMapGraphInterface
 
 data LiftedGraph x = LiftedGraph {
   graph         :: IntGraph,
@@ -63,7 +63,7 @@ data LiftedGraph x = LiftedGraph {
 }
 
 allJustified :: LiftedGraph x -> Bool
-allJustified lg = keysSet (justification lg) == domain intGraphI (graph lg)
+allJustified lg = keysSet (justification lg) == domain intGraphInterface (graph lg)
 
 justify :: LiftedGraph x -> Int -> Justification x
 justify lg node = assert (allJustified lg) $
@@ -72,7 +72,7 @@ justify lg node = assert (allJustified lg) $
     Nothing -> error "node is not in LiftedGraph"
 
 topNode :: LiftedGraph x -> Int
-topNode lg = case Set.lookupMax (domain intGraphI (graph lg)) of
+topNode lg = case Set.lookupMax (domain intGraphInterface (graph lg)) of
                Just m  ->  m
                Nothing -> -1
 
@@ -82,25 +82,25 @@ size = nextNode
 nextNode :: LiftedGraph x -> Int
 nextNode lg = topNode lg + 1
 
-fromLGraph :: Ord x => LabeledGraphI g x -> g -> LiftedGraph x
-fromLGraph gi g = fst (fromLGraphWithCoding gi g)
+fromLabeledGraph :: Ord x => LabeledGraphInterface g x -> g -> LiftedGraph x
+fromLabeledGraph gi g = fst (fromLabeledGraphWithCoding gi g)
 
-fromLGraphWithCoding :: Ord x => LabeledGraphI g x -> g
+fromLabeledGraphWithCoding :: Ord x => LabeledGraphInterface g x -> g
                                  -> (LiftedGraph x, Coding x Int)
-fromLGraphWithCoding gi g = (LiftedGraph intGraph just emb pb, coding) where
+fromLabeledGraphWithCoding gi g = (LiftedGraph intGraph just emb pb, coding) where
   coding = codeSet (domain gi g)
   emb = encode coding
-  intGraph = lMapApplyBijection gi g emb
-  just = fromSet justifyBase (domain intGraphI intGraph)
+  intGraph = labeledMapApplyBijection gi g emb
+  just = fromSet justifyBase (domain intGraphInterface intGraph)
   justifyBase i = base (decode coding i)
   pb = prettyNode gi g
 
-toLBitGraph :: LiftedGraph x -> (LBitGraph,Size)
-toLBitGraph lg = let
+toLabeledBitGraph :: LiftedGraph x -> (LabeledBitGraph,Size)
+toLabeledBitGraph lg = let
     s = LiftedGraph.size lg
     g = graph lg
   in (PairGraph.fromFunction (\l ->
-       BitGraph.fromArcs s (arcsOfLabel intGraphI g l)), s)
+       BitGraph.fromArcs s (arcsOfLabel intGraphInterface g l)), s)
 
 type LiftingCandidate = ((Set.Set Int, Set.Set Int), (Int,Int), (Set.Set Int, Set.Set Int))
 
@@ -142,15 +142,15 @@ computeCandidate g (a,b) =
    (a,b),
    (succ Zero a `Set.union` succ Zero b,
     succ One a `Set.union` succ One b)) where
-      succ = successors intGraphI g
-      pred = predecessors intGraphI g
+      succ = successors intGraphInterface g
+      pred = predecessors intGraphInterface g
 
 isVisible :: LiftingCandidate -> Bool
 isVisible can = not (Set.null $ extractPreds Zero can) && not (Set.null $ extractPreds One can)
 
 liftableCandidates :: IntGraph -> [LiftingCandidate]
 liftableCandidates g = let
-    domList = Set.toList $ domain intGraphI g
+    domList = Set.toList $ domain intGraphInterface g
     alldoubles = strictPairs domList
     candidates = filter isVisible (map (computeCandidate g) alldoubles)
   in candidates
@@ -171,11 +171,11 @@ liftCandidate can = state $ \lg ->
         reflexive = [(next,next) | u `Set.member` preds || v `Set.member` preds]
         ingoing = [(u,next) | u <- Set.toList preds]
         outgoing = [(next,u) | u <- Set.toList succs]
-        withReflexive = lMapAddArcs g l reflexive
-        withIngoing = lMapAddArcs withReflexive l ingoing
-        withAll = lMapAddArcs withIngoing l outgoing
+        withReflexive = labeledMapAddArcs g l reflexive
+        withIngoing = labeledMapAddArcs withReflexive l ingoing
+        withAll = labeledMapAddArcs withIngoing l outgoing
       in withAll
-    withNode = lMapAddNodes (graph lg) [next]
+    withNode = labeledMapAddNodes (graph lg) [next]
     newGraph = addForLabel One (addForLabel Zero withNode)
     newJustification = insert next (doubleton u v) (justification lg)
   in (next,LiftedGraph newGraph newJustification (embed lg) (printBase lg))
@@ -194,7 +194,7 @@ prettyLiftedGraph lg = let
       just (Base x) = "! " ++ printBase lg x
       just (Doubleton m n) = "[" ++ show m ++ " " ++ show n ++ "]"
     setPrinter i = show i
-  in prettierBigLabeledGraph intGraphI (graph lg) justifiedNodePrinter setPrinter
+  in prettierBigLabeledGraph intGraphInterface (graph lg) justifiedNodePrinter setPrinter
 
 instance Show (LiftedGraph x) where
   show lg = unlines $ prettyLiftedGraph lg
@@ -203,9 +203,9 @@ noFilter :: IntGraph -> LiftingCandidate -> Bool
 noFilter _ _ = True
 
 dominationFilter :: IntGraph -> LiftingCandidate -> Bool
-dominationFilter ig can = not $ any dominatesCan (domain intGraphI ig) where
-  pred = predecessors intGraphI ig
-  succ = successors intGraphI ig
+dominationFilter ig can = not $ any dominatesCan (domain intGraphInterface ig) where
+  pred = predecessors intGraphInterface ig
+  succ = successors intGraphInterface ig
   dominatesCan oldNode =
     extractSuccs Zero can `Set.isSubsetOf` succ Zero oldNode &&
     extractSuccs One  can `Set.isSubsetOf` succ One  oldNode &&
@@ -215,9 +215,9 @@ dominationFilter ig can = not $ any dominatesCan (domain intGraphI ig) where
 weakDominationFilter :: IntGraph -> LiftingCandidate -> Bool
 weakDominationFilter ig can = not $ (any (dominatesCan Zero) dom &&
                                      any (dominatesCan One) dom) where
-  pred = predecessors intGraphI ig
-  succ = successors intGraphI ig
-  dom = domain intGraphI ig
+  pred = predecessors intGraphInterface ig
+  succ = successors intGraphInterface ig
+  dom = domain intGraphInterface ig
   dominatesCan label oldNode =
     extractPreds Zero can `Set.isSubsetOf` pred Zero oldNode &&
     extractPreds One  can `Set.isSubsetOf` pred One  oldNode &&

@@ -22,12 +22,12 @@ source-repository head
 library
   exposed-modules:
       AssocGraph
-      Bitable
+      BitableInterface
       BitGraph
       Bitify
       CayleyGraph
       Coding
-      CommonLGraphTypes
+      CommonLabeledGraphTypes
       ConciseGraph
       ConstructionGraph
       CoveringGraph
@@ -44,23 +44,23 @@ library
       Examples.Patterns
       Examples.Plans
       ExecutePlan
-      Graph
+      GraphInterface
       HomomorphismSearch.AllocateWords
       HomomorphismSearch.ArcCons
       HomomorphismSearch.Homomorphism
       HomomorphismSearch.Search
       HomomorphismSearch.SmartSearch
-      LabeledGraph
+      LabeledGraphInterface
+      LabeledWrappedGraph
       Lifted
       LiftedGraph
       Lifting
       LiftingSearch
-      LWrappedGraph
       MapGraph
       PairGraph
       PathTree
       Plan
-      Pretty
+      PrettyNode
       Range
       RelationCache
       RelationTree
