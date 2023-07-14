@@ -14,7 +14,7 @@ import Bitable
 import BitGraph
 import Coding
 import Graph
-import Label
+import Data.Label
 import RelationTree
 import WordTree (labelOfWord)
 

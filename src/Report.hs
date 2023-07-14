@@ -7,11 +7,11 @@ import qualified Data.Set as Set
 import Data.List (maximumBy,intercalate,intersperse)
 
 import Word
-import Label
+import Data.Label
 import Bitable
 import LWrappedGraph
 import qualified WrappedGraph as WG
-import qualified Path
+import qualified Data.Path as Path
 import LabeledGraph
 import CommonLGraphTypes
 import CayleyGraph hiding (relationOfWord)

@@ -7,13 +7,13 @@ module PathTree (
   pathesOnPathTree,
 ) where
 
-import Control.Exception.Base
+import Control.Exception.Base ( assert )
 import qualified Data.Set as Set
 
 import RelationCache
 import Graph
-import Label
-import qualified Path
+import Data.Label
+import qualified Data.Path as Path
 
 
 -- Doing all of this with sets might be better!

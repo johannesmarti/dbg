@@ -21,8 +21,6 @@ source-repository head
 
 library
   exposed-modules:
-      AllocateWords
-      ArcCons
       AssocGraph
       Bitable
       BitGraph
@@ -33,16 +31,25 @@ library
       ConciseGraph
       ConstructionGraph
       CoveringGraph
+      Data.FiniteFunction
+      Data.Label
+      Data.Path
+      Data.TurningVector
+      Data.WordMaps.Algebraic
+      Data.WordMaps.Coalgebraic
+      Data.WordMaps.MapWrapper
       DeBruijnGraph
       DeterminismProperty
       Examples.Games
       Examples.Patterns
       Examples.Plans
       ExecutePlan
-      Function
       Graph
-      Homomorphism
-      Label
+      HomomorphismSearch.AllocateWords
+      HomomorphismSearch.ArcCons
+      HomomorphismSearch.Homomorphism
+      HomomorphismSearch.Search
+      HomomorphismSearch.SmartSearch
       LabeledGraph
       Lifted
       LiftedGraph
@@ -51,7 +58,6 @@ library
       LWrappedGraph
       MapGraph
       PairGraph
-      Path
       PathTree
       Plan
       Pretty
@@ -59,16 +65,10 @@ library
       RelationCache
       RelationTree
       Report
-      Search
       SearchTree
-      SmartSearch
       Spiral
       Tools
-      TurningVector
       Word
-      WordMap.Algebraic
-      WordMap.Coalgebraic
-      WordMap.MapWrapper
       WordTree
       WrappedGraph
   other-modules:

@@ -1,10 +1,10 @@
-module AllocateWords (
+module HomomorphismSearch.AllocateWords (
   isPossibleValue,
   firstLevelToAllocate,
 ) where
 
 import Word
-import Label
+import Data.Label
 import BitGraph
 
 isPossibleValue :: Size -> ([Label] -> BitGraph) -> [Label] -> Node -> Bool

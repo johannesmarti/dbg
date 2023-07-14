@@ -5,7 +5,7 @@ module RelationTree (
 
 import BitGraph
 import PairGraph
-import Label
+import Data.Label
 import CommonLGraphTypes
 import WordTree
 

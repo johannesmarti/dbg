@@ -1,4 +1,4 @@
-module Function (
+module Data.FiniteFunction (
   Function,
   domain,
   range,

@@ -2,9 +2,9 @@ module Main (
   main
 ) where
 
-import Plan
+import ExecutePlan
 import LiftedGraph
-import Label
+import Data.Label
 import Examples.Patterns
 import Examples.Plans
 

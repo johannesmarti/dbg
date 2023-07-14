@@ -6,7 +6,7 @@ import qualified Data.Set as Set
 import System.Environment
 
 import CoveringGraph
-import Label
+import Data.Label
 import Word
 
 a :: [Label]

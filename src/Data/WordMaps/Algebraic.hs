@@ -1,17 +1,17 @@
-module WordMap.Algebraic (
+module Data.WordMaps.Algebraic (
   WordMap,
   empty,
   combine,
   inDomain,
   forceLookup,
-  WordMap.Algebraic.lookup,
+  Data.WordMaps.Algebraic.lookup,
   insert,
   delete,
 ) where
 
 import Data.Maybe (fromMaybe,isJust)
 
-import Label
+import Data.Label
 
 data WordMap x = Empty | Branch (Maybe x) (WordMap x) (WordMap x)
 
@@ -22,17 +22,17 @@ combine :: x -> WordMap x -> WordMap x -> WordMap x
 combine lbl left right = Branch (Just lbl) left right
 
 inDomain :: [Label] -> WordMap x -> Bool
-inDomain word wm = isJust $ WordMap.Algebraic.lookup word wm
+inDomain word wm = isJust $ Data.WordMaps.Algebraic.lookup word wm
 
 forceLookup :: [Label] -> WordMap x -> x
-forceLookup key m = fromMaybe err (WordMap.Algebraic.lookup key m) where
+forceLookup key m = fromMaybe err (Data.WordMaps.Algebraic.lookup key m) where
   err = error $ "node " ++ show key ++ " not in WordMap"
 
 lookup :: [Label] -> WordMap x -> Maybe x
 lookup _ Empty = Nothing
 lookup [] (Branch lbl _ _) = lbl
-lookup (Zero:rest) (Branch _ left  _) = WordMap.Algebraic.lookup rest left
-lookup (One :rest) (Branch _ _ right) = WordMap.Algebraic.lookup rest right
+lookup (Zero:rest) (Branch _ left  _) = Data.WordMaps.Algebraic.lookup rest left
+lookup (One :rest) (Branch _ _ right) = Data.WordMaps.Algebraic.lookup rest right
 
 insert :: [Label] -> x -> WordMap x -> WordMap x
 insert []          value Empty = Branch (Just value) Empty Empty

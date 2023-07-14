@@ -6,9 +6,9 @@ import System.Environment
 import Data.Maybe (listToMaybe)
 
 import CoveringGraph
-import Label
+import Data.Label
 import Word
-import Path (labelList)
+import Data.Path (labelList)
 
 addressPrinter :: CoveringNode -> String
 addressPrinter node = 

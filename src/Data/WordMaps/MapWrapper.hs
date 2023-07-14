@@ -1,10 +1,10 @@
-module WordMap.MapWrapper (
+module Data.WordMaps.MapWrapper (
   WordMap,
   empty,
   combine,
   inDomain,
   forceLookup,
-  WordMap.MapWrapper.lookup,
+  Data.WordMaps.MapWrapper.lookup,
   insert,
   delete,
 ) where
@@ -12,7 +12,7 @@ module WordMap.MapWrapper (
 import qualified Data.Map.Strict as Map
 import Data.Maybe (fromMaybe)
 
-import Label
+import Data.Label
 
 type WordMap x = Map.Map [Label] x
 
@@ -28,7 +28,7 @@ inDomain :: [Label] -> WordMap x -> Bool
 inDomain = Map.member
 
 forceLookup :: [Label] -> WordMap x -> x
-forceLookup key m = fromMaybe err (WordMap.MapWrapper.lookup key m) where
+forceLookup key m = fromMaybe err (Data.WordMaps.MapWrapper.lookup key m) where
   err = error $ "node " ++ show key ++ " not in WordMap"
 
 lookup :: [Label] -> WordMap x -> Maybe x

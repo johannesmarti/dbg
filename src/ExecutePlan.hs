@@ -1,5 +1,5 @@
 {-# LANGUAGE FlexibleContexts #-} -- This is enabled because of issues with the State monad below
-module ExcecutePlan (
+module ExecutePlan (
   executePlan,
   wrapSpiral,
 ) where
@@ -15,8 +15,8 @@ import LabeledGraph
 import LiftedGraph
 import Plan
 
-import WordMap.Algebraic as WordMap
-import qualified TurningVector as TV
+import Data.WordMaps.Algebraic as WordMap
+import qualified Data.TurningVector as TV
 
 {-
  We have a WordTree that maps addresses of Covering nodes to a pointed set. The

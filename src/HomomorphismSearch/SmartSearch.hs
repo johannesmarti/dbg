@@ -1,4 +1,4 @@
-module SmartSearch (
+module HomomorphismSearch.SmartSearch (
   Result(..),
   searchUpTo,
   subPathCondition,
@@ -7,8 +7,8 @@ module SmartSearch (
 import qualified Data.Set as Set
 import qualified Data.Map.Strict as Map
 
-import AllocateWords
-import ArcCons
+import HomomorphismSearch.AllocateWords
+import HomomorphismSearch.ArcCons
 import Bitable
 import CommonLGraphTypes
 import BitGraph (Node,Size,nodesSet)
@@ -17,7 +17,7 @@ import RelationCache
 import CayleyGraph hiding (domain, relationOfWord)
 import DeBruijnGraph
 import LabeledGraph
-import Homomorphism
+import HomomorphismSearch.Homomorphism
 import DeterminismProperty
 import Coding hiding (domain)
 

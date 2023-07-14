@@ -6,7 +6,7 @@ import Data.Map as Map
 import Data.Set as Set
 import Test.Hspec
 
-import ArcCons
+import HomomorphismSearch.ArcCons
 import DeBruijnGraph
 import LabeledGraph
 import CommonLGraphTypes

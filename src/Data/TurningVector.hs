@@ -1,4 +1,4 @@
-module TurningVector (
+module Data.TurningVector (
   offset,vector,
   fromVectorWithIndex,
   fromList,
@@ -76,8 +76,8 @@ zipVectorWithList f vec list = let
 zipReverseWithListM :: Monad m => (x -> a -> m x) -> TurningVector x -> [a]
                                -> m (TurningVector x)
 zipReverseWithListM f input list = do
-  reverseOutput <- zipWithListM f (TurningVector.reverse input) list
-  return (TurningVector.reverse reverseOutput)
+  reverseOutput <- zipWithListM f (Data.TurningVector.reverse input) list
+  return (Data.TurningVector.reverse reverseOutput)
 
 zipWithListM :: Monad m => (x -> a -> m x) -> TurningVector x -> [a]
                            -> m (TurningVector x)

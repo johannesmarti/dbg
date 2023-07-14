@@ -1,17 +1,17 @@
-module WordMap.Coalgebraic (
+module Data.WordMaps.Coalgebraic (
   WordMap,
   empty,
   combine,
   inDomain,
   forceLookup,
-  WordMap.Coalgebraic.lookup,
+  Data.WordMaps.Coalgebraic.lookup,
   insert,
   delete,
 ) where
 
 import Data.Maybe (fromMaybe,isJust)
 
-import Label
+import Data.Label
 import WordTree
 
 type WordMap x = WordTree (Maybe x)
@@ -24,10 +24,10 @@ combine :: x -> WordMap x -> WordMap x -> WordMap x
 combine lbl left right = WordTreeNode (Just lbl) left right
 
 inDomain :: [Label] -> WordMap x -> Bool
-inDomain word wm = isJust $ WordMap.Coalgebraic.lookup word wm
+inDomain word wm = isJust $ Data.WordMaps.Coalgebraic.lookup word wm
 
 forceLookup :: [Label] -> WordMap x -> x
-forceLookup key m = fromMaybe err (WordMap.Coalgebraic.lookup key m) where
+forceLookup key m = fromMaybe err (Data.WordMaps.Coalgebraic.lookup key m) where
   err = error $ "node " ++ show key ++ " not in WordMap"
 
 lookup :: [Label] -> WordMap x -> Maybe x

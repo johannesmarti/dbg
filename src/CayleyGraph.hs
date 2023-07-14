@@ -18,7 +18,7 @@ import Data.List.Ordered
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 
-import Label
+import Data.Label
 import BitGraph
 import PairGraph
 import Bitable

@@ -1,4 +1,4 @@
-module ArcCons (
+module HomomorphismSearch.ArcCons (
   Approx,
   isPossible,
   hasSplit,
@@ -11,9 +11,9 @@ import Data.Set as Set
 import Data.List
 import Data.Maybe (maybeToList)
 
-import Function
+import Data.FiniteFunction
 import LabeledGraph
-import Homomorphism
+import HomomorphismSearch.Homomorphism
 
 type Approx x y = Map x (Set y)
 

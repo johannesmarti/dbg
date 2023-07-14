@@ -11,7 +11,7 @@ import qualified Data.Set as Set
 import qualified Data.Set.Extra as SE
 import Data.List (intercalate, intersperse)
 
-import Label
+import Data.Label
 import LabeledGraph
 import Tools (strictPairs)
 

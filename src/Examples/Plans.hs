@@ -6,7 +6,7 @@ module Examples.Plans (
 
 
 import Plan
-import Label
+import Data.Label
 
 force3dPlan :: Plan Char
 force3dPlan =

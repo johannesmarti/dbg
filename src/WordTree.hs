@@ -10,7 +10,7 @@ module WordTree (
   setWord,
 ) where
 
-import Label
+import Data.Label
 
 data WordTreeGenerator d = WordTreeGenerator {
   start :: d,

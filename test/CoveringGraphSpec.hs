@@ -5,8 +5,8 @@ module CoveringGraphSpec (
 import Test.Hspec
 
 import CoveringGraph
-import Label
-import Path (labelList)
+import Data.Label
+import Data.Path (labelList)
 
 spec :: Spec
 spec = do

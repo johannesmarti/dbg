@@ -1,6 +1,6 @@
-module Label (
+module Data.Label (
   Label(..),
-  Arc(..),
+  Arc,
   labelsList,
   labels,
   labelToSymbol,

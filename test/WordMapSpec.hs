@@ -4,10 +4,10 @@ module WordMapSpec (
 
 import Test.Hspec
 
-import Label
-import qualified WordMap.Algebraic as Algebraic
-import qualified WordMap.Coalgebraic as Coalgebraic
-import qualified WordMap.MapWrapper as MapWrapper
+import Data.Label
+import qualified Data.WordMaps.Algebraic as Algebraic
+import qualified Data.WordMaps.Coalgebraic as Coalgebraic
+import qualified Data.WordMaps.MapWrapper as MapWrapper
 
 data WordMapI m x = WordMapI {
   empty   :: m,

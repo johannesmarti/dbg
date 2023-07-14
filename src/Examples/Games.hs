@@ -32,7 +32,7 @@ import Report
 import Examples.Patterns
 import Bitable
 
-import Label
+import Data.Label
 import Spiral
 
 game = gameStudy

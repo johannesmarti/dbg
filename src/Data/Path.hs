@@ -1,4 +1,4 @@
-module Path (
+module Data.Path (
   Path(..),
   start,
   labelList,
@@ -8,7 +8,7 @@ module Path (
   prettyReversePath,
 ) where
 
-import Label
+import Data.Label
 
 data Path a = There a | Step a Label (Path a)
   deriving (Eq,Show)

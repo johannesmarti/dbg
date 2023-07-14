@@ -6,16 +6,16 @@ module Range (
 import qualified Data.Set as Set
 import System.Environment 
 
-import AllocateWords
+import HomomorphismSearch.AllocateWords
 import Bitable
 import LWrappedGraph
 import CayleyGraph
-import ArcCons
+import HomomorphismSearch.ArcCons
 import BitGraph
 import ConciseGraph
 import DeterminismProperty
-import Search
-import SmartSearch as SS
+import HomomorphismSearch.Search
+import HomomorphismSearch.SmartSearch as SS
 import CommonLGraphTypes
 import LabeledGraph
 import Pretty

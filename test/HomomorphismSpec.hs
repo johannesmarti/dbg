@@ -8,7 +8,7 @@ import Test.Hspec
 import DeBruijnGraph
 import LabeledGraph
 import CommonLGraphTypes
-import Homomorphism
+import HomomorphismSearch.Homomorphism
 import Examples.Patterns
 
 spec :: Spec

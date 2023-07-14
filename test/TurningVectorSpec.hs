@@ -4,7 +4,7 @@ module TurningVectorSpec (
 
 import Test.Hspec
 
-import qualified TurningVector as TV
+import qualified Data.TurningVector as TV
 
 
 spec :: Spec

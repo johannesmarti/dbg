@@ -11,7 +11,8 @@ import qualified Data.Vector as V
 import Examples.Patterns
 import Examples.Plans
 import Plan
-import Label
+import ExecutePlan
+import Data.Label
 import LabeledGraph
 import LiftedGraph
 

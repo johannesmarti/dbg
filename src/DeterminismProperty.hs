@@ -21,7 +21,7 @@ import Control.Exception
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 
-import Function hiding (domain)
+import Data.FiniteFunction hiding (domain)
 import LabeledGraph
 
 type Partition a = Function a a

@@ -7,13 +7,13 @@ import Data.Set as Set
 
 import Report
 import Examples.Patterns
-import Label
+import Data.Label
 import Spiral
 import ConstructionGraph
 import DeBruijnGraph
 import LabeledGraph
 
-import qualified SmartSearch as SS
+import qualified HomomorphismSearch.SmartSearch as SS
 
 
 main :: IO ()

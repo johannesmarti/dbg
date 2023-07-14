@@ -24,7 +24,7 @@ import Control.Exception.Base
 import Data.Set as Set
 import Data.Tuple (swap)
 
-import Label
+import Data.Label
 import Pretty
 import Tools
 

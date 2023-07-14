@@ -1,4 +1,3 @@
-{-# LANGUAGE FlexibleContexts #-} -- This is enabled because of issues with the State monad below
 module Plan (
   Spoke,
   hub,
@@ -16,8 +15,9 @@ module Plan (
 -- TODO: Should we use the strict or the lazy state monad? Need to read up!
 import qualified Data.Map.Strict as M
 
-import WordMap.Algebraic as WordMap
-import Label
+import CoveringGraph
+import Data.WordMaps.Algebraic as WordMap
+import Data.Label
 
 {-
  We have a WordTree that maps addresses of Covering nodes to a pointed set. The
@@ -36,7 +36,7 @@ spoke h p = Spoke h (M.insert h 0 (M.fromList p))
 
 pointsAtDistance :: Int -> Spoke x -> [x]
 pointsAtDistance distance =
-  map fst . filter (\(p,d) -> d == distance) . M.toList . points
+  map fst . filter (\(_,d) -> d == distance) . M.toList . points
 
 maximalDistance :: Spoke x -> Int
 maximalDistance = maximum . M.elems . points

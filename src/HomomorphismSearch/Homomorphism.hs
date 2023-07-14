@@ -1,4 +1,4 @@
-module Homomorphism (
+module HomomorphismSearch.Homomorphism (
   HomomorphismSearch,
   isHomomorphism,
   searchHomomorphisms,
@@ -6,10 +6,9 @@ module Homomorphism (
 ) where
 
 import Control.Exception.Base
-import Data.Map.Strict as Map
 import Data.Set as Set
 
-import Function
+import Data.FiniteFunction as Function
 import LabeledGraph
 
 type HomomorphismSearch g1 g2 x y = g1 -> g2 -> [Function x y]

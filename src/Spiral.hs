@@ -10,7 +10,7 @@ import qualified Data.Set as Set
 import qualified Data.Set.Extra as SE
 import Data.List (intercalate, sortOn)
 
-import Label
+import Data.Label
 import LabeledGraph
 
 data Spiral a = Spiral {

@@ -15,10 +15,8 @@ module CoveringGraph (
 import Control.Exception.Base
 import Data.Function (fix)
 
-import Debug.Trace
-
-import Label
-import Path
+import Data.Label
+import Data.Path as Path
 import Word
 import WordTree
 

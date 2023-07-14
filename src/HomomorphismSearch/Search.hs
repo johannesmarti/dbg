@@ -1,11 +1,11 @@
-module Search (
+module HomomorphismSearch.Search (
   searchDbgHomomorphism,
 ) where
 
-import ArcCons
+import HomomorphismSearch.ArcCons
 import DeBruijnGraph
 import LabeledGraph
-import Homomorphism
+import HomomorphismSearch.Homomorphism
 
 data LargeNumber = IsNumber Int | LargerThan Int
 
