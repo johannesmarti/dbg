@@ -6,8 +6,6 @@ module BitableInterface (
   genericBitableInterface,
 ) where
 
-import Data.Set as Set
-
 import Bitify
 import BitGraph
 import Coding

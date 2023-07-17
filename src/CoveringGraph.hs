@@ -18,7 +18,7 @@ import Data.Function (fix)
 import Data.Label
 import Data.Path as Path
 import Word
-import WordTree
+import Data.WordTree
 
 data CoveringNode = CoveringNode {
   turningWord :: [Label], -- turningWord determines the other data members

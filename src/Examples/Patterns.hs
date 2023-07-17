@@ -186,7 +186,7 @@ slowLifting = fromOldCode 4966674
 slowLiftingInterface :: LabeledGraphInterface ConciseGraph Node
 slowLiftingInterface = conciseGraphInterface 4
 
-{- Here it seems where hard to find a homo -}
+{- Here it seems hard to find a homo -}
 difficult :: ConciseGraph
 difficult = fromOldCode 2063974806
 difficultInterface :: LabeledGraphInterface ConciseGraph Node

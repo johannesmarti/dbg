@@ -16,7 +16,7 @@ import Coding
 import GraphInterface
 import Data.Label
 import RelationTree
-import WordTree (labelOfWord)
+import Data.WordTree (labelOfWord)
 
 data RelationCache r x = RelationCache {
   outputType :: GraphInterface r x,

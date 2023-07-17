@@ -12,7 +12,7 @@ module Data.WordMaps.Coalgebraic (
 import Data.Maybe (fromMaybe,isJust)
 
 import Data.Label
-import WordTree
+import Data.WordTree
 
 type WordMap x = WordTree (Maybe x)
 

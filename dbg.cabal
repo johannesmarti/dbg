@@ -34,10 +34,12 @@ library
       Data.FiniteFunction
       Data.Label
       Data.Path
+      Data.PathTree
       Data.TurningVector
       Data.WordMaps.Algebraic
       Data.WordMaps.Coalgebraic
       Data.WordMaps.MapWrapper
+      Data.WordTree
       DeBruijnGraph
       DeterminismProperty
       Examples.Games
@@ -58,7 +60,6 @@ library
       LiftingSearch
       MapGraph
       PairGraph
-      PathTree
       Plan
       PrettyNode
       Range
@@ -69,7 +70,6 @@ library
       Spiral
       Tools
       Word
-      WordTree
       WrappedGraph
   other-modules:
       Paths_dbg

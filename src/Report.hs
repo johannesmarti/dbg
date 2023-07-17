@@ -16,7 +16,7 @@ import CayleyGraph hiding (relationOfWord)
 import Coding
 import RelationCache
 import DeterminismProperty
-import PathTree
+import Data.PathTree
 import Spiral
 
 

@@ -1,4 +1,4 @@
-module WordTree (
+module Data.WordTree (
   WordTreeGenerator(..),
   WordTree(..),
   wordTreeFromGenerator,

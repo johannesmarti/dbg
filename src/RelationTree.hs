@@ -7,7 +7,7 @@ import BitGraph
 import PairGraph
 import Data.Label
 import CommonLabeledGraphTypes
-import WordTree
+import Data.WordTree
 
 type RelationTree = WordTree BitGraph
 
