@@ -1,4 +1,4 @@
-module MapGraph (
+module Graphs.MapGraph (
   MapGraph,
   mapGraphInterface, mapGraphInterfaceNotPretty, mapGraphInterfaceWithNodePrinter,
   fromGraph,
@@ -16,8 +16,8 @@ import Data.Map.Strict as Map
 import Data.Set as Set
 import Data.Set.Extra as SetExtra
 
-import qualified GraphInterface as GI
-import PrettyNode
+import qualified Graphs.GraphInterface as GI
+import Graphs.PrettyNode
 
 newtype MapGraph x = MapGraph { succPredMap :: Map x (Set x, Set x) }
 

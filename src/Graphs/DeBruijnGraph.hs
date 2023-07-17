@@ -1,4 +1,4 @@
-module DeBruijnGraph (
+module Graphs.DeBruijnGraph (
   DBG,
   dbg,
   dbgInterface,
@@ -6,12 +6,13 @@ module DeBruijnGraph (
 ) where
 
 import Control.Exception.Base
+import Data.Label
 import Data.Bits
 import Data.Char (intToDigit)
 import Data.Set as Set
 import Numeric (showHex, showIntAtBase)
 
-import LabeledGraphInterface hiding (domain,successors,predecessors)
+import Graphs.LabeledGraphInterface hiding (domain,successors,predecessors)
 
 type Dimension = Int
 type Node = Word
@@ -26,7 +27,7 @@ dbgInterface :: LabeledGraphInterface DBG Node
 dbgInterface = iFromSuccPredPretty domain successors predecessors nodePrinter
 
 domain :: DBG -> Set Node
-domain (DBG dim) = fromList [zeroes .. (DeBruijnGraph.mask dim)]
+domain (DBG dim) = fromList [zeroes .. (Graphs.DeBruijnGraph.mask dim)]
 
 successors :: DBG -> MapFunction Node
 successors (DBG dim) Zero n = assert (isNode dim n) $
@@ -52,10 +53,10 @@ size :: Dimension -> Node
 size dimension = shift 1 dimension
 
 mask :: Dimension -> Node
-mask dimension = (DeBruijnGraph.size dimension) - 1
+mask dimension = (Graphs.DeBruijnGraph.size dimension) - 1
 
 isNode :: Dimension -> Node -> Bool
-isNode dimension node = node < DeBruijnGraph.size dimension
+isNode dimension node = node < Graphs.DeBruijnGraph.size dimension
 
 isOneNode :: Dimension -> Node -> Bool
 isOneNode dimension node = testBit node (dimension - 1)
@@ -64,7 +65,7 @@ isZeroNode :: Dimension -> Node -> Bool
 isZeroNode dimension node = not (isOneNode dimension node)
 
 succZero :: Dimension -> Node -> Node
-succZero dimension node = (shift node 1) .&. (DeBruijnGraph.mask dimension)
+succZero dimension node = (shift node 1) .&. (Graphs.DeBruijnGraph.mask dimension)
 
 succOne :: Dimension -> Node -> Node
 succOne dimension node = setBit (succZero dimension node) 0

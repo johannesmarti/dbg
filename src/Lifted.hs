@@ -10,7 +10,7 @@ module Lifted (
 
 import Control.Exception.Base (assert)
 
-import PrettyNode
+import Graphs.PrettyNode
 
 data Lifted x = BaseNode x | Singleton (Lifted x)
                            | Doubleton (Lifted x) (Lifted x)

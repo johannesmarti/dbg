@@ -5,11 +5,12 @@ module MapGraphSpec (
 import Data.Set as Set
 import Test.Hspec
 
-import CommonLabeledGraphTypes
-import LabeledGraphInterface
-import MapGraph
-import qualified GraphInterface as GI
-import PairGraph
+import Data.Label
+import Graphs.CommonLabeledGraphTypes
+import Graphs.LabeledGraphInterface
+import Graphs.MapGraph
+import qualified Graphs.GraphInterface as GI
+import Graphs.PairGraph
 
 f1 Zero = [(1,2),(1,1),(2,5)]
 f1 One = [(5,5)]

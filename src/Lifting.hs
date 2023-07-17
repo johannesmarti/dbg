@@ -16,11 +16,12 @@ import Control.Exception.Base (assert)
 import qualified Data.Set as Set
 import qualified Data.List.Extra as ListExtra
 
-import CommonLabeledGraphTypes
-import LabeledGraphInterface
+import Graphs.CommonLabeledGraphTypes
+import Graphs.LabeledGraphInterface
 import Lifted
-import PrettyNode
+import Graphs.PrettyNode
 import Tools (strictPairs)
+import Data.Label
 
 type LiftedGraph x = LabeledMapGraph (Lifted x)
 

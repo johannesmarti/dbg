@@ -5,8 +5,9 @@ module Main (
 --import System.Environment 
 
 import Examples.Patterns
-import LabeledGraphInterface
+import Graphs.LabeledGraphInterface
 import Report
+import Data.Label
 
 wordList = [[Zero,Zero,Zero,Zero,One]
          ] 

@@ -6,7 +6,7 @@ module LabeledWrappedGraph (
 import qualified Data.Set as Set
 
 import Coding
-import LabeledGraphInterface
+import Graphs.LabeledGraphInterface
 
 data LabeledWrappedGraph g x y = LabeledWrappedGraph {
   innerGraph :: g,

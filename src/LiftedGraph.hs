@@ -27,14 +27,15 @@ import Control.Monad.State.Lazy
 import Data.Map.Strict as Map hiding (filter, map)
 import qualified Data.Set as Set
 
-import BitGraph (Size,fromArcs)
+import Data.Label
+import Graphs.BitGraph (Size,fromArcs)
 import Coding hiding (domain)
-import CommonLabeledGraphTypes
-import LabeledGraphInterface
+import Graphs.CommonLabeledGraphTypes
+import Graphs.LabeledGraphInterface
 import Lifted
 import Tools (strictPairs)
-import PrettyNode (stdPrintSet)
-import PairGraph (fromFunction)
+import Graphs.PrettyNode (stdPrintSet)
+import Graphs.PairGraph (fromFunction)
 
 data Justification x = Base x | Doubleton Int Int
 
@@ -99,8 +100,8 @@ toLabeledBitGraph :: LiftedGraph x -> (LabeledBitGraph,Size)
 toLabeledBitGraph lg = let
     s = LiftedGraph.size lg
     g = graph lg
-  in (PairGraph.fromFunction (\l ->
-       BitGraph.fromArcs s (arcsOfLabel intGraphInterface g l)), s)
+  in (Graphs.PairGraph.fromFunction (\l ->
+       Graphs.BitGraph.fromArcs s (arcsOfLabel intGraphInterface g l)), s)
 
 type LiftingCandidate = ((Set.Set Int, Set.Set Int), (Int,Int), (Set.Set Int, Set.Set Int))
 

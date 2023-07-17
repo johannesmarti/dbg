@@ -12,7 +12,7 @@ import qualified Data.Set.Extra as SE
 import Data.List (intercalate, intersperse)
 
 import Data.Label
-import LabeledGraphInterface
+import Graphs.LabeledGraphInterface
 import Tools (strictPairs)
 
 constructionGraphInterface :: Ord x => LabeledGraphInterface g x -> LabeledGraphInterface g (x,x)

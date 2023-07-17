@@ -11,7 +11,7 @@ import qualified Data.Vector as V
 import Data.Maybe (fromMaybe)
 
 import CoveringGraph
-import LabeledGraphInterface
+import Graphs.LabeledGraphInterface
 import LiftedGraph
 import Plan
 

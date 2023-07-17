@@ -1,6 +1,4 @@
-module LabeledGraphInterface (
-  Label(..),
-  labels,
+module Graphs.LabeledGraphInterface (
   Arc,
   LabeledGraphInterface,
   MapFunction,
@@ -25,7 +23,7 @@ import Data.Set as Set
 import Data.Tuple (swap)
 
 import Data.Label
-import PrettyNode
+import Graphs.PrettyNode
 
 
 type MapFunction x = Label -> x -> Set x

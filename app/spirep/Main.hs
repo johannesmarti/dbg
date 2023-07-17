@@ -10,8 +10,8 @@ import Examples.Patterns
 import Data.Label
 import Spiral
 import ConstructionGraph
-import DeBruijnGraph
-import LabeledGraphInterface
+import Graphs.DeBruijnGraph
+import Graphs.LabeledGraphInterface
 
 import qualified HomomorphismSearch.SmartSearch as SS
 

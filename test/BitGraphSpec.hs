@@ -4,7 +4,7 @@ module BitGraphSpec (
 
 import Test.Hspec
 
-import BitGraph
+import Graphs.BitGraph
 
 spec :: Spec
 spec = do

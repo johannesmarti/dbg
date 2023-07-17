@@ -10,15 +10,15 @@ import Control.Exception.Base
 import Data.List (maximumBy)
 import qualified Data.Set as Set
 
-import CommonLabeledGraphTypes
-import BitGraph
+import Graphs.CommonLabeledGraphTypes
+import Graphs.BitGraph
 import Coding
-import ConciseGraph
-import GraphInterface
-import LabeledGraphInterface as LGI
+import Graphs.ConciseGraph
+import Graphs.GraphInterface as GI
+import Graphs.LabeledGraphInterface as LGI
 import WrappedGraph
 import LabeledWrappedGraph
-import PairGraph
+import Graphs.PairGraph
 
 type BityGraph x = WrappedGraph BitGraph Node x
 type LabeledBityGraph x = LabeledWrappedGraph LabeledBitGraph Node x
@@ -32,19 +32,19 @@ labeledBityGraphInterface s = labeledWrappedGraphInterface (labeledBitGraphInter
 bitify :: Ord x => GraphInterface g x -> g -> (BityGraph x, Size)
 bitify gi g = (wrappedGraph,size) where
   wrappedGraph = WrappedGraph bg c printer
-  bg = BitGraph.fromArcs size newArcs
-  oldDom = GraphInterface.domain gi g
+  bg = Graphs.BitGraph.fromArcs size newArcs
+  oldDom = GI.domain gi g
   c = codeSet oldDom
-  printer = GraphInterface.prettyNode gi g
+  printer = GI.prettyNode gi g
   size = Set.size oldDom
-  newArcs = map enc (GraphInterface.arcs gi g)
+  newArcs = map enc (GI.arcs gi g)
   enc (u,v) = (encode c u, encode c v)
 
 labeledBitify :: Ord x => LabeledGraphInterface g x -> g -> (LabeledBityGraph x, Size)
 labeledBitify gi g = (wrappedGraph, size) where
   wrappedGraph = LabeledWrappedGraph lbg c printer
-  bitGraphPerLabel l = BitGraph.fromArcs size (newArcs l)
-  lbg = PairGraph.fromFunction bitGraphPerLabel
+  bitGraphPerLabel l = Graphs.BitGraph.fromArcs size (newArcs l)
+  lbg = Graphs.PairGraph.fromFunction bitGraphPerLabel
   oldDom = LGI.domain gi g
   c = codeSet oldDom
   printer = LGI.prettyNode gi g

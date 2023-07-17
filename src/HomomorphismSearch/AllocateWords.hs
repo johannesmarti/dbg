@@ -5,7 +5,7 @@ module HomomorphismSearch.AllocateWords (
 
 import Word
 import Data.Label
-import BitGraph
+import Graphs.BitGraph
 
 isPossibleValue :: Size -> ([Label] -> BitGraph) -> [Label] -> Node -> Bool
 isPossibleValue size relOfWord word node =

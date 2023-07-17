@@ -1,4 +1,4 @@
-module ConciseGraph (
+module Graphs.ConciseGraph (
   ConciseGraph,
   conciseGraphInterface,
   Size,
@@ -14,7 +14,7 @@ module ConciseGraph (
   hasBitForArc,
   setBitForArc,
   isNode,
-  allabeledGraphsOfSize,
+  allLabeledGraphsOfSize,
   totalabeledGraph,
   relationOfLabel,
   hasBothFp,
@@ -27,11 +27,12 @@ import Control.Exception.Base
 import Data.Bits
 import qualified Data.Set as Set
 
-import BitGraph (BitGraph,Node,Size,nodes)
-import PairGraph
-import CommonLabeledGraphTypes
-import LabeledGraphInterface
-import PrettyNode
+import Graphs.BitGraph (BitGraph,Node,Size,nodes)
+import Graphs.PairGraph
+import Graphs.CommonLabeledGraphTypes
+import Graphs.LabeledGraphInterface
+import Graphs.PrettyNode
+import Data.Label
 
 type ConciseGraph = Integer
 
@@ -88,7 +89,7 @@ fromLabeledBitGraph s bg =
   in cg
 
 toLabeledBitGraph :: Size -> ConciseGraph -> LabeledBitGraph
-toLabeledBitGraph size cg = PairGraph.fromFunction (relationOfLabel size cg)
+toLabeledBitGraph size cg = Graphs.PairGraph.fromFunction (relationOfLabel size cg)
 
 nullConciseGraph :: ConciseGraph
 nullConciseGraph = zeroBits
@@ -100,8 +101,8 @@ totalabeledGraph :: Size -> ConciseGraph
 totalabeledGraph size =
   (shiftL 1 (numBits size)) - 1
 
-allabeledGraphsOfSize :: Size -> [ConciseGraph]
-allabeledGraphsOfSize n = [nullConciseGraph .. totalabeledGraph n]
+allLabeledGraphsOfSize :: Size -> [ConciseGraph]
+allLabeledGraphsOfSize n = [nullConciseGraph .. totalabeledGraph n]
 
 isValidBitset :: Size -> ConciseGraph -> Bool
 isValidBitset size bitset = bitset <= totalabeledGraph size

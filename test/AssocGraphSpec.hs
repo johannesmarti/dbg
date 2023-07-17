@@ -5,8 +5,9 @@ module AssocGraphSpec (
 import Data.Set as Set
 import Test.Hspec
 
-import CommonLabeledGraphTypes
-import LabeledGraphInterface
+import Data.Label
+import Graphs.CommonLabeledGraphTypes
+import Graphs.LabeledGraphInterface
 
 f1 Zero = [(1,2),(1,1),(2,5)]
 f1 One = [(5,5)]

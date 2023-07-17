@@ -6,11 +6,12 @@ module BitifySpec (
 import qualified Data.Set as Set
 import Test.Hspec
 
-import BitGraph
+import Data.Label
+import Graphs.BitGraph
 import Bitify
-import LabeledGraphInterface
+import Graphs.LabeledGraphInterface
 import Examples.Patterns
-import CommonLabeledGraphTypes
+import Graphs.CommonLabeledGraphTypes
 import LabeledWrappedGraph
 
 

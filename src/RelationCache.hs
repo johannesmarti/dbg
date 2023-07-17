@@ -11,9 +11,9 @@ module RelationCache (
 import Data.Set
 
 import BitableInterface
-import BitGraph
+import Graphs.BitGraph
 import Coding
-import GraphInterface
+import Graphs.GraphInterface
 import Data.Label
 import RelationTree
 import Data.WordTree (labelOfWord)
@@ -33,5 +33,5 @@ relationTreeRelationCacheableInterface :: BitableInterface g x -> RelationCachab
 relationTreeRelationCacheableInterface bi g = RelationCache bgi rum rw where
   Bitification s lbg c bgi = bi g
   rt = relationTree (lbg,s)
-  rum = decodeSet c . BitGraph.reflexivesUnivInMultiple s
+  rum = decodeSet c . Graphs.BitGraph.reflexivesUnivInMultiple s
   rw = labelOfWord rt

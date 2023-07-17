@@ -25,8 +25,8 @@ module Examples.Games (
 
 import Control.Monad.State.Lazy
 
-import ConciseGraph
-import DeBruijnGraph
+import Graphs.ConciseGraph
+import Graphs.DeBruijnGraph
 import LiftedGraph
 import Report
 import Examples.Patterns

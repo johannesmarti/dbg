@@ -12,7 +12,8 @@ import Data.List
 import Data.Maybe (maybeToList)
 
 import Data.FiniteFunction
-import LabeledGraphInterface
+import Data.Label
+import Graphs.LabeledGraphInterface as LGI
 import HomomorphismSearch.Homomorphism
 
 type Approx x y = Map x (Set y)
@@ -88,4 +89,4 @@ arcConsHomomorphismsFromApprox di ci approx d c = let
 
 arcConsHomomorphisms :: (Ord x, Ord y) => LabeledGraphInterface g1 x -> LabeledGraphInterface g2 y -> HomomorphismSearch g1 g2 x y
 arcConsHomomorphisms di ci d c = arcConsHomomorphismsFromApprox di ci
-  (fullApprox (LabeledGraphInterface.domain di d) (LabeledGraphInterface.domain ci c)) d c
+  (fullApprox (LGI.domain di d) (LGI.domain ci c)) d c

@@ -4,7 +4,6 @@ module Examples.Plans (
   alloc3Plan
 ) where
 
-
 import Plan
 import Data.Label
 

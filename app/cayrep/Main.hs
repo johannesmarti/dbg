@@ -7,8 +7,8 @@ import Data.Set as Set
 
 import Report
 import Examples.Patterns
-import LabeledGraphInterface
-import DeBruijnGraph
+import Graphs.LabeledGraphInterface
+import Graphs.DeBruijnGraph
 
 
 import qualified HomomorphismSearch.SmartSearch as SS

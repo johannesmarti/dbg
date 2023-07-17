@@ -6,11 +6,11 @@ import Data.Maybe
 import Data.Set
 import Test.Hspec
 
-import DeBruijnGraph
-import LabeledGraphInterface
-import ConciseGraph
+import Graphs.DeBruijnGraph
+import Graphs.LabeledGraphInterface
+import Graphs.ConciseGraph
 import Examples.Patterns
-import CommonLabeledGraphTypes
+import Graphs.CommonLabeledGraphTypes
 import DeterminismProperty
 
 

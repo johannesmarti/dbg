@@ -10,8 +10,8 @@ import Word
 import Data.Label
 import BitableInterface
 import qualified Data.Path as Path
-import LabeledGraphInterface
-import GraphInterface as GI
+import Graphs.LabeledGraphInterface as LGI
+import Graphs.GraphInterface as GI
 import CayleyGraph hiding (relationOfWord)
 import Coding
 import RelationCache
@@ -35,7 +35,7 @@ cayleyReport gi g = let
     finWords = finiteWords s cg
     (longestFinWord,relOfLongest) = maximumBy (\(a,_) (b,_) -> compare (length a) (length b)) finWords
   in ["About the Cayley graph of the pattern:"] ++
-      LabeledGraphInterface.prettyLabeledGraph gi g ++
+      LGI.prettyLabeledGraph gi g ++
      ["It has " ++ show (Set.size wfs) ++ " finite and " ++
                    show (Set.size nwfs) ++ " infinite elements.", "",
       "It " ++ (if isConstructionDeterministic gi g then "is" else "is not") ++ " construction deterministic.", "",
@@ -59,7 +59,7 @@ spiralReportForWord :: Ord x => LabeledGraphInterface g x
                                 -> g -> RelationCache r x -> [Label] -> [String]
 spiralReportForWord gi g rc w = let
     cycles = cyclesOfWord rc w
-    putCycle cycle = prettySpiral (LabeledGraphInterface.prettyNode gi g) $ fromHub gi g w cycle
+    putCycle cycle = prettySpiral (LGI.prettyNode gi g) $ fromHub gi g w cycle
   in [show w] ++ intercalate [""] (map putCycle cycles)
 
 spiralReport :: Ord x => [[Label]] -> LabeledGraphInterface g x -> g -> [String]

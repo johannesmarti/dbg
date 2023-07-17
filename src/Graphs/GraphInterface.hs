@@ -1,4 +1,4 @@
-module GraphInterface (
+module Graphs.GraphInterface (
   GraphInterface,
   domain, successors, predecessors, hasArc, prettyNode,
   interfaceFromAll,
@@ -20,7 +20,7 @@ module GraphInterface (
 import Control.Exception.Base
 import Data.Set as Set
 
-import PrettyNode
+import Graphs.PrettyNode
 
 data GraphInterface g x = GraphInterface {
   domain       :: g -> Set x,

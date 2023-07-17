@@ -7,12 +7,12 @@ import qualified Data.Set as Set
 
 import BitableInterface
 import CayleyGraph
-import BitGraph
-import ConciseGraph
+import Graphs.BitGraph
+import Graphs.ConciseGraph
 import DeterminismProperty
 import HomomorphismSearch.Search
-import CommonLabeledGraphTypes
-import LabeledGraphInterface as LGI
+import Graphs.CommonLabeledGraphTypes
+import Graphs.LabeledGraphInterface as LGI
 
 checkOne :: Size -> ConciseGraph -> IO ()
 checkOne size graph = do
@@ -47,7 +47,7 @@ rangePartition :: IO ()
 rangePartition = do
   let size = 4
   let gi = conciseGraphInterface size
-  let bitmaps = Prelude.filter (notTrivial size) (ConciseGraph.allabeledGraphsOfSize size)
+  let bitmaps = Prelude.filter (notTrivial size) (Graphs.ConciseGraph.allLabeledGraphsOfSize size)
   let lessTrivial = filter (not . hasT1 gi) bitmaps
   let list = Prelude.filter (isCounterexample gi) lessTrivial
   let example = head list

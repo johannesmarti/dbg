@@ -3,10 +3,10 @@ module RelationTree (
   relationTree,
 ) where
 
-import BitGraph
-import PairGraph
+import Graphs.BitGraph
+import Graphs.PairGraph
 import Data.Label
-import CommonLabeledGraphTypes
+import Graphs.CommonLabeledGraphTypes
 import Data.WordTree
 
 type RelationTree = WordTree BitGraph

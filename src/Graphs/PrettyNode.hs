@@ -2,7 +2,7 @@
 {-# LANGUAGE TypeSynonymInstances #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE InstanceSigs #-}
-module PrettyNode (
+module Graphs.PrettyNode (
   PrettyNode,
   pretty,
   stdPrintSet,

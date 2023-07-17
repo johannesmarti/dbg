@@ -7,9 +7,9 @@ import Data.Set as Set
 import Test.Hspec
 
 import HomomorphismSearch.ArcCons
-import DeBruijnGraph
-import LabeledGraphInterface
-import CommonLabeledGraphTypes
+import Graphs.DeBruijnGraph
+import Graphs.LabeledGraphInterface
+import Graphs.CommonLabeledGraphTypes
 import Examples.Patterns
 
 spec :: Spec

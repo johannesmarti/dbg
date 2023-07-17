@@ -11,7 +11,7 @@ import qualified Data.Set.Extra as SE
 import Data.List (intercalate, sortOn)
 
 import Data.Label
-import LabeledGraphInterface
+import Graphs.LabeledGraphInterface
 
 data Spiral a = Spiral {
   word   :: Vec.Vector Label,

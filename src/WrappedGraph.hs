@@ -6,7 +6,7 @@ module WrappedGraph (
 import qualified Data.Set as Set
 
 import Coding
-import GraphInterface
+import Graphs.GraphInterface
 
 data WrappedGraph g x y = WrappedGraph {
   innerGraph      :: g,

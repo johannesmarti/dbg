@@ -1,4 +1,4 @@
-module PairGraph (
+module Graphs.PairGraph (
   PairGraph,
   zeroGraph, oneGraph,
   pairGraphInterface,
@@ -9,8 +9,9 @@ module PairGraph (
 import Control.Exception.Base
 import qualified Data.Set as Set
 
-import qualified GraphInterface as GI
-import LabeledGraphInterface
+import qualified Graphs.GraphInterface as GI
+import Graphs.LabeledGraphInterface
+import Data.Label
 
 data PairGraph g = PairGraph {
   zeroGraph :: g,

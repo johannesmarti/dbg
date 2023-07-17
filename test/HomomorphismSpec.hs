@@ -5,9 +5,9 @@ module HomomorphismSpec (
 import Data.Set as Set
 import Test.Hspec
 
-import DeBruijnGraph
-import LabeledGraphInterface
-import CommonLabeledGraphTypes
+import Graphs.DeBruijnGraph
+import Graphs.LabeledGraphInterface
+import Graphs.CommonLabeledGraphTypes
 import HomomorphismSearch.Homomorphism
 import Examples.Patterns
 

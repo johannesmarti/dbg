@@ -1,4 +1,4 @@
-module BitGraph (
+module Graphs.BitGraph (
   BitGraph,
   Node,
   Size,
@@ -31,7 +31,7 @@ import Control.Exception.Base
 import Data.Bits
 import qualified Data.Set as Set
 
-import GraphInterface
+import Graphs.GraphInterface
 
 type BitGraph = Integer
 type Node = Int
@@ -166,13 +166,15 @@ multiples size rel = generateMultiples rel (Set.singleton rel) where
          else generateMultiples next (Set.insert next accum)
 
 isReflAndUnivInMultiple :: Size -> BitGraph -> Node -> Bool
-isReflAndUnivInMultiple size graph node = BitGraph.isRefl size graph node &&
-  any (\m -> isUniv size m node) (multiples size graph)
+isReflAndUnivInMultiple size graph node =
+  Graphs.BitGraph.isRefl size graph node &&
+    any (\m -> isUniv size m node) (multiples size graph)
 
 reflexivesUnivInMultiple :: Size -> BitGraph -> Set.Set Node
 reflexivesUnivInMultiple size graph = let
     mults = multiples size graph
-    isGood node = BitGraph.isRefl size graph node && any (\m -> isUniv size m node) mults
+    isGood node = Graphs.BitGraph.isRefl size graph node
+                    && any (\m -> isUniv size m node) mults
   in Set.filter isGood (dom size graph)
 
 hasReflAndUnivInMultiple :: Size -> BitGraph -> Bool
@@ -180,8 +182,9 @@ hasReflAndUnivInMultiple size graph =
   any (isReflAndUnivInMultiple size graph) (nodes size)
 
 isReflAndUnivInMultipleDom :: Size -> [Node] -> BitGraph -> Node -> Bool
-isReflAndUnivInMultipleDom size dom graph node = BitGraph.isRefl size graph node &&
-  any (\m -> isUnivInDom size dom m node) (multiples size graph)
+isReflAndUnivInMultipleDom size dom graph node = 
+  Graphs.BitGraph.isRefl size graph node &&
+    any (\m -> isUnivInDom size dom m node) (multiples size graph)
 
 hasReflAndUnivInMultipleDom :: Size -> [Node] -> BitGraph -> Bool
 hasReflAndUnivInMultipleDom size dom graph =

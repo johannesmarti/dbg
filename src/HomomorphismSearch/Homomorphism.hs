@@ -9,7 +9,8 @@ import Control.Exception.Base
 import Data.Set as Set
 
 import Data.FiniteFunction as Function
-import LabeledGraphInterface as LGI
+import Data.Label
+import Graphs.LabeledGraphInterface as LGI
 
 type HomomorphismSearch g1 g2 x y = g1 -> g2 -> [Function x y]
 

@@ -59,12 +59,13 @@ module Examples.Patterns (
 
 import qualified Data.Set as Set
 
-import CommonLabeledGraphTypes
-import LabeledGraphInterface
-import PrettyNode
-import BitGraph
-import ConciseGraph
-import qualified PairGraph
+import Graphs.CommonLabeledGraphTypes
+import Graphs.LabeledGraphInterface
+import Graphs.PrettyNode
+import Graphs.BitGraph
+import Graphs.ConciseGraph
+import qualified Graphs.PairGraph
+import Data.Label
 
 trap Zero = [('a','a'),('a','c'),('c','b'),('c','a')]
 trap One = [('b','b'),('b','c'),('c','a'),('a','c')]
@@ -249,10 +250,10 @@ force4dInterface :: LabeledGraphInterface ConciseGraph Node
 force4dInterface = conciseGraphInterface 4
 
 force4d' :: ConciseGraph
-force4d' = ConciseGraph.fromLabeledBitGraph 4 (PairGraph.fromFunction fct) where
-  fct Zero = PairGraph.graphOfLabel pairGraph Zero
-  fct One  = BitGraph.delArc 4 (PairGraph.graphOfLabel pairGraph One) (2,2)
-  pairGraph = ConciseGraph.toLabeledBitGraph 4 force4d
+force4d' = Graphs.ConciseGraph.fromLabeledBitGraph 4 (Graphs.PairGraph.fromFunction fct) where
+  fct Zero = Graphs.PairGraph.graphOfLabel pairGraph Zero
+  fct One  = Graphs.BitGraph.delArc 4 (Graphs.PairGraph.graphOfLabel pairGraph One) (2,2)
+  pairGraph = Graphs.ConciseGraph.toLabeledBitGraph 4 force4d
 
 {- Just some pattern with a homo at 5. -}
 force5d :: ConciseGraph
@@ -261,10 +262,10 @@ force5dInterface :: LabeledGraphInterface ConciseGraph Node
 force5dInterface = conciseGraphInterface 4
 
 force5d' :: ConciseGraph
-force5d' = ConciseGraph.fromLabeledBitGraph 4 (PairGraph.fromFunction fct) where
-  fct Zero = PairGraph.graphOfLabel pairGraph Zero
-  fct One  = BitGraph.delArc 4 (BitGraph.delArc 4 (PairGraph.graphOfLabel pairGraph One) (2,2)) (2,2)
-  pairGraph = ConciseGraph.toLabeledBitGraph 4 force5d
+force5d' = Graphs.ConciseGraph.fromLabeledBitGraph 4 (Graphs.PairGraph.fromFunction fct) where
+  fct Zero = Graphs.PairGraph.graphOfLabel pairGraph Zero
+  fct One  = Graphs.BitGraph.delArc 4 (Graphs.BitGraph.delArc 4 (Graphs.PairGraph.graphOfLabel pairGraph One) (2,2)) (2,2)
+  pairGraph = Graphs.ConciseGraph.toLabeledBitGraph 4 force5d
 
 {- another random example -}
 e2 Zero = [('a','a'),('a','o'),('a','x'),('a','z'),('o','u'),('x','v'),('x','i'),('z','b'),('u','y'),('u','v')]

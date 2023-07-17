@@ -7,13 +7,13 @@ module BitableInterface (
 ) where
 
 import Bitify
-import BitGraph
+import Graphs.BitGraph
 import Coding
-import ConciseGraph
-import CommonLabeledGraphTypes
-import GraphInterface
+import Graphs.ConciseGraph
+import Graphs.CommonLabeledGraphTypes
+import Graphs.GraphInterface
 import LiftedGraph
-import qualified LabeledGraphInterface as LGI
+import qualified Graphs.LabeledGraphInterface as LGI
 import LabeledWrappedGraph
 
 data Bitification x = Bitification {
@@ -27,11 +27,11 @@ type BitableInterface g x = g -> Bitification x
 
 labeledBitGraphBitableInterface :: Size -> BitableInterface LabeledBitGraph Node
 labeledBitGraphBitableInterface s lbg =
-  Bitification s lbg (identityCoding (BitGraph.nodesSet s)) (bitGraphInterface s)
+  Bitification s lbg (identityCoding (Graphs.BitGraph.nodesSet s)) (bitGraphInterface s)
 
 conciseGraphBitableInterface :: Size -> BitableInterface ConciseGraph Node
 conciseGraphBitableInterface s cg = bitification where
-  lbg = ConciseGraph.toLabeledBitGraph s cg
+  lbg = Graphs.ConciseGraph.toLabeledBitGraph s cg
   bitification = labeledBitGraphBitableInterface s lbg
 
 liftedGraphBitableInterface :: BitableInterface (LiftedGraph x) Int

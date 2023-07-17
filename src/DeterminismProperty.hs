@@ -22,7 +22,8 @@ import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 
 import Data.FiniteFunction hiding (domain)
-import LabeledGraphInterface
+import Data.Label
+import Graphs.LabeledGraphInterface
 
 type Partition a = Function a a
 

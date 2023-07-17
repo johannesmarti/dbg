@@ -6,7 +6,7 @@ module LiftingSearch (
 import Control.Monad.State.Lazy
 
 import LiftedGraph
-import LabeledGraphInterface
+import Graphs.LabeledGraphInterface
 
 searchLifting :: Ord x => Int -> LabeledGraphInterface g x -> g -> Maybe (LiftedGraph x)
 searchLifting boundOnNumNodes gi g = let

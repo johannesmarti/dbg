@@ -21,14 +21,10 @@ source-repository head
 
 library
   exposed-modules:
-      AssocGraph
       BitableInterface
-      BitGraph
       Bitify
       CayleyGraph
       Coding
-      CommonLabeledGraphTypes
-      ConciseGraph
       ConstructionGraph
       CoveringGraph
       Data.FiniteFunction
@@ -40,28 +36,32 @@ library
       Data.WordMaps.Coalgebraic
       Data.WordMaps.MapWrapper
       Data.WordTree
-      DeBruijnGraph
       DeterminismProperty
       Examples.Games
       Examples.Patterns
       Examples.Plans
       ExecutePlan
-      GraphInterface
+      Graphs.AssocGraph
+      Graphs.BitGraph
+      Graphs.CommonLabeledGraphTypes
+      Graphs.ConciseGraph
+      Graphs.DeBruijnGraph
+      Graphs.GraphInterface
+      Graphs.LabeledGraphInterface
+      Graphs.MapGraph
+      Graphs.PairGraph
+      Graphs.PrettyNode
       HomomorphismSearch.AllocateWords
       HomomorphismSearch.ArcCons
       HomomorphismSearch.Homomorphism
       HomomorphismSearch.Search
       HomomorphismSearch.SmartSearch
-      LabeledGraphInterface
       LabeledWrappedGraph
       Lifted
       LiftedGraph
       Lifting
       LiftingSearch
-      MapGraph
-      PairGraph
       Plan
-      PrettyNode
       Range
       RelationCache
       RelationTree

@@ -19,8 +19,8 @@ import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 
 import Data.Label
-import BitGraph
-import PairGraph
+import Graphs.BitGraph as BG
+import Graphs.PairGraph
 import BitableInterface
 import Coding hiding (domain)
 import RelationCache
@@ -37,7 +37,7 @@ relationCache bf cg = cache where
   c = coding bf
   s = numBits bf
   cache = RelationCache (relationI bf)
-                        (decodeSet c . BitGraph.reflexivesUnivInMultiple s)
+                        (decodeSet c . BG.reflexivesUnivInMultiple s)
                         (CayleyGraph.relationOfWord s cg)
 
 domain :: CayleyGraph -> Set.Set BitGraph

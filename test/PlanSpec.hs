@@ -13,7 +13,7 @@ import Examples.Plans
 import Plan
 import ExecutePlan
 import Data.Label
-import LabeledGraphInterface
+import Graphs.LabeledGraphInterface
 import LiftedGraph
 
 spec :: Spec

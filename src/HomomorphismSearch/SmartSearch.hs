@@ -10,13 +10,12 @@ import qualified Data.Map.Strict as Map
 import HomomorphismSearch.AllocateWords
 import HomomorphismSearch.ArcCons
 import BitableInterface
-import CommonLabeledGraphTypes
-import BitGraph (Node,Size,nodesSet)
-import LabeledWrappedGraph
+import Graphs.CommonLabeledGraphTypes
+import Graphs.BitGraph (Node,Size,nodesSet)
 import RelationCache
 import CayleyGraph hiding (domain, relationOfWord)
-import DeBruijnGraph
-import LabeledGraphInterface
+import Graphs.DeBruijnGraph
+import Graphs.LabeledGraphInterface
 import HomomorphismSearch.Homomorphism
 import DeterminismProperty
 import Coding hiding (domain)

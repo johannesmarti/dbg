@@ -3,8 +3,8 @@ module HomomorphismSearch.Search (
 ) where
 
 import HomomorphismSearch.ArcCons
-import DeBruijnGraph
-import LabeledGraphInterface
+import Graphs.DeBruijnGraph
+import Graphs.LabeledGraphInterface
 import HomomorphismSearch.Homomorphism
 
 data LargeNumber = IsNumber Int | LargerThan Int
