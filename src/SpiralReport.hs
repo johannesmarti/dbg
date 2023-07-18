@@ -1,5 +1,5 @@
-module Main (
-  main
+module SpiralReport (
+  SpiralReport.spiralReport
 ) where
 
 import System.Environment 
@@ -9,15 +9,14 @@ import Report
 import Examples.Patterns
 import Data.Label
 import Spiral
-import ConstructionGraph
+import Conditions.ConstructionGraph
 import Graphs.DeBruijnGraph
 import Graphs.LabeledGraphInterface
 
 import qualified HomomorphismSearch.SmartSearch as SS
 
 
-main :: IO ()
-
+spiralReport :: IO ()
 --(gi, g) = (slowLiftingI, slowLifting)
 --(gi, g) = (dbgI,dbg 4)
 --(gi, g) = (alloc3I,alloc3)
@@ -29,7 +28,7 @@ main :: IO ()
 --(gi, g) = (biggestI,biggest)
 --(gi, g) = (hamburgerI,hamburger)
 pgi = powerGraphInterface gi
-main = do
+spiralReport = do
   putStr . unlines $ prettyLabeledGraph gi g
   putChar '\n'
   putStr . unlines $ prettyLabeledGraph (converseI gi) g

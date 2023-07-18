@@ -1,11 +1,11 @@
-module Main (
-  main
+module Children (
+  children
 ) where
 
 import System.Environment
 
 import CoveringGraph
-import Label
+import Data.Label
 
 printer :: CoveringNode -> String
 printer node = 
@@ -35,8 +35,8 @@ node = lookupAddress [Zero,One,One,Zero,One]
 --node = predecessor One zero
 --node = zero
 
-main :: IO ()
-main = do
+children :: IO ()
+children = do
   args <- getArgs
   let bound = read (head args)
   childrenOfNode (\g -> length (turningWord g) < bound) node

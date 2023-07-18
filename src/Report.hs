@@ -12,10 +12,10 @@ import BitableInterface
 import qualified Data.Path as Path
 import Graphs.LabeledGraphInterface as LGI
 import Graphs.GraphInterface as GI
-import CayleyGraph hiding (relationOfWord)
+import Conditions.CayleyGraph hiding (relationOfWord)
 import Coding
 import RelationCache
-import DeterminismProperty
+import Conditions.Constructible
 import Data.PathTree
 import Spiral
 
@@ -38,7 +38,7 @@ cayleyReport gi g = let
       LGI.prettyLabeledGraph gi g ++
      ["It has " ++ show (Set.size wfs) ++ " finite and " ++
                    show (Set.size nwfs) ++ " infinite elements.", "",
-      "It " ++ (if isConstructionDeterministic gi g then "is" else "is not") ++ " construction deterministic.", "",
+      "It " ++ (if isConstructible gi g then "is" else "is not") ++ " constructible.", "",
       "It " ++ (if pathCondition s cg then "satisfies" else "does not satisfy") ++ " the path condition.", "",
       --"It's finite words are:", show (map fst finWords),
       "Of which one with maximal length is " ++ show longestFinWord ++ ".", ""] ++

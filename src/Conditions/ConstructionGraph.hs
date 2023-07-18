@@ -1,4 +1,4 @@
-module ConstructionGraph (
+module Conditions.ConstructionGraph (
   constructionGraphInterface,
   visibleInConstructionGraph,
   immediatelyConstructible,

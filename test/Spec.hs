@@ -10,7 +10,7 @@ import qualified ConciseGraphSpec
 import qualified HomomorphismSpec
 import qualified ArcConsSpec
 import qualified BitGraphSpec
-import qualified DeterminismPropertySpec
+import qualified ConstructibleSpec
 import qualified CayleyGraphSpec
 import qualified BitifySpec
 import qualified LiftedSpec
@@ -32,7 +32,7 @@ spec = do
   describe "Homomorphism" HomomorphismSpec.spec
   describe "ArcCons" ArcConsSpec.spec
   describe "BitGraph" BitGraphSpec.spec
-  describe "DeterminismProperty" DeterminismPropertySpec.spec
+  describe "Constructible" ConstructibleSpec.spec
   describe "CayleyGraph" CayleyGraphSpec.spec
   describe "Bitify" BitifySpec.spec
   describe "Lifted" LiftedSpec.spec

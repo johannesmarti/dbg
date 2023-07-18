@@ -13,11 +13,11 @@ import BitableInterface
 import Graphs.CommonLabeledGraphTypes
 import Graphs.BitGraph (Node,Size,nodesSet)
 import RelationCache
-import CayleyGraph hiding (domain, relationOfWord)
+import Conditions.CayleyGraph hiding (domain, relationOfWord)
 import Graphs.DeBruijnGraph
 import Graphs.LabeledGraphInterface
 import HomomorphismSearch.Homomorphism
-import DeterminismProperty
+import Conditions.Constructible
 import Coding hiding (domain)
 
 data Result = NoHomomorphism | HomomorphismAt Int | UnknownAt Int
@@ -63,7 +63,7 @@ searchUpTo cutoff gi graph = let
     dom = domain gi graph
     subsets = Set.toList $ Set.filter (\s -> Set.size s >= 2) $ Set.powerSet dom
     subgraphs = map (labeledMapSubgraphFromLabeledGraph gi graph) subsets
-    candidates = filter (\s -> not (isConstructionDeterministic labeledMapGraphInterfaceNotPretty s)) subgraphs
+    candidates = filter (\s -> isConstructible labeledMapGraphInterfaceNotPretty s) subgraphs
     bityCandidates = map (\c -> genericBitableInterface labeledMapGraphInterfaceNotPretty c) candidates
     candidatesWithCayley = map (\bitification -> (bitification, rightCayleyGraph bitification)) bityCandidates
     isGoodCandi (bf, cg) = pathCondition (numBits bf) cg

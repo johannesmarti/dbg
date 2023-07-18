@@ -1,4 +1,4 @@
-module CayleyGraph (
+module Conditions.CayleyGraph (
   CayleyGraph(..),
   domain,
   relationCache,
@@ -10,7 +10,7 @@ module CayleyGraph (
   limitedPathCondition,
   printNodeWithSuccs,
   prettyCayleyGraph,
-  CayleyGraph.relationOfWord,
+  Conditions.CayleyGraph.relationOfWord,
 ) where
 
 import Control.Exception.Base
@@ -38,7 +38,7 @@ relationCache bf cg = cache where
   s = numBits bf
   cache = RelationCache (relationI bf)
                         (decodeSet c . BG.reflexivesUnivInMultiple s)
-                        (CayleyGraph.relationOfWord s cg)
+                        (Conditions.CayleyGraph.relationOfWord s cg)
 
 domain :: CayleyGraph -> Set.Set BitGraph
 domain = Map.keysSet . successorMap

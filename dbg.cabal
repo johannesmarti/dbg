@@ -23,9 +23,12 @@ library
   exposed-modules:
       BitableInterface
       Bitify
-      CayleyGraph
+      Children
       Coding
-      ConstructionGraph
+      Conditions.CayleyGraph
+      Conditions.Constructible
+      Conditions.ConstructionGraph
+      Count
       CoveringGraph
       Data.FiniteFunction
       Data.Label
@@ -36,7 +39,7 @@ library
       Data.WordMaps.Coalgebraic
       Data.WordMaps.MapWrapper
       Data.WordTree
-      DeterminismProperty
+      Duplicates
       Examples.Games
       Examples.Patterns
       Examples.Plans
@@ -68,6 +71,7 @@ library
       Report
       SearchTree
       Spiral
+      SpiralReport
       Tools
       Word
       WrappedGraph
@@ -87,69 +91,12 @@ library
     , vector
   default-language: Haskell2010
 
-executable cayrep
+executable dbg
   main-is: Main.hs
   other-modules:
       Paths_dbg
   hs-source-dirs:
-      app/cayrep
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -O0 -threaded -rtsopts -with-rtsopts=-N
-  build-depends:
-      base >=4.7 && <5
-    , containers
-    , data-ordlist
-    , dbg
-    , extra
-    , hspec
-    , mtl
-    , set-extra
-    , vector
-  default-language: Haskell2010
-
-executable count
-  main-is: Main.hs
-  other-modules:
-      Paths_dbg
-  hs-source-dirs:
-      app/count
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -O0 -threaded -rtsopts -with-rtsopts=-N -O2
-  build-depends:
-      base >=4.7 && <5
-    , containers
-    , data-ordlist
-    , dbg
-    , extra
-    , hspec
-    , mtl
-    , set-extra
-    , vector
-  default-language: Haskell2010
-
-executable duplicates
-  main-is: Main.hs
-  other-modules:
-      Paths_dbg
-  hs-source-dirs:
-      app/duplicates
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -O0 -threaded -rtsopts -with-rtsopts=-N -O2
-  build-depends:
-      base >=4.7 && <5
-    , containers
-    , data-ordlist
-    , dbg
-    , extra
-    , hspec
-    , mtl
-    , set-extra
-    , vector
-  default-language: Haskell2010
-
-executable game
-  main-is: Main.hs
-  other-modules:
-      Paths_dbg
-  hs-source-dirs:
-      app/game
+      app/dbg
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -O0 -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
@@ -182,44 +129,6 @@ executable play
     , vector
   default-language: Haskell2010
 
-executable spiral
-  main-is: Main.hs
-  other-modules:
-      Paths_dbg
-  hs-source-dirs:
-      app/spiral
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -O0 -threaded -rtsopts -with-rtsopts=-N
-  build-depends:
-      base >=4.7 && <5
-    , containers
-    , data-ordlist
-    , dbg
-    , extra
-    , hspec
-    , mtl
-    , set-extra
-    , vector
-  default-language: Haskell2010
-
-executable spirep
-  main-is: Main.hs
-  other-modules:
-      Paths_dbg
-  hs-source-dirs:
-      app/spirep
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -O0 -threaded -rtsopts -with-rtsopts=-N
-  build-depends:
-      base >=4.7 && <5
-    , containers
-    , data-ordlist
-    , dbg
-    , extra
-    , hspec
-    , mtl
-    , set-extra
-    , vector
-  default-language: Haskell2010
-
 test-suite dbg-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
@@ -230,8 +139,8 @@ test-suite dbg-test
       BitifySpec
       CayleyGraphSpec
       ConciseGraphSpec
+      ConstructibleSpec
       CoveringGraphSpec
-      DeterminismPropertySpec
       HomomorphismSpec
       LiftedSpec
       MapGraphSpec

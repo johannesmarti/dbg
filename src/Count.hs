@@ -1,5 +1,5 @@
-module Main (
-  main
+module Count (
+  count
 ) where
 
 import System.Environment
@@ -24,8 +24,8 @@ listPrinter (a:as) = do
   putStrLn (addressPrinter a)
   listPrinter as
 
-main :: IO ()
-main = do
+count :: IO ()
+count = do
   args <- getArgs
   let numNodes = read (head args)
   let nfs = take numNodes cycles

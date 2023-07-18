@@ -5,7 +5,7 @@ module CayleyGraphSpec (
 import Test.Hspec
 
 import BitableInterface
-import CayleyGraph
+import Conditions.CayleyGraph
 import Examples.Patterns
 
 spec :: Spec

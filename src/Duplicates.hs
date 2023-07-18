@@ -1,5 +1,5 @@
-module Main (
-  main
+module Duplicates (
+  duplicates 
 ) where
 
 import qualified Data.Set as Set
@@ -25,8 +25,8 @@ result numNodes = case isNubby (take numNodes generateNodes) of
   Nothing -> "No duplicates found among the first " ++ show numNodes ++ " elements of the covering graph."
   Just a -> "There is a duplicate at address " ++ show (address a) ++ " in the covering graph."
 
-main :: IO ()
-main = do
+duplicates :: IO ()
+duplicates = do
   args <- getArgs
   let numNodes = read (head args)
   putStrLn (result numNodes)

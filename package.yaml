@@ -45,60 +45,13 @@ library:
   source-dirs: src
 
 executables:
-  cayrep:
+  dbg:
     main:                Main.hs
-    source-dirs:         app/cayrep
+    source-dirs:         app/dbg
     ghc-options:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
-    dependencies:
-    - dbg
-  spirep:
-    main:                Main.hs
-    source-dirs:         app/spirep
-    ghc-options:
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N
-    dependencies:
-    - dbg
-  spiral:
-    main:                Main.hs
-    source-dirs:         app/spiral
-    ghc-options:
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N
-    dependencies:
-    - dbg
-  game:
-    main:                Main.hs
-    source-dirs:         app/game
-    ghc-options:
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N
-    dependencies:
-    - dbg
-  duplicates:
-    main:                Main.hs
-    source-dirs:         app/duplicates
-    ghc-options:
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N
-    - -O2
-    dependencies:
-    - dbg
-  count:
-    main:                Main.hs
-    source-dirs:         app/count
-    ghc-options:
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N
-    - -O2
     dependencies:
     - dbg
   play:

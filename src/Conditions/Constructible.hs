@@ -1,14 +1,14 @@
-module DeterminismProperty (
+module Conditions.Constructible (
   Partition,
   discrete,
   isTrivial,
   representative,
   eqClass,
   identify,
-  isStrictlyConstructionDeterministic,
-  isStronglyConstructionDeterministic,
+  isStrictlyConstructible,
+  isStronglyConstructible,
   deterministicPartition,
-  isConstructionDeterministic,
+  isConstructible,
   deterministicAntichain,
   Antichain,
   singletonChain,
@@ -61,12 +61,11 @@ overlappingPairs gi g f = let
     overlapOnLabel x y l = not . Set.null $ Set.map f (predecessors gi g l x) `Set.intersection` Set.map f (predecessors gi g l y)
   in Prelude.filter (uncurry overlappingConstruction) pairs
 
-isStrictlyConstructionDeterministic :: Ord x => LabeledGraphInterface g x -> g -> Bool
-isStrictlyConstructionDeterministic gi g = Prelude.null $ overlappingPairs gi g id
+isStrictlyConstructible :: Ord x => LabeledGraphInterface g x -> g -> Bool
+isStrictlyConstructible gi g = not . Prelude.null $ overlappingPairs gi g id
 
-isStronglyConstructionDeterministic :: Ord x => LabeledGraphInterface g x -> g -> Bool
-isStronglyConstructionDeterministic gi g = not . isTrivial $
-  deterministicPartition gi g
+isStronglyConstructible :: Ord x => LabeledGraphInterface g x -> g -> Bool
+isStronglyConstructible gi g = isTrivial $ deterministicPartition gi g
 
 deterministicPartition :: Ord x => LabeledGraphInterface g x -> g -> Partition x
 deterministicPartition gi g = inner (discrete (domain gi g)) where
@@ -108,8 +107,8 @@ addProposition prop antichain = assert (isRealAntichain antichain) $
           then antichain
           else Set.insert prop filtered
 
-isConstructionDeterministic :: Ord x => LabeledGraphInterface g x -> g -> Bool
-isConstructionDeterministic gi g = not . (isTotal  (domain gi g)) $
+isConstructible :: Ord x => LabeledGraphInterface g x -> g -> Bool
+isConstructible gi g = isTotal  (domain gi g) $
   deterministicAntichain gi g
 
 image :: Ord x => Set.Set x -> (x -> Set.Set x) -> Set.Set x

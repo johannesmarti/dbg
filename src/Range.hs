@@ -6,10 +6,10 @@ module Range (
 import qualified Data.Set as Set
 
 import BitableInterface
-import CayleyGraph
+import Conditions.CayleyGraph
 import Graphs.BitGraph
 import Graphs.ConciseGraph
-import DeterminismProperty
+import Conditions.Constructible
 import HomomorphismSearch.Search
 import Graphs.CommonLabeledGraphTypes
 import Graphs.LabeledGraphInterface as LGI
@@ -30,7 +30,7 @@ easyPathCondition gi g = pathCondition s cayleyGraph where
   cayleyGraph = rightCayleyGraph bitification
 
 isGood :: Ord x => LabeledGraphInterface g x -> g -> Bool
-isGood gi g = not (isConstructionDeterministic gi g) && easyPathCondition gi g
+isGood gi g = isConstructible gi g && easyPathCondition gi g
 
 isCounterexample :: Ord x => LabeledGraphInterface g x -> g -> Bool
 isCounterexample gi graph = let
@@ -39,8 +39,8 @@ isCounterexample gi graph = let
     properSubsets = Set.toList $ Set.filter (\s -> Set.size s < Set.size dom) subsets
     subI = labeledMapGraphInterfaceWithNodePrinter (prettyNode gi graph)
     subgraphs = map (labeledMapSubgraphFromLabeledGraph gi graph) properSubsets
-   in not (isStronglyConstructionDeterministic gi graph)
-        && isConstructionDeterministic gi graph
+   in isStronglyConstructible gi graph
+        && not (isConstructible gi graph)
         && all (not . (isGood subI)) subgraphs && easyPathCondition gi graph
 
 rangePartition :: IO ()
