@@ -32,7 +32,6 @@ import Graphs.BitGraph (Size,fromArcs)
 import Coding hiding (domain)
 import Graphs.CommonLabeledGraphTypes
 import Graphs.LabeledGraphInterface
-import Tools (strictPairs)
 import Graphs.PrettyNode (stdPrintSet)
 import Graphs.PairGraph (fromFunction)
 
@@ -85,6 +84,11 @@ nextNode lg = topNode lg + 1
 fromLabeledGraph :: Ord x => LabeledGraphInterface g x -> g -> CombinationGraph x
 fromLabeledGraph gi g = fst (fromLabeledGraphWithCoding gi g)
 
+{-
+ Should maybe provide a way to do this more effeciently using Bitify? An
+advantage would be that the coding on LabeledBitGraph and ConcieseGraph could
+be the identity coding.
+-}
 fromLabeledGraphWithCoding :: Ord x => LabeledGraphInterface g x -> g
                                  -> (CombinationGraph x, Coding x Int)
 fromLabeledGraphWithCoding gi g = (CombinationGraph intGraph just emb pb, coding) where
@@ -147,6 +151,13 @@ computeCandidate g (a,b) =
 
 isVisible :: LiftingCandidate -> Bool
 isVisible can = not (Set.null $ extractPreds Zero can) && not (Set.null $ extractPreds One can)
+
+strictPairs :: [x] -> [(x,x)]
+strictPairs list = worker list [] where
+  worker [] accum = accum
+  worker (next:rest) accum = innerWorker next rest rest accum
+  innerWorker elem [] rest accum = worker rest accum
+  innerWorker elem (p:ps) rest accum = innerWorker elem ps rest ((elem, p):accum)
 
 liftableCandidates :: IntGraph -> [LiftingCandidate]
 liftableCandidates g = let

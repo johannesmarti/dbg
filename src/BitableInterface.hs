@@ -1,7 +1,7 @@
 module BitableInterface (
   Bitification(..),
   BitableInterface,
-  liftedGraphBitableInterface,
+  combinationGraphBitableInterface,
   conciseGraphBitableInterface,
   genericBitableInterface,
 ) where
@@ -57,8 +57,8 @@ conciseGraphBitableInterface s cg = bitification where
   lbg = Graphs.ConciseGraph.toLabeledBitGraph s cg
   bitification = labeledBitGraphBitableInterface s lbg
 
-liftedGraphBitableInterface :: BitableInterface (CombinationGraph x) Int
-liftedGraphBitableInterface lg = bitification where
+combinationGraphBitableInterface :: BitableInterface (CombinationGraph x) Int
+combinationGraphBitableInterface lg = bitification where
   (lbg,s) = Lifting.CombinationGraph.toLabeledBitGraph lg
   bitification = labeledBitGraphBitableInterface s lbg
 

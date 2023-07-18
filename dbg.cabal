@@ -71,7 +71,6 @@ library
       RelationTree
       SearchTree
       Spiral
-      Tools
       WrappedGraph
   other-modules:
       Paths_dbg
