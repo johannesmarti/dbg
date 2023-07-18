@@ -37,6 +37,29 @@ type BitGraph = Integer
 type Node = Int
 type Size = Int
 
+{-
+ It is unclear whether BitGraph should store its size or whether the size
+should be provided by the sourrounding code (for instance as a parameter to
+bitGraphInterface). Currently, it is provided by the sourrounding code. This
+has the following advantages:
+
+1) It might be more efficient. Though I have the the strong suspicion that this
+is a premature optimization.
+
+2) In many contexts (for instance the 'compose' function, the '(PairGraph
+BitGraph)' type from 'Graphs.CommonLabeledGraphTypes', or the nodes of a
+CayleyGraph) there is an assumptions that all involved instances of BitGraph
+are of the same size. In such context this can be nicely enforced by having
+just one size variable that is applied to all BitGraphs. In case each BitGraph
+stores it's own size it becomes something that would need to be asserted. But
+then again such asserts might be a good thing since it allows us to actually
+check in the code that the assumption of equal size is satisfied.
+
+The clear disadvantage of not storing the size as part of the BitGraph is that
+it makes the code using BitGraphs much more complex, because the size parameter
+needs to be passed around independently from the BitGraphs.
+-}
+
 bitGraphInterface :: Size -> GraphInterface BitGraph Node
 bitGraphInterface size = interfaceFromHasArcPretty (dom size)
                                            (hasBitForArc size)

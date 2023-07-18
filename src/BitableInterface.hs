@@ -6,6 +6,29 @@ module BitableInterface (
   genericBitableInterface,
 ) where
 
+{-
+This code is the interface that allows code, such as for instance the Cayley
+graph module or all the RelationCache code, to access to a bit representation
+of a generic graph. The code solves two problems that might not need solving or
+that may better be solved differently.
+1) In case the original graph is already stored in a bit representation, such
+as LabeledBitGraph or ConcieseGraph, we want to provide access more or less
+directely, without wrapping the graph in a LabeledWrapped Graph. This might be
+a premature optimization. It is unclear what the performance benefits as
+opposed to trivial instances of LabeledWrappedGraph.
+2) The code also provides an interface for the relations of individual
+(unlabeled) relations that are computed for words in the original graph. This
+is the 'relationI :: GraphInterface BitGraph x' field below. The purpose is to
+allow easy access to such an interface that forgets about the labeling. I did
+not yet figure out how to do that nicely from a LabeledWrappedGraph. But I
+suspect there must be a more elegant solution.
+
+It might also be that these problems don't need to be solved! We might also be
+happy to only be able to turn BitGraphs into CayleyGraphs. Thus, the more
+general issue to provide CayleyGraphs for arbitrary graphs might just be
+overkill.
+-}
+
 import Bitify
 import Graphs.BitGraph
 import Coding
