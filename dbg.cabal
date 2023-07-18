@@ -57,9 +57,7 @@ library
       HomomorphismSearch.SmartSearch
       LabeledWrappedGraph
       Lifting.CombinationGraph
-      Lifting.LiftedNode
       Lifting.LiftingSearch
-      Lifting.Simultaneous
       Plans.CoveringGraph
       Plans.Execute
       Plans.Plan
@@ -142,7 +140,6 @@ test-suite dbg-test
       ConstructibleSpec
       CoveringGraphSpec
       HomomorphismSpec
-      LiftedNodeSpec
       ListWordSpec
       MapGraphSpec
       PlanSpec

@@ -13,7 +13,6 @@ import qualified BitGraphSpec
 import qualified ConstructibleSpec
 import qualified CayleyGraphSpec
 import qualified BitifySpec
-import qualified LiftedNodeSpec
 import qualified ListWordSpec
 import qualified CoveringGraphSpec
 import qualified SearchTreeSpec
@@ -35,7 +34,6 @@ spec = do
   describe "Constructible" ConstructibleSpec.spec
   describe "CayleyGraph" CayleyGraphSpec.spec
   describe "Bitify" BitifySpec.spec
-  describe "LiftedNode" LiftedNodeSpec.spec
   describe "ListWord" ListWordSpec.spec
   describe "CoveringGraph" CoveringGraphSpec.spec
   describe "SearchTree" SearchTreeSpec.spec
