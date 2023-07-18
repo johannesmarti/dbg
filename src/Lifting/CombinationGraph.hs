@@ -1,15 +1,15 @@
-module LiftedGraph (
-  LiftedGraph,
+module Lifting.CombinationGraph (
+  CombinationGraph,
   intGraphInterface,
   embed,
   graph,
-  LiftedGraph.size,
+  Lifting.CombinationGraph.size,
   fromLabeledGraph,
   fromLabeledGraphWithCoding,
   toLabeledBitGraph,
   liftCandidate,
   combine,
-  prettyLiftedGraph,
+  prettyCombinationGraph,
   LiftingCandidate,
   prettyCandidate,
   prettyCanWithArcs,
@@ -32,7 +32,6 @@ import Graphs.BitGraph (Size,fromArcs)
 import Coding hiding (domain)
 import Graphs.CommonLabeledGraphTypes
 import Graphs.LabeledGraphInterface
-import Lifted
 import Tools (strictPairs)
 import Graphs.PrettyNode (stdPrintSet)
 import Graphs.PairGraph (fromFunction)
@@ -56,39 +55,39 @@ type IntGraph = LabeledMapGraph Int
 intGraphInterface :: LabeledGraphInterface IntGraph Int
 intGraphInterface = labeledMapGraphInterface
 
-data LiftedGraph x = LiftedGraph {
+data CombinationGraph x = CombinationGraph {
   graph         :: IntGraph,
   justification :: Map Int (Justification x),
   embed         :: x -> Int,
   printBase     :: x -> String
 }
 
-allJustified :: LiftedGraph x -> Bool
+allJustified :: CombinationGraph x -> Bool
 allJustified lg = keysSet (justification lg) == domain intGraphInterface (graph lg)
 
-justify :: LiftedGraph x -> Int -> Justification x
+justify :: CombinationGraph x -> Int -> Justification x
 justify lg node = assert (allJustified lg) $
   case Map.lookup node (justification lg) of
     Just j  -> j
-    Nothing -> error "node is not in LiftedGraph"
+    Nothing -> error "node is not in CombinationGraph"
 
-topNode :: LiftedGraph x -> Int
+topNode :: CombinationGraph x -> Int
 topNode lg = case Set.lookupMax (domain intGraphInterface (graph lg)) of
                Just m  ->  m
                Nothing -> -1
 
-size :: LiftedGraph x -> Int
+size :: CombinationGraph x -> Int
 size = nextNode
 
-nextNode :: LiftedGraph x -> Int
+nextNode :: CombinationGraph x -> Int
 nextNode lg = topNode lg + 1
 
-fromLabeledGraph :: Ord x => LabeledGraphInterface g x -> g -> LiftedGraph x
+fromLabeledGraph :: Ord x => LabeledGraphInterface g x -> g -> CombinationGraph x
 fromLabeledGraph gi g = fst (fromLabeledGraphWithCoding gi g)
 
 fromLabeledGraphWithCoding :: Ord x => LabeledGraphInterface g x -> g
-                                 -> (LiftedGraph x, Coding x Int)
-fromLabeledGraphWithCoding gi g = (LiftedGraph intGraph just emb pb, coding) where
+                                 -> (CombinationGraph x, Coding x Int)
+fromLabeledGraphWithCoding gi g = (CombinationGraph intGraph just emb pb, coding) where
   coding = codeSet (domain gi g)
   emb = encode coding
   intGraph = labeledMapApplyBijection gi g emb
@@ -96,9 +95,9 @@ fromLabeledGraphWithCoding gi g = (LiftedGraph intGraph just emb pb, coding) whe
   justifyBase i = base (decode coding i)
   pb = prettyNode gi g
 
-toLabeledBitGraph :: LiftedGraph x -> (LabeledBitGraph,Size)
+toLabeledBitGraph :: CombinationGraph x -> (LabeledBitGraph,Size)
 toLabeledBitGraph lg = let
-    s = LiftedGraph.size lg
+    s = Lifting.CombinationGraph.size lg
     g = graph lg
   in (Graphs.PairGraph.fromFunction (\l ->
        Graphs.BitGraph.fromArcs s (arcsOfLabel intGraphInterface g l)), s)
@@ -159,7 +158,7 @@ liftableCandidates g = let
 liftablePairs :: IntGraph -> [(Int,Int)]
 liftablePairs g = map extractPair $ liftableCandidates g
 
-liftCandidate :: LiftingCandidate -> State (LiftedGraph x) Int
+liftCandidate :: LiftingCandidate -> State (CombinationGraph x) Int
 liftCandidate can = state $ \lg ->
   assert (can == computeCandidate (graph lg) (extractPair can)) $
   assert (isVisible can) $
@@ -179,9 +178,9 @@ liftCandidate can = state $ \lg ->
     withNode = labeledMapAddNodes (graph lg) [next]
     newGraph = addForLabel One (addForLabel Zero withNode)
     newJustification = insert next (doubleton u v) (justification lg)
-  in (next,LiftedGraph newGraph newJustification (embed lg) (printBase lg))
+  in (next,CombinationGraph newGraph newJustification (embed lg) (printBase lg))
   
-combine :: Int -> Int -> State (LiftedGraph x) Int
+combine :: Int -> Int -> State (CombinationGraph x) Int
 combine x y = if x == y then return x else do
   lg <- get
   let can = computeCandidate (graph lg) (x,y)
@@ -189,16 +188,16 @@ combine x y = if x == y then return x else do
     then liftCandidate can
     else error ("Trying to lift invisible candidate " ++ show (extractPair can))
 
-prettyLiftedGraph :: LiftedGraph x -> [String]
-prettyLiftedGraph lg = let
+prettyCombinationGraph :: CombinationGraph x -> [String]
+prettyCombinationGraph lg = let
     justifiedNodePrinter i = (show i) ++ " " ++ just (justify lg i) where
       just (Base x) = "! " ++ printBase lg x
       just (Doubleton m n) = "[" ++ show m ++ " " ++ show n ++ "]"
     setPrinter i = show i
   in prettierBigLabeledGraph intGraphInterface (graph lg) justifiedNodePrinter setPrinter
 
-instance Show (LiftedGraph x) where
-  show lg = unlines $ prettyLiftedGraph lg
+instance Show (CombinationGraph x) where
+  show lg = unlines $ prettyCombinationGraph lg
 
 noFilter :: IntGraph -> LiftingCandidate -> Bool
 noFilter _ _ = True

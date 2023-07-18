@@ -1,4 +1,4 @@
-module Word (
+module Data.ListWord (
   allWords,
   allWordsOfLength,
   first,

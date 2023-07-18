@@ -1,13 +1,12 @@
-module Count (
+module Programs.Count (
   count
 ) where
 
 import System.Environment
 import Data.Maybe (listToMaybe)
 
-import CoveringGraph
+import Plans.CoveringGraph
 import Data.Label
-import Word
 import Data.Path (labelList)
 
 addressPrinter :: CoveringNode -> String

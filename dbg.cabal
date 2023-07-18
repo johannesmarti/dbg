@@ -23,15 +23,13 @@ library
   exposed-modules:
       BitableInterface
       Bitify
-      Children
       Coding
       Conditions.CayleyGraph
       Conditions.Constructible
       Conditions.ConstructionGraph
-      Count
-      CoveringGraph
       Data.FiniteFunction
       Data.Label
+      Data.ListWord
       Data.Path
       Data.PathTree
       Data.TurningVector
@@ -39,11 +37,9 @@ library
       Data.WordMaps.Coalgebraic
       Data.WordMaps.MapWrapper
       Data.WordTree
-      Duplicates
       Examples.Games
       Examples.Patterns
       Examples.Plans
-      ExecutePlan
       Graphs.AssocGraph
       Graphs.BitGraph
       Graphs.CommonLabeledGraphTypes
@@ -60,20 +56,24 @@ library
       HomomorphismSearch.Search
       HomomorphismSearch.SmartSearch
       LabeledWrappedGraph
-      Lifted
-      LiftedGraph
-      Lifting
-      LiftingSearch
-      Plan
-      Range
+      Lifting.CombinationGraph
+      Lifting.LiftedNode
+      Lifting.LiftingSearch
+      Lifting.Simultaneous
+      Plans.CoveringGraph
+      Plans.Execute
+      Plans.Plan
+      Programs.Children
+      Programs.Count
+      Programs.Duplicates
+      Programs.Range
+      Programs.Report
+      Programs.SpiralReport
       RelationCache
       RelationTree
-      Report
       SearchTree
       Spiral
-      SpiralReport
       Tools
-      Word
       WrappedGraph
   other-modules:
       Paths_dbg
@@ -142,13 +142,13 @@ test-suite dbg-test
       ConstructibleSpec
       CoveringGraphSpec
       HomomorphismSpec
-      LiftedSpec
+      LiftedNodeSpec
+      ListWordSpec
       MapGraphSpec
       PlanSpec
       SearchTreeSpec
       TurningVectorSpec
       WordMapSpec
-      WordSpec
       Paths_dbg
   hs-source-dirs:
       test

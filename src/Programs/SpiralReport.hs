@@ -1,11 +1,11 @@
-module SpiralReport (
-  SpiralReport.spiralReport
+module Programs.SpiralReport (
+  Programs.SpiralReport.spiralReport
 ) where
 
 import System.Environment 
 import Data.Set as Set
 
-import Report
+import Programs.Report
 import Examples.Patterns
 import Data.Label
 import Spiral

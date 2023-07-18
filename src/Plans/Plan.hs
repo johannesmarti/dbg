@@ -1,4 +1,4 @@
-module Plan (
+module Plans.Plan (
   Spoke,
   hub,
   spoke,
@@ -8,14 +8,14 @@ module Plan (
   singletonNode,
   contained,
   Plan,
-  Plan.empty,
-  Plan.insert,
+  Plans.Plan.empty,
+  Plans.Plan.insert,
 ) where
 
 -- TODO: Should we use the strict or the lazy state monad? Need to read up!
 import qualified Data.Map.Strict as M
 
-import CoveringGraph
+import Plans.CoveringGraph
 import Data.WordMaps.Algebraic as WordMap
 import Data.Label
 

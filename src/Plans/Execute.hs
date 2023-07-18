@@ -1,5 +1,5 @@
 {-# LANGUAGE FlexibleContexts #-} -- This is enabled because of issues with the State monad below
-module ExecutePlan (
+module Plans.Execute (
   executePlan,
   wrapSpiral,
 ) where
@@ -10,13 +10,12 @@ import Control.Monad.State.Lazy
 import qualified Data.Vector as V
 import Data.Maybe (fromMaybe)
 
-import CoveringGraph
-import Graphs.LabeledGraphInterface
-import LiftedGraph
-import Plan
-
-import Data.WordMaps.Algebraic as WordMap
+import Data.WordMaps.Algebraic as WordMap hiding (combine)
 import qualified Data.TurningVector as TV
+import Graphs.LabeledGraphInterface
+import Lifting.CombinationGraph
+import Plans.Plan
+import Plans.CoveringGraph
 
 {-
  We have a WordTree that maps addresses of Covering nodes to a pointed set. The
@@ -24,17 +23,17 @@ point denotes the center of the spiral at the turningWord of the Covering node
 and the remaining elements in the set are the required nodes for the covering.
 -}
 
-executePlan :: Ord x => LabeledGraphInterface g x -> g -> Plan x -> (LiftedGraph x, Int)
+executePlan :: Ord x => LabeledGraphInterface g x -> g -> Plan x -> (CombinationGraph x, Int)
 executePlan gi g plan = (lg,dsl) where
-  liftedGraph = LiftedGraph.fromLabeledGraph gi g
+  liftedGraph = Lifting.CombinationGraph.fromLabeledGraph gi g
   ((dsl,_),lg) = runState (runStateT lastNode WordMap.empty) liftedGraph
   lastNode = do zi <- constructNode plan zero
                 oz <- constructNode plan one
-                doubleSelfLoop <- lift $ LiftedGraph.combine zi oz
+                doubleSelfLoop <- lift $ combine zi oz
                 return doubleSelfLoop
 
 constructNode :: Ord x => Plan x -> CoveringNode
-                          -> StateT (WordMap Int) (State (LiftedGraph x)) Int
+                          -> StateT (WordMap Int) (State (CombinationGraph x)) Int
 constructNode plan coveringNode = let
     lookupNodeWrapper otherAction = do
       constructed <- get
@@ -78,7 +77,7 @@ constructNode plan coveringNode = let
     return (assert ((myCycle V.! myIndex) == coveringNode) 
                    (fatterVector V.! myIndex))
 
-wrapSpiral :: V.Vector (Spoke x) -> State (LiftedGraph x) (V.Vector Int)
+wrapSpiral :: V.Vector (Spoke x) -> State (CombinationGraph x) (V.Vector Int)
 wrapSpiral spokes = do
   lg <- get
   let emb = embed lg
@@ -86,18 +85,18 @@ wrapSpiral spokes = do
       helper distance constructed =
         if distance > maximalDistanceInSpiral then return constructed
         else do let constructInSpoke plan soFar = 
-                        foldM LiftedGraph.combine soFar
+                        foldM combine soFar
                               (map emb (pointsAtDistance distance plan))
                 improved <- V.zipWithM constructInSpoke spokes constructed
                 helper (distance + 1) improved
     in helper 1 (V.map (emb . hub) spokes)
 
 wrapTentacle :: V.Vector CoveringNode -> V.Vector Int -> [(CoveringNode, Int)]
-                -> State (LiftedGraph x) (V.Vector Int) 
+                -> State (CombinationGraph x) (V.Vector Int) 
 wrapTentacle cycle fatVector tentacle = let
     startIndex = fromMaybe (error "tentacle does not seem to match the cycle")
                            (V.findIndex (== parent (fst . head $ tentacle)) cycle)
     turningVector = TV.fromVectorWithIndex startIndex fatVector
-    operation fatNode (cn,cni) = LiftedGraph.combine fatNode cni
+    operation fatNode (cn,cni) = combine fatNode cni
   in do tv <- TV.zipReverseWithListM operation turningVector tentacle
         return (TV.vector tv)

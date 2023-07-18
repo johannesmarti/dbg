@@ -1,13 +1,12 @@
-module Duplicates (
+module Programs.Duplicates (
   duplicates 
 ) where
 
 import qualified Data.Set as Set
 import System.Environment
 
-import CoveringGraph
+import Plans.CoveringGraph
 import Data.Label
-import Word
 
 a :: [Label]
 a = [Zero,One,One,One]

@@ -10,11 +10,11 @@ import qualified Data.Vector as V
 
 import Examples.Patterns
 import Examples.Plans
-import Plan
-import ExecutePlan
+import Plans.Plan
+import Plans.Execute
 import Data.Label
 import Graphs.LabeledGraphInterface
-import LiftedGraph
+import Lifting.CombinationGraph
 
 spec :: Spec
 spec = do
@@ -23,7 +23,7 @@ spec = do
     let s010 = spoke 'c' [('a', 1), ('b', 3)]
     let s100 = spoke 'b' [('a', 1), ('c', 2)]
     let spokes = V.fromList [s001, s010, s100]
-    let lg = LiftedGraph.fromLabeledGraph force3dInterface force3d
+    let lg = Lifting.CombinationGraph.fromLabeledGraph force3dInterface force3d
     let (fatVec, extendedLg) = runState (wrapSpiral spokes) lg
     let ig = graph extendedLg
     let f001 = fatVec V.! 0

@@ -4,7 +4,7 @@ module CoveringGraphSpec (
 
 import Test.Hspec
 
-import CoveringGraph
+import Plans.CoveringGraph
 import Data.Label
 import Data.Path (labelList)
 

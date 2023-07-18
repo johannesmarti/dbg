@@ -1,4 +1,4 @@
-module CoveringGraph (
+module Plans.CoveringGraph (
   CoveringNode,
   turningWord,parent,fullPathDown,
   epsilon,zero,one,
@@ -17,12 +17,12 @@ import Data.Function (fix)
 
 import Data.Label
 import Data.Path as Path
-import Word
+import Data.ListWord
 import Data.WordTree
 
 data CoveringNode = CoveringNode {
-  turningWord :: [Label], -- turningWord determines the other data members
-  address     :: [Label],
+  turningWord :: [Label], -- turning word is believed to determine all other members
+  address     :: [Label], -- address determines all other data members
   parent      :: CoveringNode,
   pathDown    :: Path CoveringNode
 }

@@ -1,4 +1,4 @@
-module Report (
+module Programs.Report (
   cayleyReport, easyCayleyReport,
   spiralReport, easySpiralReport,
 ) where
@@ -6,13 +6,13 @@ module Report (
 import qualified Data.Set as Set
 import Data.List (maximumBy,intercalate)
 
-import Word
+import Data.ListWord
 import Data.Label
 import BitableInterface
 import qualified Data.Path as Path
 import Graphs.LabeledGraphInterface as LGI
 import Graphs.GraphInterface as GI
-import Conditions.CayleyGraph hiding (relationOfWord)
+import Conditions.CayleyGraph hiding (relationOfWord, allWords)
 import Coding
 import RelationCache
 import Conditions.Constructible
@@ -71,4 +71,4 @@ spiralReport words gi g = let
 easySpiralReport :: Ord x => Int -> LabeledGraphInterface g x -> g -> IO ()
 easySpiralReport numWords gi g =
   putStr . unlines $ spiralReport words gi g where
-    words = take numWords . filter isBaseWord . tail $ Word.allWords labelsList
+    words = take numWords . filter isBaseWord . tail $ allWords labelsList

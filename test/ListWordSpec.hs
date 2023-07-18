@@ -1,10 +1,10 @@
-module WordSpec (
+module ListWordSpec (
    spec
 ) where
 
 import Test.Hspec
 
-import Word
+import Data.ListWord
 
 
 turnList :: (Show a, Eq a) => [a] -> Spec

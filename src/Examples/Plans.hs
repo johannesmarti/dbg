@@ -4,7 +4,7 @@ module Examples.Plans (
   alloc3Plan
 ) where
 
-import Plan
+import Plans.Plan
 import Data.Label
 
 force3dPlan :: Plan Char

@@ -27,8 +27,8 @@ import Control.Monad.State.Lazy
 
 import Graphs.ConciseGraph
 import Graphs.DeBruijnGraph
-import LiftedGraph
-import Report
+import Lifting.CombinationGraph
+import Programs.Report
 import Examples.Patterns
 import BitableInterface
 
@@ -51,7 +51,7 @@ gameEx5 = let
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
   in do
-    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putStrLn $ unlines $ prettyCombinationGraph lifting
     --mapM_ (putStrLn . prettyCandidate) cans
 
 gameForce5d :: IO ()
@@ -66,7 +66,7 @@ gameForce5d = let
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
   in do
-    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putStrLn $ unlines $ prettyCombinationGraph lifting
     --mapM_ (putStrLn . prettyCandidate) cans
 
 gameForce4d :: IO ()
@@ -88,7 +88,7 @@ gameForce4d = let
     cans = filter (weakDominationFilter ig) allCans
     pairs = map extractPair cans
   in do
-    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putStrLn $ unlines $ prettyCombinationGraph lifting
     putChar '\n'
     --mapM_ (\c -> putStrLn (prettyCanWithArcs c) >> putChar '\n') cans
     --mapM_ (putStrLn . prettyCandidate) cans
@@ -121,7 +121,7 @@ gameSlowSquare = let
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
   in do
-    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putStrLn $ unlines $ prettyCombinationGraph lifting
     putChar '\n'
     print pairs
 
@@ -142,7 +142,7 @@ gameDifficult = let
     ig = graph lifting
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
   in do
-    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putStrLn $ unlines $ prettyCombinationGraph lifting
 
 gameBiggest :: IO ()
 gameBiggest = let
@@ -181,7 +181,7 @@ gameBiggest = let
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
   in do
-    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putStrLn $ unlines $ prettyCombinationGraph lifting
     --mapM_ (putStrLn . prettyCandidate) cans
     putChar '\n'
     print pairs
@@ -202,7 +202,7 @@ gameUnsound = let
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
   in do
-    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putStrLn $ unlines $ prettyCombinationGraph lifting
     putChar '\n'
     print pairs
 
@@ -219,7 +219,7 @@ gameEx3 = let
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
   in do
-    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putStrLn $ unlines $ prettyCombinationGraph lifting
     putChar '\n'
     print pairs
 
@@ -265,7 +265,7 @@ gameAlsoBig = let
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
   in do
-    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putStrLn $ unlines $ prettyCombinationGraph lifting
     putChar '\n'
     --mapM_ (\c -> putStrLn (prettyCanWithArcs c) >> putChar '\n') cans
     --mapM_ (putStrLn . prettyCandidate) cans
@@ -318,7 +318,7 @@ gameTentje = let
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
   in do
-    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putStrLn $ unlines $ prettyCombinationGraph lifting
     putChar '\n'
     --mapM_ (\c -> putStrLn (prettyCanWithArcs c) >> putChar '\n') cans
     --mapM_ (putStrLn . prettyCandidate) cans
@@ -339,7 +339,7 @@ gameForce6d = let
     cans = filter (weakDominationFilter ig) allCans
     pairs = map extractPair cans
   in do
-    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putStrLn $ unlines $ prettyCombinationGraph lifting
     putChar '\n'
     --mapM_ (\c -> putStrLn (prettyCanWithArcs c) >> putChar '\n') cans
     --mapM_ (putStrLn . prettyCandidate) cans
@@ -366,7 +366,7 @@ gameForce7d = let
     cans = filter (weakDominationFilter ig) allCans
     pairs = map extractPair cans
   in do
-    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putStrLn $ unlines $ prettyCombinationGraph lifting
     putChar '\n'
     --mapM_ (\c -> putStrLn (prettyCanWithArcs c) >> putChar '\n') cans
     --mapM_ (putStrLn . prettyCandidate) cans
@@ -387,7 +387,7 @@ gameAlloc1 = let
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
   in do
-    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putStrLn $ unlines $ prettyCombinationGraph lifting
     putChar '\n'
     putChar '\n'
     --mapM_ (\c -> putStrLn (prettyCanWithArcs c) >> putChar '\n') cans
@@ -410,7 +410,7 @@ gameAlloc2 = let
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
   in do
-    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putStrLn $ unlines $ prettyCombinationGraph lifting
     putChar '\n'
     print $ Spiral.fromHub intGraphInterface ig [Zero] [2]
     putChar '\n'
@@ -449,7 +449,7 @@ gameAlloc3 = let
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
   in do
-    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putStrLn $ unlines $ prettyCombinationGraph lifting
     putChar '\n'
     print pairs
 
@@ -466,7 +466,7 @@ gameIssues = let
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
   in do
-    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putStrLn $ unlines $ prettyCombinationGraph lifting
     putChar '\n'
     print pairs
 
@@ -488,7 +488,7 @@ gameForce9d = let
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
   in do
-    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putStrLn $ unlines $ prettyCombinationGraph lifting
     putChar '\n'
     print pairs
 
@@ -513,7 +513,7 @@ gameDbg3 = let
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
   in do
-    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putStrLn $ unlines $ prettyCombinationGraph lifting
     putChar '\n'
     print pairs
 
@@ -548,7 +548,7 @@ gameDbg4 = let
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
   in do
-    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putStrLn $ unlines $ prettyCombinationGraph lifting
     putChar '\n'
     print pairs
 
@@ -607,7 +607,7 @@ gameDbg5 = let
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
   in do
-    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putStrLn $ unlines $ prettyCombinationGraph lifting
     putChar '\n'
     print pairs
 
@@ -706,7 +706,7 @@ gameDbg6 = let
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
   in do
-    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putStrLn $ unlines $ prettyCombinationGraph lifting
     putChar '\n'
     print pairs
 
@@ -778,7 +778,7 @@ gameBig5 = let
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
   in do
-    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putStrLn $ unlines $ prettyCombinationGraph lifting
     putChar '\n'
 
 gameStudy :: IO ()
@@ -833,6 +833,6 @@ gameStudy = let
     cans = filter (weakDominationFilter ig) (liftableCandidates ig)
     pairs = map extractPair cans
   in do
-    putStrLn $ unlines $ prettyLiftedGraph lifting
+    putStrLn $ unlines $ prettyCombinationGraph lifting
     putChar '\n'
 

@@ -1,11 +1,11 @@
-module Children (
+module Programs.Children (
   children
 ) where
 
 import System.Environment
 
-import CoveringGraph
 import Data.Label
+import Plans.CoveringGraph
 
 printer :: CoveringNode -> String
 printer node = 

@@ -1,21 +1,20 @@
-module LiftingSearch (
+module Lifting.LiftingSearch (
   searchLifting,
 ) where
 
---import Control.Monad.Plus (msum)
 import Control.Monad.State.Lazy
 
-import LiftedGraph
+import Lifting.CombinationGraph
 import Graphs.LabeledGraphInterface
 
-searchLifting :: Ord x => Int -> LabeledGraphInterface g x -> g -> Maybe (LiftedGraph x)
+searchLifting :: Ord x => Int -> LabeledGraphInterface g x -> g -> Maybe (CombinationGraph x)
 searchLifting boundOnNumNodes gi g = let
     lg = fromLabeledGraph gi g
   in if hasDoubleRefl gi g
        then Just lg
        else realSearch boundOnNumNodes lg
 
-realSearch :: Int -> LiftedGraph x -> Maybe (LiftedGraph x)
+realSearch :: Int -> CombinationGraph x -> Maybe (CombinationGraph x)
 realSearch bound lg = if bound <= 0 then Nothing else let
     ig = graph lg
     candidates = filter (dominationFilter ig) (liftableCandidates ig)

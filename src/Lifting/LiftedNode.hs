@@ -1,4 +1,4 @@
-module Lifted (
+module Lifting.LiftedNode (
   Lifted,
   bn, si, du,
   du',

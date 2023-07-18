@@ -1,4 +1,4 @@
-module Lifting (
+module Lifting.Simultaneous (
   LiftedGraph,
   liftedGraphInterface,
   liftedGraphInterfaceNotPretty,
@@ -18,7 +18,7 @@ import qualified Data.List.Extra as ListExtra
 
 import Graphs.CommonLabeledGraphTypes
 import Graphs.LabeledGraphInterface
-import Lifted
+import Lifting.LiftedNode
 import Graphs.PrettyNode
 import Tools (strictPairs)
 import Data.Label

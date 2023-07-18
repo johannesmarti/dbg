@@ -1,11 +1,11 @@
-module LiftedSpec (
+module LiftedNodeSpec (
    spec
 ) where
 
 import Control.Exception (evaluate)
 import Test.Hspec
 
-import Lifted
+import Lifting.LiftedNode
 
 rel :: Char -> Char -> Bool
 rel 'a' 'a' = False

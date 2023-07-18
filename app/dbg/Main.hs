@@ -2,7 +2,7 @@ module Main (
   main
 ) where
 
-import Range
+import Programs.Range
 
 main :: IO ()
 main = rangePartition

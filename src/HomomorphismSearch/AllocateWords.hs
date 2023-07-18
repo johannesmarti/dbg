@@ -3,7 +3,7 @@ module HomomorphismSearch.AllocateWords (
   firstLevelToAllocate,
 ) where
 
-import Word
+import Data.ListWord
 import Data.Label
 import Graphs.BitGraph
 

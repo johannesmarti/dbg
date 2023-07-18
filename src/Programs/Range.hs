@@ -1,4 +1,4 @@
-module Range (
+module Programs.Range (
   checkOne,
   rangePartition,
 ) where

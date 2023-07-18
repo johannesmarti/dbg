@@ -35,7 +35,7 @@ import Coding
 import Graphs.ConciseGraph
 import Graphs.CommonLabeledGraphTypes
 import Graphs.GraphInterface
-import LiftedGraph
+import Lifting.CombinationGraph
 import qualified Graphs.LabeledGraphInterface as LGI
 import LabeledWrappedGraph
 
@@ -57,9 +57,9 @@ conciseGraphBitableInterface s cg = bitification where
   lbg = Graphs.ConciseGraph.toLabeledBitGraph s cg
   bitification = labeledBitGraphBitableInterface s lbg
 
-liftedGraphBitableInterface :: BitableInterface (LiftedGraph x) Int
+liftedGraphBitableInterface :: BitableInterface (CombinationGraph x) Int
 liftedGraphBitableInterface lg = bitification where
-  (lbg,s) = LiftedGraph.toLabeledBitGraph lg
+  (lbg,s) = Lifting.CombinationGraph.toLabeledBitGraph lg
   bitification = labeledBitGraphBitableInterface s lbg
 
 genericBitableInterface :: Ord x => LGI.LabeledGraphInterface g x -> BitableInterface g x
