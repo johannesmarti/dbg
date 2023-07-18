@@ -4,24 +4,24 @@ module CayleyGraphSpec (
 
 import Test.Hspec
 
-import BitableInterface
+import Bitify.Bitifier
 import Conditions.CayleyGraph
 import Examples.Patterns
 
 spec :: Spec
 spec = do
   describe "cayleyCondition" $ do
-    let csb = conciseGraphBitableInterface cayleySchreckSize cayleySchreck
+    let csb = conciseGraphBitifier cayleySchreckSize cayleySchreck
     it "cayleySchreck is does not have path condition" $
       (rightCayleyGraph csb) `shouldSatisfy` (not . (pathCondition (numBits csb)))
 
     it "4003476 of size 4 has path condition" $
-      (rightCayleyGraph (conciseGraphBitableInterface 4 4003476)) `shouldSatisfy` (pathCondition 4)
+      (rightCayleyGraph (conciseGraphBitifier 4 4003476)) `shouldSatisfy` (pathCondition 4)
 
-    let noPathBitification = conciseGraphBitableInterface 4 noPath
+    let noPathBitification = conciseGraphBitifier 4 noPath
     it "noPath of size 4 does not have path condition" $
       (rightCayleyGraph noPathBitification) `shouldSatisfy` (not . (pathCondition (numBits noPathBitification)))
 
-    let notQuitePathBitification = conciseGraphBitableInterface 4 noPath
+    let notQuitePathBitification = conciseGraphBitifier 4 noPath
     it "notQuitePath of size 4 does not have path condition" $
       (rightCayleyGraph notQuitePathBitification) `shouldSatisfy` (not . (pathCondition (numBits notQuitePathBitification)))

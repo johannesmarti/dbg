@@ -8,27 +8,27 @@ import Data.List (maximumBy,intercalate)
 
 import Data.ListWord
 import Data.Label
-import BitableInterface
 import qualified Data.Path as Path
 import Graphs.LabeledGraphInterface as LGI
 import Graphs.GraphInterface as GI
 import Conditions.CayleyGraph hiding (relationOfWord, allWords)
-import Coding
 import RelationCache
 import Conditions.Constructible
-import Data.PathTree
+import PathTree
 import Spiral
+import Bitify.Bitifier
+import Bitify.Coding
 
 
 cayleyReport :: Ord x => LabeledGraphInterface g x -> g -> [String]
 cayleyReport gi g = let
-    bf = (genericBitableInterface gi) g
+    bf = (genericBitifier gi) g
     s = numBits bf
     inner = labeledBitGraph bf
     cg = rightCayleyGraph bf
-    c = BitableInterface.coding bf
+    c = coding bf
     dec = decode c
-    printRel r = GI.prettyGraph (relationI bf) r
+    printRel r = GI.prettyGraph (relationInterface bf) r
     printRelWithCode r = (printNodeWithSuccs cg r ++ ":") : (printRel r)
     wfs = wellfoundedElements cg
     nwfs = nonWellfoundedElements cg
@@ -64,7 +64,7 @@ spiralReportForWord gi g rc w = let
 
 spiralReport :: Ord x => [[Label]] -> LabeledGraphInterface g x -> g -> [String]
 spiralReport words gi g = let
-    rc = buildCache (relationTreeRelationCacheableInterface (genericBitableInterface gi)) g
+    rc = buildCache (relationTreeRelationCacheableInterface (genericBitifier gi)) g
     wordStrings = map (spiralReportForWord gi g rc) words
   in intercalate ["", "+++++++++++++++++++", ""] wordStrings
 

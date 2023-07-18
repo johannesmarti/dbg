@@ -5,7 +5,7 @@ module Programs.Range (
 
 import qualified Data.Set as Set
 
-import BitableInterface
+import Bitify.Bitifier
 import Conditions.CayleyGraph
 import Graphs.BitGraph
 import Graphs.ConciseGraph
@@ -25,7 +25,7 @@ checkOne size graph = do
 
 easyPathCondition :: Ord x => LabeledGraphInterface g x -> g -> Bool
 easyPathCondition gi g = pathCondition s cayleyGraph where
-  bitification = genericBitableInterface gi g
+  bitification = genericBitifier gi g
   s = numBits bitification
   cayleyGraph = rightCayleyGraph bitification
 

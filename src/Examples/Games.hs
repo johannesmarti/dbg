@@ -30,8 +30,6 @@ import Graphs.DeBruijnGraph
 import Lifting.CombinationGraph
 import Programs.Report
 import Examples.Patterns
-import BitableInterface
-
 import Data.Label
 import Spiral
 

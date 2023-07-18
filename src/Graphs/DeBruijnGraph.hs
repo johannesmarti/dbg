@@ -24,7 +24,8 @@ newtype DBG = DBG {dimension :: Dimension}
 
 -- TODO: Quite some speedup in the arccons might be possible by explicitely implemeniting arcs!
 dbgInterface :: LabeledGraphInterface DBG Node
-dbgInterface = iFromSuccPredPretty domain successors predecessors nodePrinter
+dbgInterface = interfaceFromSuccPredPretty domain successors predecessors
+                                           nodePrinter
 
 domain :: DBG -> Set Node
 domain (DBG dim) = fromList [zeroes .. (Graphs.DeBruijnGraph.mask dim)]

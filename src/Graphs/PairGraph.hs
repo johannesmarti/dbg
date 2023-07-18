@@ -22,7 +22,7 @@ instance Functor PairGraph where
   fmap f (PairGraph zg og) = PairGraph (f zg) (f og)
 
 pairGraphInterface :: Eq x => GI.GraphInterface g x -> LabeledGraphInterface(PairGraph g) x
-pairGraphInterface innerI = iFromAll dom succ pred hasAr ar pretty where
+pairGraphInterface innerI = interfaceFromAll dom succ pred hasAr ar pretty where
   dom pg = let zd = GI.domain innerI (zeroGraph pg)
                od = GI.domain innerI (oneGraph pg)
            in assert (zd == od) zd

@@ -10,9 +10,9 @@ module RelationCache (
 
 import Data.Set
 
-import BitableInterface
+import Bitify.Bitifier
 import Graphs.BitGraph
-import Coding
+import Bitify.Coding
 import Graphs.GraphInterface
 import Data.Label
 import RelationTree
@@ -29,9 +29,11 @@ type RelationCachableInterface g x r = g -> RelationCache r x
 buildCache :: RelationCachableInterface g x r -> g -> RelationCache r x
 buildCache ci = ci
 
-relationTreeRelationCacheableInterface :: BitableInterface g x -> RelationCachableInterface g x BitGraph
+relationTreeRelationCacheableInterface :: Bitifier g x -> RelationCachableInterface g x BitGraph
 relationTreeRelationCacheableInterface bi g = RelationCache bgi rum rw where
-  Bitification s lbg c bgi = bi g
-  rt = relationTree (lbg,s)
-  rum = decodeSet c . Graphs.BitGraph.reflexivesUnivInMultiple s
+  bitification = bi g
+  s = numBits bitification
+  rt = relationTree (labeledBitGraph bitification, s)
+  rum = decodeSet (coding bitification) . Graphs.BitGraph.reflexivesUnivInMultiple s
   rw = labelOfWord rt
+  bgi = relationInterface bitification

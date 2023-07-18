@@ -1,4 +1,4 @@
-module Data.PathTree (
+module PathTree (
   PathTree(..),
   extractNode,
   pathTreesOfMCycles,

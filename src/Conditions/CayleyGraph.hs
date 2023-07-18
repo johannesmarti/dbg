@@ -21,8 +21,8 @@ import qualified Data.Set as Set
 import Data.Label
 import Graphs.BitGraph as BG
 import Graphs.PairGraph
-import BitableInterface
-import Coding hiding (domain)
+import Bitify.Bitifier
+import Bitify.Coding hiding (domain)
 import RelationCache
 
 data CayleyGraph = CayleyGraph {
@@ -36,7 +36,7 @@ relationCache :: Bitification x -> CayleyGraph -> RelationCache BitGraph x
 relationCache bf cg = cache where
   c = coding bf
   s = numBits bf
-  cache = RelationCache (relationI bf)
+  cache = RelationCache (relationInterface bf)
                         (decodeSet c . BG.reflexivesUnivInMultiple s)
                         (Conditions.CayleyGraph.relationOfWord s cg)
 

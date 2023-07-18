@@ -1,4 +1,4 @@
-module Coding (
+module Bitify.Coding (
   Coding,
   domain,
   codes,

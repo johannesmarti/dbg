@@ -29,7 +29,7 @@ import qualified Data.Set as Set
 
 import Data.Label
 import Graphs.BitGraph (Size,fromArcs)
-import Coding hiding (domain)
+import Bitify.Coding hiding (domain)
 import Graphs.CommonLabeledGraphTypes
 import Graphs.LabeledGraphInterface
 import Graphs.PrettyNode (stdPrintSet)

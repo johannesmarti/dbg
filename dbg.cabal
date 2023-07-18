@@ -21,9 +21,8 @@ source-repository head
 
 library
   exposed-modules:
-      BitableInterface
-      Bitify
-      Coding
+      Bitify.Bitifier
+      Bitify.Coding
       Conditions.CayleyGraph
       Conditions.Constructible
       Conditions.ConstructionGraph
@@ -31,7 +30,6 @@ library
       Data.Label
       Data.ListWord
       Data.Path
-      Data.PathTree
       Data.TurningVector
       Data.WordMaps.Algebraic
       Data.WordMaps.Coalgebraic
@@ -55,9 +53,9 @@ library
       HomomorphismSearch.Homomorphism
       HomomorphismSearch.Search
       HomomorphismSearch.SmartSearch
-      LabeledWrappedGraph
       Lifting.CombinationGraph
       Lifting.LiftingSearch
+      PathTree
       Plans.CoveringGraph
       Plans.Execute
       Plans.Plan
@@ -71,7 +69,6 @@ library
       RelationTree
       SearchTree
       Spiral
-      WrappedGraph
   other-modules:
       Paths_dbg
   hs-source-dirs:

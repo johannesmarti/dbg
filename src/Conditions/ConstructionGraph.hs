@@ -18,7 +18,7 @@ powerGraphInterface gi = let
     hasA g label (u,v) = all (\y -> any (\x -> hasArc gi g label (x,y)) u) v
     pret g u = "{" ++ intercalate ", " (map (prettyNode gi g) $ Set.toList u)
                    ++ "}"
-  in iFromHasArcPretty dom hasA pret
+  in interfaceFromHasArcPretty dom hasA pret
 
 intersects :: Ord a => Set.Set a -> Set.Set a -> Bool
 intersects x y = not (Set.disjoint x y)

@@ -9,7 +9,6 @@ import qualified Data.Map.Strict as Map
 
 import HomomorphismSearch.AllocateWords
 import HomomorphismSearch.ArcCons
-import BitableInterface
 import Graphs.CommonLabeledGraphTypes
 import Graphs.BitGraph (Node,Size,nodesSet)
 import RelationCache
@@ -18,7 +17,8 @@ import Graphs.DeBruijnGraph
 import Graphs.LabeledGraphInterface
 import HomomorphismSearch.Homomorphism
 import Conditions.Constructible
-import Coding hiding (domain)
+import Bitify.Bitifier
+import Bitify.Coding hiding (domain)
 
 data Result = NoHomomorphism | HomomorphismAt Int | UnknownAt Int
   deriving (Eq, Show)
@@ -64,7 +64,7 @@ searchUpTo cutoff gi graph = let
     subsets = Set.toList $ Set.filter (\s -> Set.size s >= 2) $ Set.powerSet dom
     subgraphs = map (labeledMapSubgraphFromLabeledGraph gi graph) subsets
     candidates = filter (\s -> isConstructible labeledMapGraphInterfaceNotPretty s) subgraphs
-    bityCandidates = map (\c -> genericBitableInterface labeledMapGraphInterfaceNotPretty c) candidates
+    bityCandidates = map (\c -> genericBitifier labeledMapGraphInterfaceNotPretty c) candidates
     candidatesWithCayley = map (\bitification -> (bitification, rightCayleyGraph bitification)) bityCandidates
     isGoodCandi (bf, cg) = pathCondition (numBits bf) cg
     goodCandidates = filter isGoodCandi candidatesWithCayley
@@ -77,6 +77,6 @@ subPathCondition gi graph = hasT1 gi graph || let
     dom = domain gi graph
     subsets = Set.toList $ Set.filter (\s -> Set.size s >= 3) $ Set.powerSet dom
     subgraphs = map (labeledMapSubgraphFromLabeledGraph gi graph) subsets
-    bityCandidates = map (\c -> genericBitableInterface labeledMapGraphInterfaceNotPretty c) subgraphs
+    bityCandidates = map (\c -> genericBitifier labeledMapGraphInterfaceNotPretty c) subgraphs
     cayleys = map (\bf -> (rightCayleyGraph bf, numBits bf)) bityCandidates
    in any (\(cg, s) -> pathCondition s cg) cayleys

@@ -37,7 +37,7 @@ import Data.Label
 type ConciseGraph = Integer
 
 conciseGraphInterface :: Size -> LabeledGraphInterface ConciseGraph Node
-conciseGraphInterface size = iFromSuccPredPretty
+conciseGraphInterface size = interfaceFromSuccPredPretty
                        (dom size) (succs size) (preds size)
                        (\_ n -> pretty n)
 

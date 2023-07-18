@@ -3,9 +3,9 @@ module Graphs.LabeledGraphInterface (
   LabeledGraphInterface,
   MapFunction,
   domain, successors, predecessors, hasArc, arcs, arcsOfLabel, prettyNode,
-  iFromAll,
-  iFromSuccPredPretty,
-  iFromHasArcPretty,
+  interfaceFromAll,
+  interfaceFromSuccPredPretty,
+  interfaceFromHasArcPretty,
   converseI,
   noPredecessor,
   hasT1,
@@ -37,10 +37,10 @@ data LabeledGraphInterface g x = LabeledGraphInterface {
   prettyNode   :: g -> x -> String
 }
 
-iFromAll :: (g -> Set x) -> (g -> MapFunction x) -> (g -> MapFunction x)
+interfaceFromAll :: (g -> Set x) -> (g -> MapFunction x) -> (g -> MapFunction x)
                     -> (g -> Label -> (x,x) -> Bool) -> (g -> Label -> [(x,x)])
                     -> (g -> x -> String) -> LabeledGraphInterface g x
-iFromAll dom succ pred hasAr ar pretty =
+interfaceFromAll dom succ pred hasAr ar pretty =
   LabeledGraphInterface dom succ pred hasAr ar pretty
 
 hasArcFromSucc :: Ord x => (g -> MapFunction x) -> g -> Label -> (x,x) -> Bool
@@ -63,15 +63,15 @@ arcsFromHasArc dom hasAr g l = [(x,y) | x <- d, y <- d, hasAr g l (x,y)] where
   d = Set.toList $ dom g
 
 
-iFromSuccPredPretty :: Ord x => (g -> Set x) -> (g -> MapFunction x)
+interfaceFromSuccPredPretty :: Ord x => (g -> Set x) -> (g -> MapFunction x)
   -> (g -> MapFunction x) -> (g -> x -> String) -> LabeledGraphInterface g x
-iFromSuccPredPretty dom succ pred pretty =
+interfaceFromSuccPredPretty dom succ pred pretty =
   LabeledGraphInterface dom succ pred (hasArcFromSucc succ)
                               (aOLFromSucc dom succ) pretty
 
-iFromHasArcPretty :: Ord x => (g -> Set x)
+interfaceFromHasArcPretty :: Ord x => (g -> Set x)
   -> (g -> Label -> (x,x) -> Bool) -> (g -> x -> String) -> LabeledGraphInterface g x
-iFromHasArcPretty dom hasAr pretty =
+interfaceFromHasArcPretty dom hasAr pretty =
   LabeledGraphInterface dom (succFromHasArc dom hasAr) (predFromHasArc dom hasAr) hasAr (arcsFromHasArc dom hasAr) pretty
 
 converseI :: LabeledGraphInterface g x -> LabeledGraphInterface g x
