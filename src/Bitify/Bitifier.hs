@@ -2,7 +2,6 @@ module Bitify.Bitifier (
   Bitification(numBits,labeledBitGraph,coding,interface,relationInterface),
   Bitifier,
   labeledBitGraphBitifier,
-  combinationGraphBitifier,
   conciseGraphBitifier,
   genericBitifier,
   toConcise,
@@ -18,7 +17,6 @@ import Graphs.ConciseGraph
 import Graphs.GraphInterface as GI
 import Graphs.LabeledGraphInterface as LGI
 import Graphs.PairGraph
-import Lifting.CombinationGraph
 import Bitify.Coding as C
 
 data Bitification x = Bitification {
@@ -72,11 +70,6 @@ labeledBitGraphBitifier s lbg =
 conciseGraphBitifier :: Size -> Bitifier ConciseGraph Node
 conciseGraphBitifier s cg = bitification where
   lbg = Graphs.ConciseGraph.toLabeledBitGraph s cg
-  bitification = labeledBitGraphBitifier s lbg
-
-combinationGraphBitifier :: Bitifier (CombinationGraph x) Int
-combinationGraphBitifier lg = bitification where
-  (lbg,s) = Lifting.CombinationGraph.toLabeledBitGraph lg
   bitification = labeledBitGraphBitifier s lbg
 
 genericBitifier :: Ord x => LGI.LabeledGraphInterface g x -> Bitifier g x

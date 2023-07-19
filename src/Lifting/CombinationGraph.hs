@@ -10,6 +10,7 @@ module Lifting.CombinationGraph (
   liftCandidate,
   combine,
   prettyCombinationGraph,
+  combinationGraphBitifier,
   LiftingCandidate,
   prettyCandidate,
   prettyCanWithArcs,
@@ -30,6 +31,7 @@ import qualified Data.Set as Set
 import Data.Label
 import Graphs.BitGraph (Size,fromArcs)
 import Bitify.Coding hiding (domain)
+import Bitify.Bitifier
 import Graphs.CommonLabeledGraphTypes
 import Graphs.LabeledGraphInterface
 import Graphs.PrettyNode (stdPrintSet)
@@ -85,7 +87,7 @@ fromLabeledGraph :: Ord x => LabeledGraphInterface g x -> g -> CombinationGraph 
 fromLabeledGraph gi g = fst (fromLabeledGraphWithCoding gi g)
 
 {-
- Should maybe provide a way to do this more effeciently using Bitify? An
+ TODO: Should maybe provide a way to do this more effeciently using Bitify? An
 advantage would be that the coding on LabeledBitGraph and ConcieseGraph could
 be the identity coding.
 -}
@@ -206,6 +208,11 @@ prettyCombinationGraph lg = let
       just (Doubleton m n) = "[" ++ show m ++ " " ++ show n ++ "]"
     setPrinter i = show i
   in prettierBigLabeledGraph intGraphInterface (graph lg) justifiedNodePrinter setPrinter
+
+combinationGraphBitifier :: Bitifier (CombinationGraph x) Int
+combinationGraphBitifier lg = bitification where
+  (lbg,s) = Lifting.CombinationGraph.toLabeledBitGraph lg
+  bitification = labeledBitGraphBitifier s lbg
 
 instance Show (CombinationGraph x) where
   show lg = unlines $ prettyCombinationGraph lg

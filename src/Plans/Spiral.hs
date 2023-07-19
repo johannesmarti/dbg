@@ -1,4 +1,4 @@
-module Spiral (
+module Plans.Spiral (
   fromHub,
   prettySpiral,
 ) where

@@ -31,7 +31,7 @@ import Lifting.CombinationGraph
 import Programs.Report
 import Examples.Patterns
 import Data.Label
-import Spiral
+import Plans.Spiral as Spiral
 
 game = gameStudy
 

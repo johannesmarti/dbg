@@ -5,13 +5,13 @@ module Programs.SpiralReport (
 import System.Environment 
 import Data.Set as Set
 
-import Programs.Report
-import Examples.Patterns
 import Data.Label
-import Spiral
-import Conditions.ConstructionGraph
 import Graphs.DeBruijnGraph
 import Graphs.LabeledGraphInterface
+import Conditions.ConstructionGraph
+import Plans.Spiral
+import Examples.Patterns
+import Programs.Report
 
 import qualified HomomorphismSearch.SmartSearch as SS
 

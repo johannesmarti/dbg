@@ -7,18 +7,18 @@ module HomomorphismSearch.SmartSearch (
 import qualified Data.Set as Set
 import qualified Data.Map.Strict as Map
 
-import HomomorphismSearch.AllocateWords
-import HomomorphismSearch.ArcCons
+import Graphs.LabeledGraphInterface
 import Graphs.CommonLabeledGraphTypes
 import Graphs.BitGraph (Node,Size,nodesSet)
-import RelationCache
-import Conditions.CayleyGraph hiding (domain, relationOfWord)
 import Graphs.DeBruijnGraph
-import Graphs.LabeledGraphInterface
-import HomomorphismSearch.Homomorphism
-import Conditions.Constructible
 import Bitify.Bitifier
 import Bitify.Coding hiding (domain)
+import GraphTools.RelationCache
+import Conditions.CayleyGraph hiding (domain, relationOfWord)
+import Conditions.Constructible
+import HomomorphismSearch.AllocateWords
+import HomomorphismSearch.ArcCons
+import HomomorphismSearch.Homomorphism
 
 data Result = NoHomomorphism | HomomorphismAt Int | UnknownAt Int
   deriving (Eq, Show)
@@ -32,7 +32,8 @@ homoAtLevel level (bf,cg) = let
     dom = nodesSet s
     approx = Map.fromSet f (domain dbgInterface deBruijnGraph)
     f dbgnode = Set.filter (isPossVal (nodeToList dim dbgnode)) dom
-    relOfWord = relationOfWord (relationCache bf cg)
+    relationCache = relationCacher bf cg
+    relOfWord = relationOfWord relationCache
     isPossVal word node = isPossibleValue s relOfWord word node
   in isPossible approx && (not (noHomomorphism (arcConsHomomorphismsFromApprox dbgInterface (labeledBitGraphInterface s) approx) deBruijnGraph lbg))
 

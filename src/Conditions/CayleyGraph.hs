@@ -1,7 +1,7 @@
 module Conditions.CayleyGraph (
   CayleyGraph(..),
   domain,
-  relationCache,
+  relationCacher,
   rightCayleyGraph,
   allWords,
   finiteWords,
@@ -23,7 +23,7 @@ import Graphs.BitGraph as BG
 import Graphs.PairGraph
 import Bitify.Bitifier
 import Bitify.Coding hiding (domain)
-import RelationCache
+import GraphTools.RelationCache
 
 data CayleyGraph = CayleyGraph {
   successorMap :: Map.Map BitGraph (BitGraph,BitGraph),
@@ -32,8 +32,8 @@ data CayleyGraph = CayleyGraph {
   nonWellfoundedElements :: Set.Set BitGraph
 } deriving Show
 
-relationCache :: Bitification x -> CayleyGraph -> RelationCache BitGraph x
-relationCache bf cg = cache where
+relationCacher :: Bitification x -> CayleyGraph -> RelationCache BitGraph x
+relationCacher bf cg = cache where
   c = coding bf
   s = numBits bf
   cache = RelationCache (relationInterface bf)

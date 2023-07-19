@@ -1,4 +1,4 @@
-module PathTree (
+module GraphTools.PathTree (
   PathTree(..),
   extractNode,
   pathTreesOfMCycles,
@@ -10,7 +10,7 @@ module PathTree (
 import Control.Exception.Base ( assert )
 import qualified Data.Set as Set
 
-import RelationCache
+import GraphTools.RelationCache
 import Graphs.GraphInterface
 import Data.Label
 import qualified Data.Path as Path

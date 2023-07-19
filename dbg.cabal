@@ -48,6 +48,9 @@ library
       Graphs.MapGraph
       Graphs.PairGraph
       Graphs.PrettyNode
+      GraphTools.PathTree
+      GraphTools.RelationCache
+      GraphTools.RelationTree
       HomomorphismSearch.AllocateWords
       HomomorphismSearch.ArcCons
       HomomorphismSearch.Homomorphism
@@ -55,20 +58,17 @@ library
       HomomorphismSearch.SmartSearch
       Lifting.CombinationGraph
       Lifting.LiftingSearch
-      PathTree
       Plans.CoveringGraph
       Plans.Execute
       Plans.Plan
+      Plans.Spiral
       Programs.Children
       Programs.Count
       Programs.Duplicates
       Programs.Range
       Programs.Report
       Programs.SpiralReport
-      RelationCache
-      RelationTree
       SearchTree
-      Spiral
   other-modules:
       Paths_dbg
   hs-source-dirs:

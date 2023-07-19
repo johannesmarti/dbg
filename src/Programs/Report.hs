@@ -11,13 +11,13 @@ import Data.Label
 import qualified Data.Path as Path
 import Graphs.LabeledGraphInterface as LGI
 import Graphs.GraphInterface as GI
-import Conditions.CayleyGraph hiding (relationOfWord, allWords)
-import RelationCache
-import Conditions.Constructible
-import PathTree
-import Spiral
 import Bitify.Bitifier
 import Bitify.Coding
+import GraphTools.RelationCache
+import GraphTools.PathTree
+import Conditions.CayleyGraph hiding (relationOfWord, allWords)
+import Conditions.Constructible
+import Plans.Spiral
 
 
 cayleyReport :: Ord x => LabeledGraphInterface g x -> g -> [String]
@@ -64,7 +64,7 @@ spiralReportForWord gi g rc w = let
 
 spiralReport :: Ord x => [[Label]] -> LabeledGraphInterface g x -> g -> [String]
 spiralReport words gi g = let
-    rc = buildCache (relationTreeRelationCacheableInterface (genericBitifier gi)) g
+    rc = relationTreeCache (genericBitifier gi) g
     wordStrings = map (spiralReportForWord gi g rc) words
   in intercalate ["", "+++++++++++++++++++", ""] wordStrings
 

@@ -18,7 +18,7 @@ spec = do
     it "element at 8 is 2" $
       v1 `TV.at` 8 `shouldBe` 2
   let v2 = TV.turnBackward . TV.turnBackward $ v1
-  describe "checks on turnBackward . turnBackard $ v1 = [6,7,1,2,3,4,5] =: v2" $ do
+  describe "checks on turnBackward . turnBackward $ v1 = [6,7,1,2,3,4,5] =: v2" $ do
     it "element at 0 is 6" $
       v2 `TV.at` 0 `shouldBe` 6
     it "element at 4 is 3" $

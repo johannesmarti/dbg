@@ -1,4 +1,4 @@
-module RelationTree (
+module GraphTools.RelationTree (
   RelationTree,
   relationTree,
 ) where
