@@ -8,10 +8,6 @@ import System.Environment
 import Plans.CoveringGraph
 import Data.Label
 
-a :: [Label]
-a = [Zero,One,One,One]
-b = a ++ [Zero,One,Zero,Zero,Zero] ++ a ++ [Zero,One,One]
-
 isNubby :: Ord a => [a] -> Maybe a
 isNubby list = worker list Set.empty where
   worker [] _ = Nothing

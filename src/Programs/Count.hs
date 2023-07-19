@@ -7,7 +7,6 @@ import Data.Maybe (listToMaybe)
 
 import Plans.CoveringGraph
 import Data.Label
-import Data.Path (labelList)
 
 addressPrinter :: CoveringNode -> String
 addressPrinter node = 
@@ -30,8 +29,8 @@ count = do
   let nfs = take numNodes cycles
   let cycs = map cycleOfNode nfs
   let isInteresting cycle = length (filter isDescending cycle) > 2
-  let isVeryInteresting cycle = length (filter isDescending cycle) > 3
-  let isIncredibelyInteresting cycle = length (filter isDescending cycle) > 4
+  --let isVeryInteresting cycle = length (filter isDescending cycle) > 3
+  --let isIncredibelyInteresting cycle = length (filter isDescending cycle) > 4
   let wow = filter isInteresting cycs
   --let wow = filter isVeryInteresting cycs
   --let wow = filter isIncredibelyInteresting cycs

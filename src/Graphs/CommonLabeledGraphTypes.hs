@@ -19,14 +19,14 @@ module Graphs.CommonLabeledGraphTypes (
 
 import Data.Set
 
+import Data.Label
 import qualified Graphs.GraphInterface as GI
-import Graphs.BitGraph
 import Graphs.LabeledGraphInterface
+import Graphs.BitGraph
 import Graphs.PairGraph as PG
 import Graphs.AssocGraph
 import Graphs.MapGraph as MG
 import Graphs.PrettyNode
-import Data.Label
 
 type LabeledAssocGraph x = PairGraph (AssocGraph x)
 type LabeledMapGraph x = PairGraph (MapGraph x)
