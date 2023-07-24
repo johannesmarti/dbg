@@ -1,7 +1,11 @@
 module Plans.Spoke (
   Spoke,
   hub,
+  points,
   spoke,
+  nodes,
+  singletonSpoke,
+  insert,
   pointsAtDistance,
   maximalDistance,
   isSingleton,
@@ -16,7 +20,7 @@ import Data.Tuple (swap)
 data Spoke x = Spoke {
   hub    :: x,
   points :: [(x,Int)]
-}
+} deriving Show
 
 isNub :: Eq x => [(x,y)] -> Bool
 isNub [] = True
@@ -27,12 +31,17 @@ isCoherent (Spoke h ps) =
   isNub ps &&
   (lookupAll 0 . inverse $ ps) == [h]
 
-spoke :: Eq x => x -> [(x,Int)] -> Spoke x
-spoke h p = plainSpoke h ((h,0) : p)
-
 plainSpoke :: Eq x => x -> [(x,Int)] -> Spoke x
 plainSpoke h p = assert (isCoherent result) result where
   result = Spoke h p
+
+spoke :: Eq x => x -> [(x,Int)] -> Spoke x
+spoke h p = plainSpoke h ((h,0) : p)
+
+-- This does unfortunately not use plainSpoke because we don't want to depend
+-- on Eq
+singletonSpoke :: x -> Spoke x
+singletonSpoke a = Spoke a [(a,0)]
 
 insert :: Eq x => x -> Int -> Spoke x -> Spoke x
 insert key value (Spoke h ps) = plainSpoke h ((key,value) : ps)

@@ -4,7 +4,7 @@ module Plans.Spiral (
 ) where
 
 import Control.Exception.Base
-import qualified Data.Vector as Vec
+import qualified Data.Vector as V
 import qualified Data.Map as Map
 import qualified Data.Set as Set
 import qualified Data.Set.Extra as SE
@@ -12,21 +12,24 @@ import Data.List (intercalate, sortOn)
 
 import Data.Label
 import Graphs.LabeledGraphInterface
+import Plans.Spoke
 
+{- It might not be that good to have Spokes use a list-based, instead of
+Set-based, interface. Below I use a lot of Set-based code in the implementation
+in from Hub, which interacts awkwardly with the interface form Spokes. -}
 data Spiral a = Spiral {
-  word   :: Vec.Vector Label,
-  hub    :: Vec.Vector a,
-  spokes :: Vec.Vector (Map.Map a Int)
-} deriving (Eq, Show)
+  word   :: V.Vector Label,
+  spokes :: V.Vector (Spoke a)
+} deriving Show
 
-allIndices :: Vec.Vector a -> [Int]
-allIndices v = [0 .. Vec.length v - 1]
+allIndices :: V.Vector a -> [Int]
+allIndices v = [0 .. V.length v - 1]
 
 isCoherent :: Ord a => Spiral a -> Bool
-isCoherent (Spiral w h s) =
-  Vec.length w == Vec.length h &&
-  Vec.length w == Vec.length s &&
-  all (\i -> (s Vec.! i)  Map.! (h Vec.! i) == 0) (allIndices h)
+isCoherent (Spiral w s) = V.length w == V.length s
+
+hub :: Spiral a -> [a]
+hub = map Plans.Spoke.hub . V.toList . spokes
 
 hubIsConnected :: Ord a => LabeledGraphInterface g a -> g
                            -> [Label] -> [a] -> Bool
@@ -43,38 +46,39 @@ fromHub gi g w hubList = assert (length w == length hubList) $
                          assert (hubIsConnected gi g w hubList) $
                          assert (isCoherent spiral) $
                          spiral where
-  spiral = Spiral rword rhub (atDistance 1 initialGenerator spokesAtHub)
-  rword = Vec.fromList w
-  rhub = Vec.fromList hubList
-  sz = Vec.length rword
+  spiral = Spiral rword (atDistance 1 initialGenerator spokesAtHub)
+  rword = V.fromList w
+  hubVec = V.fromList hubList
+  spokesAtHub = V.fromList (map singletonSpoke hubList)
+  sz = V.length rword
   prevIndex i = (sz + i - 1) `mod` sz
   nextIndex i = (i + 1) `mod` sz
-  spokesAtHub = Vec.generate sz (\i -> Map.singleton (rhub Vec.! i) 0)
-  initialGenerator = Vec.generate sz (\i -> Set.singleton (rhub Vec.! i))
+  initialGenerator = V.fromList (map Set.singleton hubList)
+  --atDistance :: Int -> V.Vector (Set.Set a) -> V.Vector (Spoke a) -> V.Vector (Spoke a)
   atDistance distance generator spokesAccum =
     if all Set.null generator
       then spokesAccum
-      else let a = undefined
-               newGenerator = Vec.generate sz (\i -> let
+      else let newGenerator = V.generate sz (\i -> let
                    pi = prevIndex i
-                   l = rword Vec.! pi
-                   alreadyThere = Map.keysSet (spokesAccum Vec.! i)
+                   l = rword V.! pi
+                   alreadyThere = Set.fromList $ Plans.Spoke.nodes (spokesAccum V.! i)
                    -- probabely it would be more efficient to already remove
                    -- the elements from alreadyThere from the successors before
                    -- we do the concatMap
                    allCandidates = SE.concatMap (successors gi g l)
-                                     (generator Vec.! pi)
+                                     (generator V.! pi)
                  in allCandidates Set.\\ alreadyThere)
-               newSpokes = Vec.generate sz (\i ->
-                    Map.union
-                      (spokesAccum Vec.! i)
-                      (Map.fromSet (const distance) (newGenerator Vec.! i)))
+               newSpokes = V.generate sz (\i ->
+                    merge
+                      [(newNode,distance) | newNode <- Set.toList (newGenerator V.! i)]
+                      (spokesAccum V.! i))
+               merge alist spoke = foldr (uncurry Plans.Spoke.insert) spoke alist
              in atDistance (distance + 1) newGenerator newSpokes
 
 prettySpiral :: (a -> String) -> Spiral a -> [String]
-prettySpiral nodePrinter (Spiral w h sms) =
+prettySpiral nodePrinter (Spiral w sps) =
   concatMap forIndex (allIndices w) where
     prettyPair (k,n) = "(" ++ nodePrinter k ++ ": " ++ show n ++ ")"
-    sortedMap sm = sortOn snd $ Map.toList sm
-    prettyMap sm = "{" ++ intercalate " " (map prettyPair $ sortedMap sm) ++ "}"
-    forIndex i = [prettyMap (sms Vec.! i), labelToSymbol (w Vec.! i) ++ "=>"]
+    sortedMap sp = sortOn snd $ points sp
+    prettyMap sp = "{" ++ intercalate " " (map prettyPair $ sortedMap sp) ++ "}"
+    forIndex i = [prettyMap (sps V.! i), labelToSymbol (w V.! i) ++ "=>"]
