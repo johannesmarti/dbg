@@ -9,32 +9,51 @@ module Plans.Spoke (
   contained,
 ) where
 
--- TODO: Should we use the strict or the lazy state monad? Need to read up!
-import qualified Data.Map.Strict as M
+import Control.Exception (assert)
+import Data.Maybe (isJust)
+import Data.Tuple (swap)
 
 data Spoke x = Spoke {
   hub    :: x,
-  points :: M.Map x Int
+  points :: [(x,Int)]
 }
 
+isNub :: Eq x => [(x,y)] -> Bool
+isNub [] = True
+isNub ((a,_):rest) = null (lookupAll a rest) && isNub rest
+
+isCoherent :: Eq x => Spoke x -> Bool
+isCoherent (Spoke h ps) =
+  isNub ps &&
+  (lookupAll 0 . inverse $ ps) == [h]
+
 spoke :: Ord x => x -> [(x,Int)] -> Spoke x
-spoke h p = Spoke h (M.insert h 0 (M.fromList p))
+spoke h p = assert (isCoherent result) result where
+  result = Spoke h ((h,0) : p)
+
+inverse :: [(x,y)] -> [(y,x)]
+inverse = map swap
+
+lookupAll :: Eq x => x -> [(x,y)] -> [y]
+lookupAll key list = [b | (a,b) <- list, a == key]
+
+nodes :: Spoke x -> [x]
+nodes = map fst . points
 
 pointsAtDistance :: Int -> Spoke x -> [x]
-pointsAtDistance distance =
-  map fst . filter (\(_,d) -> d == distance) . M.toList . points
+pointsAtDistance distance = lookupAll distance . inverse . points
 
 maximalDistance :: Spoke x -> Int
-maximalDistance = maximum . M.elems . points
+maximalDistance = maximum . map snd . points
 
 isSingleton :: Spoke x -> Bool
-isSingleton s = M.size (points s) <= 1
+isSingleton = isJust . singletonNode
 
 singletonNode :: Spoke x -> Maybe x
-singletonNode s = if isSingleton s
-                        then Just (hub s)
-                        else Nothing
+singletonNode s = case points s of
+                    [(n,d)]   -> Just n
+                    otherwise -> Nothing
 
 contained :: Ord x => x -> Spoke x -> Bool
-contained x (Spoke _ m) = x `M.member` m
+contained x s = x `elem` nodes s
 
