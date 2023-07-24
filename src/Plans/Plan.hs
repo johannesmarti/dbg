@@ -12,46 +12,12 @@ module Plans.Plan (
   Plans.Plan.insert,
 ) where
 
--- TODO: Should we use the strict or the lazy state monad? Need to read up!
-import qualified Data.Map.Strict as M
-
-import Plans.CoveringGraph
 import Data.WordMaps.Algebraic as WordMap
 import Data.Label
-
-{-
- We have a WordTree that maps addresses of Covering nodes to a pointed set. The
-point denotes the center of the spiral at the turningWord of the Covering node
-and the remaining elements in the set are the required nodes for the covering.
--}
+import Plans.Spoke
+import Plans.CoveringGraph
 
 -- TODO: This data type should be used or unified with the implementation of Spiral
-data Spoke x = Spoke {
-  hub    :: x,
-  points :: M.Map x Int
-}
-
-spoke :: Ord x => x -> [(x,Int)] -> Spoke x
-spoke h p = Spoke h (M.insert h 0 (M.fromList p))
-
-pointsAtDistance :: Int -> Spoke x -> [x]
-pointsAtDistance distance =
-  map fst . filter (\(_,d) -> d == distance) . M.toList . points
-
-maximalDistance :: Spoke x -> Int
-maximalDistance = maximum . M.elems . points
-
-isSingleton :: Spoke x -> Bool
-isSingleton s = M.size (points s) <= 1
-
-singletonNode :: Spoke x -> Maybe x
-singletonNode s = if isSingleton s
-                        then Just (hub s)
-                        else Nothing
-
-contained :: Ord x => x -> Spoke x -> Bool
-contained x (Spoke _ m) = x `M.member` m
-
 type Plan x = WordMap (Spoke x)
 
 empty :: Plan x

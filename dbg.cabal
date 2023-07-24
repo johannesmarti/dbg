@@ -62,6 +62,7 @@ library
       Plans.Execute
       Plans.Plan
       Plans.Spiral
+      Plans.Spoke
       Programs.Children
       Programs.Count
       Programs.Duplicates

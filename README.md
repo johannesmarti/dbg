@@ -1,9 +1,10 @@
 # The problem
 
-This repository is an attempt at finding an algorithm that solves the following
-decision problem: Given a finite directed graph $G$, whose edges are labeled
-with $0$ and $1$, is there a natural number $n$ such that there exists a
-homomorphism from the de Bruijn graph $B_n$ of dimension $n$ to $G$?
+This repository is an attempt at finding an algorithm that solves the
+following decision problem: Given a finite directed graph $G$, whose
+edges are labeled with $0$ and $1$, is there a natural number $n$ such
+that there exists a homomorphism from the de Bruijn graph $B_n$ of
+dimension $n$ to $G$?
 
 The [de Bruijn graph](https://en.wikipedia.org/wiki/De_Bruijn_graph)
 $B_n$ of dimension $n$ is defined such that its vertices are all the
@@ -35,10 +36,10 @@ very smart code that uses a SAT-solver to check whether for a given
 graph $G$ and number $n$ there is a homomorphism from $B_n$ to $G$.
 - [Leifa/debruijngame](https://github.com/Leifa/debruijngame) is simple
   graphical 1-player game in which one iteratively combines vertices in
-a given graph $G$ until one has constructed a vertex with both a
-reflexive $0$-edge and a reflexive $1$-edge. If one manages to find such
-a vertex then one has proven the existence of a homomorphism from some
-$B_n$ to $G$.
+  a given graph $G$ until one has constructed a vertex with both a
+  reflexive $0$-edge and a reflexive $1$-edge. If one manages to find such
+  a vertex then one has proven the existence of a homomorphism from some
+  $B_n$ to $G$.
 
 # Structure of the code
 
@@ -60,8 +61,8 @@ the expense of less concise code.
 
 ### Bitify
 
-Provides code that allows us to turn graphs into a concise bit-representation
-based on arbitrary-size integers.
+Provides code that allows us to turn graphs into a concise
+bit-representation based on arbitrary-size integers.
 
 ### GraphTools
 

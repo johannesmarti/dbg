@@ -6,7 +6,6 @@ import qualified Data.Set as Set
 import System.Environment
 
 import Plans.CoveringGraph
-import Data.Label
 
 isNubby :: Ord a => [a] -> Maybe a
 isNubby list = worker list Set.empty where

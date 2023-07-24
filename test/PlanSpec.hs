@@ -10,6 +10,7 @@ import qualified Data.Vector as V
 
 import Examples.Patterns
 import Examples.Plans
+import Plans.Spoke
 import Plans.Plan
 import Plans.Execute
 import Data.Label
