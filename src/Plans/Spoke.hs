@@ -27,9 +27,15 @@ isCoherent (Spoke h ps) =
   isNub ps &&
   (lookupAll 0 . inverse $ ps) == [h]
 
-spoke :: Ord x => x -> [(x,Int)] -> Spoke x
-spoke h p = assert (isCoherent result) result where
-  result = Spoke h ((h,0) : p)
+spoke :: Eq x => x -> [(x,Int)] -> Spoke x
+spoke h p = plainSpoke h ((h,0) : p)
+
+plainSpoke :: Eq x => x -> [(x,Int)] -> Spoke x
+plainSpoke h p = assert (isCoherent result) result where
+  result = Spoke h p
+
+insert :: Eq x => x -> Int -> Spoke x -> Spoke x
+insert key value (Spoke h ps) = plainSpoke h ((key,value) : ps)
 
 inverse :: [(x,y)] -> [(y,x)]
 inverse = map swap
