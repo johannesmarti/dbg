@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -fno-warn-unused-do-bind #-}
 module Examples.Games (
   game,
   gameEx5,
@@ -28,7 +29,6 @@ import Control.Monad.State.Lazy
 import Graphs.ConciseGraph
 import Graphs.DeBruijnGraph
 import Lifting.CombinationGraph
-import Programs.Report
 import Examples.Patterns
 import Data.Label
 import Plans.Spiral as Spiral

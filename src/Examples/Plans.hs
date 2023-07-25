@@ -4,6 +4,7 @@ module Examples.Plans (
   alloc3Plan
 ) where
 
+import Plans.Spoke hiding (insert)
 import Plans.Plan
 import Data.Label
 

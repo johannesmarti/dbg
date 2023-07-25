@@ -1,74 +1,79 @@
 module Plans.Spoke (
   Spoke,
-  hub,
-  points,
   spoke,
-  nodes,
-  singletonSpoke,
-  insert,
-  pointsAtDistance,
-  maximalDistance,
-  isSingleton,
+  singleton,
+  hub,
+  pointsAList,
+  Plans.Spoke.nodes,
   singletonNode,
-  contained,
+  Plans.Spoke.contained,
+  Plans.Spoke.insert,
+  pointsAtDistanceList,
+  maximalDistance,
 ) where
 
 import Control.Exception (assert)
-import Data.Maybe (isJust)
+import qualified Data.Set as S
 import Data.Tuple (swap)
+
+--import Plans.AListDistanceData as DistanceData
+import Plans.MapDistanceData as DistanceData
 
 data Spoke x = Spoke {
   hub    :: x,
-  points :: [(x,Int)]
+  points :: DistanceData x
 } deriving Show
 
-isNub :: Eq x => [(x,y)] -> Bool
-isNub [] = True
-isNub ((a,_):rest) = null (lookupAll a rest) && isNub rest
+instance Ord x => Eq (Spoke x) where
+  s == s' = points s `DistanceData.equalMap` points s'
 
-isCoherent :: Eq x => Spoke x -> Bool
-isCoherent (Spoke h ps) =
-  isNub ps &&
-  (lookupAll 0 . inverse $ ps) == [h]
+isCoherent :: Ord x => Spoke x -> Bool
+isCoherent s = DistanceData.isCoherent (points s)
+                 && pointsAtDistanceList 0 s == [hub s]
 
-plainSpoke :: Eq x => x -> [(x,Int)] -> Spoke x
-plainSpoke h p = assert (isCoherent result) result where
+plainSpoke :: Ord x => x -> DistanceData x -> Spoke x
+plainSpoke h p = assert (Plans.Spoke.isCoherent result) result where
   result = Spoke h p
 
-spoke :: Eq x => x -> [(x,Int)] -> Spoke x
-spoke h p = plainSpoke h ((h,0) : p)
+spoke :: Ord x => x -> [(x,Int)] -> Spoke x
+spoke h p = plainSpoke h (DistanceData.fromAList ((h,0) : p))
 
 -- This does unfortunately not use plainSpoke because we don't want to depend
 -- on Eq
-singletonSpoke :: x -> Spoke x
-singletonSpoke a = Spoke a [(a,0)]
+singleton :: x -> Spoke x
+singleton a = Spoke a (DistanceData.hubSingleton a)
 
-insert :: Eq x => x -> Int -> Spoke x -> Spoke x
-insert key value (Spoke h ps) = plainSpoke h ((key,value) : ps)
+insert :: Ord x => x -> Int -> Spoke x -> Spoke x
+insert key value (Spoke h ps) = plainSpoke h (DistanceData.insert key value ps)
+
+nodes :: Ord x => Spoke x -> S.Set x
+nodes = DistanceData.nodes . points
+
+pointsAList :: Spoke x -> [(x,Int)]
+pointsAList = DistanceData.toAList . points
 
 inverse :: [(x,y)] -> [(y,x)]
 inverse = map swap
 
 lookupAll :: Eq x => x -> [(x,y)] -> [y]
-lookupAll key list = [b | (a,b) <- list, a == key]
+lookupAll key pairList = [v | (k,v) <- pairList, k == key]
 
-nodes :: Spoke x -> [x]
-nodes = map fst . points
-
-pointsAtDistance :: Int -> Spoke x -> [x]
-pointsAtDistance distance = lookupAll distance . inverse . points
+pointsAtDistanceList :: Int -> Spoke x -> [x]
+pointsAtDistanceList distance = lookupAll distance . inverse . pointsAList
 
 maximalDistance :: Spoke x -> Int
-maximalDistance = maximum . map snd . points
+maximalDistance = maximum . map snd . pointsAList
 
-isSingleton :: Spoke x -> Bool
+{-
+isSingleton :: Ord x => Spoke x -> Bool
 isSingleton = isJust . singletonNode
+-}
 
 singletonNode :: Spoke x -> Maybe x
-singletonNode s = case points s of
-                    [(n,d)]   -> Just n
-                    otherwise -> Nothing
+singletonNode s = case pointsAList s of
+                    [(n,_)] -> Just n
+                    _       -> Nothing
 
 contained :: Ord x => x -> Spoke x -> Bool
-contained x s = x `elem` nodes s
+contained x s = x `DistanceData.contained` points s
 

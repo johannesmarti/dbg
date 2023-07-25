@@ -1,12 +1,4 @@
 module Plans.Plan (
-  Spoke,
-  hub,
-  spoke,
-  pointsAtDistance,
-  maximalDistance,
-  isSingleton,
-  singletonNode,
-  contained,
   Plan,
   Plans.Plan.empty,
   Plans.Plan.insert,

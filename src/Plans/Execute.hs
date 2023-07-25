@@ -14,6 +14,7 @@ import Data.WordMaps.Algebraic as WordMap hiding (combine)
 import qualified Data.TurningVector as TV
 import Graphs.LabeledGraphInterface
 import Lifting.CombinationGraph
+import Plans.Spoke
 import Plans.Plan
 import Plans.CoveringGraph
 
@@ -86,7 +87,7 @@ wrapSpiral spokes = do
         if distance > maximalDistanceInSpiral then return constructed
         else do let constructInSpoke plan soFar = 
                         foldM combine soFar
-                              (map emb (pointsAtDistance distance plan))
+                              (map emb (pointsAtDistanceList distance plan))
                 improved <- V.zipWithM constructInSpoke spokes constructed
                 helper (distance + 1) improved
     in helper 1 (V.map (emb . hub) spokes)

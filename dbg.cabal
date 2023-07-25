@@ -58,8 +58,10 @@ library
       HomomorphismSearch.SmartSearch
       Lifting.CombinationGraph
       Lifting.LiftingSearch
+      Plans.AListDistanceData
       Plans.CoveringGraph
       Plans.Execute
+      Plans.MapDistanceData
       Plans.Plan
       Plans.Spiral
       Plans.Spoke
@@ -76,7 +78,7 @@ library
       src
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -O0
   build-depends:
-      base >=4.7 && <5
+      base >=4.9 && <5
     , containers
     , data-ordlist
     , extra
@@ -94,7 +96,7 @@ executable dbg
       app/dbg
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -O0 -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      base >=4.9 && <5
     , containers
     , data-ordlist
     , dbg
@@ -113,7 +115,7 @@ executable play
       app/play
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -O0 -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      base >=4.9 && <5
     , containers
     , data-ordlist
     , dbg
@@ -148,7 +150,7 @@ test-suite dbg-test
       test
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -O0 -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      base >=4.9 && <5
     , containers
     , data-ordlist
     , dbg
