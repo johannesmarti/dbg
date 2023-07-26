@@ -62,12 +62,15 @@ library
       Plans.CoveringGraph
       Plans.Execute
       Plans.MapDistanceData
+      Plans.PartialPlan
       Plans.Plan
       Plans.Spiral
       Plans.Spoke
       Programs.Children
       Programs.Count
+      Programs.Dbg
       Programs.Duplicates
+      Programs.Play
       Programs.Range
       Programs.Report
       Programs.SpiralReport
@@ -76,7 +79,7 @@ library
       Paths_dbg
   hs-source-dirs:
       src
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -O0
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
       base >=4.9 && <5
     , containers
@@ -94,26 +97,7 @@ executable dbg
       Paths_dbg
   hs-source-dirs:
       app/dbg
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -O0 -threaded -rtsopts -with-rtsopts=-N
-  build-depends:
-      base >=4.9 && <5
-    , containers
-    , data-ordlist
-    , dbg
-    , extra
-    , hspec
-    , mtl
-    , set-extra
-    , vector
-  default-language: Haskell2010
-
-executable play
-  main-is: Main.hs
-  other-modules:
-      Paths_dbg
-  hs-source-dirs:
-      app/play
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -O0 -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.9 && <5
     , containers
@@ -148,7 +132,7 @@ test-suite dbg-test
       Paths_dbg
   hs-source-dirs:
       test
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -O0 -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.9 && <5
     , containers

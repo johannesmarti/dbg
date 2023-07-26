@@ -5,7 +5,7 @@ module Plans.Plan (
   Plans.Plan.insert,
   Plans.Plan.lookup,
   Plans.Plan.forceLookup,
-  annotated,
+  isAnnotated,
 ) where
 
 import Data.Maybe (fromMaybe)
@@ -38,5 +38,5 @@ forceLookup :: CoveringNode -> CoveringGraphAnnotation x -> x
 forceLookup cn p = fromMaybe err (Plans.Plan.lookup cn p) where
   err = error $ "covering node " ++ prettyWord (turningWord cn) ++ " not in CoveringGraphAnnotation"
 
-annotated :: CoveringNode -> CoveringGraphAnnotation x -> Bool
-annotated cn p = WordMap.inDomain (address cn) p
+isAnnotated :: CoveringNode -> CoveringGraphAnnotation x -> Bool
+isAnnotated cn p = WordMap.inDomain (address cn) p

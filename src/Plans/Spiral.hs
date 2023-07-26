@@ -38,6 +38,9 @@ hubIsConnected gi g word hub = worker word hub where
   worker (l:ls) (c:cs) = hasArc gi g l (c, next cs) && worker ls cs
   worker _ _ = False
 
+allSpirals :: Ord a => LabeledGraphInterface g a -> g -> [Label] -> [Spiral a]
+allSpirals gi g w = undefined
+
 fromHub :: Ord a => LabeledGraphInterface g a -> g -> [Label] -> [a] -> Spiral a
 fromHub gi g w hubList = assert (length w == length hubList) $ 
                          assert (hubIsConnected gi g w hubList) $
@@ -70,6 +73,10 @@ fromHub gi g w hubList = assert (length w == length hubList) $
                       (spokesAccum V.! i))
                merge alist spoke = foldr (uncurry Spoke.insert) spoke alist
              in atDistance (distance + 1) newGenerator newSpokes
+
+generatedSubspirals :: Ord a => LabeledGraphInterface g a -> g -> Spiral a -> [Set.Set a] -> [Spiral a]
+-- make sure to call nub in the end
+generatedSubspirals gi g s generators = undefined
 
 prettySpiral :: (a -> String) -> Spiral a -> [String]
 prettySpiral nodePrinter (Spiral w sps) =

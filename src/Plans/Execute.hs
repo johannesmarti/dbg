@@ -56,7 +56,7 @@ constructNode plan coveringNode = let
                  return ()) -- do is needed for the typechecker that expects return value of type ()
     myCycle = V.fromList myCycleList
     planVector = V.map planOfNode myCycle
-    inDom cn = CGA.annotated cn plan
+    inDom cn = CGA.isAnnotated cn plan
     liftingsOfCycle = childCycles inDom coveringNode
     fatTentacles = map reverse liftingsOfCycle
     pairNodes cn = do intNode <- constructNode plan cn
