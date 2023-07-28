@@ -51,16 +51,12 @@ cayleyReport gi g = let
 easyCayleyReport :: Ord x => LabeledGraphInterface g x -> g -> IO ()
 easyCayleyReport gi g = putStr . unlines $ cayleyReport gi g
 
-cyclesOfWord :: Ord x => RelationCache r x -> [Label] -> [[x]]
-cyclesOfWord rc w =
-  map Path.cycleNodeList . concatMap pathesOnPathTree $ pathTreesOfMCycles rc w
-
-spiralReportForWord :: Ord x => LabeledGraphInterface g x
-                                -> g -> RelationCache r x -> [Label] -> [String]
+spiralReportForWord :: Ord x => LabeledGraphInterface g x -> g
+                                -> RelationCache r x -> [Label] -> [String]
 spiralReportForWord gi g rc w = let
-    cycles = cyclesOfWord rc w
-    putCycle cycle = prettySpiral (LGI.prettyNode gi g) $ fromHub gi g w cycle
-  in [show w] ++ intercalate [""] (map putCycle cycles)
+    spirals = spiralsForWord gi g rc w
+    putSpiral = prettySpiral (LGI.prettyNode gi g)
+  in [show w] ++ intercalate [""] (map putSpiral spirals)
 
 spiralReport :: Ord x => [[Label]] -> LabeledGraphInterface g x -> g -> [String]
 spiralReport words gi g = let

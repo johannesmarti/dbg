@@ -1,12 +1,9 @@
 module GraphTools.RelationCache (
   RelationCache(..),
-  outputType,
-  GraphTools.RelationCache.reflexivesUniversalInMultiple,
-  relationOfWord,
   relationTreeCache,
 ) where
 
-import Data.Set
+import qualified Data.Set as S
 
 import Data.Label
 import Data.WordTree (labelOfWord)
@@ -18,7 +15,7 @@ import GraphTools.RelationTree
 
 data RelationCache r x = RelationCache {
   outputType :: GraphInterface r x,
-  reflexivesUniversalInMultiple :: r -> Set x,
+  reflexivesUniversalInMultiple :: r -> S.Set x,
   relationOfWord :: [Label] -> r
 }
 

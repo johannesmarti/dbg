@@ -5,6 +5,7 @@ module GraphTools.PathTree (
   firstArcsOnMCycles,
   arcsOnMCycles,
   pathesOnPathTree,
+  cyclesOfWord,
 ) where
 
 import Control.Exception.Base ( assert )
@@ -67,3 +68,8 @@ pathesOnPathTree (There x) = [Path.There x]
 pathesOnPathTree (Step x l cs) =
   map prepender $ concatMap pathesOnPathTree cs where
     prepender path = Path.Step x l path
+
+cyclesOfWord :: Ord x => RelationCache r x -> [Label] -> [[x]]
+cyclesOfWord rc w =
+  map Path.cycleNodeList . concatMap pathesOnPathTree $ pathTreesOfMCycles rc w
+

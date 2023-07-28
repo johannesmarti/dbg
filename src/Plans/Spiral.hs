@@ -1,5 +1,6 @@
 module Plans.Spiral (
   fromHub,
+  spiralsForWord,
   prettySpiral,
 ) where
 
@@ -11,6 +12,8 @@ import Data.List (intercalate, sortOn)
 
 import Data.Label
 import Graphs.LabeledGraphInterface
+import GraphTools.RelationCache
+import GraphTools.PathTree
 import qualified Plans.Spoke as Spoke
 
 {- It might not be that good to have Spokes use a list-based, instead of
@@ -73,6 +76,18 @@ fromHub gi g w hubList = assert (length w == length hubList) $
                       (spokesAccum V.! i))
                merge alist spoke = foldr (uncurry Spoke.insert) spoke alist
              in atDistance (distance + 1) newGenerator newSpokes
+
+{-
+ FIXME: It is annoying that this function needs both the LabedGraph and the
+RelationCache as arguments. It should work with just the relation cache, as it
+contains all the relevant information. But then there is probabely a completely
+different arrangement of the information that makes this all much cleaner.
+-}
+spiralsForWord :: Ord x => LabeledGraphInterface g x -> g
+                           -> RelationCache r x -> [Label] -> [Spiral x]
+spiralsForWord gi g rc w = map getSpiral cycles where
+  cycles = cyclesOfWord rc w
+  getSpiral cycle = fromHub gi g w cycle
 
 generatedSubspirals :: Ord a => LabeledGraphInterface g a -> g -> Spiral a -> [Set.Set a] -> [Spiral a]
 -- make sure to call nub in the end
