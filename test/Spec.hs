@@ -19,6 +19,7 @@ import qualified SearchTreeSpec
 import qualified WordMapSpec
 import qualified TurningVectorSpec
 import qualified PlanSpec
+import qualified ConstructionGraphSpec
 
 main :: IO ()
 main = hspec spec
@@ -40,4 +41,5 @@ spec = do
   describe "WordMap" WordMapSpec.spec
   describe "TurningVector" TurningVectorSpec.spec
   describe "Plan" PlanSpec.spec
+  describe "ConstructionGraph" ConstructionGraphSpec.spec
 

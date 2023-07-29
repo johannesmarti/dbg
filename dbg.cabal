@@ -121,6 +121,7 @@ test-suite dbg-test
       CayleyGraphSpec
       ConciseGraphSpec
       ConstructibleSpec
+      ConstructionGraphSpec
       CoveringGraphSpec
       HomomorphismSpec
       ListWordSpec
