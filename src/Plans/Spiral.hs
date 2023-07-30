@@ -4,11 +4,11 @@ module Plans.Spiral (
   prettySpiral,
 ) where
 
-import Control.Exception.Base
+import Control.Exception.Base (assert)
 import qualified Data.Vector as V
 import qualified Data.Set as Set
 import qualified Data.Set.Extra as SE
-import Data.List (intercalate, sortOn)
+import Data.List (intercalate, sortOn, nub)
 
 import Data.Label
 import Graphs.LabeledGraphInterface
@@ -22,7 +22,7 @@ in from Hub, which interacts awkwardly with the interface form Spokes. -}
 data Spiral a = Spiral {
   word   :: V.Vector Label,
   spokes :: V.Vector (Spoke.Spoke a)
-} deriving Show
+} deriving (Show, Eq)
 
 allIndices :: V.Vector a -> [Int]
 allIndices v = [0 .. V.length v - 1]
@@ -40,9 +40,6 @@ hubIsConnected gi g word hub = worker word hub where
   worker [] [] = True
   worker (l:ls) (c:cs) = hasArc gi g l (c, next cs) && worker ls cs
   worker _ _ = False
-
-allSpirals :: Ord a => LabeledGraphInterface g a -> g -> [Label] -> [Spiral a]
-allSpirals gi g w = undefined
 
 fromHub :: Ord a => LabeledGraphInterface g a -> g -> [Label] -> [a] -> Spiral a
 fromHub gi g w hubList = assert (length w == length hubList) $ 
@@ -89,9 +86,23 @@ spiralsForWord gi g rc w = map getSpiral cycles where
   cycles = cyclesOfWord rc w
   getSpiral cycle = fromHub gi g w cycle
 
-generatedSubspirals :: Ord a => LabeledGraphInterface g a -> g -> Spiral a -> [Set.Set a] -> [Spiral a]
+justHub :: Ord x => Spiral x -> Spiral x
+justHub (Spiral w sps) =
+  Spiral w (V.map (\sp -> Spoke.singleton (Spoke.hub sp)) sps)
+
+generatedSubspirals :: Ord a => LabeledGraphInterface g a -> g
+                                -> Spiral a -> [Set.Set a] -> [Spiral a]
 -- make sure to call nub in the end
-generatedSubspirals gi g s generators = undefined
+generatedSubspirals gi g s generators = let
+    w = word s
+    worker newlyAdded accumulated =
+      if all Set.null newlyAdded then return accumulated
+      else undefined
+           -- for each set in newlyAdded and element in the set consider it's predecessors under the label on the previous step. 
+           -- intersect this set of predecessors with the set at the predecessor on the spiral of all nodes that have a distance one-less than the node.
+           -- pick a random node from the intersection and add it to the accumlator, if it is not of distance 1 then also add it to some set of newlyAddeds
+  in assert (length w == length generators) $
+       nub $ worker generators (justHub s)
 
 prettySpiral :: (a -> String) -> Spiral a -> [String]
 prettySpiral nodePrinter (Spiral w sps) =
