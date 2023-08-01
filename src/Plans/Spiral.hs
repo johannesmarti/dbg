@@ -1,6 +1,9 @@
 module Plans.Spiral (
+  Spiral,
+  spiralPredecessor,
   fromHub,
   spiralsForWord,
+  generatedSubspirals,
   prettySpiral,
 ) where
 
@@ -20,8 +23,8 @@ import qualified Plans.Spoke as Spoke
 Set-based, interface. Below I use a lot of Set-based code in the implementation
 in from Hub, which interacts awkwardly with the interface form Spokes. -}
 data Spiral a = Spiral {
-  word   :: V.Vector Label,
-  spokes :: V.Vector (Spoke.Spoke a)
+  word           :: V.Vector Label,
+  spokes         :: V.Vector (Spoke.Spoke a)
 } deriving (Show, Eq)
 
 allIndices :: V.Vector a -> [Int]
@@ -29,6 +32,21 @@ allIndices v = [0 .. V.length v - 1]
 
 isCoherent :: Spiral a -> Bool
 isCoherent (Spiral w s) = V.length w == V.length s
+
+circumfence :: Spiral a -> Int
+circumfence sp = V.length (word sp)
+
+spiralPredecessors :: Ord a => MapFunction a -> Spiral a -> Int -> a
+                               -> Set.Set a
+spiralPredecessors pred sp ix node = let
+    sz = circumfence sp
+    prevIndex i = (sz + i - 1) `mod` sz
+    previous = prevIndex ix
+    l = word sp V.! previous
+    spoks = spokes sp
+    myDistance = distanceOf (spokes V.! ix) node
+    candidates = Set.fromList $ pointsAtDistanceList (spokes V.! previous)
+  in assert (myDistance > 0) $ candidates `Set.intersect` pred l node
 
 hubList :: Spiral a -> [a]
 hubList = map Spoke.hub . V.toList . spokes
@@ -90,10 +108,10 @@ justHub :: Ord x => Spiral x -> Spiral x
 justHub (Spiral w sps) =
   Spiral w (V.map (\sp -> Spoke.singleton (Spoke.hub sp)) sps)
 
-generatedSubspirals :: Ord a => LabeledGraphInterface g a -> g
-                                -> Spiral a -> [Set.Set a] -> [Spiral a]
+generatedSubspirals :: Ord a => MapFunction a -> Spiral a
+                                -> V.Vector (Set.Set a) -> [V.Vector (Set.Set a)]
 -- make sure to call nub in the end
-generatedSubspirals gi g s generators = let
+generatedSubspirals pred s generators = let
     w = word s
     worker newlyAdded accumulated =
       if all Set.null newlyAdded then return accumulated

@@ -5,6 +5,7 @@ module Plans.AListDistanceData (
   fromAList,
   toAList,
   hubSingleton,
+  lookup,
   insert,
   nodes,
   contained,

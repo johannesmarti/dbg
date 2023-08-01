@@ -4,6 +4,7 @@ module Plans.Spoke (
   singleton,
   hub,
   pointsAList,
+  distanceOf,
   Plans.Spoke.nodes,
   singletonNode,
   Plans.Spoke.contained,
@@ -51,6 +52,11 @@ nodes = DistanceData.nodes . points
 
 pointsAList :: Spoke x -> [(x,Int)]
 pointsAList = DistanceData.toAList . points
+
+distanceOf :: Spoke x -> x -> Int
+distanceOf sp node = case DistanceData.lookup node (points sp) of
+                       Just d  -> d
+                       Nothing -> error "node is not in spiral"
 
 inverse :: [(x,y)] -> [(y,x)]
 inverse = map swap
