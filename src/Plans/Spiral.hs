@@ -44,9 +44,10 @@ spiralPredecessors pred sp ix node = let
     previous = prevIndex ix
     l = word sp V.! previous
     spoks = spokes sp
-    myDistance = distanceOf (spokes V.! ix) node
-    candidates = Set.fromList $ pointsAtDistanceList (spokes V.! previous)
-  in assert (myDistance > 0) $ candidates `Set.intersect` pred l node
+    myDistance = Spoke.distanceOf (spoks V.! ix) node
+    candidates = Set.fromList $
+                   Spoke.pointsAtDistanceList myDistance (spoks V.! previous)
+  in assert (myDistance > 0) $ candidates `Set.intersection` pred l node
 
 hubList :: Spiral a -> [a]
 hubList = map Spoke.hub . V.toList . spokes

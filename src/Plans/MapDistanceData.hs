@@ -5,7 +5,7 @@ module Plans.MapDistanceData (
   fromAList,
   toAList,
   hubSingleton,
-  lookup,
+  Plans.MapDistanceData.lookup,
   insert,
   nodes,
   contained,
@@ -33,7 +33,7 @@ toAList = M.toList
 hubSingleton :: x -> DistanceData x
 hubSingleton a = M.singleton a 0
 
-lookup :: Ord x => x -> DistanceData x -> Maybe. Int
+lookup :: Ord x => x -> DistanceData x -> Maybe Int
 lookup = M.lookup
 
 insert :: Ord x => x -> Int -> DistanceData x -> DistanceData x

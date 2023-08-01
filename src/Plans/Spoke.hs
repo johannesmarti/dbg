@@ -53,7 +53,7 @@ nodes = DistanceData.nodes . points
 pointsAList :: Spoke x -> [(x,Int)]
 pointsAList = DistanceData.toAList . points
 
-distanceOf :: Spoke x -> x -> Int
+distanceOf :: Ord x => Spoke x -> x -> Int
 distanceOf sp node = case DistanceData.lookup node (points sp) of
                        Just d  -> d
                        Nothing -> error "node is not in spiral"
