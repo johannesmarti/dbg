@@ -8,9 +8,10 @@ import Examples.Patterns
 import Examples.Plans
 
 import Programs.Play
+import Programs.Range
 
 dbg :: IO ()
-dbg = bits
+dbg = otherCounterexample
 
 silly :: IO ()
 silly = do

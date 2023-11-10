@@ -17,7 +17,8 @@ module Graphs.ConciseGraph (
   allLabeledGraphsOfSize,
   totalabeledGraph,
   relationOfLabel,
-  hasBothFp,
+  missesLoop,
+  hasBothLoops,
   noDoubleRefl,
   notTrivial,
   showem,
@@ -147,8 +148,8 @@ diagonal size label = shiftL baseDiagonal offset where
 hasNoFp :: Size -> Label -> ConciseGraph -> Bool
 hasNoFp size label word = word .&. diagonal size label == 0
 
-hasBothFp :: Size -> ConciseGraph -> Bool
-hasBothFp size word = not (hasNoFp size Zero word) && not (hasNoFp size One word)
+missesLoop :: Size -> ConciseGraph -> Bool
+missesLoop size word = hasNoFp size Zero word || hasNoFp size One word
 
 doubleRefl :: Size -> Node -> ConciseGraph
 doubleRefl size node = assert (isNode size node) $
@@ -163,7 +164,7 @@ noDoubleRefl size word = all notDoubleReflAt [0 .. size-1] where
                           in pat /= pat .&. word
 
 notTrivial :: Size -> ConciseGraph -> Bool
-notTrivial size word = hasBothFp size word && noDoubleRefl size word
+notTrivial size word = not (missesLoop size word) && noDoubleRefl size word
 
 showem :: Size -> ConciseGraph -> String
 showem size graph = unlines $ prettyLabeledGraph (conciseGraphInterface size) graph

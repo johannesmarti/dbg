@@ -1,6 +1,6 @@
 module Plans.Spiral (
   Spiral,
-  spiralPredecessor,
+  spiralPredecessors,
   fromHub,
   spiralsForWord,
   generatedSubspirals,
@@ -112,6 +112,8 @@ justHub (Spiral w sps) =
 generatedSubspirals :: Ord a => MapFunction a -> Spiral a
                                 -> V.Vector (Set.Set a) -> [V.Vector (Set.Set a)]
 -- make sure to call nub in the end
+generatedSubspirals = undefined
+{-
 generatedSubspirals pred s generators = let
     w = word s
     worker newlyAdded accumulated =
@@ -122,6 +124,7 @@ generatedSubspirals pred s generators = let
            -- pick a random node from the intersection and add it to the accumlator, if it is not of distance 1 then also add it to some set of newlyAddeds
   in assert (length w == length generators) $
        nub $ worker generators (justHub s)
+-}
 
 prettySpiral :: (a -> String) -> Spiral a -> [String]
 prettySpiral nodePrinter (Spiral w sps) =

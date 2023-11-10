@@ -1,6 +1,7 @@
 module Programs.Range (
   checkOne,
   rangePartition,
+  otherCounterexample,
 ) where
 
 import qualified Data.Set as Set
@@ -53,5 +54,16 @@ rangePartition = do
   let example = head list
   putStrLn (show (toCode size example))
   putStrLn (showLG (conciseGraphInterface size) example)
+  --putStrLn (show $ length list)
+
+otherCounterexample :: IO ()
+otherCounterexample = do
+  let size = 3
+  let gi = conciseGraphInterface size
+  let bitmaps = Prelude.filter (missesLoop size) (Graphs.ConciseGraph.allLabeledGraphsOfSize size)
+  let list = filter (isConstructible gi) bitmaps
+  let example = head list
+  print (toCode size example)
+  putStrLn (showLG gi example)
   --putStrLn (show $ length list)
 
