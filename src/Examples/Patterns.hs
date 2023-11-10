@@ -55,6 +55,7 @@ module Examples.Patterns (
   b1ef5, b1ef5Interface,
   specialUnfold, specialUnfoldInterface,
   weaklyDeterministic, weaklyDeterministicInterface,
+  constructible, constructibleInterface,
 ) where
 
 import qualified Data.Set as Set
@@ -461,3 +462,10 @@ weaklyDeterministic :: ConciseGraph
 weaklyDeterministic = fromCode 4 287515978
 weaklyDeterministicInterface :: LabeledGraphInterface ConciseGraph Node
 weaklyDeterministicInterface = conciseGraphInterface 4
+
+{- has not 0 self-loop but is constructible -}
+constructible :: ConciseGraph
+constructible = fromCode 3 37580
+constructibleInterface :: LabeledGraphInterface ConciseGraph Node
+constructibleInterface = conciseGraphInterface 3
+
